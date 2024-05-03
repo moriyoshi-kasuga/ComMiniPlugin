@@ -1,0 +1,131 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'maven-publish'
+}
+
+group = 'github.moriyoshi'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+    maven { url = 'https://oss.sonatype.org/content/groups/public/' }
+    maven { url = 'https://repo.codemc.org/repository/maven-public/' }
+    maven { url = 'https://libraries.minecraft.net' }
+}
+
+def paperAPI = 'io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT'
+def anvilGUI = 'net.wesjd:anvilgui:1.9.3-SNAPSHOT'
+def commandAPI = 'dev.jorel:commandapi-bukkit-shade:9.4.0'
+def nbtAPI = 'de.tr7zw:item-nbt-api:2.12.3'
+def reflections = 'org.reflections:reflections:0.10.2'
+
+def relocates = [
+        'dev.jorel.commandapi': 'github.moriyoshi.comminiplugin.dependencies.commandapi',
+        'net.wesjd.anvilgui'  : 'github.moriyoshi.comminiplugin.dependencies.anvilgui',
+        'de.tr7zw.changeme.nbtapi'  : 'github.moriyoshi.comminiplugin.dependencies.nbtapi',
+        'org.reflections': 'github.moriyoshi.comminiplugin.dependencies.reflections'
+]
+
+dependencies {
+    compileOnly paperAPI
+    testCompileOnly paperAPI
+
+    shadow reflections
+    shadow anvilGUI
+    shadow commandAPI
+    shadow nbtAPI
+}
+
+def buildFileName = "${project.name}"
+
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
+processResources {
+   def props = [version: version]
+   inputs.properties props
+   filteringCharset 'UTF-8'
+   filesMatching('plugin.yml') {
+       expand props
+   }
+}
+
+shadowJar {
+    // archiveFileName = "${buildFileName}.jar"
+    archiveClassifier.set('')
+    configurations = [project.configurations.shadow]
+
+    relocates.each { originalPackage, relocatedPackage -> relocate originalPackage, relocatedPackage }
+}
+
+tasks.register('copyPlugin') {
+    dependsOn shadowJar
+    doLast {
+        if (file("./build/libs/ComMiniPlugin-${version}.jar").exists()) {
+            if (file('./copy.bat').exists()) {
+                exec {
+                    workingDir '.'
+                    executable './copy.bat'
+                    args "${version}"
+                }
+            } else {
+                if (file('./copy.sh').exists()) {
+                    exec {
+                        workingDir '.'
+                        executable './copy.sh'
+                        args "${version}"
+                    }
+                } else {
+                    println("not found bat and sh file")
+                }
+            }
+        } else {
+            println("please build")
+        }
+    }
+}
+
+
+tasks.register('runPlugin') {
+    dependsOn shadowJar
+    doLast {
+        if (file("./build/libs/ComMiniPlugin-${version}.jar").exists()) {
+            if (file('./copy.bat').exists()) {
+                exec {
+                    workingDir '.'
+                    executable './copy.bat'
+                    args "${version}", '--server'
+                }
+            } else {
+                if (file('./copy.sh').exists()) {
+                    exec {
+                        workingDir '.'
+                        executable './copy.sh'
+                        args "${version}", '--server'
+                    }
+                } else {
+                    println("not found bat and sh file")
+                }
+            }
+        } else {
+            println("please build")
+        }
+    }
+}

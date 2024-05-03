@@ -1,0 +1,7 @@
+name: ComMiniPlugin
+prefix: ComMiniPlugin
+version: ${version}
+main: github.moriyoshi.comminiplugin.ComMiniPlugin
+api-version: 1.13
+author: moriyoshi-kasuga
+load: POSTWORLD
