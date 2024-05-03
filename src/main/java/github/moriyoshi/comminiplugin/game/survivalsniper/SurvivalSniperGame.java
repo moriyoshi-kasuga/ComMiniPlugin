@@ -21,8 +21,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class SurvivalSniperGame extends AbstractGame {
 
   private static final String HELD_WORLD = "world";
-  private static final int MAX_RADIUS_RANGE = 400;
-  private static final int MAX_MINUTES = 60 * 20;
+  private static final int MAX_RADIUS_RANGE = 300;
+  private static final int MAX_MINUTES = 60 * 15;
   private static final SurvivalSniperGame INSTANCE = new SurvivalSniperGame();
 
   public static SurvivalSniperGame getInstance() {
@@ -131,11 +131,16 @@ public class SurvivalSniperGame extends AbstractGame {
       inv.addItem(new Sniper().getItem(), new Jump().getItem());
       p.setGameMode(GameMode.SURVIVAL);
       GamePlayer.getPlayer(uuid).setHunger(true);
-      int x = random.nextInt(-MAX_RADIUS_RANGE, MAX_RADIUS_RANGE);
-      int z = random.nextInt(-MAX_RADIUS_RANGE, MAX_RADIUS_RANGE);
-      var block = loc.getWorld().getHighestBlockAt(bx + x, bz + z,
-          HeightMap.MOTION_BLOCKING_NO_LEAVES);
-      p.teleport(block.getLocation().add(x > 0 ? 0.5 : -0.5, 1.0, z > 0 ? 0.5 : -0.5));
+      while (true) {
+        int x = random.nextInt(-MAX_RADIUS_RANGE, MAX_RADIUS_RANGE);
+        int z = random.nextInt(-MAX_RADIUS_RANGE, MAX_RADIUS_RANGE);
+        var block = world.getHighestBlockAt(bx + x, bz + z,
+            HeightMap.MOTION_BLOCKING_NO_LEAVES);
+        if (block.isSolid()) {
+          p.teleport(block.getLocation().add(x > 0 ? 0.5 : -0.5, 1.0, z > 0 ? 0.5 : -0.5));
+          break;
+        }
+      }
     });
     return true;
   }

@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -59,23 +60,31 @@ public class Jump extends CustomItem implements CooldownItem {
     setCooldown(DEFAULT_COOLDOWN_TICK);
     p.setVelocity(eyeLoc.getDirection().multiply(MULTIPLY));
     p.getInventory().setItemInMainHand(new ItemBuilder(getItem()).type(Material.CLOCK).build());
+    p.setFallDistance(0);
     new BukkitRunnable() {
+
+      int num = 1;
 
       @SuppressWarnings("deprecation")
       @Override
       public void run() {
-        p.setFallDistance(0);
-        if (p.isInWater()) {
-          this.cancel();
-        }
-        if (p.isOnGround()) {
-          p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 30, 138, true));
-          p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30, 256, true));
-          this.cancel();
+        if (num > 10) {
+
+          p.setFallDistance(0);
+          if (p.isInWater()) {
+            this.cancel();
+          }
+          if (p.isOnGround()) {
+            p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 30, 138, true));
+            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30, 256, true));
+            this.cancel();
+          }
+        } else {
+          num++;
         }
       }
 
-    }.runTaskTimer(ComMiniPlugin.getPlugin(), 10, 1);
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
   }
 
   @Override
@@ -88,6 +97,11 @@ public class Jump extends CustomItem implements CooldownItem {
   @Override
   public boolean canMoveOtherInv(InventoryClickEvent e) {
     return false;
+  }
+
+  @Override
+  public void dropItem(PlayerDropItemEvent e) {
+    e.setCancelled(true);
   }
 
 }

@@ -138,8 +138,16 @@ public class CustomItemListner implements Listener {
       list.add(CustomItem.getCustomItem(click));
     }
     if (list.size() > 0) {
-      if (list.stream().allMatch(i -> !i.canMoveOtherInv(e))
-          && !e.getView().getTopInventory().getType().equals(InventoryType.CRAFTING)) {
+      if (list.stream().allMatch(i -> {
+        if (i.canMoveOtherInv(e)) {
+          return false;
+        }
+        var type = e.getView().getTopInventory().getType();
+        return switch (type) {
+          case CRAFTING, WORKBENCH -> true;
+          default -> false;
+        };
+      })) {
         e.setCancelled(true);
       }
     }
