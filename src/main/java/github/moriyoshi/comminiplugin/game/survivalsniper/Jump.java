@@ -24,7 +24,7 @@ public class Jump extends CustomItem implements CooldownItem {
 
   private static final Component DEFAULT_NAME = Util.mm("<yellow>ジャンプ");
   private static final Component DESCRIPTION = Util.mm("<red>注意! 着地した後一定時間操作不能");
-  private static final int DEFAULT_COOLDOWN_TICK = 100;
+  private static final int DEFAULT_COOLDOWN_TICK = 140;
   private static final Vector MULTIPLY = new Vector(3, 2.4, 3);
 
   public Jump() {
@@ -47,40 +47,42 @@ public class Jump extends CustomItem implements CooldownItem {
 
   @Override
   public void interact(PlayerInteractEvent e) {
-    e.setCancelled(true);
     if (e.getAction().isLeftClick()) {
+      e.setCancelled(false);
       return;
     }
     var p = e.getPlayer();
     var eyeLoc = p.getEyeLocation();
     if (inCooldown()) {
-      p.playSound(eyeLoc, Sound.BLOCK_DISPENSER_FAIL, 1, 1);
+      if ((DEFAULT_COOLDOWN_TICK - 10) > getCooldown()) {
+        p.playSound(eyeLoc, Sound.BLOCK_DISPENSER_FAIL, 1, 1);
+      }
       return;
     }
+    p.getWorld().playSound(eyeLoc, Sound.ITEM_ARMOR_EQUIP_LEATHER, 2, 1);
     setCooldown(DEFAULT_COOLDOWN_TICK);
+    p.setFallDistance(0);
     p.setVelocity(eyeLoc.getDirection().multiply(MULTIPLY));
     p.getInventory().setItemInMainHand(new ItemBuilder(getItem()).type(Material.CLOCK).build());
-    p.setFallDistance(0);
     new BukkitRunnable() {
 
-      int num = 1;
+      int num = 0;
 
       @SuppressWarnings("deprecation")
       @Override
       public void run() {
-        if (num > 10) {
-
-          p.setFallDistance(0);
-          if (p.isInWater()) {
-            this.cancel();
-          }
-          if (p.isOnGround()) {
-            p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 30, 138, true));
-            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30, 256, true));
-            this.cancel();
-          }
-        } else {
+        p.setFallDistance(0);
+        if (20 > num) {
           num++;
+          return;
+        }
+        if (p.isInWater()) {
+          this.cancel();
+        }
+        if (p.isOnGround()) {
+          p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 30, 138, true));
+          p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30, 256, true));
+          this.cancel();
         }
       }
 

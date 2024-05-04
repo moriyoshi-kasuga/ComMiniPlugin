@@ -27,10 +27,11 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import java.util.Collection;
+
+import org.bukkit.entity.Player;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.entity.Player;
 
 /**
  * {@inheritDoc}
@@ -55,8 +56,7 @@ public class FastBoard extends FastBoardBase<Component> {
         EMPTY_COMPONENT = COMPONENT_METHOD.invoke(Component.empty());
       } else {
         Class<?> craftChatMessageClass = FastReflection.obcClass("util.CraftChatMessage");
-        COMPONENT_METHOD = lookup.unreflect(
-            craftChatMessageClass.getMethod("fromString", String.class));
+        COMPONENT_METHOD = lookup.unreflect(craftChatMessageClass.getMethod("fromString", String.class));
         EMPTY_COMPONENT = Array.get(COMPONENT_METHOD.invoke(""), 0);
       }
     } catch (Throwable t) {
@@ -64,15 +64,11 @@ public class FastBoard extends FastBoardBase<Component> {
     }
   }
 
-  public FastBoard(Player player) {
-    super(player);
-  }
-
   /**
    * {@inheritDoc}
    */
-  public FastBoard(Collection<Player> players) {
-    super(players);
+  public FastBoard(Player player) {
+    super(player);
   }
 
   /**

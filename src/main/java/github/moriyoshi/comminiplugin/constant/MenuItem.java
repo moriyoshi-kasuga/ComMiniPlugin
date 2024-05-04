@@ -10,8 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectItemButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.TeleportButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.GameSystem;
@@ -23,7 +21,7 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 public class MenuItem extends CustomItem {
 
   public MenuItem() {
-    this(new ItemBuilder(Material.BOOK).name("<red>Menu").build());
+    this(new ItemBuilder(Material.BOOK).name("<red>Menu").glow().build());
   }
 
   public MenuItem(@NotNull ItemStack item) {
@@ -32,7 +30,10 @@ public class MenuItem extends CustomItem {
 
   @Override
   public void interact(PlayerInteractEvent e) {
-    open(e.getPlayer());
+    if (open(e.getPlayer())) {
+      return;
+    }
+    ComMiniPrefix.MAIN.send(e.getPlayer(), "<red>あなたはmenuを開けません");
   }
 
   @Override
@@ -40,15 +41,30 @@ public class MenuItem extends CustomItem {
     return "menu";
   }
 
-  public static void open(Player p) {
+  public static boolean open(Player p) {
+    if (GameSystem.inGame() && GameSystem.isStarted() && GameSystem.nowGame().isGamePlayer(p)) {
+      return false;
+    }
     new InnerMenu().openInv(p);
+    return true;
   }
 
   private static class InnerMenu extends MenuHolder<ComMiniPlugin> {
     public InnerMenu() {
       super(ComMiniPlugin.getPlugin(), 27, "<yellow>Menu");
-      setButton(11, new TeleportButton<>(new ItemBuilder(Material.ENDER_PEARL).name("<blue>ロビーにテレポート").build(),
-          ComMiniWorld.LOBBY));
+      setButton(11, new ItemButton<>(new ItemBuilder(Material.ENDER_PEARL).name("<blue>ロビーにテレポート").build()) {
+
+        @Override
+        public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+          var p = (Player) event.getWhoClicked();
+          if (GameSystem.inGame() && GameSystem.nowGame().isGamePlayer(p)) {
+            ComMiniPrefix.MAIN.send(p, "<red>あなたはロビーにテレポートできません");
+            return;
+          }
+          p.teleport(ComMiniWorld.LOBBY);
+        }
+
+      });
       if (GameSystem.isStarted()) {
         setButton(14, new ItemButton<>(
             new ItemBuilder(Material.NETHER_STAR).name(GameSystem.nowGame().name + "<reset><gray>を観戦する").build()) {
@@ -66,8 +82,18 @@ public class MenuItem extends CustomItem {
       if (GameSystem.inGame()) {
         var game = GameSystem.nowGame();
         setButton(13,
-            new RedirectItemButton<>(new ItemBuilder(game.material).name(game.name).lore(game.description).build(),
-                (holder, event) -> game.gameMenu((Player) event.getWhoClicked()).getInventory()));
+            new ItemButton<>(new ItemBuilder(game.material).name(game.name).lore(game.description).build()) {
+              @Override
+              public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+                var p = (Player) event.getWhoClicked();
+                var game = GameSystem.nowGame();
+                if (!game.canOpenMenu()) {
+                  ComMiniPrefix.MAIN.send(p, "<red>もうMenuは開けません");
+                  return;
+                }
+                game.gameMenu(p).openInv(p);
+              }
+            });
       } else {
         setButton(13, new ItemButton<>(new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開始されていません").build()));
         setButton(14, new ItemButton<>(new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開始されていません").build()));

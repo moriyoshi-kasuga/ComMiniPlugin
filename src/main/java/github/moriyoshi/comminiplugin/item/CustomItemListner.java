@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -86,6 +86,7 @@ public class CustomItemListner implements Listener {
     customItem.shiftItem(e);
   }
 
+  @EventHandler(priority = EventPriority.HIGHEST)
   public boolean customItemInteract(PlayerInteractEvent e) {
     ItemStack item = e.getItem();
     if (!CustomItem.isCustomItem(item)) {
@@ -144,11 +145,12 @@ public class CustomItemListner implements Listener {
         }
         var type = e.getView().getTopInventory().getType();
         return switch (type) {
-          case CRAFTING, WORKBENCH -> true;
-          default -> false;
+          case CRAFTING, WORKBENCH -> false;
+          default -> true;
         };
       })) {
         e.setCancelled(true);
+        return;
       }
     }
     for (CustomItem customItem : list) {

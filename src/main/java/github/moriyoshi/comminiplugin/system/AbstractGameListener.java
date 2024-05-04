@@ -18,6 +18,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener {
 
   /**
    * プレイヤーがサーバーに入ったら呼び出されます
+   * (すべてゲームのプレイヤーだけです)
    *
    * @param e event
    */
@@ -26,6 +27,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener {
 
   /**
    * プレイヤーがサーバーから抜けたら呼び出されます
+   * (すべてゲームのプレイヤーだけです)
    *
    * @param e event
    */
@@ -34,6 +36,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener {
 
   /**
    * プレイヤーが死んだら呼び出されます
+   * (すべてゲームのプレイヤーだけです)
    *
    * @param e event
    */
@@ -42,13 +45,10 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener {
   }
 
   /**
-   * 落下ダメージなどの処理をしたいときに
-   *
    * @param e event
-   * @return 基盤の落下ダメージをパスしたいときにtrue
    */
-  default boolean damage(EntityDamageEvent e) {
-    return false;
+  default void damage(EntityDamageEvent e) {
+    return;
   }
 
   /**
@@ -62,6 +62,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener {
 
   /**
    * ブロックを壊したらこのイベントに来ます
+   * (すべてゲームのプレイヤーだけです)
    *
    * @param e event
    * @return is cancel

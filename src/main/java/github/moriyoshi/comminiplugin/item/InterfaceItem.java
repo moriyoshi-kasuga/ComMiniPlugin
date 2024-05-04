@@ -53,25 +53,14 @@ public interface InterfaceItem {
   }
 
   /**
-   * {@link #heldItem()} 中にアクションバーにメッセージを送る文字列を返します {@link Optional#empty()} の場合はメッセージを送りません
-   *
-   * @param player プレイヤーです
-   * @return 文字列のoptionalです
-   */
-  @NotNull
-  Optional<String> getActionBarMessage(Player player);
-
-  /**
    * {@link CustomItem#heldOfThis(PlayerItemHeldEvent)} で開始してほかのアイテムに変えた場合に終了する
    * アイテムを持っている間だけ1tickごとにする処理です
    *
    * @return 処理
    */
   @NotNull
-  default Optional<Consumer<Player>> heldItem() {
-    return Optional.of(player -> {
-      getActionBarMessage(player).ifPresent(s -> player.sendActionBar(Util.mm(s)));
-    });
+  default Optional<Consumer<Player>> heldItem(ItemStack item) {
+    return Optional.empty();
   }
 
   /**

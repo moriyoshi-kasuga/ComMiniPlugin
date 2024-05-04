@@ -23,59 +23,30 @@
  */
 package github.moriyoshi.comminiplugin.dependencies.fastboard;
 
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 /**
- * Lightweight packet-based scoreboard API for Bukkit plugins. It can be safely used asynchronously
- * as everything is at packet level.
+ * Lightweight packet-based scoreboard API for Bukkit plugins.
+ * It can be safely used asynchronously as everything is at packet level.
  * <p>
  * The project is on
  * <a href="https://github.com/MrMicky-FR/FastBoard">GitHub</a>.
  *
  * @author MrMicky
- * @version 2.0.2
+ * @version 2.1.2
  */
 public abstract class FastBoardBase<T> {
-
-  public enum ObjectiveMode {
-    CREATE, REMOVE, UPDATE
-  }
-
-  public enum TeamMode {
-    CREATE, REMOVE, UPDATE, ADD_PLAYERS, REMOVE_PLAYERS
-  }
-
-  public enum ScoreboardAction {
-    CHANGE, REMOVE
-  }
-
-  enum VersionType {
-    V1_7, V1_8, V1_13, V1_17;
-
-    public boolean isHigherOrEqual() {
-      return VERSION_TYPE.ordinal() >= ordinal();
-    }
-  }
 
   private static final Map<Class<?>, Field[]> PACKETS = new HashMap<>(8);
   protected static final String[] COLOR_CODES = Arrays.stream(ChatColor.values())
@@ -89,6 +60,7 @@ public abstract class FastBoardBase<T> {
   private static final MethodHandle PLAYER_CONNECTION;
   private static final MethodHandle SEND_PACKET;
   private static final MethodHandle PLAYER_GET_HANDLE;
+  private static final MethodHandle FIXED_NUMBER_FORMAT;
   // Scoreboard packets
   private static final FastReflection.PacketConstructor PACKET_SB_OBJ;
   private static final FastReflection.PacketConstructor PACKET_SB_DISPLAY_OBJ;
@@ -96,17 +68,15 @@ public abstract class FastBoardBase<T> {
   private static final FastReflection.PacketConstructor PACKET_SB_SERIALIZABLE_TEAM;
   private static final MethodHandle PACKET_SB_SET_SCORE;
   private static final MethodHandle PACKET_SB_RESET_SCORE;
+  private static final boolean SCORE_OPTIONAL_COMPONENTS;
   // Scoreboard enums
   private static final Class<?> DISPLAY_SLOT_TYPE;
   private static final Class<?> ENUM_SB_HEALTH_DISPLAY;
   private static final Class<?> ENUM_SB_ACTION;
   private static final Object BLANK_NUMBER_FORMAT;
-
   private static final Object SIDEBAR_DISPLAY_SLOT;
-
   private static final Object ENUM_SB_HEALTH_DISPLAY_INTEGER;
   private static final Object ENUM_SB_ACTION_CHANGE;
-
   private static final Object ENUM_SB_ACTION_REMOVE;
 
   static {
@@ -117,9 +87,7 @@ public abstract class FastBoardBase<T> {
         VERSION_TYPE = VersionType.V1_17;
       } else if (FastReflection.nmsOptionalClass(null, "ScoreboardServer$Action").isPresent()) {
         VERSION_TYPE = VersionType.V1_13;
-      } else if (FastReflection.nmsOptionalClass(null,
-          "IScoreboardCriteria$EnumScoreboardHealthDisplay"
-      ).isPresent()) {
+      } else if (FastReflection.nmsOptionalClass(null, "IScoreboardCriteria$EnumScoreboardHealthDisplay").isPresent()) {
         VERSION_TYPE = VersionType.V1_8;
       } else {
         VERSION_TYPE = VersionType.V1_7;
@@ -128,22 +96,13 @@ public abstract class FastBoardBase<T> {
       String gameProtocolPackage = "network.protocol.game";
       Class<?> craftPlayerClass = FastReflection.obcClass("entity.CraftPlayer");
       Class<?> entityPlayerClass = FastReflection.nmsClass("server.level", "EntityPlayer");
-      Class<?> playerConnectionClass = FastReflection.nmsClass("server.network",
-          "PlayerConnection"
-      );
+      Class<?> playerConnectionClass = FastReflection.nmsClass("server.network", "PlayerConnection");
       Class<?> packetClass = FastReflection.nmsClass("network.protocol", "Packet");
-      Class<?> packetSbObjClass = FastReflection.nmsClass(gameProtocolPackage,
-          "PacketPlayOutScoreboardObjective"
-      );
+      Class<?> packetSbObjClass = FastReflection.nmsClass(gameProtocolPackage, "PacketPlayOutScoreboardObjective");
       Class<?> packetSbDisplayObjClass = FastReflection.nmsClass(gameProtocolPackage,
-          "PacketPlayOutScoreboardDisplayObjective"
-      );
-      Class<?> packetSbScoreClass = FastReflection.nmsClass(gameProtocolPackage,
-          "PacketPlayOutScoreboardScore"
-      );
-      Class<?> packetSbTeamClass = FastReflection.nmsClass(gameProtocolPackage,
-          "PacketPlayOutScoreboardTeam"
-      );
+          "PacketPlayOutScoreboardDisplayObjective");
+      Class<?> packetSbScoreClass = FastReflection.nmsClass(gameProtocolPackage, "PacketPlayOutScoreboardScore");
+      Class<?> packetSbTeamClass = FastReflection.nmsClass(gameProtocolPackage, "PacketPlayOutScoreboardTeam");
       Class<?> sbTeamClass = VersionType.V1_17.isHigherOrEqual()
           ? FastReflection.innerClass(packetSbTeamClass, innerClass -> !innerClass.isEnum())
           : null;
@@ -151,61 +110,57 @@ public abstract class FastBoardBase<T> {
           .filter(field -> field.getType().isAssignableFrom(playerConnectionClass))
           .findFirst().orElseThrow(NoSuchFieldException::new);
       Method sendPacketMethod = Stream.concat(
-              Arrays.stream(playerConnectionClass.getSuperclass().getMethods()),
-              Arrays.stream(playerConnectionClass.getMethods())
-          )
+          Arrays.stream(playerConnectionClass.getSuperclass().getMethods()),
+          Arrays.stream(playerConnectionClass.getMethods()))
           .filter(m -> m.getParameterCount() == 1 && m.getParameterTypes()[0] == packetClass)
           .findFirst().orElseThrow(NoSuchMethodException::new);
-      Optional<Class<?>> displaySlotEnum = FastReflection.nmsOptionalClass("world.scores",
-          "DisplaySlot"
-      );
+      Optional<Class<?>> displaySlotEnum = FastReflection.nmsOptionalClass("world.scores", "DisplaySlot");
       CHAT_COMPONENT_CLASS = FastReflection.nmsClass("network.chat", "IChatBaseComponent");
       CHAT_FORMAT_ENUM = FastReflection.nmsClass(null, "EnumChatFormat");
       DISPLAY_SLOT_TYPE = displaySlotEnum.orElse(int.class);
       RESET_FORMATTING = FastReflection.enumValueOf(CHAT_FORMAT_ENUM, "RESET", 21);
-      SIDEBAR_DISPLAY_SLOT =
-          displaySlotEnum.isPresent() ? FastReflection.enumValueOf(DISPLAY_SLOT_TYPE, "SIDEBAR", 1)
-              : 1;
-      PLAYER_GET_HANDLE = lookup.findVirtual(craftPlayerClass, "getHandle",
-          MethodType.methodType(entityPlayerClass)
-      );
+      SIDEBAR_DISPLAY_SLOT = displaySlotEnum.isPresent() ? FastReflection.enumValueOf(DISPLAY_SLOT_TYPE, "SIDEBAR", 1)
+          : 1;
+      PLAYER_GET_HANDLE = lookup.findVirtual(craftPlayerClass, "getHandle", MethodType.methodType(entityPlayerClass));
       PLAYER_CONNECTION = lookup.unreflectGetter(playerConnectionField);
       SEND_PACKET = lookup.unreflect(sendPacketMethod);
       PACKET_SB_OBJ = FastReflection.findPacketConstructor(packetSbObjClass, lookup);
       PACKET_SB_DISPLAY_OBJ = FastReflection.findPacketConstructor(packetSbDisplayObjClass, lookup);
 
-      Optional<Class<?>> numberFormat = FastReflection.nmsOptionalClass("network.chat.numbers",
-          "NumberFormat"
-      );
+      Optional<Class<?>> numberFormat = FastReflection.nmsOptionalClass("network.chat.numbers", "NumberFormat");
       MethodHandle packetSbSetScore;
       MethodHandle packetSbResetScore = null;
+      MethodHandle fixedFormatConstructor = null;
       Object blankNumberFormat = null;
+      boolean scoreOptionalComponents = false;
 
       if (numberFormat.isPresent()) { // 1.20.3
         Class<?> blankFormatClass = FastReflection.nmsClass("network.chat.numbers", "BlankFormat");
-        Class<?> resetScoreClass = FastReflection.nmsClass(gameProtocolPackage,
-            "ClientboundResetScorePacket"
-        );
-        MethodType setScoreType = MethodType.methodType(void.class, String.class, String.class,
-            int.class,
-            CHAT_COMPONENT_CLASS, numberFormat.get()
-        );
+        Class<?> fixedFormatClass = FastReflection.nmsClass("network.chat.numbers", "FixedFormat");
+        Class<?> resetScoreClass = FastReflection.nmsClass(gameProtocolPackage, "ClientboundResetScorePacket");
+        MethodType scoreType = MethodType.methodType(void.class, String.class, String.class, int.class,
+            CHAT_COMPONENT_CLASS, numberFormat.get());
+        MethodType scoreTypeOptional = MethodType.methodType(void.class, String.class, String.class, int.class,
+            Optional.class, Optional.class);
         MethodType removeScoreType = MethodType.methodType(void.class, String.class, String.class);
+        MethodType fixedFormatType = MethodType.methodType(void.class, CHAT_COMPONENT_CLASS);
         Optional<Field> blankField = Arrays.stream(blankFormatClass.getFields())
             .filter(f -> f.getType() == blankFormatClass).findAny();
-        packetSbSetScore = lookup.findConstructor(packetSbScoreClass, setScoreType);
+        // Fields are of type Optional in 1.20.5+
+        Optional<MethodHandle> optionalScorePacket = FastReflection.optionalConstructor(packetSbScoreClass, lookup,
+            scoreTypeOptional);
+        fixedFormatConstructor = lookup.findConstructor(fixedFormatClass, fixedFormatType);
+        packetSbSetScore = optionalScorePacket.isPresent() ? optionalScorePacket.get()
+            : lookup.findConstructor(packetSbScoreClass, scoreType);
+        scoreOptionalComponents = optionalScorePacket.isPresent();
         packetSbResetScore = lookup.findConstructor(resetScoreClass, removeScoreType);
         blankNumberFormat = blankField.isPresent() ? blankField.get().get(null) : null;
       } else if (VersionType.V1_17.isHigherOrEqual()) {
         Class<?> enumSbAction = FastReflection.nmsClass("server", "ScoreboardServer$Action");
-        MethodType scoreType = MethodType.methodType(void.class, enumSbAction, String.class,
-            String.class, int.class
-        );
+        MethodType scoreType = MethodType.methodType(void.class, enumSbAction, String.class, String.class, int.class);
         packetSbSetScore = lookup.findConstructor(packetSbScoreClass, scoreType);
       } else {
-        packetSbSetScore = lookup.findConstructor(packetSbScoreClass,
-            MethodType.methodType(void.class)
-        );
+        packetSbSetScore = lookup.findConstructor(packetSbScoreClass, MethodType.methodType(void.class));
       }
 
       PACKET_SB_SET_SCORE = packetSbSetScore;
@@ -213,12 +168,12 @@ public abstract class FastBoardBase<T> {
       PACKET_SB_TEAM = FastReflection.findPacketConstructor(packetSbTeamClass, lookup);
       PACKET_SB_SERIALIZABLE_TEAM = sbTeamClass == null ? null
           : FastReflection.findPacketConstructor(sbTeamClass, lookup);
+      FIXED_NUMBER_FORMAT = fixedFormatConstructor;
       BLANK_NUMBER_FORMAT = blankNumberFormat;
+      SCORE_OPTIONAL_COMPONENTS = scoreOptionalComponents;
 
-      for (Class<?> clazz : Arrays.asList(packetSbObjClass, packetSbDisplayObjClass,
-          packetSbScoreClass,
-          packetSbTeamClass, sbTeamClass
-      )) {
+      for (Class<?> clazz : Arrays.asList(packetSbObjClass, packetSbDisplayObjClass, packetSbScoreClass,
+          packetSbTeamClass, sbTeamClass)) {
         if (clazz == null) {
           continue;
         }
@@ -236,12 +191,9 @@ public abstract class FastBoardBase<T> {
             ? "ScoreboardServer$Action"
             : "PacketPlayOutScoreboardScore$EnumScoreboardAction";
         ENUM_SB_HEALTH_DISPLAY = FastReflection.nmsClass("world.scores.criteria",
-            "IScoreboardCriteria$EnumScoreboardHealthDisplay"
-        );
+            "IScoreboardCriteria$EnumScoreboardHealthDisplay");
         ENUM_SB_ACTION = FastReflection.nmsClass("server", enumSbActionClass);
-        ENUM_SB_HEALTH_DISPLAY_INTEGER = FastReflection.enumValueOf(ENUM_SB_HEALTH_DISPLAY,
-            "INTEGER", 0
-        );
+        ENUM_SB_HEALTH_DISPLAY_INTEGER = FastReflection.enumValueOf(ENUM_SB_HEALTH_DISPLAY, "INTEGER", 0);
         ENUM_SB_ACTION_CHANGE = FastReflection.enumValueOf(ENUM_SB_ACTION, "CHANGE", 0);
         ENUM_SB_ACTION_REMOVE = FastReflection.enumValueOf(ENUM_SB_ACTION, "REMOVE", 1);
       } else {
@@ -256,56 +208,30 @@ public abstract class FastBoardBase<T> {
     }
   }
 
-  private final Collection<Player> players;
-
+  private final Player player;
   private final String id;
 
   private final List<T> lines = new ArrayList<>();
-
+  private final List<T> scores = new ArrayList<>();
   private T title = emptyLine();
 
   private boolean deleted = false;
-
-  private boolean showing = false;
-
-  private boolean isChoicePlayers = false;
-  private Collection<Player> choicePlayers;
-
-  protected FastBoardBase(Player player) {
-    this(Collections.singletonList(player));
-  }
 
   /**
    * Creates a new FastBoard.
    *
    * @param player the owner of the scoreboard
    */
-  protected FastBoardBase(Collection<Player> players) {
-    if (players == null || players.isEmpty()) {
-      this.players = new ArrayList<>();
-    } else {
-      this.players = players.stream().collect(Collectors.toCollection(ArrayList::new));
-    }
+  protected FastBoardBase(Player player) {
+    this.player = Objects.requireNonNull(player, "player");
     this.id = "fb-" + Integer.toHexString(ThreadLocalRandom.current().nextInt());
-  }
 
-  final public void addViewer(Player player) {
-    this.players.add(player);
-    if (this.showing) {
-      limitSendPacket((board) -> board.show(), player);
+    try {
+      sendObjectivePacket(ObjectiveMode.CREATE);
+      sendDisplayObjectivePacket();
+    } catch (Throwable t) {
+      throw new RuntimeException("Unable to create scoreboard", t);
     }
-  }
-
-  final public void removeViewer(Player player) {
-    this.players.remove(player);
-    if (this.showing) {
-      limitSendPacket((board) -> board.hide(), player);
-    }
-  }
-
-  final public void removeViewers() {
-    this.hide();
-    this.players.clear();
   }
 
   /**
@@ -321,7 +247,8 @@ public abstract class FastBoardBase<T> {
    * Update the scoreboard title.
    *
    * @param title the new scoreboard title
-   * @throws IllegalArgumentException if the title is longer than 32 chars on 1.12 or lower
+   * @throws IllegalArgumentException if the title is longer than 32 chars on 1.12
+   *                                  or lower
    * @throws IllegalStateException    if {@link #delete()} was call before
    */
   public void updateTitle(T title) {
@@ -361,34 +288,72 @@ public abstract class FastBoardBase<T> {
   }
 
   /**
+   * Get how a specific line's score is displayed. On 1.20.2 or below, the value
+   * returned isn't used.
+   *
+   * @param line the line number
+   * @return the text of how the line is displayed
+   * @throws IndexOutOfBoundsException if the line is higher than {@code size}
+   */
+  public Optional<T> getScore(int line) {
+    checkLineNumber(line, true, false);
+
+    return Optional.ofNullable(this.scores.get(line));
+  }
+
+  /**
    * Update a single scoreboard line.
    *
    * @param line the line number
    * @param text the new line text
-   * @throws IndexOutOfBoundsException if the line is higher than {@link #size() size() + 1}
+   * @throws IndexOutOfBoundsException if the line is higher than {@link #size()
+   *                                   size() + 1}
    */
   public synchronized void updateLine(int line, T text) {
-    checkLineNumber(line, false, true);
+    updateLine(line, text, null);
+  }
+
+  /**
+   * Update a single scoreboard line including how its score is displayed.
+   * The score will only be displayed on 1.20.3 and higher.
+   *
+   * @param line      the line number
+   * @param text      the new line text
+   * @param scoreText the new line's score, if null will not change current value
+   * @throws IndexOutOfBoundsException if the line is higher than {@link #size()
+   *                                   size() + 1}
+   */
+  public synchronized void updateLine(int line, T text, T scoreText) {
+    checkLineNumber(line, false, false);
 
     try {
       if (line < size()) {
         this.lines.set(line, text);
+        this.scores.set(line, scoreText);
 
         sendLineChange(getScoreByLine(line));
+
+        if (customScoresSupported()) {
+          sendScorePacket(getScoreByLine(line), ScoreboardAction.CHANGE);
+        }
+
         return;
       }
 
       List<T> newLines = new ArrayList<>(this.lines);
+      List<T> newScores = new ArrayList<>(this.scores);
 
       if (line > size()) {
         for (int i = size(); i < line; i++) {
           newLines.add(emptyLine());
+          newScores.add(null);
         }
       }
 
       newLines.add(text);
+      newScores.add(scoreText);
 
-      updateLines(newLines);
+      updateLines(newLines, newScores);
     } catch (Throwable t) {
       throw new RuntimeException("Unable to update scoreboard lines", t);
     }
@@ -407,15 +372,18 @@ public abstract class FastBoardBase<T> {
     }
 
     List<T> newLines = new ArrayList<>(this.lines);
+    List<T> newScores = new ArrayList<>(this.scores);
     newLines.remove(line);
-    updateLines(newLines);
+    newScores.remove(line);
+    updateLines(newLines, newScores);
   }
 
   /**
    * Update all the scoreboard lines.
    *
    * @param lines the new lines
-   * @throws IllegalArgumentException if one line is longer than 30 chars on 1.12 or lower
+   * @throws IllegalArgumentException if one line is longer than 30 chars on 1.12
+   *                                  or lower
    * @throws IllegalStateException    if {@link #delete()} was call before
    */
   public void updateLines(T... lines) {
@@ -426,16 +394,41 @@ public abstract class FastBoardBase<T> {
    * Update the lines of the scoreboard
    *
    * @param lines the new scoreboard lines
-   * @throws IllegalArgumentException if one line is longer than 30 chars on 1.12 or lower
+   * @throws IllegalArgumentException if one line is longer than 30 chars on 1.12
+   *                                  or lower
    * @throws IllegalStateException    if {@link #delete()} was call before
    */
   public synchronized void updateLines(Collection<T> lines) {
+    updateLines(lines, null);
+  }
+
+  /**
+   * Update the lines and how their score is displayed on the scoreboard.
+   * The scores will only be displayed for servers on 1.20.3 and higher.
+   *
+   * @param lines  the new scoreboard lines
+   * @param scores the set for how each line's score should be, if null will fall
+   *               back to default (blank)
+   * @throws IllegalArgumentException if one line is longer than 30 chars on 1.12
+   *                                  or lower
+   * @throws IllegalArgumentException if lines and scores are not the same size
+   * @throws IllegalStateException    if {@link #delete()} was call before
+   */
+  public synchronized void updateLines(Collection<T> lines, Collection<T> scores) {
     Objects.requireNonNull(lines, "lines");
     checkLineNumber(lines.size(), false, true);
+
+    if (scores != null && scores.size() != lines.size()) {
+      throw new IllegalArgumentException("The size of the scores must match the size of the board");
+    }
 
     List<T> oldLines = new ArrayList<>(this.lines);
     this.lines.clear();
     this.lines.addAll(lines);
+
+    List<T> oldScores = new ArrayList<>(this.scores);
+    this.scores.clear();
+    this.scores.addAll(scores != null ? scores : Collections.nCopies(lines.size(), null));
 
     int linesSize = this.lines.size();
 
@@ -447,7 +440,6 @@ public abstract class FastBoardBase<T> {
           for (int i = oldLinesCopy.size(); i > linesSize; i--) {
             sendTeamPacket(i - 1, TeamMode.REMOVE);
             sendScorePacket(i - 1, ScoreboardAction.REMOVE);
-
             oldLines.remove(0);
           }
         } else {
@@ -462,6 +454,9 @@ public abstract class FastBoardBase<T> {
         if (!Objects.equals(getLineByScore(oldLines, i), getLineByScore(i))) {
           sendLineChange(i);
         }
+        if (!Objects.equals(getLineByScore(oldScores, i), getLineByScore(this.scores, i))) {
+          sendScorePacket(i, ScoreboardAction.CHANGE);
+        }
       }
     } catch (Throwable t) {
       throw new RuntimeException("Unable to update scoreboard lines", t);
@@ -469,12 +464,99 @@ public abstract class FastBoardBase<T> {
   }
 
   /**
-   * Get the players who has the scoreboard.
+   * Update how a specified line's score is displayed on the scoreboard. A null
+   * value will reset the displayed
+   * text back to default. The scores will only be displayed for servers on 1.20.3
+   * and higher.
+   *
+   * @param line the line number
+   * @param text the text to be displayed as the score. if null, no score will be
+   *             displayed
+   * @throws IllegalArgumentException if the line number is not in range
+   * @throws IllegalStateException    if {@link #delete()} was call before
+   */
+  public synchronized void updateScore(int line, T text) {
+    checkLineNumber(line, true, false);
+
+    this.scores.set(line, text);
+
+    try {
+      if (customScoresSupported()) {
+        sendScorePacket(getScoreByLine(line), ScoreboardAction.CHANGE);
+      }
+    } catch (Throwable e) {
+      throw new RuntimeException("Unable to update line score", e);
+    }
+  }
+
+  /**
+   * Reset a line's score back to default (blank). The score will only be
+   * displayed for servers on 1.20.3 and higher.
+   *
+   * @param line the line number
+   * @throws IllegalArgumentException if the line number is not in range
+   * @throws IllegalStateException    if {@link #delete()} was call before
+   */
+  public synchronized void removeScore(int line) {
+    updateScore(line, null);
+  }
+
+  /**
+   * Update how all lines' scores are displayed. A value of null will reset the
+   * displayed text back to default.
+   * The scores will only be displayed for servers on 1.20.3 and higher.
+   *
+   * @param texts the set of texts to be displayed as the scores
+   * @throws IllegalArgumentException if the size of the texts does not match the
+   *                                  current size of the board
+   * @throws IllegalStateException    if {@link #delete()} was call before
+   */
+  public synchronized void updateScores(T... texts) {
+    updateScores(Arrays.asList(texts));
+  }
+
+  /**
+   * Update how all lines' scores are displayed. A null value will reset the
+   * displayed
+   * text back to default (blank). Only available on 1.20.3+ servers.
+   *
+   * @param texts the set of texts to be displayed as the scores
+   * @throws IllegalArgumentException if the size of the texts does not match the
+   *                                  current size of the board
+   * @throws IllegalStateException    if {@link #delete()} was call before
+   */
+  public synchronized void updateScores(Collection<T> texts) {
+    Objects.requireNonNull(texts, "texts");
+
+    if (this.scores.size() != this.lines.size()) {
+      throw new IllegalArgumentException("The size of the scores must match the size of the board");
+    }
+
+    List<T> newScores = new ArrayList<>(texts);
+    for (int i = 0; i < this.scores.size(); i++) {
+      if (Objects.equals(this.scores.get(i), newScores.get(i))) {
+        continue;
+      }
+
+      this.scores.set(i, newScores.get(i));
+
+      try {
+        if (customScoresSupported()) {
+          sendScorePacket(getScoreByLine(i), ScoreboardAction.CHANGE);
+        }
+      } catch (Throwable e) {
+        throw new RuntimeException("Unable to update scores", e);
+      }
+    }
+  }
+
+  /**
+   * Get the player who has the scoreboard.
    *
    * @return current player for this FastBoard
    */
-  public Collection<Player> getPlayers() {
-    return this.players;
+  public Player getPlayer() {
+    return this.player;
   }
 
   /**
@@ -496,6 +578,15 @@ public abstract class FastBoardBase<T> {
   }
 
   /**
+   * Get if the server supports custom scoreboard scores (1.20.3+ servers only).
+   *
+   * @return true if the server supports custom scores
+   */
+  public boolean customScoresSupported() {
+    return BLANK_NUMBER_FORMAT != null;
+  }
+
+  /**
    * Get the scoreboard size (the number of lines).
    *
    * @return the size
@@ -505,14 +596,24 @@ public abstract class FastBoardBase<T> {
   }
 
   /**
-   * Delete this FastBoard, and will remove the scoreboard for the associated player if he is
-   * online. After this, all uses of {@link #updateLines} and {@link #updateTitle} will throw an
-   * {@link IllegalStateException}
+   * Delete this FastBoard, and will remove the scoreboard for the associated
+   * player if he is online.
+   * After this, all uses of {@link #updateLines} and {@link #updateTitle} will
+   * throw an {@link IllegalStateException}
    *
    * @throws IllegalStateException if this was already call before
    */
   public void delete() {
-    this.hide();
+    try {
+      for (int i = 0; i < this.lines.size(); i++) {
+        sendTeamPacket(i, TeamMode.REMOVE);
+      }
+
+      sendObjectivePacket(ObjectiveMode.REMOVE);
+    } catch (Throwable t) {
+      throw new RuntimeException("Unable to delete scoreboard", t);
+    }
+
     this.deleted = true;
   }
 
@@ -523,6 +624,20 @@ public abstract class FastBoardBase<T> {
   protected abstract String serializeLine(T value);
 
   protected abstract T emptyLine();
+
+  private void checkLineNumber(int line, boolean checkInRange, boolean checkMax) {
+    if (line < 0) {
+      throw new IllegalArgumentException("Line number must be positive");
+    }
+
+    if (checkInRange && line >= this.lines.size()) {
+      throw new IllegalArgumentException("Line number must be under " + this.lines.size());
+    }
+
+    if (checkMax && line >= COLOR_CODES.length - 1) {
+      throw new IllegalArgumentException("Line number is too high: " + line);
+    }
+  }
 
   protected int getScoreByLine(int line) {
     return this.lines.size() - line - 1;
@@ -544,6 +659,7 @@ public abstract class FastBoardBase<T> {
 
     if (mode != ObjectiveMode.REMOVE) {
       setComponentField(packet, this.title, 1);
+      setField(packet, Optional.class, Optional.empty()); // Number format for 1.20.5+, previously nullable
 
       if (VersionType.V1_8.isHigherOrEqual()) {
         setField(packet, ENUM_SB_HEALTH_DISPLAY, ENUM_SB_HEALTH_DISPLAY_INTEGER);
@@ -591,6 +707,33 @@ public abstract class FastBoardBase<T> {
     sendPacket(packet);
   }
 
+  private void sendModernScorePacket(int score, ScoreboardAction action) throws Throwable {
+    String objName = COLOR_CODES[score];
+    Object enumAction = action == ScoreboardAction.REMOVE
+        ? ENUM_SB_ACTION_REMOVE
+        : ENUM_SB_ACTION_CHANGE;
+
+    if (PACKET_SB_RESET_SCORE == null) { // Pre 1.20.3
+      sendPacket(PACKET_SB_SET_SCORE.invoke(enumAction, this.id, objName, score));
+      return;
+    }
+
+    if (action == ScoreboardAction.REMOVE) {
+      sendPacket(PACKET_SB_RESET_SCORE.invoke(objName, this.id));
+      return;
+    }
+
+    T scoreFormat = getLineByScore(this.scores, score);
+    Object format = scoreFormat != null
+        ? FIXED_NUMBER_FORMAT.invoke(toMinecraftComponent(scoreFormat))
+        : BLANK_NUMBER_FORMAT;
+    Object scorePacket = SCORE_OPTIONAL_COMPONENTS
+        ? PACKET_SB_SET_SCORE.invoke(objName, this.id, score, Optional.empty(), Optional.of(format))
+        : PACKET_SB_SET_SCORE.invoke(objName, this.id, score, null, format);
+
+    sendPacket(scorePacket);
+  }
+
   protected void sendTeamPacket(int score, TeamMode mode) throws Throwable {
     sendTeamPacket(score, mode, null, null);
   }
@@ -604,9 +747,7 @@ public abstract class FastBoardBase<T> {
     Object packet = PACKET_SB_TEAM.invoke();
 
     setField(packet, String.class, this.id + ':' + score); // Team name
-    setField(packet, int.class, mode.ordinal(),
-        VERSION_TYPE == VersionType.V1_8 ? 1 : 0
-    ); // Update mode
+    setField(packet, int.class, mode.ordinal(), VERSION_TYPE == VersionType.V1_8 ? 1 : 0); // Update mode
 
     if (mode == TeamMode.REMOVE) {
       sendPacket(packet);
@@ -632,45 +773,10 @@ public abstract class FastBoardBase<T> {
     }
 
     if (mode == TeamMode.CREATE) {
-      setField(packet, Collection.class,
-          Collections.singletonList(COLOR_CODES[score])
-      ); // Players in the team
+      setField(packet, Collection.class, Collections.singletonList(COLOR_CODES[score])); // Players in the team
     }
 
     sendPacket(packet);
-  }
-
-  private void checkLineNumber(int line, boolean checkInRange, boolean checkMax) {
-    if (line < 0) {
-      throw new IllegalArgumentException("Line number must be positive");
-    }
-
-    if (checkInRange && line >= this.lines.size()) {
-      throw new IllegalArgumentException("Line number must be under " + this.lines.size());
-    }
-
-    if (checkMax && line >= COLOR_CODES.length - 1) {
-      throw new IllegalArgumentException("Line number is too high: " + line);
-    }
-  }
-
-  private void sendModernScorePacket(int score, ScoreboardAction action) throws Throwable {
-    String objName = COLOR_CODES[score];
-    Object enumAction = action == ScoreboardAction.REMOVE
-        ? ENUM_SB_ACTION_REMOVE
-        : ENUM_SB_ACTION_CHANGE;
-
-    if (PACKET_SB_RESET_SCORE == null) { // Pre 1.20.3
-      sendPacket(PACKET_SB_SET_SCORE.invoke(enumAction, this.id, objName, score));
-      return;
-    }
-
-    if (action == ScoreboardAction.REMOVE) {
-      sendPacket(PACKET_SB_RESET_SCORE.invoke(objName, this.id));
-      return;
-    }
-
-    sendPacket(PACKET_SB_SET_SCORE.invoke(objName, this.id, score, null, BLANK_NUMBER_FORMAT));
   }
 
   private void sendPacket(Object packet) throws Throwable {
@@ -678,28 +784,11 @@ public abstract class FastBoardBase<T> {
       throw new IllegalStateException("This FastBoard is deleted");
     }
 
-    for (Player player : (this.isChoicePlayers ? this.choicePlayers : this.players)) {
-      if (player.isOnline()) {
-        Object entityPlayer = PLAYER_GET_HANDLE.invoke(player);
-        Object playerConnection = PLAYER_CONNECTION.invoke(entityPlayer);
-        SEND_PACKET.invoke(playerConnection, packet);
-      }
+    if (this.player.isOnline()) {
+      Object entityPlayer = PLAYER_GET_HANDLE.invoke(this.player);
+      Object playerConnection = PLAYER_CONNECTION.invoke(entityPlayer);
+      SEND_PACKET.invoke(playerConnection, packet);
     }
-
-    if (this.isChoicePlayers) {
-      this.choicePlayers = null;
-      this.isChoicePlayers = false;
-    }
-  }
-
-  public void limitSendPacket(Consumer<FastBoardBase<T>> consumer, Player... players) {
-    this.limitSendPacket(consumer, Arrays.asList(players));
-  }
-
-  public void limitSendPacket(Consumer<FastBoardBase<T>> consumer, Collection<Player> players) {
-    this.isChoicePlayers = true;
-    this.choicePlayers = players;
-    consumer.accept(this);
   }
 
   private void setField(Object object, Class<?> fieldType, Object value)
@@ -726,38 +815,29 @@ public abstract class FastBoardBase<T> {
 
     int i = 0;
     for (Field field : PACKETS.get(packet.getClass())) {
-      if ((field.getType() == String.class || field.getType() == CHAT_COMPONENT_CLASS)
-          && count == i++) {
+      if ((field.getType() == String.class || field.getType() == CHAT_COMPONENT_CLASS) && count == i++) {
         field.set(packet, toMinecraftComponent(value));
       }
     }
   }
 
-  final public void show() {
-    try {
-      sendObjectivePacket(ObjectiveMode.CREATE);
-      sendDisplayObjectivePacket();
-      this.showing = true;
-    } catch (Throwable t) {
-      throw new RuntimeException("Unable to create scoreboard", t);
+  public enum ObjectiveMode {
+    CREATE, REMOVE, UPDATE
+  }
+
+  public enum TeamMode {
+    CREATE, REMOVE, UPDATE, ADD_PLAYERS, REMOVE_PLAYERS
+  }
+
+  public enum ScoreboardAction {
+    CHANGE, REMOVE
+  }
+
+  enum VersionType {
+    V1_7, V1_8, V1_13, V1_17;
+
+    public boolean isHigherOrEqual() {
+      return VERSION_TYPE.ordinal() >= ordinal();
     }
   }
-
-  final public void hide() {
-    try {
-      for (int i = 0; i < this.lines.size(); i++) {
-        sendTeamPacket(i, TeamMode.REMOVE);
-      }
-
-      sendObjectivePacket(ObjectiveMode.REMOVE);
-      this.showing = false;
-    } catch (Throwable t) {
-      throw new RuntimeException("Unable to delete scoreboard", t);
-    }
-  }
-
-  final public boolean isShowing() {
-    return this.showing;
-  }
-
 }

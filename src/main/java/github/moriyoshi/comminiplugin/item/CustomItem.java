@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.item;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,6 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
@@ -26,7 +29,7 @@ public abstract class CustomItem implements InterfaceItem {
   private final ItemStack item;
   private UUID uuid;
 
-  public static final HashMap<String, Class<? extends CustomItem>> registers = new HashMap<>();
+  public static final BiMap<String, Class<? extends CustomItem>> registers = HashBiMap.create();
 
   public static CustomItem getNewCustomItem(String identifier) {
     if (registers.containsKey(identifier)) {
@@ -60,6 +63,9 @@ public abstract class CustomItem implements InterfaceItem {
       if (!compound.hasTag("identifier")) {
         compound.setString("identifier", getIdentifier());
       }
+      if (!shouldGenerateUUID()) {
+        return;
+      }
       if (compound.hasTag("uuid")) {
         this.uuid = compound.getUUID("uuid");
       } else {
@@ -71,9 +77,13 @@ public abstract class CustomItem implements InterfaceItem {
     this.item = item;
   }
 
+  public boolean shouldGenerateUUID() {
+    return true;
+  }
+
   @Override
   public @NotNull UUID getUniqueId() {
-    return this.uuid;
+    return Objects.requireNonNull(this.uuid);
   }
 
   @Override
@@ -81,9 +91,11 @@ public abstract class CustomItem implements InterfaceItem {
     return this.item;
   }
 
-  @Override
-  public @NotNull Optional<String> getActionBarMessage(Player player) {
-    return Optional.empty();
+  public static boolean equalsItem(ItemStack itemStack, Class<?> clazz) {
+    if (registers.containsValue(clazz)) {
+      return equalsIdentifier(registers.inverse().get(clazz), itemStack);
+    }
+    return false;
   }
 
   /**
@@ -114,6 +126,14 @@ public abstract class CustomItem implements InterfaceItem {
       return false;
     }
     return equalsIdentifier(id.get(), item);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof CustomItem item)) {
+      return false;
+    }
+    return item.getIdentifier().equals(getIdentifier()) && item.getUniqueId().equals(getUniqueId());
   }
 
   /**
@@ -171,19 +191,18 @@ public abstract class CustomItem implements InterfaceItem {
    */
   public void heldOfThis(PlayerItemHeldEvent e) {
     Player player = e.getPlayer();
-    if (heldItem().isPresent()) {
+    CustomItem v = this;
+    if (heldItem(getItem()).isPresent()) {
       new BukkitRunnable() {
-        private final int previousSlot = e.getNewSlot();
 
         @Override
         public void run() {
           ItemStack item = player.getInventory().getItemInMainHand();
-          if (previousSlot != player.getInventory().getHeldItemSlot() ||
-              !equalsIdentifier(getIdentifier(), item)) {
-            this.cancel();
+          if (CustomItem.isCustomItem(item) && v.equals(CustomItem.getCustomItem(item))) {
+            heldItem(item).get().accept(player);
             return;
           }
-          heldItem().get().accept(player);
+          this.cancel();
         }
       }.runTaskTimer(ComMiniPlugin.getPlugin(), 0L, 1L);
     }

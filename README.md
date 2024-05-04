@@ -12,3 +12,4 @@ Bukkit plugin (shaded) dependencies:
 Bukkit plugin (include src and change) dependencies:
 
 - [https://github.com/jannyboy11/guilib/](https://github.com/jannyboy11/guilib/) [LGPL LICENSE]
+- [https://github.com/MrMicky-FR/FastBoard/](https://github.com/MrMicky-FR/FastBoard/) [MIT LICENSE]

@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.constant.MenuItem;
+import github.moriyoshi.comminiplugin.dependencies.fastboard.FastBoard;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 
 public class GameListener implements Listener {
@@ -58,16 +59,20 @@ public class GameListener implements Listener {
     if (flag) {
       inv.addItem(new MenuItem().getItem());
     }
-    if (GameSystem.boardShowing()) {
-      GameSystem.board.addViewer(p);
-    }
     if (GameSystem.isStarted() && GameSystem.nowGame().isGamePlayer(p)) {
       GameSystem.nowGame().listener.join(e);
+      return;
     }
+    GamePlayer.getPlayer(p.getUniqueId()).initialize();
   }
 
   @EventHandler
   public void quit(PlayerQuitEvent e) {
+    FastBoard board = GameSystem.boards.remove(e.getPlayer().getUniqueId());
+    if (board != null) {
+      board.delete();
+    }
+
     if (GameSystem.isStarted() && GameSystem.nowGame().isGamePlayer(e.getPlayer())) {
       GameSystem.nowGame().listener.quit(e);
     }

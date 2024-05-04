@@ -1,23 +1,31 @@
 package github.moriyoshi.comminiplugin.system;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.constant.MenuItem;
 import github.moriyoshi.comminiplugin.dependencies.fastboard.FastBoard;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperGame;
-import java.util.HashMap;
-import java.util.List;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 
 public class GameSystem {
 
-  public static final FastBoard board = new FastBoard(
-      Bukkit.getOnlinePlayers().stream().map(p -> (Player) p).toList());
+  public static final Map<UUID, FastBoard> boards = new HashMap<>();
+
+  public static void boardClear() {
+    boards.forEach((uuid, board) -> {
+      board.delete();
+    });
+    boards.clear();
+  }
 
   public static final HashMap<String, AbstractGame> games = new HashMap<>() {
     {
@@ -33,18 +41,6 @@ public class GameSystem {
 
   public static boolean boardShowing() {
     return _boardShowing;
-  }
-
-  public static void boardShow() {
-    _boardShowing = true;
-    Bukkit.getOnlinePlayers().forEach(board::addViewer);
-    board.show();
-  }
-
-  public static void boardHide() {
-    _boardShowing = false;
-    board.hide();
-    board.removeViewers();
   }
 
   public static AbstractGame nowGame() {
@@ -66,13 +62,12 @@ public class GameSystem {
       return false;
     }
     if (!games.containsKey(gameName)) {
-      ComMiniPrefix.OP.send(player,
-          "<red>" + gameName + "ゲームの識別子が正しくありません! 開発者に連絡してください。");
+      ComMiniPrefix.SYSTEM.important("<red>" + gameName + "ゲームの識別子が正しくありません! 開発者に連絡してください。");
       return false;
     }
     var temp = games.get(gameName);
     if (!temp.initializeGame(player)) {
-      ComMiniPrefix.OP.send(player,
+      ComMiniPrefix.SYSTEM.send(player,
           "<red>" + gameName + "を始められません、初期化条件が存在します!");
       return false;
     }
@@ -139,9 +134,9 @@ public class GameSystem {
       p.teleport(ComMiniWorld.LOBBY);
     });
     _nowGame.finishGame();
+    boardClear();
     _nowGame.prefix.cast("<green>閉幕です");
     _nowGame = null;
-    board.updateLines(Component.empty());
     return true;
   }
 

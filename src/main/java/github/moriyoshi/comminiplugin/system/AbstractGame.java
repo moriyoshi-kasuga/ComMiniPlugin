@@ -46,6 +46,10 @@ public abstract class AbstractGame {
     return _canOpenMenu;
   }
 
+  public final void setCanOpenMenu(boolean isOpen) {
+    _canOpenMenu = isOpen;
+  }
+
   public final boolean isRunning() {
     return _isRunning;
   }
