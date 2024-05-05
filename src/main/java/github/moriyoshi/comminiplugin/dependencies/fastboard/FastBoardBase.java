@@ -46,6 +46,7 @@ import java.util.stream.Stream;
  * @author MrMicky
  * @version 2.1.2
  */
+@SuppressWarnings("deprecation")
 public abstract class FastBoardBase<T> {
 
   private static final Map<Class<?>, Field[]> PACKETS = new HashMap<>(8);
@@ -386,7 +387,7 @@ public abstract class FastBoardBase<T> {
    *                                  or lower
    * @throws IllegalStateException    if {@link #delete()} was call before
    */
-  public void updateLines(T... lines) {
+  public void updateLines(@SuppressWarnings("unchecked") T... lines) {
     updateLines(Arrays.asList(lines));
   }
 
@@ -511,7 +512,7 @@ public abstract class FastBoardBase<T> {
    *                                  current size of the board
    * @throws IllegalStateException    if {@link #delete()} was call before
    */
-  public synchronized void updateScores(T... texts) {
+  public synchronized void updateScores(@SuppressWarnings("unchecked") T... texts) {
     updateScores(Arrays.asList(texts));
   }
 

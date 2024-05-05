@@ -3,6 +3,8 @@ package github.moriyoshi.comminiplugin.system;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
+
+import java.util.Optional;
 import java.util.function.Consumer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -40,7 +42,7 @@ public abstract class AbstractGame {
 
   public abstract MenuHolder<ComMiniPlugin> adminMenu();
 
-  public abstract MenuHolder<ComMiniPlugin> gameMenu(Player player);
+  public abstract Optional<MenuHolder<ComMiniPlugin>> gameMenu(Player player);
 
   public final boolean canOpenMenu() {
     return _canOpenMenu;

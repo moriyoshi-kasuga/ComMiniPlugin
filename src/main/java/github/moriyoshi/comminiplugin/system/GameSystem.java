@@ -2,8 +2,6 @@ package github.moriyoshi.comminiplugin.system;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -13,19 +11,9 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.constant.MenuItem;
-import github.moriyoshi.comminiplugin.dependencies.fastboard.FastBoard;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperGame;
 
 public class GameSystem {
-
-  public static final Map<UUID, FastBoard> boards = new HashMap<>();
-
-  public static void boardClear() {
-    boards.forEach((uuid, board) -> {
-      board.delete();
-    });
-    boards.clear();
-  }
 
   public static final HashMap<String, AbstractGame> games = new HashMap<>() {
     {
@@ -36,12 +24,7 @@ public class GameSystem {
       ).forEach(g -> put(g.id, g));
     }
   };
-  private static boolean _boardShowing = false;
   private static AbstractGame _nowGame = null;
-
-  public static boolean boardShowing() {
-    return _boardShowing;
-  }
 
   public static AbstractGame nowGame() {
     return _nowGame;
@@ -109,10 +92,6 @@ public class GameSystem {
     return inGame() && _nowGame._isStarted;
   }
 
-  public static boolean canOpenMenu() {
-    return inGame() && _nowGame._canOpenMenu;
-  }
-
   /**
    * ここではゲームの設定をすべてclearしてゲームを終了します
    *
@@ -134,7 +113,6 @@ public class GameSystem {
       p.teleport(ComMiniWorld.LOBBY);
     });
     _nowGame.finishGame();
-    boardClear();
     _nowGame.prefix.cast("<green>閉幕です");
     _nowGame = null;
     return true;

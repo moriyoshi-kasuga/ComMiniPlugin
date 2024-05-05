@@ -1,11 +1,13 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +16,7 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
 public class Bullet extends CustomItem {
+
   private static final String NAME = "name";
   private static final String DAMAGE = "damage";
   private static final String HEAD_SHOT = "head_shot";
@@ -50,11 +53,6 @@ public class Bullet extends CustomItem {
     this.sound = sound;
   }
 
-  @Override
-  public boolean shouldGenerateUUID() {
-    return false;
-  }
-
   private String name;
   private int damage;
   private int headShot;
@@ -79,6 +77,16 @@ public class Bullet extends CustomItem {
   @Override
   public @NotNull String getIdentifier() {
     return "bullet";
+  }
+
+  @Override
+  public void interact(PlayerInteractEvent e) {
+    e.setCancelled(false);
+  }
+
+  @Override
+  public Optional<UUID> generatUUID() {
+    return Optional.empty();
   }
 
   public void use(Player p) {

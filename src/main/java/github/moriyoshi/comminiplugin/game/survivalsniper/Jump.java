@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -38,11 +39,6 @@ public class Jump extends CustomItem implements CooldownItem {
   @Override
   public @NotNull String getIdentifier() {
     return "jump";
-  }
-
-  @Override
-  public boolean isInteractCancel() {
-    return true;
   }
 
   @Override
@@ -106,4 +102,8 @@ public class Jump extends CustomItem implements CooldownItem {
     e.setCancelled(true);
   }
 
+  @Override
+  public void itemSpawn(ItemSpawnEvent e) {
+    e.getEntity().remove();
+  }
 }

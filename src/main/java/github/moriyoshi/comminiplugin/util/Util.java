@@ -3,7 +3,6 @@ package github.moriyoshi.comminiplugin.util;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -16,13 +15,13 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.title.Title;
 
 /**
  * よく使うメゾットがある
  */
 
+@SuppressWarnings("deprecation")
 public class Util {
 
   private Util() {
@@ -54,16 +53,6 @@ public class Util {
     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
   }
 
-  /**
-   * send to uuid's player
-   *
-   * @param uuid player's uuid
-   * @param str  send text
-   */
-
-  public static void send(UUID uuid, Object str) {
-    send(Bukkit.getPlayer(uuid), str);
-  }
 
   /**
    * send to sender
@@ -150,17 +139,6 @@ public class Util {
     return LegacyComponentSerializer.legacyAmpersand().serializeOrNull(str);
   }
 
-  /**
-   * show title
-   *
-   * @param uuid     player uuid
-   * @param title    title string
-   * @param subtitle subtitle string
-   */
-
-  public static void title(UUID uuid, Object title, Object subtitle) {
-    title(Bukkit.getPlayer(uuid), title, subtitle);
-  }
 
   /**
    * show title

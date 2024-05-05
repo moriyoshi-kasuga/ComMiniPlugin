@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.item;
 
-import github.moriyoshi.comminiplugin.util.Util;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
@@ -42,15 +42,6 @@ public interface InterfaceItem {
    */
   @NotNull
   ItemStack getItem();
-
-  /**
-   * {@link interact} を無効にするかです。 別にe.setCanceldで上書きできます
-   *
-   * @return is cancel
-   */
-  default boolean isInteractCancel() {
-    return true;
-  }
 
   /**
    * {@link CustomItem#heldOfThis(PlayerItemHeldEvent)} で開始してほかのアイテムに変えた場合に終了する

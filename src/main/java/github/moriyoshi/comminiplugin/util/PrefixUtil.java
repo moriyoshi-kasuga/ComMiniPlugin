@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.util;
 
-import java.util.UUID;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+
+import net.kyori.adventure.text.Component;
 
 /**
  * {@link #prefix} を先頭につけメッセージを送信するUtil
@@ -104,14 +104,8 @@ public class PrefixUtil {
     return Util.mm(" <reset><red>[ERROR]<reset> ");
   }
 
-  public final void send(UUID uuid, Object str) {
-    send(Bukkit.getPlayer(uuid), str);
-  }
-
   public final void send(CommandSender sender, Object str) {
-    if (sender != null) {
-      sender.sendMessage(Util.mm(getPrefix()).append(Util.mm(str)));
-    }
+    sender.sendMessage(Util.mm(getPrefix()).append(Util.mm(str)));
   }
 
   public final void cast(Object str) {

@@ -86,16 +86,13 @@ public class MenuItem extends CustomItem {
               @Override
               public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
                 var p = (Player) event.getWhoClicked();
-                var game = GameSystem.nowGame();
-                if (!game.canOpenMenu()) {
-                  ComMiniPrefix.MAIN.send(p, "<red>もうMenuは開けません");
-                  return;
-                }
-                game.gameMenu(p).openInv(p);
+                GameSystem.nowGame().gameMenu(p).ifPresentOrElse(menu -> menu.openInv(p), () -> {
+                  ComMiniPrefix.MAIN.send(p, "<red>Menuは開けません");
+                });
               }
             });
       } else {
-        setButton(13, new ItemButton<>(new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開始されていません").build()));
+        setButton(13, new ItemButton<>(new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開催されていません").build()));
         setButton(14, new ItemButton<>(new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開始されていません").build()));
       }
     }

@@ -25,11 +25,9 @@ public interface Shape {
   Shape BARREL = grid(9, 3, SlotType.CONTAINER);
   Shape BEACON = generic(1, SlotType.CRAFTING);
   Shape BLAST_FURNACE = combine(generic(1, SlotType.CRAFTING), generic(1, SlotType.FUEL),
-      generic(1, SlotType.RESULT)
-  );
+      generic(1, SlotType.RESULT));
   Shape BREWING = combine(generic(3, SlotType.RESULT), generic(1, SlotType.CRAFTING),
-      generic(1, SlotType.FUEL)
-  );
+      generic(1, SlotType.FUEL));
   Shape CARTOGRAPHY = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape CHEST1 = chest(1);
   Shape CHEST2 = chest(2);
@@ -37,7 +35,7 @@ public interface Shape {
   Shape CHEST4 = chest(4);
   Shape CHEST5 = chest(5);
   Shape CHEST6 = chest(6);
-  Shape CHISELED_BOOKSHELF = generic(6, SlotType.CONTAINER/* TODO SlotType.BOOK? */);
+  Shape CHISELED_BOOKSHELF = generic(6, SlotType.CONTAINER);
   Shape COMPOSTER = generic(1, SlotType.CONTAINER);
   Shape CRAFTING = combine(grid(2, 2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape CREATIVE = grid(9, 1, SlotType.QUICKBAR);
@@ -46,24 +44,21 @@ public interface Shape {
   Shape ENCHANTING = generic(2, SlotType.CRAFTING);
   Shape ENDER_CHEST = chest(3);
   Shape FURNACE = combine(generic(1, SlotType.CRAFTING), generic(1, SlotType.FUEL),
-      generic(1, SlotType.RESULT)
-  );
+      generic(1, SlotType.RESULT));
   Shape GRINDSTONE = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape HOPPER = grid(5, 1, SlotType.CONTAINER);
   Shape JUKEBOX = generic(1, SlotType.CONTAINER);
-  Shape LECTERN = generic(1, SlotType.CONTAINER/* TODO SlotType.BOOK */);
+  Shape LECTERN = generic(1, SlotType.CONTAINER);
   Shape LOOM = combine(generic(3, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape MERCHANT = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape PLAYER = combine(grid(9, 1, SlotType.QUICKBAR), grid(9, 3, SlotType.CONTAINER),
       generic(4, SlotType.ARMOR),
-      generic(1, SlotType.CONTAINER /* off hand */)
-  );
+      generic(1, SlotType.CONTAINER /* off hand */));
   Shape SHULKER_BOX = grid(9, 3, SlotType.CONTAINER);
   Shape SMITHING = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape SMITHING_NEW = combine(generic(3, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape SMOKER = combine(generic(1, SlotType.CRAFTING), generic(1, SlotType.FUEL),
-      generic(1, SlotType.RESULT)
-  );
+      generic(1, SlotType.RESULT));
   Shape STONECUTTER = combine(generic(1, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape WORKBENCH = combine(grid(3, 3, SlotType.CRAFTING), generic(1, SlotType.RESULT));
 

@@ -2,7 +2,6 @@ package github.moriyoshi.comminiplugin;
 
 import javax.tools.DocumentationTool.Location;
 
-import org.bukkit.Sound;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
@@ -20,9 +19,6 @@ import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.CommandTree;
-import dev.jorel.commandapi.arguments.IntegerArgument;
-import dev.jorel.commandapi.arguments.SoundArgument;
-import dev.jorel.commandapi.arguments.StringArgument;
 import github.moriyoshi.comminiplugin.api.serializer.ItemStackSerializer;
 import github.moriyoshi.comminiplugin.api.serializer.LocationSerializer;
 import github.moriyoshi.comminiplugin.command.AdminGameMenuCommand;
@@ -35,7 +31,6 @@ import github.moriyoshi.comminiplugin.command.MenuCommand;
 import github.moriyoshi.comminiplugin.command.RandomTeleport;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
-import github.moriyoshi.comminiplugin.game.survivalsniper.Bullet;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperCustomMenu;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemListner;
@@ -79,21 +74,6 @@ public final class ComMiniPlugin extends JavaPlugin {
         .withPermission(CommandPermission.OP)
         .executesPlayer((p, args) -> {
           new SurvivalSniperCustomMenu().openInv(p);
-        }));
-    registerCommand(new CommandAPICommand("bullet")
-        .withPermission(CommandPermission.OP)
-        .withArguments(new StringArgument("name"))
-        .withArguments(new IntegerArgument("damage", 1))
-        .withArguments(new IntegerArgument("headShot", 1))
-        .withArguments(new SoundArgument("sound"))
-        .executesPlayer((p, args) -> {
-          var item = p.getInventory().getItemInMainHand();
-          if (item == null || item.getType().isAir()) {
-            ComMiniPrefix.MAIN.send(p, "<red>アイテムを手に持ってください");
-            return;
-          }
-          new Bullet(item, (String) args.get("name"), (int) args.get("damage"), (int) args.get("headShot"),
-              (Sound) args.get("sound"));
         }));
     GamePlayer.gameInitialize();
     new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();

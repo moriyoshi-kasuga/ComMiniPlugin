@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -63,22 +64,20 @@ public abstract class CustomItem implements InterfaceItem {
       if (!compound.hasTag("identifier")) {
         compound.setString("identifier", getIdentifier());
       }
-      if (!shouldGenerateUUID()) {
-        return;
-      }
-      if (compound.hasTag("uuid")) {
-        this.uuid = compound.getUUID("uuid");
-      } else {
-        var uuid = UUID.randomUUID();
-        compound.setUUID("uuid", uuid);
-        this.uuid = uuid;
-      }
+      generatUUID().ifPresent(uuid -> {
+        if (compound.hasTag("uuid")) {
+          this.uuid = compound.getUUID("uuid");
+        } else {
+          compound.setUUID("uuid", uuid);
+          this.uuid = uuid;
+        }
+      });
     });
     this.item = item;
   }
 
-  public boolean shouldGenerateUUID() {
-    return true;
+  public Optional<UUID> generatUUID() {
+    return Optional.of(UUID.randomUUID());
   }
 
   @Override
@@ -264,4 +263,11 @@ public abstract class CustomItem implements InterfaceItem {
 
   }
 
+  /**
+   * このアイテムがスポーンした際に呼ばれます
+   *
+   * @param e event
+   */
+  public void itemSpawn(ItemSpawnEvent e) {
+  }
 }

@@ -52,6 +52,16 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
   public void death(PlayerDeathEvent e) {
     SurvivalSniperGame game = getGame();
     var p = e.getPlayer();
+    var loc = p.getLocation();
+    var world = p.getWorld();
+    var inv = p.getInventory();
+    inv.forEach(i -> {
+      if (i == null || i.isEmpty()) {
+        return;
+      }
+      world.dropItemNaturally(loc, i);
+    });
+    inv.clear();
     var uuid = p.getUniqueId();
     if (game.players.get(uuid).getRight() == 0) {
       e.deathMessage(Util.mm(p.getName() + "は洞窟で酸素がなくなった..."));

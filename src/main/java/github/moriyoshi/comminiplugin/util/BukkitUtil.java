@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.HeightMap;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
@@ -29,9 +30,14 @@ public final class BukkitUtil {
   }
 
   public static boolean randomTeleport(Entity entity, Location center, int radius, int maxTry) {
-    var world = entity.getWorld();
-    var bx = center.getBlockX();
-    var bz = center.getBlockZ();
+    return randomTeleport(entity, center.getWorld(), center.getBlockX(), center.getBlockZ(), radius, maxTry);
+  }
+
+  public static boolean randomTeleport(Entity entity, World world, int bx, int bz, int radius) {
+    return randomTeleport(entity, world, bx, bz, radius, 100);
+  }
+
+  public static boolean randomTeleport(Entity entity, World world, int bx, int bz, int radius, int maxTry) {
     var alerdy = new HashSet<Pair<Integer, Integer>>();
     for (int i = 0; i < maxTry; i++) {
       var x = random.nextInt(-radius, radius);

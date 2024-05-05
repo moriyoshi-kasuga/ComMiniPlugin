@@ -149,7 +149,7 @@ public class ItemEditCommand extends CommandAPICommand {
             .executesPlayer((player, objects) -> {
               String s = ((Player) objects.get("player")).getName();
               IE.send(player, FormatterUtil.format(GETSKULL, Map.of("player", s)));
-              player.getInventory().addItem(ItemBuilder.createSkull(s));
+              player.getInventory().addItem(ItemBuilder.createSkull(s).build());
             }));
     withSubcommand(
         new CommandAPICommand("custommodeldata")

@@ -1,6 +1,7 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,9 +28,6 @@ import github.moriyoshi.comminiplugin.util.Util;
 import net.kyori.adventure.bossbar.BossBar;
 
 //TODO: プレイヤーの上にparticleわかす、あと脱出アイテム(地上にテレポ)とかもクラフトメニューにtrade 画面を追加してもいいかも
-// 死んだ人のitem drop を しよう、あと entity damage by entity event が entity daamge eventで消えてる説がある
-// jump の特大ジャンプは ダメージを食らった瞬間に使うとバグる可能性あり
-// @EventHandler の調整をしよう
 public class SurvivalSniperGame extends AbstractGame {
 
   private static final int MAX_RADIUS_RANGE = 300;
@@ -97,8 +95,11 @@ public class SurvivalSniperGame extends AbstractGame {
   }
 
   @Override
-  public MenuHolder<ComMiniPlugin> gameMenu(Player player) {
-    return new SurvivalSniperMenu();
+  public Optional<MenuHolder<ComMiniPlugin>> gameMenu(Player player) {
+    if (isGamePlayer(player)) {
+      return Optional.empty();
+    }
+    return Optional.of(new SurvivalSniperMenu());
   }
 
   @Override
@@ -242,6 +243,7 @@ public class SurvivalSniperGame extends AbstractGame {
     });
     bossBar = null;
     players.clear();
+    _canPvP = false;
     lobby = null;
     Bukkit.getWorld("world").getWorldBorder().reset();
   }

@@ -1,6 +1,5 @@
 package github.moriyoshi.comminiplugin.util;
 
-import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,9 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import net.kyori.adventure.text.Component;
+
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
@@ -19,9 +17,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+
+import com.google.common.collect.Multimap;
+
+import net.kyori.adventure.text.Component;
 
 /**
  * アイテムを作成やmodifyするクラス
@@ -56,9 +56,9 @@ public class ItemBuilder {
    * @return 作成したアイテムスタック
    */
   @SuppressWarnings("deprecation")
-  public static ItemStack createSkull(String skullOwner) {
+  public static ItemBuilder createSkull(String skullOwner) {
     return new ItemBuilder(Material.PLAYER_HEAD).changeMeta(
-        (Consumer<SkullMeta>) skullMeta -> skullMeta.setOwner(skullOwner)).build();
+        (Consumer<SkullMeta>) skullMeta -> skullMeta.setOwner(skullOwner));
   }
 
   /**
@@ -120,6 +120,7 @@ public class ItemBuilder {
    * @param type 変更するマテリアル
    * @return new instance (use {@link #build()} to create)
    */
+  @SuppressWarnings("deprecation")
   public ItemBuilder type(Material type) {
     return change(i -> i.setType(type));
   }
@@ -300,8 +301,7 @@ public class ItemBuilder {
   public ItemBuilder addAttributes(Multimap<Attribute, AttributeModifier> attributeModifiers) {
     return attributeModifiers.entries().stream().reduce(this,
         (itemBuilder, entry) -> itemBuilder.addAttribute(entry.getKey(), entry.getValue()),
-        (first, second) -> second
-    );
+        (first, second) -> second);
   }
 
   /**
@@ -328,165 +328,6 @@ public class ItemBuilder {
    */
   public ItemBuilder customModelData(Integer customModelData) {
     return changeItemMeta(meta -> meta.setCustomModelData(customModelData));
-  }
-
-  /**
-   * NBTみたいなやつの変更するメゾット
-   *
-   * @param consumer 実行する処理
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder changePersistentData(Consumer<? super PersistentDataContainer> consumer) {
-    return changeItemMeta(meta -> consumer.accept(meta.getPersistentDataContainer()));
-  }
-
-  /**
-   * 値の追加
-   *
-   * @param key   値のキー
-   * @param type  値をどのように扱うか {@link PersistentDataType}
-   * @param value 保存する値
-   * @param <T>   指定されたタグに格納されているプライマリ オブジェクト タイプ
-   * @param <Z>   このタグ タイプを適用するときに取得されたオブジェクト タイプ
-   * @return new instance (use {@link #build()} to create)
-   */
-  public <T, Z> ItemBuilder persistentData(NamespacedKey key, PersistentDataType<T, Z> type,
-      Z value) {
-    return changePersistentData(data -> data.set(key, type, value));
-  }
-
-  /**
-   * byte で {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, byte value) {
-    return persistentData(key, PersistentDataType.BYTE, value);
-  }
-
-  /**
-   * byte[] で {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, byte[] value) {
-    return persistentData(key, PersistentDataType.BYTE_ARRAY, value);
-  }
-
-  /**
-   * double で {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, double value) {
-    return persistentData(key, PersistentDataType.DOUBLE, value);
-  }
-
-  /**
-   * float で {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, float value) {
-    return persistentData(key, PersistentDataType.FLOAT, value);
-  }
-
-  /**
-   * int で {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, int value) {
-    return persistentData(key, PersistentDataType.INTEGER, value);
-  }
-
-  /**
-   * int[]で {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, int[] value) {
-    return persistentData(key, PersistentDataType.INTEGER_ARRAY, value);
-  }
-
-  /**
-   * long で {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, long value) {
-    return persistentData(key, PersistentDataType.LONG, value);
-  }
-
-  /**
-   * long[] で {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, long[] value) {
-    return persistentData(key, PersistentDataType.LONG_ARRAY, value);
-  }
-
-  /**
-   * short で {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, short value) {
-    return persistentData(key, PersistentDataType.SHORT, value);
-  }
-
-  /**
-   * string で {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, String value) {
-    return persistentData(key, PersistentDataType.STRING, value);
-  }
-
-  /**
-   * {@link PersistentDataContainer} で
-   * {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, PersistentDataContainer value) {
-    return persistentData(key, PersistentDataType.TAG_CONTAINER, value);
-  }
-
-  /**
-   * {@link PersistentDataContainer[]} で
-   * {@link #persistentData(NamespacedKey, PersistentDataType, Object)} を設定します
-   *
-   * @param key   値のキー
-   * @param value 値
-   * @return new instance (use {@link #build()} to create)
-   */
-  public ItemBuilder persistentData(NamespacedKey key, PersistentDataContainer[] value) {
-    return persistentData(key, PersistentDataType.TAG_CONTAINER_ARRAY, value);
   }
 
   /**

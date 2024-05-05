@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 /**
  * {@inheritDoc}
  */
+@SuppressWarnings("deprecation")
 public class FastBoardVanila extends FastBoardBase<String> {
 
   private static final MethodHandle MESSAGE_FROM_STRING;

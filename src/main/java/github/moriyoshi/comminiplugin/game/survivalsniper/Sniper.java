@@ -10,8 +10,10 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
@@ -45,11 +47,6 @@ public class Sniper extends CustomItem implements CooldownItem {
   @Override
   public @NotNull String getIdentifier() {
     return "sniper";
-  }
-
-  @Override
-  public boolean isInteractCancel() {
-    return false;
   }
 
   @Override
@@ -113,6 +110,11 @@ public class Sniper extends CustomItem implements CooldownItem {
   }
 
   @Override
+  public void interact(PlayerInteractEvent e) {
+    e.setCancelled(false);
+  }
+
+  @Override
   public @NotNull Optional<Consumer<Player>> heldItem(ItemStack item) {
     return Optional.of(player -> {
       String bullet = Bullet.getFirstBullet(player).map(t -> t.getName()).orElse(null);
@@ -148,5 +150,10 @@ public class Sniper extends CustomItem implements CooldownItem {
   @Override
   public boolean canMoveOtherInv(InventoryClickEvent e) {
     return false;
+  }
+
+  @Override
+  public void itemSpawn(ItemSpawnEvent e) {
+    e.getEntity().remove();
   }
 }
