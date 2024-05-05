@@ -141,16 +141,16 @@ public class AllSoundCommand extends CommandAPICommand {
         for (int slot = 0; slot < getInventory().getSize() && rewardStartIndex + slot < rewardEndIndex; slot++) {
           Sound key = rewards.get(rewardStartIndex + slot);
           var m = getMaterial(key);
-          setButton(slot,
-              new ItemButton<>(
-                  new ItemBuilder(m == null || m.isAir() || !m.isItem() ? Material.BEDROCK : m).addLore("")
-                      .addLore(key.name())
-                      .build()) {
-                @Override
-                public void onClick(MenuHolder<?> holder, InventoryClickEvent event) {
-                  ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), key, 1, 1);
-                }
-              });
+          setButton(slot, new ItemButton<>(
+              new ItemBuilder(m == null || m.isAir() || !m.isItem() ? Material.BEDROCK : m).addLore("")
+                  .addLore(key.name())
+                  .build()) {
+            @Override
+            public void onClick(MenuHolder<?> holder, InventoryClickEvent event) {
+              var p = ((Player) event.getWhoClicked());
+              p.playSound(event.getWhoClicked().getLocation(), key, 1, 1);
+            }
+          });
         }
       }
 

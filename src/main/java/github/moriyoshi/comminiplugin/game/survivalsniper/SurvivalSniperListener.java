@@ -9,6 +9,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -55,6 +57,7 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
     var loc = p.getLocation();
     var world = p.getWorld();
     var inv = p.getInventory();
+    p.setGameMode(GameMode.SPECTATOR);
     inv.forEach(i -> {
       if (i == null || i.isEmpty()) {
         return;
@@ -69,7 +72,6 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
     game.runPlayers(pl -> {
       Util.send(pl, e.deathMessage());
     });
-    p.setGameMode(GameMode.SPECTATOR);
     game.players.put(uuid, Pair.of(false, -1));
     var alives = game.players.entrySet().stream().filter(entry -> entry.getValue().getLeft())
         .toList();
@@ -97,7 +99,12 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
     }
     if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.CRAFTING_TABLE && p.isSneaking()) {
       e.setCancelled(true);
-      new SurvivalSniperCustomMenu().openInv(p);
+      var item = p.getInventory().getItemInMainHand();
+      if (item == null || item.isEmpty() || !item.getType().name().contains("PICKAXE")) {
+        new SurvivalSniperCustomMenu().openInv(p);
+      } else {
+        new SurvivalSniperTradeMenu().openInv(p);
+      }
     }
   }
 
@@ -107,5 +114,18 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
       getGame().prefix.send(attacker, "<red>まだPvPはできません");
       e.setCancelled(true);
     }
+  }
+
+  @EventHandler
+  public void moevDimension(PlayerPortalEvent e) {
+    if (getGame().isGamePlayer(e.getPlayer())) {
+      getGame().prefix.send(e.getPlayer(), "<red>ポータルを使うな!");
+      e.setCancelled(true);
+    }
+  }
+
+  @Override
+  public void join(PlayerJoinEvent e) {
+    getGame().teleportLobby(e.getPlayer());
   }
 }

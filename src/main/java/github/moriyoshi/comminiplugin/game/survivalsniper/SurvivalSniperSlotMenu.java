@@ -2,22 +2,17 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import java.util.Collections;
 
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
 public class SurvivalSniperSlotMenu extends MenuHolder<ComMiniPlugin> {
-  private static final ItemStack pane = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name("").build();
-
   private final SurvivalSniperSlot slots;
 
   public SurvivalSniperSlotMenu(SurvivalSniperSlot slots) {
@@ -25,7 +20,7 @@ public class SurvivalSniperSlotMenu extends MenuHolder<ComMiniPlugin> {
     this.slots = slots;
     set();
     for (int i = 9; i < 27; i++) {
-      setButton(i, new ItemButton<>(pane));
+      setButton(i, empty);
     }
     setButton(18, GameMenuButton.of());
   }

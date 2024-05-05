@@ -23,7 +23,6 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
  */
 public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
   private static final int SIZE = 27;
-  private static final ItemStack pane = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name("").build();
 
   private static final RedirectItemButton<MenuHolder<ComMiniPlugin>> back = new RedirectItemButton<>(
       new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA).name("<red>カスタムメニューに戻る").build(), (holder, even) -> {
@@ -71,7 +70,7 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
       if (items.contains(i)) {
         continue;
       }
-      setButton(i, new ItemButton<>(pane));
+      setButton(i, empty);
     }
     setButton(15, new ItemButton<>(
         new ItemBuilder(Material.CARROT_ON_A_STICK).customModelData(4).name("<yellow>作るときはクリック").build()));
@@ -131,7 +130,7 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
             continue;
           }
           var material = item.getType();
-          for (var h : Bullet.WARHEAD.values()) {
+          head: for (var h : Bullet.WARHEAD.values()) {
             if (h.material == material) {
               if (head != null) {
                 setButton(16, none);
@@ -139,9 +138,10 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
               }
               head = h;
               headSlot = i;
+              break head;
             }
           }
-          for (var t : Bullet.WARTAIL.values()) {
+          tail: for (var t : Bullet.WARTAIL.values()) {
             if (t.predicate.test(material)) {
               if (tail != null) {
                 setButton(16, none);
@@ -149,8 +149,10 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
               }
               tail = t;
               tailSlot = i;
+              break tail;
             }
           }
+
         }
         if (head == null || tail == null) {
           setButton(16, none);

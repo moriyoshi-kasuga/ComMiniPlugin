@@ -107,9 +107,9 @@ public class Bullet extends CustomItem {
     COPPER(Material.COPPER_INGOT, 3, "軽量な弾", 3, 5, 8, Sound.BLOCK_SHROOMLIGHT_BREAK),
     IRON(Material.IRON_INGOT, 1, "シンプルな弾", 5, 8, 7, Sound.ENTITY_FIREWORK_ROCKET_BLAST),
     GOLD(Material.GOLD_INGOT, 2, "重厚な弾", 8, 12, 6, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST),
-    EMERALD(Material.EMERALD, 4, "高価な弾", 12, 16, 5, Sound.ENTITY_ENDER_EYE_DEATH),
-    DIAMOND(Material.DIAMOND, 5, "強力な弾", 16, 20, 4, Sound.ENTITY_GENERIC_EXPLODE),
-    AMETHYST(Material.AMETHYST_SHARD, 6, "鋭利な弾", 20, 40, 3, Sound.BLOCK_AMETHYST_CLUSTER_BREAK);
+    EMERALD(Material.EMERALD, 4, "高価な弾", 12, 15, 5, Sound.ENTITY_ENDER_EYE_DEATH),
+    DIAMOND(Material.DIAMOND, 5, "強力な弾", 15, 18, 4, Sound.ENTITY_GENERIC_EXPLODE),
+    AMETHYST(Material.AMETHYST_SHARD, 6, "鋭利な弾", 18, 40, 1, Sound.BLOCK_AMETHYST_CLUSTER_BREAK);
 
     public final Material material;
     public final int model;
@@ -131,9 +131,9 @@ public class Bullet extends CustomItem {
   }
 
   public static enum WARTAIL {
-    WOOD(Material.OAK_BUTTON, (m) -> m.name().contains("BUTTON") && m.isFuel(), "木", "木材系のボタン", 1),
-    STONE(Material.STONE_BUTTON, (m) -> m == Material.STONE_BUTTON, "石", "焼き石のボタン", 2),
-    COAL_BLOCK(Material.COAL_BLOCK, (m) -> m == Material.COAL_BLOCK, "石炭", "石炭のブロック", 3);
+    WOOD(Material.OAK_BUTTON, (m) -> m.name().contains("BUTTON") && m.isFuel(), "木", "木材系のボタン", 0),
+    STONE(Material.STONE_BUTTON, (m) -> m == Material.STONE_BUTTON, "石", "焼き石のボタン", 1),
+    COAL_BLOCK(Material.COAL_BLOCK, (m) -> m == Material.COAL_BLOCK, "石炭", "石炭のブロック", 2);
 
     public final Material icon;
     public final Predicate<Material> predicate;

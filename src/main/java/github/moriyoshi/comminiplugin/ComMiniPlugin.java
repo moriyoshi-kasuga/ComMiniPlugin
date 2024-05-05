@@ -75,6 +75,19 @@ public final class ComMiniPlugin extends JavaPlugin {
         .executesPlayer((p, args) -> {
           new SurvivalSniperCustomMenu().openInv(p);
         }));
+    registerCommand(new CommandAPICommand("gamedebug")
+        .executesPlayer((p, args) -> {
+          GamePlayer player = GamePlayer.getPlayer(p.getUniqueId());
+          var flag = !player.isDebug();
+          player.setDebug(flag);
+          ComMiniPrefix.SYSTEM.send(p, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
+        }));
+    registerCommand(new CommandAPICommand("gamesave")
+        .withPermission(CommandPermission.OP)
+        .executesPlayer((p, args) -> {
+          GamePlayer.save();
+          ComMiniPrefix.SYSTEM.send(p, "<green>サーブファイル");
+        }));
     GamePlayer.gameInitialize();
     new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();
   }

@@ -111,6 +111,7 @@ public class GameSystem {
       p.getInventory().addItem(new MenuItem().getItem());
       p.setGameMode(GameMode.SURVIVAL);
       p.teleport(ComMiniWorld.LOBBY);
+      p.setExperienceLevelAndProgress(0);
     });
     _nowGame.finishGame();
     _nowGame.prefix.cast("<green>閉幕です");

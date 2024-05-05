@@ -26,13 +26,15 @@ import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
 import net.kyori.adventure.bossbar.BossBar;
 
-//TODO: プレイヤーの上にparticleわかす、あと脱出アイテム(地上にテレポ)とかもクラフトメニューにtrade 画面を追加してもいいかも
+//TODO: プレイヤーの上にparticleわかす
+// 人死んだらボーダーの速度早くしてもいい
+// ファイルをonDisable時にセーブできるようにする
 public class SurvivalSniperGame extends AbstractGame {
 
   private static final int MAX_RADIUS_RANGE = 300;
   private static final int MAX_MINUTES = 60 * 15;
   private static final SurvivalSniperGame INSTANCE = new SurvivalSniperGame();
-  private static final Vector VOID_RADIUS = new Vector(3, 3, 3);
+  private static final Vector VOID_BLOCK_RADIUS = new Vector(3, 3, 3);
 
   public static SurvivalSniperGame getInstance() {
     return INSTANCE;
@@ -42,7 +44,7 @@ public class SurvivalSniperGame extends AbstractGame {
   public final HashMap<UUID, Pair<Boolean, Integer>> players = new HashMap<>();
 
   public final static int AIR_LIMIT = 180;
-  public final static int AFTER_PVP_SECOND = 180;
+  public final static int AFTER_PVP_SECOND = 300;
   private BukkitRunnable run = null;
   private boolean _canPvP = false;
   private BossBar bossBar = null;
@@ -52,6 +54,9 @@ public class SurvivalSniperGame extends AbstractGame {
   }
 
   public final void joinPlayer(Player player, boolean isPlayer) {
+    if (isStarted()) {
+      return;
+    }
     var uuid = player.getUniqueId();
     player.getInventory().removeItem(new ItemStack(Material.SPYGLASS));
     if (players.containsKey(uuid)) {
@@ -113,8 +118,8 @@ public class SurvivalSniperGame extends AbstractGame {
     world.getWorldBorder().setCenter(lobby);
     world.getWorldBorder().setSize((MAX_RADIUS_RANGE + 10) * 2);
     var vec = lobby.toVector();
-    var min = vec.clone().add(VOID_RADIUS);
-    var max = vec.clone().subtract(VOID_RADIUS);
+    var min = vec.clone().add(VOID_BLOCK_RADIUS);
+    var max = vec.clone().subtract(VOID_BLOCK_RADIUS);
     Util.consoleCommand(
         String.format("execute in %s run fill %s %s %s %s %s %s minecraft:barrier outline",
             "overworld",
@@ -131,8 +136,8 @@ public class SurvivalSniperGame extends AbstractGame {
     }
     setCanOpenMenu(false);
     var vec = lobby.toVector();
-    var min = vec.clone().add(VOID_RADIUS);
-    var max = vec.clone().subtract(VOID_RADIUS);
+    var min = vec.clone().add(VOID_BLOCK_RADIUS);
+    var max = vec.clone().subtract(VOID_BLOCK_RADIUS);
     Util.consoleCommand(
         String.format("execute in %s run fill %s %s %s %s %s %s minecraft:air replace minecraft:barrier",
             "overworld", min.getBlockX(), min.getBlockY(), min.getBlockZ(),
@@ -225,8 +230,8 @@ public class SurvivalSniperGame extends AbstractGame {
   @Override
   public void finishGame() {
     var vec = lobby.toVector();
-    var min = vec.clone().add(VOID_RADIUS);
-    var max = vec.clone().subtract(VOID_RADIUS);
+    var min = vec.clone().add(VOID_BLOCK_RADIUS);
+    var max = vec.clone().subtract(VOID_BLOCK_RADIUS);
     Util.consoleCommand(
         String.format("execute in %s run fill %s %s %s %s %s %s minecraft:air replace minecraft:barrier",
             "overworld",

@@ -19,7 +19,7 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   }
 
   public static GameMenuButton of() {
-    if (GameSystem.inGame()) {
+    if (GameSystem.inGame() && !GameSystem.isStarted()) {
       var game = GameSystem.nowGame();
       return new GameMenuButton(new ItemBuilder(game.material).name(game.name).lore(game.description).build());
     }

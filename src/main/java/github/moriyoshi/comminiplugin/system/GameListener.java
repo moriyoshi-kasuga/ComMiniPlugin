@@ -47,6 +47,10 @@ public class GameListener implements Listener {
     return GameSystem.isStarted() && GameSystem.nowGame().isGamePlayer(p);
   }
 
+  public static boolean isDebugPlayer(Player p) {
+    return GamePlayer.getPlayer(p.getUniqueId()).isDebug();
+  }
+
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
@@ -101,15 +105,19 @@ public class GameListener implements Listener {
 
   @EventHandler
   public void damageByEntity(EntityDamageByEntityEvent e) {
-    if (e.getDamager() instanceof Player attacker
-        && !isGamePlayer(attacker)
-        && attacker.getGameMode() != GameMode.CREATIVE) {
-      e.setCancelled(true);
+    if (!(e.getDamager() instanceof Player attacker)) {
       return;
     }
-    if (GameSystem.isStarted()) {
+
+    if (isGamePlayer(attacker)) {
       GameSystem.nowGame().listener.damageByEntity(e);
       return;
+    }
+    if (isDebugPlayer(attacker)) {
+      return;
+    }
+    if (attacker.getGameMode() != GameMode.CREATIVE) {
+      e.setCancelled(true);
     }
   }
 
@@ -117,6 +125,9 @@ public class GameListener implements Listener {
   public void breakBlock(BlockBreakEvent e) {
     if (isGamePlayer(e.getPlayer())) {
       GameSystem.nowGame().listener.breakBlock(e);
+      return;
+    }
+    if (isDebugPlayer(e.getPlayer())) {
       return;
     }
     if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {

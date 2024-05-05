@@ -48,9 +48,9 @@ public final class BukkitUtil {
       }
       alerdy.add(pair);
       var block = world.getHighestBlockAt(bx + x, bz + z,
-          HeightMap.MOTION_BLOCKING);
-      if (block.isCollidable()) {
-        entity.teleportAsync(block.getLocation().add(x > 0 ? 0.5 : -0.5, 1.0, z > 0 ? 0.5 : -0.5));
+          HeightMap.WORLD_SURFACE);
+      if (block.isSolid() && block.isCollidable()) {
+        entity.teleport(block.getLocation().add(0.5, 1.0, 0.5).setDirection(entity.getLocation().getDirection()));
         return true;
       }
     }

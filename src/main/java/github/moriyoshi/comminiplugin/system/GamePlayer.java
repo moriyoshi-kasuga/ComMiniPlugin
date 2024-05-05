@@ -84,6 +84,17 @@ public class GamePlayer extends JsonAPI {
     return this;
   }
 
+  private boolean isDebug = false;
+
+  public boolean isDebug() {
+    return isDebug;
+  }
+
+  public GamePlayer setDebug(boolean isDebug) {
+    this.isDebug = isDebug;
+    return this;
+  }
+
   public GamePlayer setHideNameTag(boolean isHideNameTag) {
     var p = Bukkit.getOfflinePlayer(this.uuid).getName();
     if (isHideNameTag) {
@@ -111,7 +122,7 @@ public class GamePlayer extends JsonAPI {
   @Override
   protected JsonObject generateSaveData() {
     var object = new JsonObject();
-    object.add(SURVIVAPSNIPER_SLOT, ComMiniPlugin.gson.toJsonTree(survivapsniperSlot));
+    object.add(SURVIVAPSNIPER_SLOT, ComMiniPlugin.gson.toJsonTree(survivapsniperSlot.slots));
     return object;
   }
 

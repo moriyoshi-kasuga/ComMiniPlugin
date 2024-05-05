@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -58,14 +57,6 @@ public class CustomItemListner implements Listener {
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void interact(PlayerInteractEvent e) {
-    EquipmentSlot hand = e.getHand();
-    if (hand != null && hand.equals(EquipmentSlot.HAND)) {
-      customItemInteract(e);
-    }
-  }
-
-  @EventHandler(priority = EventPriority.HIGHEST)
   public void dropItem(PlayerDropItemEvent e) {
     ItemStack item = e.getItemDrop().getItemStack();
     if (!CustomItem.isCustomItem(item)) {
@@ -87,15 +78,15 @@ public class CustomItemListner implements Listener {
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public boolean customItemInteract(PlayerInteractEvent e) {
+  public void customItemInteract(PlayerInteractEvent e) {
     ItemStack item = e.getItem();
     if (!CustomItem.isCustomItem(item)) {
-      return false;
+      return;
     }
     CustomItem customItem = CustomItem.getCustomItem(item);
     e.setCancelled(true);
     customItem.interact(e);
-    return true;
+    return;
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
@@ -161,11 +152,10 @@ public class CustomItemListner implements Listener {
     }
   }
 
-
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void itemSpawn(ItemSpawnEvent e){
+  public void itemSpawn(ItemSpawnEvent e) {
     var item = e.getEntity().getItemStack();
-    if (CustomItem.isCustomItem(item)){
+    if (CustomItem.isCustomItem(item)) {
       CustomItem.getCustomItem(item).itemSpawn(e);
     }
   }
