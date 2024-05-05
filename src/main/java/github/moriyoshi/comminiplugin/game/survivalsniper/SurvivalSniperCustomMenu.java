@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
@@ -22,7 +23,7 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
  */
 public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
   private static final int SIZE = 27;
-  private static final ItemStack pane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+  private static final ItemStack pane = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name("").build();
 
   private static final RedirectItemButton<MenuHolder<ComMiniPlugin>> back = new RedirectItemButton<>(
       new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA).name("<red>カスタムメニューに戻る").build(), (holder, even) -> {
@@ -166,13 +167,18 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
                 "<red>ヘッドショット<gray>:<white>" + headShot)
             .amount(head.successAmount)
             .build();
-        setButton(16, ItemButton.build(result, (holder, e) -> {
-          e.getWhoClicked().getInventory().addItem(new Bullet(result, name, damage, headShot, sound).getItem());
-          var temp1 = getInventory().getItem(tmp1);
-          var temp2 = getInventory().getItem(tmp2);
-          temp1.setAmount(temp1.getAmount() - 1);
-          temp2.setAmount(temp2.getAmount() - 1);
-        }));
+        setButton(16, new ItemButton<>(result) {
+
+          @Override
+          public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+            event.getWhoClicked().getInventory().addItem(new Bullet(result, name, damage,
+                headShot, sound).getItem());
+            var temp1 = getInventory().getItem(tmp1);
+            var temp2 = getInventory().getItem(tmp2);
+            temp1.setAmount(temp1.getAmount() - 1);
+            temp2.setAmount(temp2.getAmount() - 1);
+          }
+        });
       }
     }.runTask(getPlugin());
 

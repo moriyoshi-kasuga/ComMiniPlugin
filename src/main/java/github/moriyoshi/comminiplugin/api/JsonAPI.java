@@ -18,31 +18,14 @@ import org.jetbrains.annotations.Nullable;
 /**
  * .json ファイルを読み込む {@link FileAPI}
  */
-public class JsonAPI extends FileAPI<JsonObject> {
+public abstract class JsonAPI extends FileAPI<JsonObject> {
 
-  /**
-   * 引数のプラグインのフォルダーの第一階層からnameのファイルを読み込みます
-   *
-   * @param plugin 読み込みたいフォルダーのプラグイン
-   * @param name   読み込むファイルの名前
-   */
   public JsonAPI(Plugin plugin, String name) {
     super(plugin, name);
   }
 
-  /**
-   * 引数のプラグインのフォルダーの path name
-   * </br>
-   * のファイルを読み込みます 例 [plugin=TEST] [path=first/second]
-   * </br>
-   * [path=fileName] -> TEST/first/second/fileName.json のファイルを読み込みます
-   *
-   * @param plugin 読み込みたいフォルダーのプラグイン
-   * @param name   読み込むファイルの名前
-   * @param path   ファイル階層
-   */
-  public JsonAPI(Plugin plugin, String name, String path) {
-    super(plugin, name, path);
+  public JsonAPI(Plugin plugin, String path, String name) {
+    super(plugin, path, name);
   }
 
   /**
@@ -128,16 +111,13 @@ public class JsonAPI extends FileAPI<JsonObject> {
       FileReader fileReader = new FileReader(file);
       if (FileUtils.fileRead(file).trim().isEmpty()) {
         ComMiniPlugin.gson.toJson("{}", new FileWriter(file));
+        generateLoadData(new JsonObject());
       } else {
-        data = ComMiniPlugin.gson.fromJson(new JsonReader(fileReader),
-            JsonObject.class
-        );
+        generateLoadData(ComMiniPlugin.gson.fromJson(new JsonReader(fileReader),
+            JsonObject.class));
       }
     } catch (IOException ignored) {
-    } finally {
-      if (data == null) {
-        data = new JsonObject();
-      }
+      generateLoadData(new JsonObject());
     }
   }
 
@@ -147,19 +127,10 @@ public class JsonAPI extends FileAPI<JsonObject> {
   @Override
   public void saveFile() {
     try (Writer writer = new FileWriter(file)) {
-      ComMiniPlugin.gson.toJson(getSavaData(), writer);
+      ComMiniPlugin.gson.toJson(generateSaveData(), writer);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * ファイルにセーブするJsonElementを変更できるように
-   *
-   * @return セーブするJsonElement
-   */
-  public JsonElement getSavaData() {
-    return data;
   }
 
   /**

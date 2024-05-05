@@ -9,10 +9,12 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.buttons.AddSpecButton;
+import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
+import github.moriyoshi.comminiplugin.system.buttons.TeleportLobbyButton;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
 /**
@@ -52,49 +54,9 @@ public class MenuItem extends CustomItem {
   private static class InnerMenu extends MenuHolder<ComMiniPlugin> {
     public InnerMenu() {
       super(ComMiniPlugin.getPlugin(), 27, "<yellow>Menu");
-      setButton(11, new ItemButton<>(new ItemBuilder(Material.ENDER_PEARL).name("<blue>ロビーにテレポート").build()) {
-
-        @Override
-        public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-          var p = (Player) event.getWhoClicked();
-          if (GameSystem.inGame() && GameSystem.nowGame().isGamePlayer(p)) {
-            ComMiniPrefix.MAIN.send(p, "<red>あなたはロビーにテレポートできません");
-            return;
-          }
-          p.teleport(ComMiniWorld.LOBBY);
-        }
-
-      });
-      if (GameSystem.isStarted()) {
-        setButton(14, new ItemButton<>(
-            new ItemBuilder(Material.NETHER_STAR).name(GameSystem.nowGame().name + "<reset><gray>を観戦する").build()) {
-
-          @Override
-          public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-            var p = (Player) event.getWhoClicked();
-            if (!GameSystem.nowGame().addSpec(p)) {
-              ComMiniPrefix.MAIN.send(p, "<red>このゲームに観戦できません");
-            }
-          }
-
-        });
-      }
-      if (GameSystem.inGame()) {
-        var game = GameSystem.nowGame();
-        setButton(13,
-            new ItemButton<>(new ItemBuilder(game.material).name(game.name).lore(game.description).build()) {
-              @Override
-              public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-                var p = (Player) event.getWhoClicked();
-                GameSystem.nowGame().gameMenu(p).ifPresentOrElse(menu -> menu.openInv(p), () -> {
-                  ComMiniPrefix.MAIN.send(p, "<red>Menuは開けません");
-                });
-              }
-            });
-      } else {
-        setButton(13, new ItemButton<>(new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開催されていません").build()));
-        setButton(14, new ItemButton<>(new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開始されていません").build()));
-      }
+      setButton(11, TeleportLobbyButton.of());
+      setButton(13, GameMenuButton.of());
+      setButton(14, AddSpecButton.of());
     }
   }
 

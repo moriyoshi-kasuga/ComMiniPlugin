@@ -22,7 +22,6 @@ import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.GamePlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
 import net.kyori.adventure.bossbar.BossBar;
@@ -96,7 +95,7 @@ public class SurvivalSniperGame extends AbstractGame {
 
   @Override
   public Optional<MenuHolder<ComMiniPlugin>> gameMenu(Player player) {
-    if (isGamePlayer(player)) {
+    if (isStarted() && isGamePlayer(player)) {
       return Optional.empty();
     }
     return Optional.of(new SurvivalSniperMenu());
@@ -198,15 +197,16 @@ public class SurvivalSniperGame extends AbstractGame {
         teleportLobby(p);
         return;
       }
+      var gamePlayer = GamePlayer.getPlayer(uuid).setHunger(true).setHideNameTag(true);
       var inv = p.getInventory();
       inv.clear();
-      inv.addItem(new Sniper().getItem(), new Jump().getItem(), new ItemStack(Material.IRON_AXE),
-          new ItemStack(Material.IRON_PICKAXE), new ItemBuilder(Material.DIRT).amount(64).build(),
-          new ItemBuilder(Material.OAK_SAPLING).amount(3).build(),
-          new ItemBuilder(Material.BONE_MEAL).amount(10).build(),
-          new ItemBuilder(Material.BREAD).amount(5).build());
+      var i = 0;
+      for (var item : gamePlayer.getSurvivapsniperSlot().toItemStacks()) {
+        inv.setItem(i, item);
+        i++;
+      }
+      p.setSaturation(6);
       p.setGameMode(GameMode.SURVIVAL);
-      GamePlayer.getPlayer(uuid).setHunger(true).setHideNameTag(true);
       if (!BukkitUtil.randomTeleport(p, loc, MAX_RADIUS_RANGE)) {
         p.teleport(world.getHighestBlockAt(loc, HeightMap.MOTION_BLOCKING).getLocation());
       }
@@ -238,10 +238,12 @@ public class SurvivalSniperGame extends AbstractGame {
       run.cancel();
       run = null;
     }
-    runPlayers(p -> {
-      p.hideBossBar(bossBar);
-    });
-    bossBar = null;
+    if (bossBar != null) {
+      runPlayers(p -> {
+        p.hideBossBar(bossBar);
+      });
+      bossBar = null;
+    }
     players.clear();
     _canPvP = false;
     lobby = null;

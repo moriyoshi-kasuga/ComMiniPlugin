@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.system;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,11 +11,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.api.JsonAPI;
+import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperSlot;
+
 /**
  * GamePlayer
  */
-public class GamePlayer {
+public class GamePlayer extends JsonAPI {
   private static Team hidenametag;
+
+  public static void save() {
+    players.forEach((uuid, p) -> {
+      p.saveFile();
+    });
+  }
 
   public static void gameInitialize() {
     Scoreboard score = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -41,6 +55,7 @@ public class GamePlayer {
   private final UUID uuid;
 
   private GamePlayer(UUID uuid) {
+    super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
     this.uuid = uuid;
     this.initialize();
   }
@@ -77,5 +92,36 @@ public class GamePlayer {
       hidenametag.removeEntry(p);
     }
     return this;
+  }
+
+  public boolean isHideNameTag() {
+    return hidenametag.hasEntry(Bukkit.getOfflinePlayer(this.uuid).getName());
+  }
+
+  private static final Type SURVIVALSNIPER_SLOT_TYPE = new TypeToken<ArrayList<Integer>>() {
+  }.getType();
+  private SurvivalSniperSlot survivapsniperSlot;
+
+  public SurvivalSniperSlot getSurvivapsniperSlot() {
+    return survivapsniperSlot;
+  }
+
+  private String SURVIVAPSNIPER_SLOT = "survivapsniperSlot";
+
+  @Override
+  protected JsonObject generateSaveData() {
+    var object = new JsonObject();
+    object.add(SURVIVAPSNIPER_SLOT, ComMiniPlugin.gson.toJsonTree(survivapsniperSlot));
+    return object;
+  }
+
+  @Override
+  protected void generateLoadData(JsonObject data) {
+    if (data.has(SURVIVAPSNIPER_SLOT)) {
+      survivapsniperSlot = new SurvivalSniperSlot(
+          ComMiniPlugin.gson.fromJson(data.get(SURVIVAPSNIPER_SLOT), SURVIVALSNIPER_SLOT_TYPE));
+    } else {
+      survivapsniperSlot = new SurvivalSniperSlot(new ArrayList<>(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8)));
+    }
   }
 }

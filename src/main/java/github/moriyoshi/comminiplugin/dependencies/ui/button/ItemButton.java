@@ -3,11 +3,8 @@ package github.moriyoshi.comminiplugin.dependencies.ui.button;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.function.BiConsumer;
 
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 
@@ -48,16 +45,6 @@ public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
   @Override
   public final ItemStack getIcon() {
     return stack == null ? null : stack.clone();
-  }
-
-  public static <MH extends MenuHolder<?>> ItemButton<MH> build(ItemStack stack,
-      BiConsumer<MH, InventoryClickEvent> consumer) {
-    return new ItemButton<>(stack) {
-      @Override
-      public void onClick(@NotNull MH holder, @NotNull InventoryClickEvent event) {
-        consumer.accept(holder, event);
-      }
-    };
   }
 
   /**

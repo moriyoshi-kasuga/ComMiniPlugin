@@ -8,28 +8,14 @@ import org.bukkit.plugin.Plugin;
 /**
  * .yml ファイルを読み込む {@link FileAPI}
  */
-public class YmlAPI extends FileAPI<FileConfiguration> {
+public abstract class YmlAPI extends FileAPI<FileConfiguration> {
 
-  /**
-   * 引数のプラグインのフォルダーの第一階層からnameのファイルを読み込みます
-   *
-   * @param plugin 読み込みたいフォルダーのプラグイン
-   * @param name   読み込むファイルの名前
-   */
   public YmlAPI(Plugin plugin, String name) {
     super(plugin, name);
   }
 
-  /**
-   * 引数のプラグインのフォルダーの {@link #path} {@link #name} のファイルを読み込みます 例 [plugin=TEST] [path=first/second]
-   * [path=fileName] -> TEST/first/second/fileName.yml のファイルを読み込みます
-   *
-   * @param plugin 読み込みたいフォルダーのプラグイン
-   * @param name   読み込むファイルの名前
-   * @param path   ファイル階層
-   */
-  public YmlAPI(Plugin plugin, String name, String path) {
-    super(plugin, name, path);
+  public YmlAPI(Plugin plugin, String path, String name) {
+    super(plugin, path, name);
   }
 
   /**
@@ -45,7 +31,7 @@ public class YmlAPI extends FileAPI<FileConfiguration> {
    */
   @Override
   public void loadData() {
-    data = YamlConfiguration.loadConfiguration(file);
+    generateLoadData(YamlConfiguration.loadConfiguration(file));
   }
 
   /**
@@ -54,7 +40,7 @@ public class YmlAPI extends FileAPI<FileConfiguration> {
   @Override
   public void saveFile() {
     try {
-      data.save(file);
+      generateSaveData().save(file);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

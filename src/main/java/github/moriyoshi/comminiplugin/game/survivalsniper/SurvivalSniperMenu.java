@@ -8,7 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.system.GamePlayer;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
 public class SurvivalSniperMenu extends MenuHolder<ComMiniPlugin> {
@@ -34,5 +36,9 @@ public class SurvivalSniperMenu extends MenuHolder<ComMiniPlugin> {
         SurvivalSniperGame.getInstance().joinPlayer(((Player) event.getWhoClicked()), false);
       }
     });
+    setButton(4,
+        new RedirectItemButton<>(new ItemBuilder(Material.BOOK).name("<green>スロットを設定する").build(),
+            (holder, event) -> new SurvivalSniperSlotMenu(
+                GamePlayer.getPlayer(event.getWhoClicked().getUniqueId()).getSurvivapsniperSlot()).getInventory()));
   }
 }

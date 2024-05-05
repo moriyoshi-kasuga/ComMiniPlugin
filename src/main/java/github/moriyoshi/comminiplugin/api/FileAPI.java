@@ -22,7 +22,6 @@ public abstract class FileAPI<T> {
   public final String name, path, paths;
   protected final PrefixUtil message;
   protected final Plugin plugin;
-  protected T data;
 
   /**
    * 引数のプラグインのフォルダーの第一階層からnameのファイルを読み込みます
@@ -35,14 +34,15 @@ public abstract class FileAPI<T> {
   }
 
   /**
-   * 引数のプラグインのフォルダーの {@link #path} {@link #name} のファイルを読み込みます 例 [plugin=TEST] [path=first/second]
-   * [path=fileName] -> TEST/first/second/fileName のファイルを読み込みます
+   * 引数のプラグインのフォルダーの #path #name のファイルを読み込みます <br>
+   * 例 [plugin=TEST] [path=first/second] [name=fileName] <br>
+   * -> TEST/first/second/fileName のファイルを読み込みます
    *
    * @param plugin 読み込みたいフォルダーのプラグイン
    * @param name   読み込むファイルの名前
    * @param path   ファイル階層
    */
-  public FileAPI(Plugin plugin, String name, String path) {
+  public FileAPI(Plugin plugin, String path, String name) {
     Objects.requireNonNull(name);
     this.name = name.endsWith(getExtension()) ? name : name + getExtension();
     this.path = path == null || path.isEmpty() ? "" : File.separator + path;
@@ -123,11 +123,8 @@ public abstract class FileAPI<T> {
     loadData();
   }
 
-  /**
-   * @return data
-   */
-  public T getData() {
-    return data;
-  }
+  protected abstract T generateSaveData();
+
+  protected abstract void generateLoadData(T data);
 
 }

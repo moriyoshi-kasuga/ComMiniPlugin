@@ -81,6 +81,7 @@ public final class ComMiniPlugin extends JavaPlugin {
 
   @Override
   public void onDisable() {
+    GamePlayer.save();
     CommandAPI.onDisable();
   }
 
