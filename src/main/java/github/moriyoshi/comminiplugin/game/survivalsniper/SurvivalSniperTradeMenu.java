@@ -21,9 +21,11 @@ public class SurvivalSniperTradeMenu extends MenuHolder<ComMiniPlugin> {
   @RequiredArgsConstructor
   private enum TradeItem {
     EscapeDeep(() -> new EscapeDeep().getItem(), "4レベル", (p) -> p.getLevel() >= 4,
-        (p) -> p.setLevel(p.getLevel() - 4)),
-    BEEF(() -> new ItemStack(Material.BEEF), "1レベル", (p) -> p.getLevel() >= 1,
-        (p) -> p.setLevel(p.getLevel() - 1));
+        (p) -> p.setLevel(p.getLevel() - 4)
+    ),
+    BEEF(() -> new ItemStack(Material.COOKED_BEEF), "1レベル", (p) -> p.getLevel() >= 1,
+        (p) -> p.setLevel(p.getLevel() - 1)
+    );
 
     public final Supplier<ItemStack> item;
     public final String tradeDescription;
@@ -38,8 +40,8 @@ public class SurvivalSniperTradeMenu extends MenuHolder<ComMiniPlugin> {
     }
     var i = 10;
     for (val item : TradeItem.values()) {
-      setButton(i, new ItemButton<>(
-          new ItemBuilder(item.item.get()).addLore("").addLore("<green>" + item.tradeDescription + "でトレード").build()) {
+      setButton(i, new ItemButton<>(new ItemBuilder(item.item.get()).addLore("")
+          .addLore("<green>" + item.tradeDescription + "でトレード").build()) {
 
         @Override
         public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {

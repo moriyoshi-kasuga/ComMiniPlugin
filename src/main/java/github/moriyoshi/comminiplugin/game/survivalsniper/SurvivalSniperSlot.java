@@ -25,7 +25,7 @@ public class SurvivalSniperSlot {
       put(4, () -> new ItemBuilder(Material.OAK_SAPLING).amount(3).build());
       put(5, () -> new ItemBuilder(Material.BONE_MEAL).amount(10).build());
       put(6, () -> new ItemBuilder(Material.DIRT).amount(64).build());
-      put(7, () -> new ItemBuilder(Material.BREAD).amount(5).build());
+      put(7, () -> new ItemBuilder(Material.COOKED_MUTTON).amount(4).build());
       put(8, () -> null);
     }
   };

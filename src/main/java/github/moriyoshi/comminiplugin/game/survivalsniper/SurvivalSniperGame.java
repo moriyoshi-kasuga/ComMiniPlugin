@@ -9,6 +9,8 @@ import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,17 +18,23 @@ import net.kyori.adventure.bossbar.BossBar;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.GameRule;
 import org.bukkit.HeightMap;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 //TODO: プレイヤーの上にparticleわかす
+//initializeGame の時に chunk ロードをしよう
 // 弾をアップグレードできるようにする
-// あと jump のやつの dont' move とか そういう flag を GamePlyaer に追加しよう
+// simple voice chat の api 使おう
+// spec の時に night vision つける
+// プレイヤーが死んだときにボーダーの速度を1.5倍しよう
+// https://www.spigotmc.org/threads/packet-discovery-spectator-mode-modifications-noclip.319125/
 public class SurvivalSniperGame extends AbstractGame {
 
   public static final int MAX_RADIUS_RANGE = 300;
@@ -45,12 +53,10 @@ public class SurvivalSniperGame extends AbstractGame {
   public final static int AIR_LIMIT = 180;
   public final static int AFTER_PVP_SECOND = 300;
   private BukkitRunnable run = null;
-  private boolean _canPvP = false;
+  @Getter
+  private boolean canPvP = false;
   private BossBar bossBar = null;
-
-  public boolean canPvP() {
-    return _canPvP;
-  }
+  private boolean isFinalArea = false;
 
   public final void joinPlayer(Player player, boolean isPlayer) {
     if (isStarted()) {
@@ -116,6 +122,7 @@ public class SurvivalSniperGame extends AbstractGame {
     lobby = world.getHighestBlockAt(temp).getLocation().add(new Vector(0, 50, 0));
     world.getWorldBorder().setCenter(lobby);
     world.getWorldBorder().setSize(MAX_RADIUS_RANGE * 2);
+    world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
     var vec = lobby.toVector();
     var min = vec.clone().add(VOID_BLOCK_RADIUS);
     var max = vec.clone().subtract(VOID_BLOCK_RADIUS);
@@ -156,7 +163,7 @@ public class SurvivalSniperGame extends AbstractGame {
             bossBar.name(Util.mm("<red>PvP解禁まで<u>" + second + "</u>秒"))
                 .progress((float) second / (float) AFTER_PVP_SECOND);
           } else {
-            _canPvP = true;
+            canPvP = true;
             runPlayers(p -> {
               p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1, 1);
               p.hideBossBar(bossBar);
@@ -188,13 +195,29 @@ public class SurvivalSniperGame extends AbstractGame {
           }
           p.setHealth(0);
         });
+        if (!isFinalArea && world.getWorldBorder().getSize() == MIN_RADIUS_RANGE) {
+          isFinalArea = true;
+          runPlayers(p -> {
+            prefix.send(p, "<red>最終安置になりました！(これからはモブがわきません)");
+          });
+          world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+          world.getNearbyLivingEntities(world.getWorldBorder().getCenter(), MIN_RADIUS_RANGE, 320, MIN_RADIUS_RANGE)
+              .forEach(entity -> {
+                if (entity instanceof Player || entity instanceof Item) {
+                  return;
+                }
+                entity.remove();
+              });
+          ;
+        }
       }
     };
 
     run.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
     world.getWorldBorder().setSize(MIN_RADIUS_RANGE, MAX_SECOND);
-    world.setClearWeatherDuration(5 * 60 * 20);
+    world.setClearWeatherDuration(MAX_SECOND * 20);
     world.setTime(1000);
+    world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
     var loc = lobby.clone();
     runPlayers(p -> {
       var uuid = p.getUniqueId();
@@ -227,7 +250,14 @@ public class SurvivalSniperGame extends AbstractGame {
   public void endGame(UUID winner) {
     var name = Bukkit.getPlayer(winner).getName();
     runPlayers(p -> prefix.send(p, "<red><u>" + name + "</u>が勝ちました"));
-    GameSystem.finalizeGame();
+    new BukkitRunnable() {
+
+      @Override
+      public void run() {
+        GameSystem.finalizeGame();
+      }
+
+    }.runTask(ComMiniPlugin.getPlugin());
   }
 
   @Override
@@ -252,9 +282,10 @@ public class SurvivalSniperGame extends AbstractGame {
       bossBar = null;
     }
     players.clear();
-    _canPvP = false;
+    canPvP = false;
     lobby = null;
-    Bukkit.getWorld("world").getWorldBorder().reset();
+    world.getWorldBorder().reset();
+    isFinalArea = false;
   }
 
   @Override

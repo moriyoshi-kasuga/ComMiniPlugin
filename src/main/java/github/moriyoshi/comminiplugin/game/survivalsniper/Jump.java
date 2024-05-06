@@ -1,11 +1,5 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.item.CooldownItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -14,11 +8,17 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.item.CooldownItem;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.system.GamePlayer;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.Util;
+import net.kyori.adventure.text.Component;
 
 public class Jump extends CustomItem implements CooldownItem {
 
@@ -75,8 +75,7 @@ public class Jump extends CustomItem implements CooldownItem {
           this.cancel();
         }
         if (p.isOnGround()) {
-          p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 30, 138, true));
-          p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30, 256, true));
+          GamePlayer.getPlayer(p.getUniqueId()).setDisableMoveTick(30);
           this.cancel();
         }
       }

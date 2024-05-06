@@ -4,8 +4,12 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.constant.MenuItem;
 import github.moriyoshi.comminiplugin.item.CustomItem;
+
+import java.util.Objects;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,6 +20,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -149,4 +154,18 @@ public class GameListener implements Listener {
       e.setCancelled(true);
     }
   }
+
+  @EventHandler
+  public void onPlayerMove(PlayerMoveEvent e) {
+    var player = GamePlayer.getPlayer(e.getPlayer().getUniqueId());
+    if (player.getDisableMoveTick() == -1) {
+      return;
+    }
+    Location from = e.getFrom();
+    Location to = Objects.requireNonNull(e.getTo());
+    from.setYaw(to.getYaw());
+    from.setPitch(to.getPitch());
+    e.setTo(from);
+  }
+
 }

@@ -1,10 +1,5 @@
 package github.moriyoshi.comminiplugin.system;
 
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.api.JsonAPI;
-import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperSlot;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,11 +7,22 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.UUID;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.bukkit.Bukkit;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.api.JsonAPI;
+import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperSlot;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * GamePlayer
@@ -41,6 +47,22 @@ public class GamePlayer extends JsonAPI {
     }
     t.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
     hidenametag = t;
+    new BukkitRunnable() {
+
+      @Override
+      public void run() {
+        Bukkit.getOnlinePlayers().forEach(p -> {
+          var uuid = p.getUniqueId();
+          var player = GamePlayer.getPlayer(uuid);
+          int tick;
+          if ((tick = player.getDisableMoveTick()) > -1) {
+            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, 0, true));
+            player.setDisableMoveTick(--tick);
+          }
+        });
+      }
+
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
   }
 
   private static final HashMap<UUID, GamePlayer> players = new HashMap<>();
@@ -74,6 +96,10 @@ public class GamePlayer extends JsonAPI {
   @Getter
   @Setter
   private boolean isDebug;
+
+  @Getter
+  @Setter
+  private int disableMoveTick = -1;
 
   public void setHideNameTag(boolean isHideNameTag) {
     var p = Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName());

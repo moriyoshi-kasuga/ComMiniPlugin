@@ -23,12 +23,14 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
 
   public void setBorder() {
     SurvivalSniperGame game = getGame();
+    if (game.getWorld().getWorldBorder().getSize() == SurvivalSniperGame.MIN_RADIUS_RANGE) {
+      return;
+    }
     game.runPlayers(p -> game.prefix.send(p, "<red>WARNING! ボーダーの速度が速くなりました"));
     World world = game.getWorld();
     WorldBorder worldBorder = world.getWorldBorder();
     double size = worldBorder.getSize();
-    double time =
-        (size / (double) (SurvivalSniperGame.MAX_RADIUS_RANGE * 2)) * SurvivalSniperGame.MAX_SECOND;
+    double time = (size / (double) (SurvivalSniperGame.MAX_RADIUS_RANGE * 2)) * SurvivalSniperGame.MAX_SECOND;
     worldBorder.setSize(SurvivalSniperGame.MIN_RADIUS_RANGE, (long) time);
   }
 
@@ -113,7 +115,7 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
 
   @Override
   public void damageByEntity(EntityDamageByEntityEvent e) {
-    if (!getGame().canPvP() && e.getEntity() instanceof Player
+    if (!getGame().isCanPvP() && e.getEntity() instanceof Player
         && e.getDamager() instanceof Player attacker) {
       getGame().prefix.send(attacker, "<red>まだPvPはできません");
       e.setCancelled(true);

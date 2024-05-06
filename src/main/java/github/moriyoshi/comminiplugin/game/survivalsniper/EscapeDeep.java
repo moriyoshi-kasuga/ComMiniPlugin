@@ -2,6 +2,7 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.system.GamePlayer;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import org.bukkit.Material;
@@ -35,6 +36,7 @@ public class EscapeDeep extends CustomItem {
     }
     p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_HURT, 8, 1);
     new ItemBuilder(getItem()).amount(0);
+    GamePlayer.getPlayer(p.getUniqueId()).setDisableMoveTick(100);
   }
 
   @Override

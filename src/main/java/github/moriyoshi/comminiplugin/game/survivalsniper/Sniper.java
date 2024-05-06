@@ -80,8 +80,7 @@ public class Sniper extends CustomItem implements CooldownItem {
       }
       loc.getNearbyLivingEntities(2).forEach(entity -> {
         if (entity != p && entity.getBoundingBox().overlaps(v.clone().add(BULLET_SIZE),
-            v.clone().subtract(BULLET_SIZE)
-        )) {
+            v.clone().subtract(BULLET_SIZE))) {
           if (already.getOrDefault(entity, false)) {
             return;
           }
@@ -97,8 +96,7 @@ public class Sniper extends CustomItem implements CooldownItem {
       entity.damage(isHeadShot ? bullet.getHeadShot() : bullet.getDamage(), p);
       p.playSound(eyeLoc,
           isHeadShot ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP : Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE,
-          1, 1
-      );
+          1, 1);
     });
     p.getInventory().setItemInMainHand(new ItemBuilder(getItem()).type(Material.CLOCK).build());
   }
