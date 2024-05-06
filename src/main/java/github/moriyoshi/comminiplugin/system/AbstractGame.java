@@ -3,15 +3,17 @@ package github.moriyoshi.comminiplugin.system;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
-
 import java.util.Optional;
 import java.util.function.Consumer;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+@RequiredArgsConstructor
 public abstract class AbstractGame {
 
   public final String id;
@@ -21,49 +23,25 @@ public abstract class AbstractGame {
   public final PrefixUtil prefix;
   public final AbstractGameListener<?> listener;
 
-  public AbstractGame(String id, String name, String description, Material material,
-      PrefixUtil prefix, AbstractGameListener<?> listener) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.material = material;
-    this.prefix = prefix;
-    this.listener = listener;
-  }
+  @Getter
+  boolean isRunning = false;
 
-  boolean _isRunning = false;
+  @Getter
+  boolean isStarted = false;
 
-  boolean _isStarted = false;
-
-  boolean _canOpenMenu = true;
-
+  @Getter
   protected World world;
+  @Getter
   protected Location lobby;
 
   public abstract MenuHolder<ComMiniPlugin> adminMenu();
 
   public abstract Optional<MenuHolder<ComMiniPlugin>> gameMenu(Player player);
 
-  public final boolean canOpenMenu() {
-    return _canOpenMenu;
-  }
-
-  public final void setCanOpenMenu(boolean isOpen) {
-    _canOpenMenu = isOpen;
-  }
-
-  public final boolean isRunning() {
-    return _isRunning;
-  }
-
-  public final boolean isStarted() {
-    return _isStarted;
-  }
-
   /**
    * プレイヤーを観戦に追加します
    *
-   * @param plyaer 追加したらtrueです、追加できないならfalseを早期 return してください
+   * @param player 追加したらtrueです、追加できないならfalseを早期 return してください
    */
   public abstract boolean addSpec(Player player);
 
@@ -87,18 +65,6 @@ public abstract class AbstractGame {
    */
   public abstract void finishGame();
 
-  public final World getWorld() {
-    return this.world;
-  }
-
-  public final Location getLobby() {
-    return this.lobby;
-  }
-
-  public final void teleportLobby(Player player) {
-    player.teleport(this.lobby);
-  }
-
   /**
    * このプレイヤーのこのゲームに参加しているか
    *
@@ -119,4 +85,9 @@ public abstract class AbstractGame {
       }
     });
   }
+
+  public final void teleportLobby(Player player) {
+    player.teleport(this.lobby);
+  }
+
 }

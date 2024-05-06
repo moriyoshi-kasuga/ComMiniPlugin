@@ -73,7 +73,7 @@ public class ToggleButton<MH extends MenuHolder<?>> extends CycleButton<Boolean,
   }
 
   /**
-   * アイコンの外観を決定します。 実装では、このメソッドをオーバーライドすることができます。
+   * アイコンの外観を決定します。 実装では、このメソッドをオーバーライドできます。
    *
    * @param menuHolder the inventory holder for the menu
    * @param event      ボタンがトグルする原因となった InventoryClickEvent。

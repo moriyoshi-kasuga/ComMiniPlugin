@@ -26,8 +26,8 @@ public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
       "No - cancel").build();
 
   private final ItemStack defaultItemStack;
-  protected BiConsumer<ItemStack, InventoryClickEvent> yesAction;
-  protected BiConsumer<ItemStack, InventoryClickEvent> noAction;
+  protected final BiConsumer<ItemStack, InventoryClickEvent> yesAction;
+  protected final BiConsumer<ItemStack, InventoryClickEvent> noAction;
   protected boolean isCloseable = false;
   private ItemStack itemStack;
 
@@ -53,7 +53,7 @@ public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
       @Override
       public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
         ItemStack cursor = event.getCursor();
-        if (cursor == null || cursor.getType() == Material.AIR) {
+        if (cursor.isEmpty()) {
           event.getInventory().setItem(event.getSlot(), stack);
           itemStack = null;
           return;

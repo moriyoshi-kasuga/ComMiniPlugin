@@ -1,13 +1,5 @@
 package github.moriyoshi.comminiplugin.constant;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.item.CustomItem;
@@ -16,6 +8,13 @@ import github.moriyoshi.comminiplugin.system.buttons.AddSpecButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.TeleportLobbyButton;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * MenuItem
@@ -44,7 +43,7 @@ public class MenuItem extends CustomItem {
   }
 
   public static boolean open(Player p) {
-    if (GameSystem.inGame() && GameSystem.isStarted() && GameSystem.nowGame().isGamePlayer(p)) {
+    if (GameSystem.isStarted() && GameSystem.nowGame().isGamePlayer(p)) {
       return false;
     }
     new InnerMenu().openInv(p);
@@ -52,6 +51,7 @@ public class MenuItem extends CustomItem {
   }
 
   private static class InnerMenu extends MenuHolder<ComMiniPlugin> {
+
     public InnerMenu() {
       super(ComMiniPlugin.getPlugin(), 27, "<yellow>Menu");
       setButton(11, TeleportLobbyButton.of());

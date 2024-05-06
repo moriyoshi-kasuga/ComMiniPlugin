@@ -8,6 +8,7 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class SurvivalSniperAdminMenu extends MenuHolder<ComMiniPlugin> {
 
@@ -18,7 +19,8 @@ public class SurvivalSniperAdminMenu extends MenuHolder<ComMiniPlugin> {
         new ItemButton<MenuHolder<ComMiniPlugin>>(
             new ItemBuilder(Material.SPYGLASS).name("<red>Start").build()) {
           @Override
-          public void onClick(MenuHolder<ComMiniPlugin> holder, InventoryClickEvent event) {
+          public void onClick(@NotNull MenuHolder<ComMiniPlugin> holder,
+              @NotNull InventoryClickEvent event) {
             GameSystem.startGame(((Player) event.getWhoClicked()));
           }
         }

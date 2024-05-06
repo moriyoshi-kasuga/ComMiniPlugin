@@ -4,18 +4,16 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * よく使うメゾットがある
@@ -52,7 +50,6 @@ public class Util {
   public static void consoleCommand(String command) {
     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
   }
-
 
   /**
    * send to sender
@@ -139,7 +136,6 @@ public class Util {
     return LegacyComponentSerializer.legacyAmpersand().serializeOrNull(str);
   }
 
-
   /**
    * show title
    *
@@ -151,7 +147,8 @@ public class Util {
   public static void title(Player player, Object title, Object subtitle) {
     if (player != null && player.isOnline()) {
       player.showTitle(Title.title(Util.mm(Objects.requireNonNullElse(title, "")),
-          Util.mm(Objects.requireNonNullElse(subtitle, ""))));
+          Util.mm(Objects.requireNonNullElse(subtitle, ""))
+      ));
     }
   }
 
@@ -167,7 +164,8 @@ public class Util {
     if (player != null && player.isOnline()) {
       player.showTitle(Title.title(Util.mm(Objects.requireNonNullElse(title, "")),
           Util.mm(Objects.requireNonNullElse(subtitle, "")),
-          Title.Times.times(Duration.ZERO, Duration.ofSeconds(seconds), Duration.ZERO)));
+          Title.Times.times(Duration.ZERO, Duration.ofSeconds(seconds), Duration.ZERO)
+      ));
     }
   }
 

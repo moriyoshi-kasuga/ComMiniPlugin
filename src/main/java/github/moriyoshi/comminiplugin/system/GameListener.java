@@ -1,11 +1,16 @@
 package github.moriyoshi.comminiplugin.system;
 
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
+import github.moriyoshi.comminiplugin.constant.MenuItem;
+import github.moriyoshi.comminiplugin.item.CustomItem;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -14,16 +19,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
-import github.moriyoshi.comminiplugin.constant.MenuItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-
 public class GameListener implements Listener {
 
   private static final GameListener INSTANCE = new GameListener();
 
-  public static final GameListener getInstance() {
+  public static GameListener getInstance() {
     return INSTANCE;
   }
 
@@ -54,7 +54,8 @@ public class GameListener implements Listener {
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
-    p.teleportAsync(ComMiniWorld.LOBBY);
+    p.setGameMode(GameMode.SURVIVAL);
+    p.teleport(ComMiniWorld.LOBBY);
     var inv = p.getInventory();
     var flag = true;
     for (var i : inv) {
@@ -122,9 +123,23 @@ public class GameListener implements Listener {
   }
 
   @EventHandler
-  public void breakBlock(BlockBreakEvent e) {
+  public void blockBreak(BlockBreakEvent e) {
     if (isGamePlayer(e.getPlayer())) {
-      GameSystem.nowGame().listener.breakBlock(e);
+      GameSystem.nowGame().listener.blockBreak(e);
+      return;
+    }
+    if (isDebugPlayer(e.getPlayer())) {
+      return;
+    }
+    if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+      e.setCancelled(true);
+    }
+  }
+
+  @EventHandler
+  public void blockPlace(BlockPlaceEvent e) {
+    if (isGamePlayer(e.getPlayer())) {
+      GameSystem.nowGame().listener.blockPlace(e);
       return;
     }
     if (isDebugPlayer(e.getPlayer())) {

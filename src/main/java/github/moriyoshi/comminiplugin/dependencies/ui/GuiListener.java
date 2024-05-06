@@ -1,8 +1,11 @@
 package github.moriyoshi.comminiplugin.dependencies.ui;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,7 +24,7 @@ public class GuiListener implements Listener {
 
   private static final GuiListener INSTANCE = new GuiListener();
 
-  private final WeakHashMap<Inventory, WeakReference<GuiInventoryHolder<?>>> guiInventories = new WeakHashMap<>();
+  private final WeakHashMap<Object/* NMS Inventory */, WeakReference<GuiInventoryHolder<?>>> guiInventories = new WeakHashMap<>();
 
   private GuiListener() {
   }
@@ -49,7 +52,8 @@ public class GuiListener implements Listener {
       return true; // yes, reference equality
     }
 
-    return guiInventories.putIfAbsent(inventory, new WeakReference<>(holder)) == null;
+    return guiInventories.putIfAbsent(getBaseInventory(inventory), new WeakReference<>(holder))
+        == null;
   }
 
   /**
@@ -59,12 +63,20 @@ public class GuiListener implements Listener {
    * @return ホルダー - またはインベントリにホルダーが登録されていない場合は null。
    */
   public GuiInventoryHolder<?> getHolder(Inventory inventory) {
+    // If the inventory's owner is a tile entity, don't call getHolder() in order to
+    // prevent snapshotting of the inventory.
+    // See:
+    // https://www.spigotmc.org/threads/why-items-with-lots-of-metadata-actually-cause-lag-an-inventoryholder-psa.607711/
+    if (inventory.getLocation() != null) {
+      return null;
+    }
     InventoryHolder holder = inventory.getHolder();
     if (holder instanceof GuiInventoryHolder) {
       return (GuiInventoryHolder<?>) holder;
     }
 
-    WeakReference<GuiInventoryHolder<?>> reference = guiInventories.get(inventory);
+    WeakReference<GuiInventoryHolder<?>> reference = guiInventories.get(
+        getBaseInventory(inventory));
     if (reference == null) {
       return null;
     }
@@ -155,4 +167,48 @@ public class GuiListener implements Listener {
     onGuiInventoryEvent(event, gui -> gui.onClose(event));
   }
 
+  // ===== nms stuff =====
+
+  private static final Class<?> CRAFT_INVENTORY;
+  private static final Method GET_INVENTORY;
+
+  static {
+    Class<?> craftInventoryClass = null;
+    Method getInventoryMethod = null;
+    Class<?> serverClass = Bukkit.getServer().getClass();
+    if ("CraftServer".equals(serverClass.getSimpleName())) {
+      String serverPackage = serverClass.getPackageName();
+      String className = serverPackage + ".inventory.CraftInventory";
+      try {
+        craftInventoryClass = Class.forName(className);
+        getInventoryMethod = craftInventoryClass.getMethod("getInventory");
+      } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+      }
+    }
+    CRAFT_INVENTORY = craftInventoryClass;
+    GET_INVENTORY = getInventoryMethod;
+  }
+
+  /**
+   * If the inventory is a CraftInventory, get the NMS inventory. If not, just return the bukkit
+   * Inventory.
+   *
+   * @param inventory the bukkit inventory
+   * @return the authorative inventory
+   */
+  // This works around a bug in CraftBukkit where CraftInventory instances cannot
+  // be used as WeakHashMap keys because CraftInventory instances are created
+  // on-demand.
+  // They are not stored in the nms inventory, hence to obtain an object that
+  // persists the inventory, we need the NMS inventory: IInventory(mc-dev)
+  // Container(moj-map).
+  private static Object getBaseInventory(Inventory inventory) {
+    if (CRAFT_INVENTORY != null && GET_INVENTORY != null && CRAFT_INVENTORY.isInstance(inventory)) {
+      try {
+        return GET_INVENTORY.invoke(inventory);
+      } catch (InvocationTargetException | IllegalAccessException ignored) {
+      }
+    }
+    return inventory;
+  }
 }

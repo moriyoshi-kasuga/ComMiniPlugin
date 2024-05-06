@@ -27,7 +27,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Array;
 import java.util.Objects;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -44,7 +43,8 @@ public class FastBoardVanila extends FastBoardBase<String> {
     try {
       MethodHandles.Lookup lookup = MethodHandles.lookup();
       Class<?> craftChatMessageClass = FastReflection.obcClass("util.CraftChatMessage");
-      MESSAGE_FROM_STRING = lookup.unreflect(craftChatMessageClass.getMethod("fromString", String.class));
+      MESSAGE_FROM_STRING = lookup.unreflect(
+          craftChatMessageClass.getMethod("fromString", String.class));
       EMPTY_MESSAGE = Array.get(MESSAGE_FROM_STRING.invoke(""), 0);
     } catch (Throwable t) {
       throw new ExceptionInInitializerError(t);
@@ -151,9 +151,8 @@ public class FastBoardVanila extends FastBoardBase<String> {
   }
 
   /**
-   * Return if the player has a prefix/suffix characters limit.
-   * By default, it returns true only in 1.12 or lower.
-   * This method can be overridden to fix compatibility with some versions support
+   * Return if the player has a prefix/suffix characters limit. By default, it returns true only in
+   * 1.12 or lower. This method can be overridden to fix compatibility with some versions support
    * plugin.
    *
    * @return max length

@@ -1,9 +1,14 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import de.tr7zw.changeme.nbtapi.NBT;
+import github.moriyoshi.comminiplugin.item.CooldownItem;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.Util;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
-
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -20,13 +25,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import de.tr7zw.changeme.nbtapi.NBT;
-import github.moriyoshi.comminiplugin.item.CooldownItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
-import net.kyori.adventure.text.Component;
 
 public class Sniper extends CustomItem implements CooldownItem {
 
@@ -82,7 +80,8 @@ public class Sniper extends CustomItem implements CooldownItem {
       }
       loc.getNearbyLivingEntities(2).forEach(entity -> {
         if (entity != p && entity.getBoundingBox().overlaps(v.clone().add(BULLET_SIZE),
-            v.clone().subtract(BULLET_SIZE))) {
+            v.clone().subtract(BULLET_SIZE)
+        )) {
           if (already.getOrDefault(entity, false)) {
             return;
           }
@@ -96,8 +95,10 @@ public class Sniper extends CustomItem implements CooldownItem {
     }
     already.forEach((entity, isHeadShot) -> {
       entity.damage(isHeadShot ? bullet.getHeadShot() : bullet.getDamage(), p);
-      p.playSound(eyeLoc, isHeadShot ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP : Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE,
-          1, 1);
+      p.playSound(eyeLoc,
+          isHeadShot ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP : Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE,
+          1, 1
+      );
     });
     p.getInventory().setItemInMainHand(new ItemBuilder(getItem()).type(Material.CLOCK).build());
   }
@@ -117,7 +118,7 @@ public class Sniper extends CustomItem implements CooldownItem {
   @Override
   public @NotNull Optional<Consumer<Player>> heldItem(ItemStack item) {
     return Optional.of(player -> {
-      String bullet = Bullet.getFirstBullet(player).map(t -> t.getName()).orElse(null);
+      String bullet = Bullet.getFirstBullet(player).map(Bullet::getName).orElse(null);
       boolean flag = NBT.modify(item, nbt -> {
         var compound = nbt.getCompound(nbtKey);
         if (compound.hasTag("nextBullet")) {
@@ -127,7 +128,8 @@ public class Sniper extends CustomItem implements CooldownItem {
       });
       if (flag) {
         new ItemBuilder(item).name(DEFAULT_NAME
-            .append(StringUtils.isEmpty(bullet) ? Util.mm("<gray>: <red>None") : Util.mm("<gray>: <white>" + bullet)));
+            .append(StringUtils.isEmpty(bullet) ? Util.mm("<gray>: <red>None")
+                : Util.mm("<gray>: <white>" + bullet)));
         NBT.modify(item, nbt -> {
           nbt.getCompound(nbtKey).setString("nextBullet", bullet);
         });

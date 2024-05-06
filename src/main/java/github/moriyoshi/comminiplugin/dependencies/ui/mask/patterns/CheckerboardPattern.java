@@ -98,15 +98,10 @@ public class CheckerboardPattern implements Pattern<CheckerboardPattern.Tile> {
     }
 
     private Tile other() {
-      switch (this) {
-        case BLACK:
-          return WHITE;
-        case WHITE:
-          return BLACK;
-        default:
-          assert false;
-          return null;
-      }
+      return switch (this) {
+        case BLACK -> WHITE;
+        case WHITE -> BLACK;
+      };
     }
   }
 

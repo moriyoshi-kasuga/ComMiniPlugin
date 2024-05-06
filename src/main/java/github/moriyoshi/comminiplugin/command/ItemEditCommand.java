@@ -69,7 +69,7 @@ public class ItemEditCommand extends CommandAPICommand {
 
   public ItemEditCommand() {
     super("itemedit");
-    setAliases(new String[] { "ie" });
+    setAliases(new String[]{"ie"});
     withPermission(CommandPermission.OP);
     withSubcommand(new CommandAPICommand("help")
         .executesPlayer((player, objects) -> {
@@ -84,7 +84,8 @@ public class ItemEditCommand extends CommandAPICommand {
                 int arg = (int) args.get(0);
                 if (builder.getLore().size() < arg) {
                   IE.send(sender,
-                      FormatterUtil.format(ONLYLORE, Map.of("lore", builder.getLore().size())));
+                      FormatterUtil.format(ONLYLORE, Map.of("lore", builder.getLore().size()))
+                  );
                   return builder;
                 }
                 IE.send(sender, FormatterUtil.format(REMOVELORE, Map.of("lore", arg)));
@@ -110,7 +111,8 @@ public class ItemEditCommand extends CommandAPICommand {
                 int i = (int) objects.get(0);
                 String s = objects.get(1).toString();
                 IE.send(player,
-                    FormatterUtil.format(SETLORE, Map.of("lore", i, "name", s)));
+                    FormatterUtil.format(SETLORE, Map.of("lore", i, "name", s))
+                );
                 return builder.setLore(i - 1, Util.mm(s));
               });
             }));
@@ -123,12 +125,14 @@ public class ItemEditCommand extends CommandAPICommand {
                 int i = (int) objects.get(0);
                 if (builder.getLore().size() < i) {
                   IE.send(player,
-                      FormatterUtil.format(ONLYLORE, Map.of("lore", builder.getLore().size())));
+                      FormatterUtil.format(ONLYLORE, Map.of("lore", builder.getLore().size()))
+                  );
                   return builder;
                 }
                 String s = objects.get(1).toString();
                 IE.send(player,
-                    FormatterUtil.format(INSERTLORE, Map.of("lore", i, "name", s)));
+                    FormatterUtil.format(INSERTLORE, Map.of("lore", i, "name", s))
+                );
                 return builder.insertLore(i - 1, Util.mm(s));
               });
             }));
@@ -158,7 +162,8 @@ public class ItemEditCommand extends CommandAPICommand {
               itemEdit(player, builder -> {
                 int object = (int) objects.get(0);
                 IE.send(player,
-                    FormatterUtil.format(CUSTOMMODELDATA, Map.of("data", object)));
+                    FormatterUtil.format(CUSTOMMODELDATA, Map.of("data", object))
+                );
                 return builder.changeItemMeta(itemMeta -> itemMeta.setCustomModelData(object));
               });
             }));
@@ -187,7 +192,9 @@ public class ItemEditCommand extends CommandAPICommand {
                     Enchantment object = (Enchantment) objects.get(0);
                     IE.send(player,
                         FormatterUtil.format(ENCHANT_SET,
-                            Map.of("level", 1, "enchant", object.getKey().getKey())));
+                            Map.of("level", 1, "enchant", object.getKey().getKey())
+                        )
+                    );
                     return builder.enchant(object, 1);
                   });
                 }))
@@ -202,7 +209,9 @@ public class ItemEditCommand extends CommandAPICommand {
                     IE.send(player,
                         FormatterUtil.format(ENCHANT_SET,
                             Map.of("level", i, "enchant", object.getKey()
-                                .getKey())));
+                                .getKey())
+                        )
+                    );
                     return builder.enchant(object, i);
                   });
                 }))
@@ -214,7 +223,9 @@ public class ItemEditCommand extends CommandAPICommand {
                     Enchantment object = (Enchantment) objects.get(0);
                     IE.send(player,
                         FormatterUtil.format(ENCHANT_REMOVE,
-                            Map.of("enchant", object.getKey().getKey())));
+                            Map.of("enchant", object.getKey().getKey())
+                        )
+                    );
                     return builder.unEnchant(object);
                   });
                 })));
@@ -241,7 +252,9 @@ public class ItemEditCommand extends CommandAPICommand {
                 }
                 IE.send(sender,
                     FormatterUtil.format(DURABILITY,
-                        Map.of("durability", size)));
+                        Map.of("durability", size)
+                    )
+                );
                 return builder.changeMeta(
                     (Consumer<Damageable>) consumer -> consumer.setDamage(max - size));
               });

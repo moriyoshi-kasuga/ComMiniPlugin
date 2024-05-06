@@ -1,5 +1,9 @@
 package github.moriyoshi.comminiplugin.dependencies.ui.animate;
 
+import java.util.Objects;
+
+import org.bukkit.inventory.ItemStack;
+
 import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.mask.Mask;
 import github.moriyoshi.comminiplugin.dependencies.ui.mask.Pattern;
@@ -7,8 +11,6 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.dependencies.ui.util.IntBiConsumer;
 import github.moriyoshi.comminiplugin.dependencies.ui.util.IntGenerator;
 import github.moriyoshi.comminiplugin.dependencies.ui.util.Option;
-import java.util.Objects;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * アニメーションのフレームを表現する。
@@ -17,11 +19,8 @@ import org.bukkit.inventory.ItemStack;
  * @param <Item>   the container element type
  */
 @SuppressWarnings("rawtypes")
-public class Frame<Symbol, Item> {
-
-  private final Pattern<Symbol> pattern;
-  private final Mask<Symbol, Item> mask;
-  private final IntGenerator activeSlots;
+public record Frame<Symbol, Item>(Pattern<Symbol> pattern, Mask<Symbol, Item> mask,
+    IntGenerator activeSlots) {
 
   /**
    * フレームを組み立てる
@@ -39,7 +38,8 @@ public class Frame<Symbol, Item> {
   /**
    * コンテナにフレームを適用する。
    *
-   * @param container コンテナを使用します。通常、これは {@link MenuHolder#setButton(int, MenuButton)} or
+   * @param container コンテナを使用します。通常、これは
+   *                  {@link MenuHolder#setButton(int, MenuButton)} or
    *                  {@link org.bukkit.inventory.Inventory#setItem(int, ItemStack)};
    */
   public void apply(IntBiConsumer<? super Item> container) {
@@ -87,11 +87,6 @@ public class Frame<Symbol, Item> {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(pattern, mask, activeSlots);
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (o == this) {
       return true;
@@ -108,18 +103,6 @@ public class Frame<Symbol, Item> {
   @Override
   public String toString() {
     return "Frame(pattern=" + pattern + ",mask=" + mask + ",activeSlots=" + activeSlots + ")";
-  }
-
-  public Pattern<Symbol> getPattern() {
-    return pattern;
-  }
-
-  public Mask<Symbol, Item> getMask() {
-    return mask;
-  }
-
-  public IntGenerator getActiveSlots() {
-    return activeSlots;
   }
 
 }

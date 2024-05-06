@@ -1,8 +1,12 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import github.moriyoshi.comminiplugin.system.AbstractGameListener;
+import github.moriyoshi.comminiplugin.util.Util;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -14,30 +18,52 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.system.AbstractGameListener;
-import github.moriyoshi.comminiplugin.util.Util;
 
 public class SurvivalSniperListener implements AbstractGameListener<SurvivalSniperGame> {
 
-  @Override
-  public void quit(PlayerQuitEvent e) {
-    var game = getGame();
-    game.players.remove(e.getPlayer().getUniqueId());
+  public void setBorder() {
+    SurvivalSniperGame game = getGame();
+    game.runPlayers(p -> game.prefix.send(p, "<red>WARNING! ボーダーの速度が速くなりました"));
+    World world = game.getWorld();
+    WorldBorder worldBorder = world.getWorldBorder();
+    double size = worldBorder.getSize();
+    double time =
+        (size / (double) (SurvivalSniperGame.MAX_RADIUS_RANGE * 2)) * SurvivalSniperGame.MAX_SECOND;
+    worldBorder.setSize(SurvivalSniperGame.MIN_RADIUS_RANGE, (long) time);
+  }
+
+  private void reducePlayer(Player p) {
+    SurvivalSniperGame game = getGame();
+    var loc = p.getLocation();
+    var world = p.getWorld();
+    var inv = p.getInventory();
+    inv.forEach(i -> {
+      if (i == null || i.isEmpty()) {
+        return;
+      }
+      world.dropItemNaturally(loc, i);
+    });
+    inv.clear();
     var alives = game.players.entrySet().stream().filter(entry -> entry.getValue().getLeft())
         .toList();
     if (alives.size() != 1) {
+      if (alives.size() == 2) {
+        setBorder();
+      }
+      game.teleportLobby(p);
       return;
     }
-    final var s = alives.get(0).getKey();
-    new BukkitRunnable() {
-      @Override
-      public void run() {
-        game.endGame(s);
-      }
-    }.runTask(ComMiniPlugin.getPlugin());
+    game.endGame(alives.get(0).getKey());
+  }
+
+  @Override
+  public void quit(PlayerQuitEvent e) {
+    var p = e.getPlayer();
+    var flag = getGame().players.remove(p.getUniqueId()).getLeft();
+    if (!flag) {
+      return;
+    }
+    reducePlayer(p);
   }
 
   @EventHandler
@@ -54,38 +80,14 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
   public void death(PlayerDeathEvent e) {
     SurvivalSniperGame game = getGame();
     var p = e.getPlayer();
-    var loc = p.getLocation();
-    var world = p.getWorld();
-    var inv = p.getInventory();
-    p.setGameMode(GameMode.SPECTATOR);
-    inv.forEach(i -> {
-      if (i == null || i.isEmpty()) {
-        return;
-      }
-      world.dropItemNaturally(loc, i);
-    });
-    inv.clear();
     var uuid = p.getUniqueId();
     if (game.players.get(uuid).getRight() == 0) {
       e.deathMessage(Util.mm(p.getName() + "は洞窟で酸素がなくなった..."));
     }
-    game.runPlayers(pl -> {
-      Util.send(pl, e.deathMessage());
-    });
+    p.setGameMode(GameMode.SPECTATOR);
+    game.runPlayers(pl -> Util.send(pl, e.deathMessage()));
     game.players.put(uuid, Pair.of(false, -1));
-    var alives = game.players.entrySet().stream().filter(entry -> entry.getValue().getLeft())
-        .toList();
-    if (alives.size() != 1) {
-      game.teleportLobby(p);
-      return;
-    }
-    final var s = alives.get(0).getKey();
-    new BukkitRunnable() {
-      @Override
-      public void run() {
-        game.endGame(s);
-      }
-    }.runTask(ComMiniPlugin.getPlugin());
+    reducePlayer(p);
   }
 
   @EventHandler
@@ -97,10 +99,11 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
     if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
       return;
     }
-    if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.CRAFTING_TABLE && p.isSneaking()) {
+    if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.CRAFTING_TABLE
+        && p.isSneaking()) {
       e.setCancelled(true);
       var item = p.getInventory().getItemInMainHand();
-      if (item == null || item.isEmpty() || !item.getType().name().contains("PICKAXE")) {
+      if (item.isEmpty() || !item.getType().name().contains("PICKAXE")) {
         new SurvivalSniperCustomMenu().openInv(p);
       } else {
         new SurvivalSniperTradeMenu().openInv(p);
@@ -110,7 +113,8 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
 
   @Override
   public void damageByEntity(EntityDamageByEntityEvent e) {
-    if (!getGame().canPvP() && e.getEntity() instanceof Player && e.getDamager() instanceof Player attacker) {
+    if (!getGame().canPvP() && e.getEntity() instanceof Player
+        && e.getDamager() instanceof Player attacker) {
       getGame().prefix.send(attacker, "<red>まだPvPはできません");
       e.setCancelled(true);
     }

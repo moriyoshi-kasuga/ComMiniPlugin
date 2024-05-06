@@ -34,9 +34,8 @@ public abstract class FileAPI<T> {
   }
 
   /**
-   * 引数のプラグインのフォルダーの #path #name のファイルを読み込みます <br>
-   * 例 [plugin=TEST] [path=first/second] [name=fileName] <br>
-   * -> TEST/first/second/fileName のファイルを読み込みます
+   * 引数のプラグインのフォルダーの #path #name のファイルを読み込みます <br> 例 [plugin=TEST] [path=first/second]
+   * [name=fileName] <br> -> TEST/first/second/fileName のファイルを読み込みます
    *
    * @param plugin 読み込みたいフォルダーのプラグイン
    * @param name   読み込むファイルの名前

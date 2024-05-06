@@ -27,6 +27,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * {@link org.bukkit.inventory.InventoryView}のトップインベントリのクリックにのみ反応するGuiInventoryHolderです。
@@ -330,7 +331,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
    * @apiNote ボタンのないスロットは、このイテレータの対象外です。
    */
   @Override
-  public ListIterator<MenuButton<?>> iterator() {
+  public @NotNull ListIterator<MenuButton<?>> iterator() {
     return new ListIterator<>() {
 
       int cursor = -1;

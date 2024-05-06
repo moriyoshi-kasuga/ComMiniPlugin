@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.dependencies.ui.button;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
+import lombok.Getter;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +16,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH> {
 
+  /**
+   * -- GETTER -- 現在の状態を取得する。
+   */
+  @Getter
   protected T currentState;
   protected UnaryOperator<T> stateUpdater;
 
@@ -44,15 +49,6 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
   }
 
   /**
-   * 現在の状態を取得する。
-   *
-   * @return the current state
-   */
-  public T getCurrentState() {
-    return currentState;
-  }
-
-  /**
    * 現在の状態を新しい状態に設定します。
    *
    * @param newState the new current state
@@ -72,7 +68,7 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
   }
 
   /**
-   * このボタンをトグルします。サブクラスは、オーバーライドすることによって、現在の状態を更新する前と後の余分な副作用を追加することができます。 {beforeToggle(MenuHolder,
+   * このボタンをトグルします。サブクラスは、オーバーライドすることによって、現在の状態を更新する前と後の余分な副作用を追加できます。 {beforeToggle(MenuHolder,
    * InventoryClickEvent)}と{@link #afterToggle(MenuHolder, InventoryClickEvent)}です。
    *
    * @param holder the MenuHolder
@@ -128,8 +124,7 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
   }
 
   /**
-   * アイコンの外観を決定します。 サブクラスは、{@link #setIcon(ItemStack)}
-   * を呼び出したりオーバーライドしたりせずに、このメソッドを安全にオーバーライドすることができます。
+   * アイコンの外観を決定します。 サブクラスは、{@link #setIcon(ItemStack)} を呼び出したりオーバーライドしたりせずに、このメソッドを安全にオーバーライドできます。
    *
    * @param menuHolder the inventory holder for the menu
    * @param event      the InventoryClickEvent that caused the button to toggle

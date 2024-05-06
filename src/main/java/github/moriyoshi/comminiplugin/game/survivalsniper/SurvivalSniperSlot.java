@@ -1,16 +1,21 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-
+@RequiredArgsConstructor
 public class SurvivalSniperSlot {
+  @Getter
+  public final List<Integer> slots;
+
   public static final Map<Integer, Supplier<ItemStack>> defaults = new HashMap<>() {
     {
       put(0, () -> new Sniper().getItem());
@@ -24,12 +29,6 @@ public class SurvivalSniperSlot {
       put(8, () -> null);
     }
   };
-
-  public final List<Integer> slots;
-
-  public SurvivalSniperSlot(List<Integer> slots) {
-    this.slots = slots;
-  }
 
   public ItemStack[] toItemStacks() {
     return slots.stream().map(slot -> defaults.get(slot).get()).toArray(ItemStack[]::new);

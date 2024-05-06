@@ -1,18 +1,17 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 import java.util.Collections;
-
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
-
 public class SurvivalSniperSlotMenu extends MenuHolder<ComMiniPlugin> {
+
   private final SurvivalSniperSlot slots;
 
   public SurvivalSniperSlotMenu(SurvivalSniperSlot slots) {
@@ -30,10 +29,10 @@ public class SurvivalSniperSlotMenu extends MenuHolder<ComMiniPlugin> {
   private void update(Player p, int slot) {
     if (swapSlot == -1) {
       swapSlot = slot;
-      p.playSound(p.getLocation(), Sound.BLOCK_COPPER_TRAPDOOR_OPEN, 1, 1);
+      p.playSound(p.getLocation(), Sound.BLOCK_IRON_TRAPDOOR_OPEN, 1, 1);
       return;
     }
-    p.playSound(p.getLocation(), Sound.BLOCK_COPPER_TRAPDOOR_OPEN, 1, 1);
+    p.playSound(p.getLocation(), Sound.BLOCK_IRON_TRAPDOOR_OPEN, 1, 1);
     Collections.swap(slots.slots, swapSlot, slot);
     swapSlot = -1;
     set();

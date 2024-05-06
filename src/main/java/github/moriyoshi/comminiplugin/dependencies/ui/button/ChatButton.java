@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.dependencies.ui.button;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Objects;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,8 +15,12 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <MH> the menu holder type
  */
+@Getter
 public class ChatButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
+  /**
+   * -- GETTER -- Get the chat message.
+   */
   private String message;
 
   /**
@@ -65,7 +70,7 @@ public class ChatButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
   /**
    * {@link #onClick(MenuHolder, InventoryClickEvent)}によって送信されるチャットメッセージを計算します。
-   * サブクラスは、一定でないチャットメッセージのためにこのメソッドをオーバーライドすることができます。 デフォルトの実装では、{@link #getMessage()}に委譲されます。
+   * サブクラスは、一定でないチャットメッセージのためにこのメソッドをオーバーライドできます。 デフォルトの実装では、{@link #getMessage()}に委譲されます。
    *
    * @param menuHolder the menu holder
    * @param event      the InventoryClickEvent
@@ -73,15 +78,6 @@ public class ChatButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
    */
   protected String getMessage(MH menuHolder, InventoryClickEvent event) {
     return getMessage();
-  }
-
-  /**
-   * Get the chat message.
-   *
-   * @return the message
-   */
-  public String getMessage() {
-    return message;
   }
 
   /**

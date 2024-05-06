@@ -114,7 +114,8 @@ public abstract class JsonAPI extends FileAPI<JsonObject> {
         generateLoadData(new JsonObject());
       } else {
         generateLoadData(ComMiniPlugin.gson.fromJson(new JsonReader(fileReader),
-            JsonObject.class));
+            JsonObject.class
+        ));
       }
     } catch (IOException ignored) {
       generateLoadData(new JsonObject());

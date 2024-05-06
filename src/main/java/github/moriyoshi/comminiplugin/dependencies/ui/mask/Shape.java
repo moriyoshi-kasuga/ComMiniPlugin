@@ -7,6 +7,7 @@ import static github.moriyoshi.comminiplugin.dependencies.ui.mask.Shapes.grid;
 
 import java.util.Arrays;
 import java.util.Objects;
+import lombok.Getter;
 import org.bukkit.entity.Llama;
 import org.bukkit.entity.Mule;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -25,9 +26,11 @@ public interface Shape {
   Shape BARREL = grid(9, 3, SlotType.CONTAINER);
   Shape BEACON = generic(1, SlotType.CRAFTING);
   Shape BLAST_FURNACE = combine(generic(1, SlotType.CRAFTING), generic(1, SlotType.FUEL),
-      generic(1, SlotType.RESULT));
+      generic(1, SlotType.RESULT)
+  );
   Shape BREWING = combine(generic(3, SlotType.RESULT), generic(1, SlotType.CRAFTING),
-      generic(1, SlotType.FUEL));
+      generic(1, SlotType.FUEL)
+  );
   Shape CARTOGRAPHY = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape CHEST1 = chest(1);
   Shape CHEST2 = chest(2);
@@ -44,7 +47,8 @@ public interface Shape {
   Shape ENCHANTING = generic(2, SlotType.CRAFTING);
   Shape ENDER_CHEST = chest(3);
   Shape FURNACE = combine(generic(1, SlotType.CRAFTING), generic(1, SlotType.FUEL),
-      generic(1, SlotType.RESULT));
+      generic(1, SlotType.RESULT)
+  );
   Shape GRINDSTONE = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape HOPPER = grid(5, 1, SlotType.CONTAINER);
   Shape JUKEBOX = generic(1, SlotType.CONTAINER);
@@ -53,12 +57,14 @@ public interface Shape {
   Shape MERCHANT = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape PLAYER = combine(grid(9, 1, SlotType.QUICKBAR), grid(9, 3, SlotType.CONTAINER),
       generic(4, SlotType.ARMOR),
-      generic(1, SlotType.CONTAINER /* off hand */));
+      generic(1, SlotType.CONTAINER /* offhand */)
+  );
   Shape SHULKER_BOX = grid(9, 3, SlotType.CONTAINER);
   Shape SMITHING = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape SMITHING_NEW = combine(generic(3, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape SMOKER = combine(generic(1, SlotType.CRAFTING), generic(1, SlotType.FUEL),
-      generic(1, SlotType.RESULT));
+      generic(1, SlotType.RESULT)
+  );
   Shape STONECUTTER = combine(generic(1, SlotType.CRAFTING), generic(1, SlotType.RESULT));
   Shape WORKBENCH = combine(grid(3, 3, SlotType.CRAFTING), generic(1, SlotType.RESULT));
 
@@ -212,6 +218,7 @@ class Shapes {
 final class GenericShape implements Shape {
 
   private final int size;
+  @Getter
   private final SlotType slotType;
 
   GenericShape(int size, SlotType slotType) {
@@ -237,10 +244,6 @@ final class GenericShape implements Shape {
 
   int getSize() {
     return size;
-  }
-
-  public SlotType getSlotType() {
-    return slotType;
   }
 
   @Override

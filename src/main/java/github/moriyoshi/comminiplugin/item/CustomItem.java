@@ -1,10 +1,14 @@
 package github.moriyoshi.comminiplugin.item;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -16,13 +20,6 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
-import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
 
 public abstract class CustomItem implements InterfaceItem {
 
@@ -36,8 +33,9 @@ public abstract class CustomItem implements InterfaceItem {
     if (registers.containsKey(identifier)) {
       try {
         return registers.get(identifier).getDeclaredConstructor().newInstance();
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-          | NoSuchMethodException | SecurityException e) {
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
+               InvocationTargetException
+               | NoSuchMethodException | SecurityException e) {
         throw new RuntimeException(e);
       }
     }
@@ -49,8 +47,9 @@ public abstract class CustomItem implements InterfaceItem {
     if (ci.isPresent()) {
       try {
         return registers.get(ci.get()).getDeclaredConstructor(ItemStack.class).newInstance(item);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-          | NoSuchMethodException | SecurityException e) {
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
+               InvocationTargetException
+               | NoSuchMethodException | SecurityException e) {
         throw new RuntimeException(e);
       }
     }
@@ -106,10 +105,7 @@ public abstract class CustomItem implements InterfaceItem {
    */
   public static boolean equalsIdentifier(String identifier, ItemStack item) {
     var id = getIdentifier(item);
-    if (id.isEmpty()) {
-      return false;
-    }
-    return id.get().equals(identifier);
+    return id.map(s -> s.equals(identifier)).orElse(false);
   }
 
   /**
@@ -121,10 +117,7 @@ public abstract class CustomItem implements InterfaceItem {
    */
   public static boolean equalsIdentifier(ItemStack itemStack, ItemStack item) {
     var id = getIdentifier(itemStack);
-    if (id.isEmpty()) {
-      return false;
-    }
-    return equalsIdentifier(id.get(), item);
+    return id.filter(s -> equalsIdentifier(s, item)).isPresent();
   }
 
   @Override
@@ -150,6 +143,7 @@ public abstract class CustomItem implements InterfaceItem {
         return false;
       }
       ReadableNBT compound = readableNBT.getCompound(nbtKey);
+      assert compound != null;
       return compound.hasTag("identifier");
     });
   }
@@ -171,6 +165,7 @@ public abstract class CustomItem implements InterfaceItem {
         return Optional.empty();
       }
       ReadableNBT compound = nbt.getCompound(nbtKey);
+      assert compound != null;
       return Optional.of(compound.getString("identifier"));
     });
   }
@@ -198,7 +193,7 @@ public abstract class CustomItem implements InterfaceItem {
         public void run() {
           ItemStack item = player.getInventory().getItemInMainHand();
           if (CustomItem.isCustomItem(item) && v.equals(CustomItem.getCustomItem(item))) {
-            heldItem(item).get().accept(player);
+            heldItem(item).ifPresent(consumer -> consumer.accept(player));
             return;
           }
           this.cancel();

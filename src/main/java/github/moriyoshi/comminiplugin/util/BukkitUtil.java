@@ -3,7 +3,6 @@ package github.moriyoshi.comminiplugin.util;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.HeightMap;
@@ -30,14 +29,17 @@ public final class BukkitUtil {
   }
 
   public static boolean randomTeleport(Entity entity, Location center, int radius, int maxTry) {
-    return randomTeleport(entity, center.getWorld(), center.getBlockX(), center.getBlockZ(), radius, maxTry);
+    return randomTeleport(entity, center.getWorld(), center.getBlockX(), center.getBlockZ(), radius,
+        maxTry
+    );
   }
 
   public static boolean randomTeleport(Entity entity, World world, int bx, int bz, int radius) {
     return randomTeleport(entity, world, bx, bz, radius, 100);
   }
 
-  public static boolean randomTeleport(Entity entity, World world, int bx, int bz, int radius, int maxTry) {
+  public static boolean randomTeleport(Entity entity, World world, int bx, int bz, int radius,
+      int maxTry) {
     var alerdy = new HashSet<Pair<Integer, Integer>>();
     for (int i = 0; i < maxTry; i++) {
       var x = random.nextInt(-radius, radius);
@@ -48,9 +50,11 @@ public final class BukkitUtil {
       }
       alerdy.add(pair);
       var block = world.getHighestBlockAt(bx + x, bz + z,
-          HeightMap.WORLD_SURFACE);
+          HeightMap.WORLD_SURFACE
+      );
       if (block.isSolid() && block.isCollidable()) {
-        entity.teleport(block.getLocation().add(0.5, 1.0, 0.5).setDirection(entity.getLocation().getDirection()));
+        entity.teleport(block.getLocation().add(0.5, 1.0, 0.5)
+            .setDirection(entity.getLocation().getDirection()));
         return true;
       }
     }

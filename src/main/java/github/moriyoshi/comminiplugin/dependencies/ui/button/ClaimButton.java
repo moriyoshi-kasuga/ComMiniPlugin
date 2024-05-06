@@ -188,7 +188,7 @@ public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   }
 
   /**
-   * ItemStackが正常に転送された後、追加のアクションを実行するために使用することができるコールバックです。
+   * ItemStackが正常に転送された後、追加のアクションを実行するために使用できるコールバックです。
    *
    * @param <MH> the menu holder type
    */

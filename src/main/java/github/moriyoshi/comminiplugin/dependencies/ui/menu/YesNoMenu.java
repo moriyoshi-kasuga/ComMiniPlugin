@@ -32,7 +32,8 @@ public class YesNoMenu<P extends Plugin> extends MenuHolder<P> {
   /**
    * はいボタン、いいえボタンのコールバックについて
    */
-  protected Consumer<InventoryClickEvent> yesAction, noAction;
+  protected final Consumer<InventoryClickEvent> yesAction;
+  protected final Consumer<InventoryClickEvent> noAction;
   protected boolean isCloseable = false;
 
   /**
@@ -153,7 +154,7 @@ public class YesNoMenu<P extends Plugin> extends MenuHolder<P> {
   }
 
   /**
-   * ボタンの作成を補助するヘルパーメソッドです。オーバーライドすることで、ボタンの作成をカスタマイズすることができます。
+   * ボタンの作成を補助するヘルパーメソッドです。オーバーライドすることで、ボタンの作成をカスタマイズできます。
    *
    * @param yesOrNo - yesボタンを作成する場合はtrue、noボタンを作成する場合はfalseを指定します。
    * @return a new button

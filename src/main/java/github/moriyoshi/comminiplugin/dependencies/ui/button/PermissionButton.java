@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import lombok.Getter;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -15,6 +16,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
  */
 public class PermissionButton<MH extends MenuHolder<?>> extends PredicateButton<MH> {
 
+  /**
+   * -- GETTER -- このボタンの使用許可を取得します
+   */
+  @Getter
   private final String permission;
   private final Consumer<? super HumanEntity> noPermissionCallback;
 
@@ -43,16 +48,7 @@ public class PermissionButton<MH extends MenuHolder<?>> extends PredicateButton<
   }
 
   /**
-   * このボタンの使用許可を取得します
-   *
-   * @return 許可文字列
-   */
-  public String getPermission() {
-    return permission;
-  }
-
-  /**
-   * オプションで、ボタンがクリックされ、インベントリ・クリッカーに権限がない場合に実行されるコールバックを取得することができます。
+   * オプションで、ボタンがクリックされ、インベントリ・クリッカーに権限がない場合に実行されるコールバックを取得できます。
    *
    * @return コールバックがある場合は、コールバックを含むOptionalを返します。コールバックがない場合は、空のOptionalが返される。
    */

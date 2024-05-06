@@ -2,7 +2,6 @@ package github.moriyoshi.comminiplugin.dependencies.ui.button;
 
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import java.util.function.BiConsumer;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +27,7 @@ public class CurrentButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   @Override
   public void onClick(@NotNull MH holder, @NotNull InventoryClickEvent event) {
     ItemStack cursor = event.getCursor();
-    if (cursor == null || cursor.getType() == Material.AIR) {
+    if (cursor.isEmpty()) {
       event.getInventory().setItem(event.getSlot(), stack);
       nullConsumer.accept(holder, event);
       return;

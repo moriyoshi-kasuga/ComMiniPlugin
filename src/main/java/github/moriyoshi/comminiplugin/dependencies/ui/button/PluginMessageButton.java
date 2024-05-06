@@ -4,6 +4,7 @@ import com.google.common.io.ByteStreams;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import java.util.Arrays;
 import java.util.Objects;
+import lombok.Getter;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -19,7 +20,15 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PluginMessageButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
+  /**
+   * -- GETTER -- プラグインメッセージを送信するプラグインを取得します。
+   */
+  @Getter
   private Plugin sendingPlugin;
+  /**
+   * -- GETTER -- プラグインメッセージが送信されるチャンネルを取得します。
+   */
+  @Getter
   private String channel;
   private byte[] pluginMessage;
 
@@ -134,30 +143,12 @@ public class PluginMessageButton<MH extends MenuHolder<?>> extends ItemButton<MH
   }
 
   /**
-   * プラグインメッセージを送信するプラグインを取得します。
-   *
-   * @return the plugin
-   */
-  public Plugin getSendingPlugin() {
-    return sendingPlugin;
-  }
-
-  /**
    * プラグインメッセージを送信するプラグインを設定します。
    *
    * @param sendingPlugin the sending plugin
    */
   public void setSendingPlugin(Plugin sendingPlugin) {
     this.sendingPlugin = Objects.requireNonNull(sendingPlugin, "Plugin cannot be null");
-  }
-
-  /**
-   * プラグインメッセージが送信されるチャンネルを取得します。
-   *
-   * @return the channel
-   */
-  public String getChannel() {
-    return channel;
   }
 
   /**

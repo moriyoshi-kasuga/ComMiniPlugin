@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link MenuHolder} に置くことができるボタン。
+ * {@link MenuHolder} に置けるボタン。
  *
  * @param <MH> the menu holder type
  */

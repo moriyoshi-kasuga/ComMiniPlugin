@@ -18,7 +18,7 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
 
   private final BiPredicate<MH, InventoryClickEvent> predicate;
   private final BiConsumer<MH, InventoryClickEvent> predicateFailedCallback;
-  protected MenuButton<MH> delegate;
+  protected final MenuButton<MH> delegate;
 
   /**
    * PredicateButtonを作成する。

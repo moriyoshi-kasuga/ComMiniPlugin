@@ -29,7 +29,6 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.function.Predicate;
-
 import org.bukkit.Bukkit;
 
 /**
@@ -41,10 +40,13 @@ public final class FastReflection {
 
   private static final String NM_PACKAGE = "net.minecraft";
   private static final String OBC_PACKAGE = Bukkit.getServer().getClass().getPackage().getName();
-  private static final String NMS_PACKAGE = OBC_PACKAGE.replace("org.bukkit.craftbukkit", NM_PACKAGE + ".server");
+  private static final String NMS_PACKAGE = OBC_PACKAGE.replace("org.bukkit.craftbukkit",
+      NM_PACKAGE + ".server"
+  );
 
   private static final MethodType VOID_METHOD_TYPE = MethodType.methodType(void.class);
-  private static final boolean NMS_REPACKAGED = optionalClass(NM_PACKAGE + ".network.protocol.Packet").isPresent();
+  private static final boolean NMS_REPACKAGED = optionalClass(
+      NM_PACKAGE + ".network.protocol.Packet").isPresent();
 
   private static volatile Object theUnsafe;
 
@@ -58,7 +60,8 @@ public final class FastReflection {
 
   public static String nmsClassName(String post1_17package, String className) {
     if (NMS_REPACKAGED) {
-      String classPackage = post1_17package == null ? NM_PACKAGE : NM_PACKAGE + '.' + post1_17package;
+      String classPackage =
+          post1_17package == null ? NM_PACKAGE : NM_PACKAGE + '.' + post1_17package;
 
       return classPackage + '.' + className;
     }
@@ -66,7 +69,8 @@ public final class FastReflection {
     return NMS_PACKAGE + '.' + className;
   }
 
-  public static Class<?> nmsClass(String post1_17package, String className) throws ClassNotFoundException {
+  public static Class<?> nmsClass(String post1_17package, String className)
+      throws ClassNotFoundException {
     return Class.forName(nmsClassName(post1_17package, className));
   }
 
@@ -94,7 +98,6 @@ public final class FastReflection {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public static Object enumValueOf(Class<?> enumClass, String enumName) {
     return Enum.valueOf(enumClass.asSubclass(Enum.class), enumName);
   }
@@ -111,16 +114,19 @@ public final class FastReflection {
     }
   }
 
-  static Class<?> innerClass(Class<?> parentClass, Predicate<Class<?>> classPredicate) throws ClassNotFoundException {
+  static Class<?> innerClass(Class<?> parentClass, Predicate<Class<?>> classPredicate)
+      throws ClassNotFoundException {
     for (Class<?> innerClass : parentClass.getDeclaredClasses()) {
       if (classPredicate.test(innerClass)) {
         return innerClass;
       }
     }
-    throw new ClassNotFoundException("No class in " + parentClass.getCanonicalName() + " matches the predicate.");
+    throw new ClassNotFoundException(
+        "No class in " + parentClass.getCanonicalName() + " matches the predicate.");
   }
 
-  static Optional<MethodHandle> optionalConstructor(Class<?> declaringClass, MethodHandles.Lookup lookup,
+  static Optional<MethodHandle> optionalConstructor(Class<?> declaringClass,
+      MethodHandles.Lookup lookup,
       MethodType type) throws IllegalAccessException {
     try {
       return Optional.of(lookup.findConstructor(declaringClass, type));
@@ -129,7 +135,8 @@ public final class FastReflection {
     }
   }
 
-  public static PacketConstructor findPacketConstructor(Class<?> packetClass, MethodHandles.Lookup lookup)
+  public static PacketConstructor findPacketConstructor(Class<?> packetClass,
+      MethodHandles.Lookup lookup)
       throws Exception {
     try {
       MethodHandle constructor = lookup.findConstructor(packetClass, VOID_METHOD_TYPE);
@@ -150,12 +157,15 @@ public final class FastReflection {
     }
 
     MethodType allocateMethodType = MethodType.methodType(Object.class, Class.class);
-    MethodHandle allocateMethod = lookup.findVirtual(theUnsafe.getClass(), "allocateInstance", allocateMethodType);
+    MethodHandle allocateMethod = lookup.findVirtual(theUnsafe.getClass(), "allocateInstance",
+        allocateMethodType
+    );
     return () -> allocateMethod.invoke(theUnsafe, packetClass);
   }
 
   @FunctionalInterface
   interface PacketConstructor {
+
     Object invoke() throws Throwable;
   }
 }

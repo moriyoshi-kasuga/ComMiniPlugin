@@ -75,7 +75,7 @@ public interface IntGenerator extends PrimitiveIterator.OfInt {
   }
 
   /**
-   * このジェネレータに別のジェネレータを連結させる。返されたジェネレータは、まず最初のジェネレータからアイテムを生成し、
+   * このジェネレータに別のジェネレータを連結させる。返されたジェネレータは、最初のジェネレータからアイテムを生成し、
    * 最初のジェネレータが終わったときにだけ、2番目のジェネレータに問い合わせをします。
    *
    * @param another the second generator

@@ -2,12 +2,12 @@ package github.moriyoshi.comminiplugin.system;
 
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.jetbrains.annotations.NotNull;
 
 public interface AbstractGameListener<T extends AbstractGame> extends Listener {
 
@@ -17,8 +17,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener {
   }
 
   /**
-   * プレイヤーがサーバーに入ったら呼び出されます
-   * (すべてゲームのプレイヤーだけです)
+   * プレイヤーがサーバーに入ったら呼び出されます (すべてゲームのプレイヤーだけです)
    *
    * @param e event
    */
@@ -26,8 +25,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener {
   }
 
   /**
-   * プレイヤーがサーバーから抜けたら呼び出されます
-   * (すべてゲームのプレイヤーだけです)
+   * プレイヤーがサーバーから抜けたら呼び出されます (すべてゲームのプレイヤーだけです)
    *
    * @param e event
    */
@@ -35,12 +33,10 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener {
   }
 
   /**
-   * プレイヤーが死んだら呼び出されます
-   * (すべてゲームのプレイヤーだけです)
+   * プレイヤーが死んだら呼び出されます (すべてゲームのプレイヤーだけです)
    *
    * @param e event
    */
-  @NotNull
   default void death(PlayerDeathEvent e) {
   }
 
@@ -48,25 +44,29 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener {
    * @param e event
    */
   default void damage(EntityDamageEvent e) {
-    return;
   }
 
   /**
    * Entity 同士の攻撃です instanceof Player を忘れずに
    *
    * @param e event
-   * @return is cancel
    */
   default void damageByEntity(EntityDamageByEntityEvent e) {
   }
 
   /**
-   * ブロックを壊したらこのイベントに来ます
-   * (すべてゲームのプレイヤーだけです)
+   * ブロックを壊したらこのイベントに来ます (すべてゲームのプレイヤーだけです)
    *
    * @param e event
-   * @return is cancel
    */
-  default void breakBlock(BlockBreakEvent e) {
+  default void blockBreak(BlockBreakEvent e) {
+  }
+
+  /**
+   * ブロックを置いたらこのイベントが呼ばれます (すべてのゲームのプレイヤーだけです)
+   *
+   * @param e event
+   */
+  default void blockPlace(BlockPlaceEvent e) {
   }
 }

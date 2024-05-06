@@ -3,7 +3,6 @@ package github.moriyoshi.comminiplugin.item;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
@@ -59,7 +58,6 @@ public interface InterfaceItem {
    *
    * @param player player
    */
-  @NotNull
   default void runTick(Player player) {
   }
 
@@ -68,7 +66,6 @@ public interface InterfaceItem {
    *
    * @param player player
    */
-  @NotNull
   default void runSecond(Player player) {
   }
 

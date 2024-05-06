@@ -28,17 +28,23 @@ def relocates = [
         'org.reflections': 'github.moriyoshi.comminiplugin.dependencies.reflections'
 ]
 
+def lombok = 'org.projectlombok:lombok:1.18.32'
+
 dependencies {
     compileOnly paperAPI
     testCompileOnly paperAPI
+
+    compileOnly lombok
+	annotationProcessor lombok
+	
+	testCompileOnly lombok
+	testAnnotationProcessor lombok
 
     shadow reflections
     shadow anvilGUI
     shadow commandAPI
     shadow nbtAPI
 }
-
-def buildFileName = "${project.name}"
 
 def targetJavaVersion = 17
 java {

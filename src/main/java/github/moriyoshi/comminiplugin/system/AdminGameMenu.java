@@ -7,7 +7,6 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 public class AdminGameMenu extends MenuHolder<ComMiniPlugin> {
@@ -23,12 +22,8 @@ public class AdminGameMenu extends MenuHolder<ComMiniPlugin> {
             @NotNull InventoryClickEvent event) {
           Player player = (Player) event.getWhoClicked();
           if (GameSystem.initializeGame(player, game.id)) {
-            new RedirectButton<MenuHolder<?>>() {
-              @Override
-              public Inventory to(MenuHolder<?> MenuHolder, InventoryClickEvent event) {
-                return game.adminMenu().getInventory();
-              }
-            }.onClick(holder, event);
+            ((RedirectButton<MenuHolder<?>>) (MenuHolder, event1) -> game.adminMenu()
+                .getInventory()).onClick(holder, event);
           }
         }
       });

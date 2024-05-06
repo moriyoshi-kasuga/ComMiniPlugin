@@ -54,7 +54,7 @@ public class TeleportButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   }
 
   /**
-   * ボタンがクリックされたときに、プレイヤーがテレポートする場所を取得します。 サブクラスはこのメソッドをオーバーライドして、定数でない位置を使用することができます。
+   * ボタンがクリックされたときに、プレイヤーがテレポートする場所を取得します。 サブクラスはこのメソッドをオーバーライドして、定数でない位置を使用できます。
    * デフォルトの実装では、{@link #getTo()}に委譲されます。
    *
    * @param menuHolder the menu holder

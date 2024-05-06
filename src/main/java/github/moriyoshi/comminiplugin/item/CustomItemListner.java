@@ -1,8 +1,8 @@
 package github.moriyoshi.comminiplugin.item;
 
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,8 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-
 public class CustomItemListner implements Listener {
 
   private static final CustomItemListner INSTANCE = new CustomItemListner();
@@ -36,17 +34,15 @@ public class CustomItemListner implements Listener {
       @Override
       public void run() {
         var flag = tick <= 0;
-        Bukkit.getOnlinePlayers().forEach(p -> {
-          p.getInventory().forEach(i -> {
-            if (CustomItem.isCustomItem(i)) {
-              var custom = CustomItem.getCustomItem(i);
-              custom.runTick(p);
-              if (flag) {
-                custom.runSecond(p);
-              }
+        Bukkit.getOnlinePlayers().forEach(p -> p.getInventory().forEach(i -> {
+          if (CustomItem.isCustomItem(i)) {
+            var custom = CustomItem.getCustomItem(i);
+            custom.runTick(p);
+            if (flag) {
+              custom.runSecond(p);
             }
-          });
-        });
+          }
+        }));
         if (flag) {
           tick = 20;
           return;
@@ -86,7 +82,6 @@ public class CustomItemListner implements Listener {
     CustomItem customItem = CustomItem.getCustomItem(item);
     e.setCancelled(true);
     customItem.interact(e);
-    return;
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
@@ -129,7 +124,7 @@ public class CustomItemListner implements Listener {
     if (CustomItem.isCustomItem(click)) {
       list.add(CustomItem.getCustomItem(click));
     }
-    if (list.size() > 0) {
+    if (!list.isEmpty()) {
       if (list.stream().allMatch(i -> {
         if (i.canMoveOtherInv(e)) {
           return false;

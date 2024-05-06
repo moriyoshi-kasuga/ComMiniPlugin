@@ -3,6 +3,8 @@ package github.moriyoshi.comminiplugin.dependencies.ui.button;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import java.util.Objects;
 import java.util.Optional;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.command.Command;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -16,8 +18,20 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
+  /**
+   * -- GETTER -- Get the command.
+   */
+  @Getter
   private Command command;
+  /**
+   * -- GETTER -- Get the arguments.
+   */
+  @Getter
   private String[] arguments;
+  /**
+   * -- SETTER -- 結果ハンドラーを設定する。
+   */
+  @Setter
   private CommandResultHandler<MH> resultHandler;
 
   /**
@@ -107,30 +121,12 @@ public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   }
 
   /**
-   * Get the command.
-   *
-   * @return the command
-   */
-  public Command getCommand() {
-    return command;
-  }
-
-  /**
    * コマンドを設定します。
    *
    * @param command the command
    */
   public void setCommand(Command command) {
     this.command = Objects.requireNonNull(command, "Command cannot be null");
-  }
-
-  /**
-   * Get the arguments.
-   *
-   * @return the arguments
-   */
-  public String[] getArguments() {
-    return arguments;
   }
 
   /**
@@ -149,15 +145,6 @@ public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
    */
   public Optional<? extends CommandResultHandler<MH>> getResultHandler() {
     return Optional.ofNullable(resultHandler);
-  }
-
-  /**
-   * 結果ハンドラーを設定する。
-   *
-   * @param resultHandler the result handler
-   */
-  public void setResultHandler(CommandResultHandler<MH> resultHandler) {
-    this.resultHandler = resultHandler;
   }
 
   /**

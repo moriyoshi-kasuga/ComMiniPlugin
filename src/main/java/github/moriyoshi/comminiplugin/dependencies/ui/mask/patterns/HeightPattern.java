@@ -2,13 +2,17 @@ package github.moriyoshi.comminiplugin.dependencies.ui.mask.patterns;
 
 import github.moriyoshi.comminiplugin.dependencies.ui.mask.Pattern;
 import java.util.stream.IntStream;
+import lombok.Getter;
 
 public class HeightPattern implements Pattern<Boolean> {
 
+  @Getter
   private final int width;
 
+  @Getter
   private final int start;
 
+  @Getter
   private final int end;
 
   private final IntStream intStream;
@@ -39,18 +43,6 @@ public class HeightPattern implements Pattern<Boolean> {
     }
     int inventoryRow = location / 9;
     return intStream.anyMatch(value -> value == inventoryRow);
-  }
-
-  public int getWidth() {
-    return width;
-  }
-
-  public int getStart() {
-    return start;
-  }
-
-  public int getEnd() {
-    return end;
   }
 
 }

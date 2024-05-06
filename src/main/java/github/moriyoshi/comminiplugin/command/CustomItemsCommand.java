@@ -20,6 +20,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class CustomItemsCommand extends CommandAPICommand {
 
@@ -60,7 +61,7 @@ public class CustomItemsCommand extends CommandAPICommand {
       setButton(getPageSize(), new ItemButton<>(
           new ItemBuilder(Material.ENDER_PEARL).name("<green>最初のページにもどる").build()) {
         @Override
-        public void onClick(MenuHolder<?> holder, InventoryClickEvent event) {
+        public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
           open(((Player) event.getWhoClicked()));
         }
       });
@@ -68,7 +69,7 @@ public class CustomItemsCommand extends CommandAPICommand {
           new ItemButton<>(
               new ItemBuilder(Material.BOOK).name("<aqua>クリックで文字検索").build()) {
             @Override
-            public void onClick(MenuHolder<?> holder, InventoryClickEvent event) {
+            public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
               AnvilInputs
                   .postClose(AnvilInputs.getInput(getPlugin(), "<aqua>文字で検索", (t, u) -> t,
                           (s, completion) -> List.of(
@@ -126,7 +127,8 @@ public class CustomItemsCommand extends CommandAPICommand {
           setButton(slot,
               new ItemButton<>(new ItemBuilder(item).addLore("").addLore(key).build()) {
                 @Override
-                public void onClick(MenuHolder<?> holder, InventoryClickEvent event) {
+                public void onClick(@NotNull MenuHolder<?> holder,
+                    @NotNull InventoryClickEvent event) {
                   event.getWhoClicked().getInventory()
                       .addItem(CustomItem.getNewCustomItem(key).getItem());
                 }

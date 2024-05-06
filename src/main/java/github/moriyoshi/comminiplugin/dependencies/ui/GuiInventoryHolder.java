@@ -1,7 +1,10 @@
 package github.moriyoshi.comminiplugin.dependencies.ui;
 
+import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.Util;
 import java.util.Objects;
-
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -15,17 +18,11 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
-
 /**
  * GUI用のInventoryHolderです。
  * <p>
  * このクラスは、独自のプラグインで拡張することを想定しています。 ただ、{@link #onClick(InventoryClickEvent)},
- * {@link #onDrag(InventoryDragEvent)} をオーバーライドします。
- * {@link #onOpen(InventoryOpenEvent)} または
+ * {@link #onDrag(InventoryDragEvent)} をオーバーライドします。 {@link #onOpen(InventoryOpenEvent)} または
  * {@link #onClose(InventoryCloseEvent)} メソッド。
  * InventoryClickEventとInventoryDragEventは、デフォルトでキャンセルされるように設定されています。
  * しかし、サブクラスで{@code event.setCancelled(false)}を使用すれば、問題なくキャンセル解除が可能です。
@@ -62,8 +59,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * @param plugin      your plugin
    * @param type        the inventory type
    * @param title       the title
-   * @param guiListener the listener that invokes the
-   *                    {@link #onOpen(InventoryOpenEvent)},
+   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
    *                    {@link #onClick(InventoryClickEvent)} and
    *                    {@link #onClose(InventoryCloseEvent)} methods
    */
@@ -81,10 +77,8 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    *
    * @param plugin your plugin
    * @param title  the title
-   * @param size   the chest size (should be a multiple of 9 and ranging from 9 to
-   *               54)
-   *               {@link #onClick(InventoryClickEvent)} and
-   *               {@link #onClose(InventoryCloseEvent)}
+   * @param size   the chest size (should be a multiple of 9 and ranging from 9 to 54)
+   *               {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)}
    *               methods
    */
   public GuiInventoryHolder(P plugin, int size, String title) {
@@ -95,11 +89,9 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * 指定されたサイズとタイトルで、プラグイン用の新しい chest-GuiInventoryHolder を構築します。
    *
    * @param plugin      your plugin
-   * @param size        the chest size (should be a multiple of 9 and ranging from
-   *                    9 to 54)
+   * @param size        the chest size (should be a multiple of 9 and ranging from 9 to 54)
    * @param title       the title
-   * @param guiListener the listener that invokes the
-   *                    {@link #onOpen(InventoryOpenEvent)},
+   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
    *                    {@link #onClick(InventoryClickEvent)} and
    *                    {@link #onClose(InventoryCloseEvent)} methods
    */
@@ -128,8 +120,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    *
    * @param plugin      your plugin
    * @param type        the inventory type
-   * @param guiListener the listener that invokes the
-   *                    {@link #onOpen(InventoryOpenEvent)},
+   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
    *                    {@link #onClick(InventoryClickEvent)} and
    *                    {@link #onClose(InventoryCloseEvent)} methods
    */
@@ -145,10 +136,8 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * 指定されたサイズのプラグイン用の新しいchest-GuiInventoryHolderを構築します。
    *
    * @param plugin your plugin
-   * @param size   the chest size (should be a multiple of 9 and ranging from 9 to
-   *               54)
-   *               {@link #onClick(InventoryClickEvent)} and
-   *               {@link #onClose(InventoryCloseEvent)}
+   * @param size   the chest size (should be a multiple of 9 and ranging from 9 to 54)
+   *               {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)}
    *               methods
    */
   public GuiInventoryHolder(P plugin, int size) {
@@ -159,10 +148,8 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * 指定されたサイズのプラグイン用の新しいchest-GuiInventoryHolderを構築します。
    *
    * @param plugin      your plugin
-   * @param size        the chest size (should be a multiple of 9 and ranging from
-   *                    9 to 54)
-   * @param guiListener the listener that invokes the
-   *                    {@link #onOpen(InventoryOpenEvent)},
+   * @param size        the chest size (should be a multiple of 9 and ranging from 9 to 54)
+   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
    *                    {@link #onClick(InventoryClickEvent)} and
    *                    {@link #onClose(InventoryCloseEvent)} methods
    */
@@ -181,8 +168,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * net.kyori.adventure.text.Component)}やそのオーバーロードによるものです。
    * これを行いたい理由の1つは、独自のContainer実装でカスタムシフトクリックの動作を実装するためです。
    * <p>
-   * 引数として与えられたインベントリのInventoryHolderは、この新しいGuiInventoryHolderでなければなりません。 A code
-   * example:
+   * 引数として与えられたインベントリのInventoryHolderは、この新しいGuiInventoryHolderでなければなりません。 A code example:
    *
    * <pre><code>
    * public class MyNMSInventory extends InventorySubContainer implements ITileEntityContainer {
@@ -209,8 +195,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * </code></pre>
    *
    * @param plugin    your plugin
-   * @param inventory the custom inventory {@link #onClick(InventoryClickEvent)}
-   *                  and
+   * @param inventory the custom inventory {@link #onClick(InventoryClickEvent)} and
    *                  {@link #onClose(InventoryCloseEvent)} methods
    */
   public GuiInventoryHolder(P plugin, Inventory inventory) {
@@ -224,8 +209,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * net.kyori.adventure.text.Component)}やそのオーバーロードによるものです。
    * これを行いたい理由の1つは、独自のContainer実装でカスタムシフトクリックの動作を実装するためです。
    * <p>
-   * 引数として与えられたインベントリのInventoryHolderは、この新しいGuiInventoryHolderでなければなりません。 A code
-   * example:
+   * 引数として与えられたインベントリのInventoryHolderは、この新しいGuiInventoryHolderでなければなりません。 A code example:
    *
    * <pre><code>
    * public class MyNMSInventory extends InventorySubContainer implements ITileEntityContainer {
@@ -253,8 +237,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    *
    * @param plugin      your plugin
    * @param inventory   the custom inventory
-   * @param guiListener the listener that invokes the
-   *                    {@link #onOpen(InventoryOpenEvent)},
+   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
    *                    {@link #onClick(InventoryClickEvent)} and
    *                    {@link #onClose(InventoryCloseEvent)} methods
    */
@@ -277,8 +260,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
   }
 
   /**
-   * InventoryClickEvent を必要としない {@link #getClickedInventory(InventoryClickEvent)}
-   * のオーバーロードです。
+   * InventoryClickEvent を必要としない {@link #getClickedInventory(InventoryClickEvent)} のオーバーロードです。
    *
    * @param rawSlot the slot that was clicked
    * @param view    the view in which there was a click
@@ -356,8 +338,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
   }
 
   /**
-   * 対応するInventoryViewでアイテムがドラッグされたときに呼び出される。
-   * この方法は、どのインベントリにドラッグされたかを保証するものではありません。
+   * 対応するInventoryViewでアイテムがドラッグされたときに呼び出される。 この方法は、どのインベントリにドラッグされたかを保証するものではありません。
    *
    * @param event the inventory drag event
    */

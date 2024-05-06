@@ -1,12 +1,10 @@
 package github.moriyoshi.comminiplugin.dependencies.ui.button;
 
+import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.WeakHashMap;
-
 import org.bukkit.inventory.ItemStack;
-
-import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 
 /**
  * アイコンが付いたボタンです。
@@ -17,8 +15,7 @@ public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
 
   private final WeakHashMap<MH, Set<Integer>> inventoriesContainingMe = new WeakHashMap<>();
   /**
-   * このボタンのアイコンです アイコンを更新するには inventoryを更新したいボタンは、代わりに {@link #setIcon(ItemStack)}
-   * を使用してください。
+   * このボタンのアイコンです アイコンを更新するには inventoryを更新したいボタンは、代わりに {@link #setIcon(ItemStack)} を使用してください。
    */
   protected ItemStack stack;
 
@@ -59,8 +56,7 @@ public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
   }
 
   /**
-   * このボタンがメニューに追加されたときに呼び出される。 ItemButton は、自身が含まれるメニューのキャッシュを保持する。
-   * また、{@link #setIcon(ItemStack)}
+   * このボタンがメニューに追加されたときに呼び出される。 ItemButton は、自身が含まれるメニューのキャッシュを保持する。 また、{@link #setIcon(ItemStack)}
    * によってアイコンが更新されると、それらのインベントリ内のアイテムスタックが更新されます。
    *
    * @param menuHolder the menu

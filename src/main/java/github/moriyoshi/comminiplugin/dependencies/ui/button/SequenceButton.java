@@ -85,7 +85,7 @@ public class SequenceButton<P extends Plugin, MHR extends MenuHolder<P>, MH1 ext
   /**
    * onRemoveコールバックを第2ボタンと第1ボタンの順に委譲する。
    *
-   * @param holder このボタンが取り出されるホルダー
+   * @param holder このボタンが消されるホルダー
    * @param slot   メニューの中の位置
    * @return 両ボタンのonRemoveコールバックがtrueを返したかどうか
    * @see MenuHolder#unsetButton(int)
