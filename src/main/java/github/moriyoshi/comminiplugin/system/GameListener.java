@@ -21,7 +21,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
 
 public class GameListener implements Listener {
 
@@ -58,12 +57,11 @@ public class GameListener implements Listener {
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
-    BukkitUtil.initializePlayer(p);
+    GameSystem.initializePlayer(p);
     if (isGamePlayer(p)) {
       GameSystem.nowGame().listener.join(e);
       return;
     }
-    GamePlayer.getPlayer(p.getUniqueId()).initialize();
   }
 
   @EventHandler
@@ -80,7 +78,7 @@ public class GameListener implements Listener {
       GameSystem.nowGame().listener.death(e);
       return;
     }
-    e.getPlayer().teleportAsync(ComMiniWorld.LOBBY);
+    e.getPlayer().teleport(ComMiniWorld.LOBBY);
   }
 
   @EventHandler

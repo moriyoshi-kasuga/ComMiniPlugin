@@ -1,7 +1,18 @@
 package github.moriyoshi.comminiplugin;
 
+import javax.tools.DocumentationTool.Location;
+
+import org.bukkit.World.Environment;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.reflections.Reflections;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import de.tr7zw.changeme.nbtapi.NBTContainer;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
@@ -25,16 +36,7 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemListner;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.system.GamePlayer;
-import javax.tools.DocumentationTool.Location;
 import lombok.Getter;
-import org.bukkit.World.Environment;
-import org.bukkit.Bukkit;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
-import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.reflections.Reflections;
 
 public final class ComMiniPlugin extends JavaPlugin {
 
@@ -77,10 +79,6 @@ public final class ComMiniPlugin extends JavaPlugin {
           var flag = !player.isDebug();
           player.setDebug(flag);
           ComMiniPrefix.SYSTEM.send(p, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
-        }));
-    registerCommand(new CommandAPICommand("gr")
-        .executes((sender, args) -> {
-          Bukkit.dispatchCommand(sender, "plugman reload ComMiniPlugin");
         }));
     GamePlayer.gameInitialize();
     new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();

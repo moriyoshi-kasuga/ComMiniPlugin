@@ -1,22 +1,18 @@
 package github.moriyoshi.comminiplugin.util;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.BoundingBox;
 
-import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
-import github.moriyoshi.comminiplugin.constant.MenuItem;
-import github.moriyoshi.comminiplugin.system.GamePlayer;
+import io.papermc.paper.entity.TeleportFlag;
 
 public final class BukkitUtil {
 
@@ -45,38 +41,16 @@ public final class BukkitUtil {
 
   public static boolean randomTeleport(Entity entity, World world, int bx, int bz, int radius,
       int maxTry) {
-    var alerdy = new HashSet<Pair<Integer, Integer>>();
     for (int i = 0; i < maxTry; i++) {
       var x = random.nextInt(-radius, radius);
       var z = random.nextInt(-radius, radius);
-      var pair = Pair.of(x, z);
-      if (alerdy.contains(pair)) {
-        continue;
-      }
-      alerdy.add(pair);
-      var block = world.getHighestBlockAt(bx + x, bz + z,
-          HeightMap.WORLD_SURFACE);
+      var block = world.getHighestBlockAt(bx + x, bz + z, HeightMap.WORLD_SURFACE);
       if (block.isSolid() && block.isCollidable()) {
-        entity.teleport(block.getLocation().add(0.5, 1.0, 0.5)
-            .setDirection(entity.getLocation().getDirection()));
+        entity.teleportAsync(block.getLocation(), TeleportCause.PLUGIN, TeleportFlag.Relative.YAW,
+            TeleportFlag.Relative.PITCH);
         return true;
       }
     }
     return false;
-  }
-
-  /**
-   * サーバー参加時やロビーに返す時、ゲーム終了時に使えるメゾット
-   *
-   * @param p target player
-   */
-  public static void initializePlayer(Player p) {
-    GamePlayer.getPlayer(p.getUniqueId()).initialize();
-    p.getInventory().clear();
-    p.getInventory().addItem(new MenuItem().getItem());
-    p.setExperienceLevelAndProgress(0);
-    p.teleport(ComMiniWorld.LOBBY);
-    p.setGameMode(GameMode.SURVIVAL);
-    p.clearActivePotionEffects();
   }
 }

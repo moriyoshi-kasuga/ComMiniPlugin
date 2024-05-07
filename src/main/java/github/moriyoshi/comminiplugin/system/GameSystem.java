@@ -3,13 +3,15 @@ package github.moriyoshi.comminiplugin.system;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
+import github.moriyoshi.comminiplugin.constant.MenuItem;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperGame;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
 
 public class GameSystem {
 
@@ -94,7 +96,7 @@ public class GameSystem {
     _nowGame.isStarted = false;
     HandlerList.unregisterAll(_nowGame.listener);
     _nowGame.runPlayers(p -> {
-      BukkitUtil.initializePlayer(p);
+      initializePlayer(p);
     });
     _nowGame.finishGame();
     _nowGame.prefix.cast("<green>閉幕です");
@@ -108,6 +110,21 @@ public class GameSystem {
 
   public static boolean isStarted() {
     return inGame() && _nowGame.isStarted;
+  }
+
+  /**
+   * サーバー参加時やロビーに返す時、ゲーム終了時に使えるメゾット
+   *
+   * @param p target player
+   */
+  public static void initializePlayer(Player p) {
+    GamePlayer.getPlayer(p.getUniqueId()).initialize();
+    p.getInventory().clear();
+    p.getInventory().addItem(new MenuItem().getItem());
+    p.setExperienceLevelAndProgress(0);
+    p.teleport(ComMiniWorld.LOBBY);
+    p.setGameMode(GameMode.SURVIVAL);
+    p.clearActivePotionEffects();
   }
 
 }

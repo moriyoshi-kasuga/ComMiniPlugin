@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'maven-publish'
+    // id 'io.papermc.paperweight.userdev'  version '1.7.0'
 }
 
 group = 'github.moriyoshi'
@@ -31,6 +32,7 @@ def relocates = [
 def lombok = 'org.projectlombok:lombok:1.18.32'
 
 dependencies {
+    // paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
     compileOnly paperAPI
     testCompileOnly paperAPI
 
@@ -74,7 +76,6 @@ processResources {
 }
 
 shadowJar {
-    // archiveFileName = "${buildFileName}.jar"
     archiveClassifier.set('')
     configurations = [project.configurations.shadow]
 
@@ -82,6 +83,7 @@ shadowJar {
 }
 
 tasks.register('copyPlugin') {
+    // dependsOn reobfJar
     dependsOn shadowJar
     doLast {
         if (file("./build/libs/ComMiniPlugin-${version}.jar").exists()) {
@@ -110,6 +112,7 @@ tasks.register('copyPlugin') {
 
 
 tasks.register('runPlugin') {
+    // dependsOn reobfJar
     dependsOn shadowJar
     doLast {
         if (file("./build/libs/ComMiniPlugin-${version}.jar").exists()) {

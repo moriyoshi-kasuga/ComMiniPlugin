@@ -1,20 +1,9 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
-import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.AbstractGame;
-import github.moriyoshi.comminiplugin.system.GamePlayer;
-import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import github.moriyoshi.comminiplugin.util.PrefixUtil;
-import github.moriyoshi.comminiplugin.util.Util;
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
-import net.kyori.adventure.bossbar.BossBar;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -30,9 +19,20 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
+import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.system.AbstractGame;
+import github.moriyoshi.comminiplugin.system.GamePlayer;
+import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
+import github.moriyoshi.comminiplugin.util.PrefixUtil;
+import github.moriyoshi.comminiplugin.util.Util;
+import lombok.Getter;
+import net.kyori.adventure.bossbar.BossBar;
+
 // TODO: 弾をアップグレードできるようにする
 // simple voice chat の api 使おう
-// https://www.spigotmc.org/threads/packet-discovery-spectator-mode-modifications-noclip.319125/
 public class SurvivalSniperGame extends AbstractGame {
 
   public static final int MAX_RADIUS_RANGE = 300;
