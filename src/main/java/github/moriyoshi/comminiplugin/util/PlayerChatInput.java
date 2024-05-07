@@ -15,6 +15,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerChatInput implements ConversationAbandonedListener {
 
+  public static boolean isInputted(Player player) {
+    return player.isConversing();
+  }
+
   private final ConversationFactory factory;
 
   public PlayerChatInput(Plugin plugin, String prefix, boolean cancelable, Prompt prompt) {
@@ -32,10 +36,6 @@ public class PlayerChatInput implements ConversationAbandonedListener {
       int timeout) {
     this(plugin, prefix, cancelable, prompt);
     this.factory.withTimeout(timeout);
-  }
-
-  public static boolean isInputted(Player player) {
-    return player.isConversing();
   }
 
   public final void build(Player player) {

@@ -28,6 +28,11 @@ public class GamePlayer extends JsonAPI {
 
   private static Team hidenametag;
 
+  private static final HashMap<UUID, GamePlayer> players = new HashMap<>();
+
+  private static final Type survivapsniperSlotType = new TypeToken<ArrayList<Integer>>() {
+  }.getType();
+
   public static void save() {
     for (Entry<UUID, GamePlayer> entry : players.entrySet()) {
       GamePlayer p = entry.getValue();
@@ -62,8 +67,6 @@ public class GamePlayer extends JsonAPI {
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
   }
 
-  private static final HashMap<UUID, GamePlayer> players = new HashMap<>();
-
   public static GamePlayer getPlayer(UUID uuid) {
     if (players.containsKey(uuid)) {
       return players.get(uuid);
@@ -74,17 +77,6 @@ public class GamePlayer extends JsonAPI {
   }
 
   private final UUID uuid;
-
-  private GamePlayer(UUID uuid) {
-    super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
-    this.uuid = uuid;
-    this.initialize();
-  }
-
-  public void initialize() {
-    this.isHunger = false;
-    hidenametag.removeEntry(Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName()));
-  }
 
   @Getter
   @Setter
@@ -97,6 +89,22 @@ public class GamePlayer extends JsonAPI {
   @Getter
   @Setter
   private int disableMoveTick = -1;
+
+  @Getter
+  private SurvivalSniperSlot survivapsniperSlot;
+
+  private final String SURVIVAPSNIPER_SLOT = "survivapsniperSlot";
+
+  private GamePlayer(UUID uuid) {
+    super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
+    this.uuid = uuid;
+    this.initialize();
+  }
+
+  public void initialize() {
+    this.isHunger = false;
+    hidenametag.removeEntry(Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName()));
+  }
 
   public void setHideNameTag(boolean isHideNameTag) {
     var p = Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName());
@@ -111,12 +119,6 @@ public class GamePlayer extends JsonAPI {
     return hidenametag.hasEntry(
         Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName()));
   }
-
-  @Getter
-  private SurvivalSniperSlot survivapsniperSlot;
-  private static final Type survivapsniperSlotType = new TypeToken<ArrayList<Integer>>() {
-  }.getType();
-  private final String SURVIVAPSNIPER_SLOT = "survivapsniperSlot";
 
   @Override
   protected JsonObject generateSaveData() {

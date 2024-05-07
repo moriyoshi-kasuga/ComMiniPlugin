@@ -22,9 +22,6 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
 public class Util {
 
-  private Util() {
-  }
-
   public static void log(Object message) {
     Bukkit.getConsoleSender().sendMessage(Util.mm(message));
   }
@@ -188,6 +185,9 @@ public class Util {
         player.sendMessage(mm(str));
       }
     });
+  }
+
+  private Util() {
   }
 
 }

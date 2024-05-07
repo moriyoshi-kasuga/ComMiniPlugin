@@ -91,6 +91,17 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
       OPTIONS::getInventory
   );
 
+  private static final Set<Integer> items = new HashSet<>() {
+    {
+      add(12);
+      add(13);
+      add(14);
+    }
+  };
+
+  private final ItemButton<MenuHolder<ComMiniPlugin>> none = new ItemButton<>(
+      new ItemBuilder(Material.BEDROCK).name("<red>何も作れません").build());
+
   public SurvivalSniperCustomMenu() {
     super(ComMiniPlugin.getPlugin(), SIZE, "<red>カスタムメニュー");
     for (int i = 0; i < SIZE; i++) {
@@ -107,14 +118,6 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
     setButton(19, tails);
     setButton(20, options);
   }
-
-  private static final Set<Integer> items = new HashSet<>() {
-    {
-      add(12);
-      add(13);
-      add(14);
-    }
-  };
 
   @Override
   public void onClick(InventoryClickEvent event) {
@@ -137,9 +140,6 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
       }
     }
   }
-
-  private final ItemButton<MenuHolder<ComMiniPlugin>> none = new ItemButton<>(
-      new ItemBuilder(Material.BEDROCK).name("<red>何も作れません").build());
 
   public void update(InventoryClickEvent event) {
     setButton(16, none);

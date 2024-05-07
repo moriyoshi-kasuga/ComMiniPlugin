@@ -26,27 +26,6 @@ public class PrefixUtil {
    *
    * @param message 送信するメッセージ
    */
-  protected final void log(Object message) {
-    Bukkit.getConsoleSender().sendMessage(Util.mm(message));
-  }
-
-  /**
-   * 引数のbooleanに寄って送信するかを選択します
-   *
-   * @param message  送信するメッセージ
-   * @param loggable メッセージを送信するか
-   */
-  protected final void log(Object message, boolean loggable) {
-    if (loggable) {
-      log(message);
-    }
-  }
-
-  /**
-   * consoleにmessageを送信します
-   *
-   * @param message 送信するメッセージ
-   */
   public final void logInfo(Object message) {
     log(getLoggerPrefix().append(Util.mm(message)));
   }
@@ -60,10 +39,6 @@ public class PrefixUtil {
     log(loggerPrefix.append(getWarn()).append(Util.mm(message)));
   }
 
-  protected Component getWarn() {
-    return Util.mm(" <reset><yellow>[WARN]<reset> ");
-  }
-
   /**
    * consoleに[prefix + "TRACE" + message] を送信します
    *
@@ -71,10 +46,6 @@ public class PrefixUtil {
    */
   public final void logTrace(Object message) {
     log(loggerPrefix.append(getTrace()).append(Util.mm(message)));
-  }
-
-  protected Component getTrace() {
-    return Util.mm(" <reset><white>[TRACE]<reset> ");
   }
 
   /**
@@ -86,10 +57,6 @@ public class PrefixUtil {
     log(loggerPrefix.append(getDebug()).append(Util.mm(message)));
   }
 
-  protected Component getDebug() {
-    return Util.mm(" <reset><gray>[DEBUG]<reset> ");
-  }
-
   /**
    * consoleに[prefix + "ERROR" + message] を送信します
    *
@@ -97,10 +64,6 @@ public class PrefixUtil {
    */
   public final void logError(Object message) {
     log(loggerPrefix.append(getError()).append(Util.mm(message)));
-  }
-
-  protected Component getError() {
-    return Util.mm(" <reset><red>[ERROR]<reset> ");
   }
 
   public final void send(CommandSender sender, Object str) {
@@ -121,5 +84,42 @@ public class PrefixUtil {
 
   public final Component getLoggerPrefix() {
     return loggerPrefix;
+  }
+
+  /**
+   * consoleにmessageを送信します
+   *
+   * @param message 送信するメッセージ
+   */
+  protected final void log(Object message) {
+    Bukkit.getConsoleSender().sendMessage(Util.mm(message));
+  }
+
+  /**
+   * 引数のbooleanに寄って送信するかを選択します
+   *
+   * @param message  送信するメッセージ
+   * @param loggable メッセージを送信するか
+   */
+  protected final void log(Object message, boolean loggable) {
+    if (loggable) {
+      log(message);
+    }
+  }
+
+  protected Component getWarn() {
+    return Util.mm(" <reset><yellow>[WARN]<reset> ");
+  }
+
+  protected Component getTrace() {
+    return Util.mm(" <reset><white>[TRACE]<reset> ");
+  }
+
+  protected Component getDebug() {
+    return Util.mm(" <reset><gray>[DEBUG]<reset> ");
+  }
+
+  protected Component getError() {
+    return Util.mm(" <reset><red>[ERROR]<reset> ");
   }
 }

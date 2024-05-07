@@ -20,8 +20,10 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener {
    * プレイヤーがサーバーに入ったら呼び出されます (すべてゲームのプレイヤーだけです)
    *
    * @param e event
+   * @return false で そのプレイヤーを初期化します(とくに処理がない場合にfalseを返してロビーにテレポなどをします)
    */
-  default void join(PlayerJoinEvent e) {
+  default boolean join(PlayerJoinEvent e) {
+    return false;
   }
 
   /**

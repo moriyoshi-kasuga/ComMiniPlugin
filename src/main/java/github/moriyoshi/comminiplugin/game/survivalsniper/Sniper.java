@@ -1,14 +1,9 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import de.tr7zw.changeme.nbtapi.NBT;
-import github.moriyoshi.comminiplugin.item.CooldownItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
-import net.kyori.adventure.text.Component;
+
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -25,6 +20,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import de.tr7zw.changeme.nbtapi.NBT;
+import github.moriyoshi.comminiplugin.item.CooldownItem;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.Util;
+import net.kyori.adventure.text.Component;
 
 public class Sniper extends CustomItem implements CooldownItem {
 
@@ -78,17 +80,23 @@ public class Sniper extends CustomItem implements CooldownItem {
       if (i % 5 == 0) {
         world.spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 1, null, true);
       }
-      loc.getNearbyLivingEntities(2).forEach(entity -> {
+      loc.getNearbyEntities(1, 1, 1).forEach(entity -> {
         if (entity != p && entity.getBoundingBox().overlaps(v.clone().add(BULLET_SIZE),
             v.clone().subtract(BULLET_SIZE))) {
           if (already.getOrDefault(entity, false)) {
             return;
           }
-          var eye = entity.getEyeLocation().toVector();
+          if (!(entity instanceof LivingEntity living)) {
+            if (entity instanceof org.bukkit.entity.Minecart || entity instanceof org.bukkit.entity.Boat) {
+              entity.remove();
+            }
+            return;
+          }
+          var eye = living.getEyeLocation().toVector();
           var min = eye.clone().subtract(EYE_SIZE);
           var max = eye.clone().add(EYE_SIZE);
           var isHeadShot = BoundingBox.of(min, max).contains(v);
-          already.put(entity, isHeadShot);
+          already.put(living, isHeadShot);
         }
       });
     }

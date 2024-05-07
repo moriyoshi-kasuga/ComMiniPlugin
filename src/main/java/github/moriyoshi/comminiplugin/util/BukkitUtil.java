@@ -16,6 +16,8 @@ import io.papermc.paper.entity.TeleportFlag;
 
 public final class BukkitUtil {
 
+  public static final Random random = new Random();
+
   public static List<Player> getSquarePlayers(BoundingBox square) {
 
     return Bukkit
@@ -23,8 +25,6 @@ public final class BukkitUtil {
         .map(p -> (Player) p)
         .filter(player -> square.contains(player.getLocation().toVector())).toList();
   }
-
-  public static final Random random = new Random();
 
   public static boolean randomTeleport(Entity entity, Location center, int radius) {
     return randomTeleport(entity, center, radius, 100);

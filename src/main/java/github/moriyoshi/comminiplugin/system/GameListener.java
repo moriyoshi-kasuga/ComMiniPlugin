@@ -30,6 +30,14 @@ public class GameListener implements Listener {
     return INSTANCE;
   }
 
+  public static boolean isGamePlayer(Player p) {
+    return GameSystem.isStarted() && GameSystem.nowGame().isGamePlayer(p);
+  }
+
+  public static boolean isDebugPlayer(Player p) {
+    return GamePlayer.getPlayer(p.getUniqueId()).isDebug();
+  }
+
   private GameListener() {
     new BukkitRunnable() {
 
@@ -46,22 +54,13 @@ public class GameListener implements Listener {
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 20, 20);
   }
 
-  public static boolean isGamePlayer(Player p) {
-    return GameSystem.isStarted() && GameSystem.nowGame().isGamePlayer(p);
-  }
-
-  public static boolean isDebugPlayer(Player p) {
-    return GamePlayer.getPlayer(p.getUniqueId()).isDebug();
-  }
-
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
-    GameSystem.initializePlayer(p);
-    if (isGamePlayer(p)) {
-      GameSystem.nowGame().listener.join(e);
+    if (isGamePlayer(p) && GameSystem.nowGame().listener.join(e)) {
       return;
     }
+    GameSystem.initializePlayer(p);
   }
 
   @EventHandler

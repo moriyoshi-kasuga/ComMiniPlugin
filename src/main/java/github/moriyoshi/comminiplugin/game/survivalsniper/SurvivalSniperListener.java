@@ -21,6 +21,7 @@ import github.moriyoshi.comminiplugin.util.Util;
 
 public class SurvivalSniperListener implements AbstractGameListener<SurvivalSniperGame> {
 
+  // WARN: バグってるかもしれん
   public void setBorder() {
     SurvivalSniperGame game = getGame();
     if (game.getWorld().getWorldBorder().getSize() == SurvivalSniperGame.MIN_RADIUS_RANGE) {
@@ -39,32 +40,9 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
       game.borderRaidius = -1;
       return;
     }
+    game.borderRaidius = (int) size;
     game.runPlayers(p -> game.prefix.send(p, "<red>WARNING! ボーダーの速度が速くなりました"));
     worldBorder.setSize(SurvivalSniperGame.MIN_RADIUS_RANGE, (long) time);
-  }
-
-  private void reducePlayer(Player p) {
-    SurvivalSniperGame game = getGame();
-    var loc = p.getLocation();
-    var world = p.getWorld();
-    var inv = p.getInventory();
-    inv.forEach(i -> {
-      if (i == null || i.isEmpty()) {
-        return;
-      }
-      world.dropItemNaturally(loc, i);
-    });
-    inv.clear();
-    var alives = game.players.entrySet().stream().filter(entry -> entry.getValue().getLeft())
-        .toList();
-    if (alives.size() != 1) {
-      if (alives.size() == 2) {
-        setBorder();
-      }
-      game.teleportLobby(p);
-      return;
-    }
-    game.endGame(alives.get(0).getKey());
   }
 
   @Override
@@ -137,6 +115,30 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
       getGame().prefix.send(e.getPlayer(), "<red>ポータルを使うな!");
       e.setCancelled(true);
     }
+  }
+
+  private void reducePlayer(Player p) {
+    SurvivalSniperGame game = getGame();
+    var loc = p.getLocation();
+    var world = p.getWorld();
+    var inv = p.getInventory();
+    inv.forEach(i -> {
+      if (i == null || i.isEmpty()) {
+        return;
+      }
+      world.dropItemNaturally(loc, i);
+    });
+    inv.clear();
+    var alives = game.players.entrySet().stream().filter(entry -> entry.getValue().getLeft())
+        .toList();
+    if (alives.size() != 1) {
+      if (alives.size() == 2) {
+        setBorder();
+      }
+      game.teleportLobby(p);
+      return;
+    }
+    game.endGame(alives.get(0).getKey());
   }
 
 }

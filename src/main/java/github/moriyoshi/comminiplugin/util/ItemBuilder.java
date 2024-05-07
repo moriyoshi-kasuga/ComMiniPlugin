@@ -25,6 +25,18 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ItemBuilder {
 
+  /**
+   * プレイヤーの頭を作成するクラス
+   *
+   * @param skullOwner プレイヤーの名前
+   * @return 作成したアイテムスタック
+   */
+  @SuppressWarnings("deprecation")
+  public static ItemBuilder createSkull(String skullOwner) {
+    return new ItemBuilder(Material.PLAYER_HEAD).changeMeta(
+        (Consumer<SkullMeta>) skullMeta -> skullMeta.setOwner(skullOwner));
+  }
+
   private final ItemStack itemStack;
 
   /**
@@ -44,18 +56,6 @@ public class ItemBuilder {
   public ItemBuilder(ItemStack itemStack) {
     Objects.requireNonNull(itemStack, "ItemStack cannot be null");
     this.itemStack = itemStack;
-  }
-
-  /**
-   * プレイヤーの頭を作成するクラス
-   *
-   * @param skullOwner プレイヤーの名前
-   * @return 作成したアイテムスタック
-   */
-  @SuppressWarnings("deprecation")
-  public static ItemBuilder createSkull(String skullOwner) {
-    return new ItemBuilder(Material.PLAYER_HEAD).changeMeta(
-        (Consumer<SkullMeta>) skullMeta -> skullMeta.setOwner(skullOwner));
   }
 
   /**
@@ -298,8 +298,7 @@ public class ItemBuilder {
   public ItemBuilder addAttributes(Multimap<Attribute, AttributeModifier> attributeModifiers) {
     return attributeModifiers.entries().stream().reduce(this,
         (itemBuilder, entry) -> itemBuilder.addAttribute(entry.getKey(), entry.getValue()),
-        (first, second) -> second
-    );
+        (first, second) -> second);
   }
 
   /**

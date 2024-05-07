@@ -14,6 +14,8 @@ public class SurvivalSniperSlotMenu extends MenuHolder<ComMiniPlugin> {
 
   private final SurvivalSniperSlot slots;
 
+  private int swapSlot = -1;
+
   public SurvivalSniperSlotMenu(SurvivalSniperSlot slots) {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>インベントリーのカスタマイズ");
     this.slots = slots;
@@ -23,8 +25,6 @@ public class SurvivalSniperSlotMenu extends MenuHolder<ComMiniPlugin> {
     }
     setButton(18, GameMenuButton.of());
   }
-
-  private int swapSlot = -1;
 
   private void update(Player p, int slot) {
     if (swapSlot == -1) {

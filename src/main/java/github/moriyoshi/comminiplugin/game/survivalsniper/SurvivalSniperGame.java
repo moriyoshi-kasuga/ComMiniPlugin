@@ -33,6 +33,7 @@ import net.kyori.adventure.bossbar.BossBar;
 
 // TODO: 弾をアップグレードできるようにする
 // simple voice chat の api 使おう
+// 人数でボーダーのサイズ調整しよう
 public class SurvivalSniperGame extends AbstractGame {
 
   public static final int MAX_RADIUS_RANGE = 300;
@@ -56,6 +57,16 @@ public class SurvivalSniperGame extends AbstractGame {
   private BossBar bossBar = null;
   private boolean isFinalArea = false;
   public int borderRaidius = MAX_RADIUS_RANGE * 2;
+
+  protected SurvivalSniperGame() {
+    super(
+        "survivalsniper",
+        "<blue>サバイバルスナイパー",
+        "<blue>鉄塊を集めてスナイパーで相手を殺しあいます",
+        Material.SPYGLASS,
+        new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"),
+        new SurvivalSniperListener());
+  }
 
   public final void joinPlayer(Player player, boolean isPlayer) {
     if (isStarted()) {
@@ -87,16 +98,6 @@ public class SurvivalSniperGame extends AbstractGame {
     }
   }
 
-  protected SurvivalSniperGame() {
-    super(
-        "survivalsniper",
-        "<blue>サバイバルスナイパー",
-        "<blue>鉄塊を集めてスナイパーで相手を殺しあいます",
-        Material.SPYGLASS,
-        new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"),
-        new SurvivalSniperListener());
-  }
-
   @Override
   public MenuHolder<ComMiniPlugin> adminMenu() {
     return new SurvivalSniperAdminMenu();
@@ -122,6 +123,8 @@ public class SurvivalSniperGame extends AbstractGame {
     world.getWorldBorder().setCenter(lobby);
     world.getWorldBorder().setSize(MAX_RADIUS_RANGE * 2);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
+    world.setClearWeatherDuration(0);
+    world.setTime(1000);
     var vec = lobby.toVector();
     var min = vec.clone().add(VOID_BLOCK_RADIUS);
     var max = vec.clone().subtract(VOID_BLOCK_RADIUS);
