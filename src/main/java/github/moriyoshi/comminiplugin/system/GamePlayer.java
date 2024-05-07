@@ -1,7 +1,5 @@
 package github.moriyoshi.comminiplugin.system;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -16,7 +14,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.api.JsonAPI;
@@ -24,9 +21,6 @@ import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperSlot;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * GamePlayer
- */
 public class GamePlayer extends JsonAPI {
 
   private static Team hidenametag;
@@ -115,9 +109,6 @@ public class GamePlayer extends JsonAPI {
         Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName()));
   }
 
-  private static final Type SURVIVALSNIPER_SLOT_TYPE = new TypeToken<ArrayList<Integer>>() {
-  }.getType();
-
   @Getter
   private SurvivalSniperSlot survivapsniperSlot;
 
@@ -126,18 +117,16 @@ public class GamePlayer extends JsonAPI {
   @Override
   protected JsonObject generateSaveData() {
     var object = new JsonObject();
-    object.add(SURVIVAPSNIPER_SLOT, ComMiniPlugin.gson.toJsonTree(survivapsniperSlot.slots));
+    object.add(SURVIVAPSNIPER_SLOT, ComMiniPlugin.gson.toJsonTree(survivapsniperSlot));
     return object;
   }
 
   @Override
   protected void generateLoadData(JsonObject data) {
     if (data.has(SURVIVAPSNIPER_SLOT)) {
-      survivapsniperSlot = new SurvivalSniperSlot(
-          ComMiniPlugin.gson.fromJson(data.get(SURVIVAPSNIPER_SLOT), SURVIVALSNIPER_SLOT_TYPE));
+      survivapsniperSlot = ComMiniPlugin.gson.fromJson(data.get(SURVIVAPSNIPER_SLOT), SurvivalSniperSlot.class);
     } else {
-      survivapsniperSlot = new SurvivalSniperSlot(
-          new ArrayList<>(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8)));
+      survivapsniperSlot = new SurvivalSniperSlot(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8));
     }
   }
 }

@@ -21,11 +21,9 @@ public class SurvivalSniperTradeMenu extends MenuHolder<ComMiniPlugin> {
   @RequiredArgsConstructor
   private enum TradeItem {
     EscapeDeep(() -> new EscapeDeep().getItem(), "4レベル", (p) -> p.getLevel() >= 4,
-        (p) -> p.setLevel(p.getLevel() - 4)
-    ),
+        (p) -> p.setLevel(p.getLevel() - 4)),
     BEEF(() -> new ItemStack(Material.COOKED_BEEF), "1レベル", (p) -> p.getLevel() >= 1,
-        (p) -> p.setLevel(p.getLevel() - 1)
-    );
+        (p) -> p.setLevel(p.getLevel() - 1));
 
     public final Supplier<ItemStack> item;
     public final String tradeDescription;

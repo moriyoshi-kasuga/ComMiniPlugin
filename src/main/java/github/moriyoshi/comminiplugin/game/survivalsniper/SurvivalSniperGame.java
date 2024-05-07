@@ -29,7 +29,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 //TODO: プレイヤーの上にparticleわかす
-//initializeGame の時に chunk ロードをしよう
+// initializeGame の時に chunk ロードをしよう
 // 弾をアップグレードできるようにする
 // simple voice chat の api 使おう
 // spec の時に night vision つける

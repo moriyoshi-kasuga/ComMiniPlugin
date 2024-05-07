@@ -38,11 +38,11 @@ import org.reflections.Reflections;
 public final class ComMiniPlugin extends JavaPlugin {
 
   /**
-   * {@link Location} and {@link ItemStack} を Serializer and Deserializer できる {@link Gson}
+   * {@link Location} and {@link ItemStack} を Serializer and Deserializer できる
+   * {@link Gson}
    */
   public static final Gson gson = new GsonBuilder().registerTypeAdapter(ItemStack.class,
-      new ItemStackSerializer()
-  ).registerTypeAdapter(Location.class, new LocationSerializer()).create();
+      new ItemStackSerializer()).registerTypeAdapter(Location.class, new LocationSerializer()).create();
 
   @Getter
   private static GuiListener guiListener;
@@ -76,12 +76,6 @@ public final class ComMiniPlugin extends JavaPlugin {
           var flag = !player.isDebug();
           player.setDebug(flag);
           ComMiniPrefix.SYSTEM.send(p, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
-        }));
-    registerCommand(new CommandAPICommand("gamesave")
-        .withPermission(CommandPermission.OP)
-        .executesPlayer((p, args) -> {
-          GamePlayer.save();
-          ComMiniPrefix.SYSTEM.send(p, "<green>サーブファイル");
         }));
     GamePlayer.gameInitialize();
     new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();

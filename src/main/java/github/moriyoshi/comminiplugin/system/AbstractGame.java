@@ -24,9 +24,6 @@ public abstract class AbstractGame {
   public final AbstractGameListener<?> listener;
 
   @Getter
-  boolean isRunning = false;
-
-  @Getter
   boolean isStarted = false;
 
   @Getter

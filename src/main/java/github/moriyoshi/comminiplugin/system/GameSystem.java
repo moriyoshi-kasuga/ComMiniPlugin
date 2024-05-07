@@ -1,15 +1,15 @@
 package github.moriyoshi.comminiplugin.system;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
-import github.moriyoshi.comminiplugin.constant.MenuItem;
-import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperGame;
 import java.util.HashMap;
 import java.util.List;
-import org.bukkit.GameMode;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperGame;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 
 public class GameSystem {
 
@@ -18,7 +18,7 @@ public class GameSystem {
       List.of(
           // ALl Game
           SurvivalSniperGame.getInstance()
-          // End
+      // End
       ).forEach(g -> put(g.id, g));
     }
   };
@@ -39,8 +39,7 @@ public class GameSystem {
     if (inGame()) {
       ComMiniPrefix.SYSTEM.send(
           player,
-          "<green>現在は <u>" + _nowGame.name + "<reset><green>が開催されています!"
-      );
+          "<green>現在は <u>" + _nowGame.name + "<reset><green>が開催されています!");
       return false;
     }
     if (!games.containsKey(gameName)) {
@@ -51,13 +50,11 @@ public class GameSystem {
     var temp = games.get(gameName);
     if (!temp.initializeGame(player)) {
       ComMiniPrefix.SYSTEM.send(player,
-          "<red>" + gameName + "を始められません、初期化条件が存在します!"
-      );
+          "<red>" + gameName + "を始められません、初期化条件が存在します!");
       return false;
     }
     _nowGame = temp;
     _nowGame.prefix.cast("<green>開催します!");
-    _nowGame.isRunning = true;
     return true;
   }
 
@@ -85,14 +82,6 @@ public class GameSystem {
     return true;
   }
 
-  public static boolean inGame() {
-    return _nowGame != null;
-  }
-
-  public static boolean isStarted() {
-    return inGame() && _nowGame.isStarted;
-  }
-
   /**
    * ここではゲームの設定をすべてclearしてゲームを終了します
    *
@@ -102,21 +91,23 @@ public class GameSystem {
     if (!inGame()) {
       return false;
     }
-    _nowGame.isRunning = false;
     _nowGame.isStarted = false;
     HandlerList.unregisterAll(_nowGame.listener);
     _nowGame.runPlayers(p -> {
-      GamePlayer.getPlayer(p.getUniqueId()).initialize();
-      p.getInventory().clear();
-      p.getInventory().addItem(new MenuItem().getItem());
-      p.setExperienceLevelAndProgress(0);
-      p.teleport(ComMiniWorld.LOBBY);
-      p.setGameMode(GameMode.SURVIVAL);
+      BukkitUtil.initializePlayer(p);
     });
     _nowGame.finishGame();
     _nowGame.prefix.cast("<green>閉幕です");
     _nowGame = null;
     return true;
+  }
+
+  public static boolean inGame() {
+    return _nowGame != null;
+  }
+
+  public static boolean isStarted() {
+    return inGame() && _nowGame.isStarted;
   }
 
 }

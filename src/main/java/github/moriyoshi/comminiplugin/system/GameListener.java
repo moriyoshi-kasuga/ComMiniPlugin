@@ -1,10 +1,5 @@
 package github.moriyoshi.comminiplugin.system;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
-import github.moriyoshi.comminiplugin.constant.MenuItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-
 import java.util.Objects;
 
 import org.bukkit.Bukkit;
@@ -23,6 +18,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 
 public class GameListener implements Listener {
 
@@ -59,19 +58,7 @@ public class GameListener implements Listener {
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
-    p.setGameMode(GameMode.SURVIVAL);
-    p.teleport(ComMiniWorld.LOBBY);
-    var inv = p.getInventory();
-    var flag = true;
-    for (var i : inv) {
-      if (CustomItem.equalsItem(i, MenuItem.class)) {
-        flag = false;
-        break;
-      }
-    }
-    if (flag) {
-      inv.addItem(new MenuItem().getItem());
-    }
+    BukkitUtil.initializePlayer(p);
     if (isGamePlayer(p)) {
       GameSystem.nowGame().listener.join(e);
       return;

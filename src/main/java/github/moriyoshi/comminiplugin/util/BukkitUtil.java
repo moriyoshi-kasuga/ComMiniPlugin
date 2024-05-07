@@ -6,12 +6,17 @@ import java.util.Random;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
+
+import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
+import github.moriyoshi.comminiplugin.constant.MenuItem;
+import github.moriyoshi.comminiplugin.system.GamePlayer;
 
 public final class BukkitUtil {
 
@@ -58,5 +63,14 @@ public final class BukkitUtil {
       }
     }
     return false;
+  }
+
+  public static void initializePlayer(Player p) {
+    GamePlayer.getPlayer(p.getUniqueId()).initialize();
+    p.getInventory().clear();
+    p.getInventory().addItem(new MenuItem().getItem());
+    p.setExperienceLevelAndProgress(0);
+    p.teleport(ComMiniWorld.LOBBY);
+    p.setGameMode(GameMode.SURVIVAL);
   }
 }

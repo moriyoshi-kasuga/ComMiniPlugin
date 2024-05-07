@@ -147,8 +147,7 @@ public class Util {
   public static void title(Player player, Object title, Object subtitle) {
     if (player != null && player.isOnline()) {
       player.showTitle(Title.title(Util.mm(Objects.requireNonNullElse(title, "")),
-          Util.mm(Objects.requireNonNullElse(subtitle, ""))
-      ));
+          Util.mm(Objects.requireNonNullElse(subtitle, ""))));
     }
   }
 
@@ -164,8 +163,7 @@ public class Util {
     if (player != null && player.isOnline()) {
       player.showTitle(Title.title(Util.mm(Objects.requireNonNullElse(title, "")),
           Util.mm(Objects.requireNonNullElse(subtitle, "")),
-          Title.Times.times(Duration.ZERO, Duration.ofSeconds(seconds), Duration.ZERO)
-      ));
+          Title.Times.times(Duration.ZERO, Duration.ofSeconds(seconds), Duration.ZERO)));
     }
   }
 

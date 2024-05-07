@@ -33,7 +33,7 @@ public class SurvivalSniperSlotMenu extends MenuHolder<ComMiniPlugin> {
       return;
     }
     p.playSound(p.getLocation(), Sound.BLOCK_IRON_TRAPDOOR_OPEN, 1, 1);
-    Collections.swap(slots.slots, swapSlot, slot);
+    Collections.swap(slots, swapSlot, slot);
     swapSlot = -1;
     set();
   }
