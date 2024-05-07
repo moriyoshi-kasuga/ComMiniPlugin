@@ -29,6 +29,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.function.Predicate;
+
 import org.bukkit.Bukkit;
 
 /**
@@ -41,8 +42,7 @@ public final class FastReflection {
   private static final String NM_PACKAGE = "net.minecraft";
   private static final String OBC_PACKAGE = Bukkit.getServer().getClass().getPackage().getName();
   private static final String NMS_PACKAGE = OBC_PACKAGE.replace("org.bukkit.craftbukkit",
-      NM_PACKAGE + ".server"
-  );
+      NM_PACKAGE + ".server");
 
   private static final MethodType VOID_METHOD_TYPE = MethodType.methodType(void.class);
   private static final boolean NMS_REPACKAGED = optionalClass(
@@ -60,8 +60,7 @@ public final class FastReflection {
 
   public static String nmsClassName(String post1_17package, String className) {
     if (NMS_REPACKAGED) {
-      String classPackage =
-          post1_17package == null ? NM_PACKAGE : NM_PACKAGE + '.' + post1_17package;
+      String classPackage = post1_17package == null ? NM_PACKAGE : NM_PACKAGE + '.' + post1_17package;
 
       return classPackage + '.' + className;
     }
@@ -98,6 +97,7 @@ public final class FastReflection {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public static Object enumValueOf(Class<?> enumClass, String enumName) {
     return Enum.valueOf(enumClass.asSubclass(Enum.class), enumName);
   }
@@ -158,8 +158,7 @@ public final class FastReflection {
 
     MethodType allocateMethodType = MethodType.methodType(Object.class, Class.class);
     MethodHandle allocateMethod = lookup.findVirtual(theUnsafe.getClass(), "allocateInstance",
-        allocateMethodType
-    );
+        allocateMethodType);
     return () -> allocateMethod.invoke(theUnsafe, packetClass);
   }
 

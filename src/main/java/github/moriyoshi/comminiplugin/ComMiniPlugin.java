@@ -28,6 +28,7 @@ import github.moriyoshi.comminiplugin.system.GamePlayer;
 import javax.tools.DocumentationTool.Location;
 import lombok.Getter;
 import org.bukkit.World.Environment;
+import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.event.Listener;
@@ -76,6 +77,10 @@ public final class ComMiniPlugin extends JavaPlugin {
           var flag = !player.isDebug();
           player.setDebug(flag);
           ComMiniPrefix.SYSTEM.send(p, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
+        }));
+    registerCommand(new CommandAPICommand("gr")
+        .executes((sender, args) -> {
+          Bukkit.dispatchCommand(sender, "plugman reload ComMiniPlugin");
         }));
     GamePlayer.gameInitialize();
     new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();

@@ -65,6 +65,11 @@ public final class BukkitUtil {
     return false;
   }
 
+  /**
+   * サーバー参加時やロビーに返す時、ゲーム終了時に使えるメゾット
+   *
+   * @param p target player
+   */
   public static void initializePlayer(Player p) {
     GamePlayer.getPlayer(p.getUniqueId()).initialize();
     p.getInventory().clear();
@@ -72,5 +77,6 @@ public final class BukkitUtil {
     p.setExperienceLevelAndProgress(0);
     p.teleport(ComMiniWorld.LOBBY);
     p.setGameMode(GameMode.SURVIVAL);
+    p.clearActivePotionEffects();
   }
 }

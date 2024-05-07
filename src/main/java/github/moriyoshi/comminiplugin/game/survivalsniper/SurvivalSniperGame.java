@@ -25,21 +25,21 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-//TODO: プレイヤーの上にparticleわかす
-// initializeGame の時に chunk ロードをしよう
-// 弾をアップグレードできるようにする
+// TODO: 弾をアップグレードできるようにする
 // simple voice chat の api 使おう
-// spec の時に night vision つける
-// プレイヤーが死んだときにボーダーの速度を1.5倍しよう
 // https://www.spigotmc.org/threads/packet-discovery-spectator-mode-modifications-noclip.319125/
 public class SurvivalSniperGame extends AbstractGame {
 
   public static final int MAX_RADIUS_RANGE = 300;
   public static final int MIN_RADIUS_RANGE = 50;
-  public static final int MAX_SECOND = 60 * 15;
+  public static final int MAX_SECOND = 60 * 10;
+  public static final int AFTER_PVP_SECOND = 60 * 5;
+  public static final int AIR_LIMIT = 60 * 3;
   private static final SurvivalSniperGame INSTANCE = new SurvivalSniperGame();
   private static final Vector VOID_BLOCK_RADIUS = new Vector(3, 3, 3);
 
@@ -50,13 +50,12 @@ public class SurvivalSniperGame extends AbstractGame {
   // true は生きている、falseは観戦者(死んで観戦者で機能を統一)
   public final HashMap<UUID, Pair<Boolean, Integer>> players = new HashMap<>();
 
-  public final static int AIR_LIMIT = 180;
-  public final static int AFTER_PVP_SECOND = 300;
   private BukkitRunnable run = null;
   @Getter
   private boolean canPvP = false;
   private BossBar bossBar = null;
   private boolean isFinalArea = false;
+  public int borderRaidius = MAX_RADIUS_RANGE * 2;
 
   public final void joinPlayer(Player player, boolean isPlayer) {
     if (isStarted()) {
@@ -131,6 +130,8 @@ public class SurvivalSniperGame extends AbstractGame {
             "overworld",
             min.getBlockX(), min.getBlockY(),
             min.getBlockZ(), max.getBlockX(), max.getBlockY(), max.getBlockZ()));
+    Util.consoleCommand("chunky worldborder");
+    Util.consoleCommand("chunky start");
     return true;
   }
 
@@ -227,6 +228,7 @@ public class SurvivalSniperGame extends AbstractGame {
       inv.clear();
       if (!players.get(uuid).getLeft()) {
         p.setGameMode(GameMode.SPECTATOR);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
         teleportLobby(p);
         return;
       }
@@ -286,6 +288,7 @@ public class SurvivalSniperGame extends AbstractGame {
     lobby = null;
     world.getWorldBorder().reset();
     isFinalArea = false;
+    borderRaidius = MAX_RADIUS_RANGE * 2;
   }
 
   @Override
@@ -298,6 +301,7 @@ public class SurvivalSniperGame extends AbstractGame {
     players.put(player.getUniqueId(), Pair.of(false, -1));
     player.setGameMode(GameMode.SPECTATOR);
     player.getInventory().clear();
+    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
     teleportLobby(player);
     prefix.send(player, "<gray>観戦を開始しました");
     return true;

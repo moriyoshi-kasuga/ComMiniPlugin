@@ -1,7 +1,5 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import github.moriyoshi.comminiplugin.system.AbstractGameListener;
-import github.moriyoshi.comminiplugin.util.Util;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -13,11 +11,13 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+
+import github.moriyoshi.comminiplugin.system.AbstractGameListener;
+import github.moriyoshi.comminiplugin.util.Util;
 
 public class SurvivalSniperListener implements AbstractGameListener<SurvivalSniperGame> {
 
@@ -26,11 +26,20 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
     if (game.getWorld().getWorldBorder().getSize() == SurvivalSniperGame.MIN_RADIUS_RANGE) {
       return;
     }
-    game.runPlayers(p -> game.prefix.send(p, "<red>WARNING! ボーダーの速度が速くなりました"));
+    if (game.borderRaidius == -1) {
+      return;
+    }
     World world = game.getWorld();
     WorldBorder worldBorder = world.getWorldBorder();
     double size = worldBorder.getSize();
-    double time = (size / (double) (SurvivalSniperGame.MAX_RADIUS_RANGE * 2)) * SurvivalSniperGame.MAX_SECOND;
+    double time = (size / (double) (game.borderRaidius)) * SurvivalSniperGame.MAX_SECOND;
+    if (2 > size / time) {
+      game.runPlayers(p -> game.prefix.send(p, "<red>WARNING! ボーダーの速度がMaxになりました"));
+      worldBorder.setSize(SurvivalSniperGame.MIN_RADIUS_RANGE, (long) size * 2);
+      game.borderRaidius = -1;
+      return;
+    }
+    game.runPlayers(p -> game.prefix.send(p, "<red>WARNING! ボーダーの速度が速くなりました"));
     worldBorder.setSize(SurvivalSniperGame.MIN_RADIUS_RANGE, (long) time);
   }
 
@@ -130,8 +139,4 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
     }
   }
 
-  @Override
-  public void join(PlayerJoinEvent e) {
-    getGame().teleportLobby(e.getPlayer());
-  }
 }
