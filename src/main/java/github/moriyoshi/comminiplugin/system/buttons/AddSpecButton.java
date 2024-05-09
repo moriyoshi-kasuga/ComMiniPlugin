@@ -22,7 +22,7 @@ public class AddSpecButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
     if (GameSystem.isStarted()) {
       return new AddSpecButton(
           new ItemBuilder(Material.NETHER_STAR).name(
-              GameSystem.nowGame().name + "<reset><gray>を観戦する").build());
+              GameSystem.getNowGame().name + "<reset><gray>を観戦する").build());
     }
     return new AddSpecButton(
         new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開始されていません").build());
@@ -35,7 +35,7 @@ public class AddSpecButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
     if (!GameSystem.isStarted()) {
       return;
     }
-    if (!GameSystem.nowGame().addSpec(p)) {
+    if (!GameSystem.getNowGame().addSpec(p)) {
       ComMiniPrefix.MAIN.send(p, "<red>このゲームに観戦できません");
     }
   }

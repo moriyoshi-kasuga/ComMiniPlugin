@@ -31,7 +31,7 @@ public class GameListener implements Listener {
   }
 
   public static boolean isGamePlayer(Player p) {
-    return GameSystem.isStarted() && GameSystem.nowGame().isGamePlayer(p);
+    return GameSystem.isStarted() && GameSystem.getNowGame().isGamePlayer(p);
   }
 
   public static boolean isDebugPlayer(Player p) {
@@ -57,7 +57,7 @@ public class GameListener implements Listener {
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
-    if (isGamePlayer(p) && GameSystem.nowGame().listener.join(e)) {
+    if (isGamePlayer(p) && GameSystem.getNowGame().listener.join(e)) {
       return;
     }
     GameSystem.initializePlayer(p);
@@ -66,7 +66,7 @@ public class GameListener implements Listener {
   @EventHandler
   public void quit(PlayerQuitEvent e) {
     if (isGamePlayer(e.getPlayer())) {
-      GameSystem.nowGame().listener.quit(e);
+      GameSystem.getNowGame().listener.quit(e);
     }
   }
 
@@ -74,7 +74,7 @@ public class GameListener implements Listener {
   public void death(PlayerDeathEvent e) {
     e.setCancelled(true);
     if (isGamePlayer(e.getPlayer())) {
-      GameSystem.nowGame().listener.death(e);
+      GameSystem.getNowGame().listener.death(e);
       return;
     }
     e.getPlayer().teleport(ComMiniWorld.LOBBY);
@@ -89,7 +89,7 @@ public class GameListener implements Listener {
       return;
     }
     if (GameSystem.isStarted()) {
-      GameSystem.nowGame().listener.damage(e);
+      GameSystem.getNowGame().listener.damage(e);
     }
   }
 
@@ -100,7 +100,7 @@ public class GameListener implements Listener {
     }
 
     if (isGamePlayer(attacker)) {
-      GameSystem.nowGame().listener.damageByEntity(e);
+      GameSystem.getNowGame().listener.damageByEntity(e);
       return;
     }
     if (isDebugPlayer(attacker)) {
@@ -114,7 +114,7 @@ public class GameListener implements Listener {
   @EventHandler
   public void blockBreak(BlockBreakEvent e) {
     if (isGamePlayer(e.getPlayer())) {
-      GameSystem.nowGame().listener.blockBreak(e);
+      GameSystem.getNowGame().listener.blockBreak(e);
       return;
     }
     if (isDebugPlayer(e.getPlayer())) {
@@ -128,7 +128,7 @@ public class GameListener implements Listener {
   @EventHandler
   public void blockPlace(BlockPlaceEvent e) {
     if (isGamePlayer(e.getPlayer())) {
-      GameSystem.nowGame().listener.blockPlace(e);
+      GameSystem.getNowGame().listener.blockPlace(e);
       return;
     }
     if (isDebugPlayer(e.getPlayer())) {

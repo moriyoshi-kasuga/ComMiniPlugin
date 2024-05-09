@@ -1,17 +1,17 @@
 package github.moriyoshi.comminiplugin.system;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.constant.MenuItem;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperGame;
+import lombok.Getter;
 
 public class GameSystem {
 
@@ -19,15 +19,19 @@ public class GameSystem {
     {
       List.of(
           // ALl Game
-          SurvivalSniperGame.getInstance()
+          new SurvivalSniperGame()
       // End
       ).forEach(g -> put(g.id, g));
     }
   };
-  private static AbstractGame _nowGame = null;
 
-  public static AbstractGame nowGame() {
-    return _nowGame;
+  public static final List<AbstractMiniGame> minigames = new ArrayList<>();
+
+  @Getter
+  private static AbstractGame nowGame = null;
+
+  public static <T extends AbstractGame> T getNowGame(Class<T> t) {
+    return t.cast(nowGame);
   }
 
   /**
@@ -41,7 +45,7 @@ public class GameSystem {
     if (inGame()) {
       ComMiniPrefix.SYSTEM.send(
           player,
-          "<green>現在は <u>" + _nowGame.name + "<reset><green>が開催されています!");
+          "<green>現在は <u>" + nowGame.name + "<reset><green>が開催されています!");
       return false;
     }
     if (!games.containsKey(gameName)) {
@@ -55,8 +59,8 @@ public class GameSystem {
           "<red>" + gameName + "を始められません、初期化条件が存在します!");
       return false;
     }
-    _nowGame = temp;
-    _nowGame.prefix.cast("<green>開催します!");
+    nowGame = temp;
+    nowGame.prefix.cast("<green>開催します!");
     return true;
   }
 
@@ -72,15 +76,13 @@ public class GameSystem {
       return false;
     }
     if (isStarted()) {
-      _nowGame.prefix.send(player, "<red>すでに始まっています!");
+      nowGame.prefix.send(player, "<red>すでに始まっています!");
       return false;
     }
-    if (!_nowGame.startGame(player)) {
+    if (!nowGame.startGame(player)) {
       return false;
     }
-    _nowGame.isStarted = true;
-    _nowGame.prefix.cast("<green>開始します");
-    ComMiniPlugin.getPlugin().registerEvent(_nowGame.listener);
+    nowGame.prefix.cast("<green>開始します");
     return true;
   }
 
@@ -93,23 +95,18 @@ public class GameSystem {
     if (!inGame()) {
       return false;
     }
-    _nowGame.isStarted = false;
-    HandlerList.unregisterAll(_nowGame.listener);
-    _nowGame.runPlayers(p -> {
-      initializePlayer(p);
-    });
-    _nowGame.finishGame();
-    _nowGame.prefix.cast("<green>閉幕です");
-    _nowGame = null;
+    nowGame.finishGame();
+    nowGame.prefix.cast("<green>閉幕です");
+    nowGame = null;
     return true;
   }
 
   public static boolean inGame() {
-    return _nowGame != null;
+    return nowGame != null;
   }
 
   public static boolean isStarted() {
-    return inGame() && _nowGame.isStarted;
+    return inGame() && nowGame.isStarted();
   }
 
   /**

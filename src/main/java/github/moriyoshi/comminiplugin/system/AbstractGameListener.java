@@ -9,12 +9,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public interface AbstractGameListener<T extends AbstractGame> extends Listener {
-
-  @SuppressWarnings("unchecked")
-  default T getGame() {
-    return (T) GameSystem.nowGame();
-  }
+public interface AbstractGameListener<T extends AbstractGame> extends Listener, IGetGame<T> {
 
   /**
    * プレイヤーがサーバーに入ったら呼び出されます (すべてゲームのプレイヤーだけです)

@@ -18,7 +18,7 @@ public class FinalizeGameButton extends
   public FinalizeGameButton() {
     super(new ItemButton<>(
               new ItemBuilder(Material.ENDER_EYE)
-                  .name(GameSystem.inGame() ? GameSystem.nowGame().name + "<reset><red>を強制停止する"
+                  .name(GameSystem.inGame() ? GameSystem.getNowGame().name + "<reset><red>を強制停止する"
                       : "現在はゲーム中ではありません")
                   .build()) {
             @Override

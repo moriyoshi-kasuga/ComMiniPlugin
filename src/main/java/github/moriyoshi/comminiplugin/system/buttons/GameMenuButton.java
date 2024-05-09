@@ -20,7 +20,7 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
 
   public static GameMenuButton of() {
     if (GameSystem.inGame() && !GameSystem.isStarted()) {
-      var game = GameSystem.nowGame();
+      var game = GameSystem.getNowGame();
       return new GameMenuButton(
           new ItemBuilder(game.material).name(game.name).lore(game.description).build());
     }
@@ -32,7 +32,7 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
     if (GameSystem.inGame() && !GameSystem.isStarted()) {
       return new GameMenuButton(
           new ItemBuilder(Material.IRON_DOOR).name(
-              GameSystem.nowGame().name + "<white>のメニューに戻る").build());
+              GameSystem.getNowGame().name + "<white>のメニューに戻る").build());
     }
     return new GameMenuButton(
         new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開催されていません").build());
@@ -43,7 +43,7 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       @NotNull InventoryClickEvent event) {
     var p = (Player) event.getWhoClicked();
     if (GameSystem.inGame()) {
-      GameSystem.nowGame().gameMenu(p).ifPresentOrElse(menu -> menu.openInv(p),
+      GameSystem.getNowGame().gameMenu(p).ifPresentOrElse(menu -> menu.openInv(p),
           () -> ComMiniPrefix.MAIN.send(p, "<red>Menuは開けません")
       );
     } else {

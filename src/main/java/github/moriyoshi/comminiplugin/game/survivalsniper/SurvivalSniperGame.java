@@ -11,6 +11,7 @@ import org.bukkit.GameRule;
 import org.bukkit.HeightMap;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.WorldBorder;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -36,29 +37,24 @@ import net.kyori.adventure.bossbar.BossBar;
 // 人数でボーダーのサイズ調整しよう
 public class SurvivalSniperGame extends AbstractGame {
 
-  public static final int MAX_RADIUS_RANGE = 300;
-  public static final int MIN_RADIUS_RANGE = 50;
-  public static final int MAX_SECOND = 60 * 10;
-  public static final int AFTER_PVP_SECOND = 60 * 5;
-  public static final int AIR_LIMIT = 60 * 3;
-  private static final SurvivalSniperGame INSTANCE = new SurvivalSniperGame();
-  private static final Vector VOID_BLOCK_RADIUS = new Vector(3, 3, 3);
-
-  public static SurvivalSniperGame getInstance() {
-    return INSTANCE;
-  }
+  private final int MAX_RADIUS_RANGE = 300;
+  private final int MIN_RADIUS_RANGE = 50;
+  private final int MAX_SECOND = 60 * 10;
+  private final int AFTER_PVP_SECOND = 60 * 5;
+  private final int AIR_LIMIT = 60 * 3;
+  private final Vector VOID_BLOCK_RADIUS = new Vector(3, 3, 3);
 
   // true は生きている、falseは観戦者(死んで観戦者で機能を統一)
   public final HashMap<UUID, Pair<Boolean, Integer>> players = new HashMap<>();
 
-  private BukkitRunnable run = null;
   @Getter
   private boolean canPvP = false;
   private BossBar bossBar = null;
+  private BukkitRunnable run = null;
   private boolean isFinalArea = false;
   public int borderRaidius = MAX_RADIUS_RANGE * 2;
 
-  protected SurvivalSniperGame() {
+  public SurvivalSniperGame() {
     super(
         "survivalsniper",
         "<blue>サバイバルスナイパー",
@@ -139,7 +135,7 @@ public class SurvivalSniperGame extends AbstractGame {
   }
 
   @Override
-  public boolean startGame(Player player) {
+  public boolean innerStartGame(Player player) {
     if (2 > players.values().stream().filter(Pair::getLeft).toList().size()) {
       prefix.send(player, "<red>二人以上でしかプレイできません");
       return false;
@@ -174,7 +170,7 @@ public class SurvivalSniperGame extends AbstractGame {
               prefix.send(p, "<red>PvP解禁!!!");
             });
             if (players.size() == 2) {
-              ((SurvivalSniperListener) listener).setBorder();
+              setBorder();
             }
           }
           second--;
@@ -262,11 +258,11 @@ public class SurvivalSniperGame extends AbstractGame {
         GameSystem.finalizeGame();
       }
 
-    }.runTask(ComMiniPlugin.getPlugin());
+    }.runTaskLater(ComMiniPlugin.getPlugin(), 100);
   }
 
   @Override
-  public void finishGame() {
+  public void innerFinishGame() {
     var vec = lobby.toVector();
     var min = vec.clone().add(VOID_BLOCK_RADIUS);
     var max = vec.clone().subtract(VOID_BLOCK_RADIUS);
@@ -308,5 +304,27 @@ public class SurvivalSniperGame extends AbstractGame {
     teleportLobby(player);
     prefix.send(player, "<gray>観戦を開始しました");
     return true;
+  }
+
+  // WARN: バグってるかもしれん
+  public void setBorder() {
+    if (getWorld().getWorldBorder().getSize() == MIN_RADIUS_RANGE) {
+      return;
+    }
+    if (borderRaidius == -1) {
+      return;
+    }
+    WorldBorder worldBorder = world.getWorldBorder();
+    double size = worldBorder.getSize();
+    double time = (size / (double) (borderRaidius)) * MAX_SECOND;
+    if (2 > size / time) {
+      runPlayers(p -> prefix.send(p, "<red>WARNING! ボーダーの速度がMaxになりました"));
+      worldBorder.setSize(MIN_RADIUS_RANGE, (long) size * 2);
+      borderRaidius = -1;
+      return;
+    }
+    borderRaidius = (int) size;
+    runPlayers(p -> prefix.send(p, "<red>WARNING! ボーダーの速度が速くなりました"));
+    worldBorder.setSize(MIN_RADIUS_RANGE, (long) time);
   }
 }

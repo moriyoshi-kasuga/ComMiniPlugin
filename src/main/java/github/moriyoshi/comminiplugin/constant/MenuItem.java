@@ -43,7 +43,7 @@ public class MenuItem extends CustomItem {
   }
 
   public static boolean open(Player p) {
-    if (GameSystem.isStarted() && GameSystem.nowGame().isGamePlayer(p)) {
+    if (GameSystem.isStarted() && GameSystem.getNowGame().isGamePlayer(p)) {
       return false;
     }
     new InnerMenu().openInv(p);

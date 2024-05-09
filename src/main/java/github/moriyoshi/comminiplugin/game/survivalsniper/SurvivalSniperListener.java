@@ -3,8 +3,6 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -20,30 +18,6 @@ import github.moriyoshi.comminiplugin.system.AbstractGameListener;
 import github.moriyoshi.comminiplugin.util.Util;
 
 public class SurvivalSniperListener implements AbstractGameListener<SurvivalSniperGame> {
-
-  // WARN: バグってるかもしれん
-  public void setBorder() {
-    SurvivalSniperGame game = getGame();
-    if (game.getWorld().getWorldBorder().getSize() == SurvivalSniperGame.MIN_RADIUS_RANGE) {
-      return;
-    }
-    if (game.borderRaidius == -1) {
-      return;
-    }
-    World world = game.getWorld();
-    WorldBorder worldBorder = world.getWorldBorder();
-    double size = worldBorder.getSize();
-    double time = (size / (double) (game.borderRaidius)) * SurvivalSniperGame.MAX_SECOND;
-    if (2 > size / time) {
-      game.runPlayers(p -> game.prefix.send(p, "<red>WARNING! ボーダーの速度がMaxになりました"));
-      worldBorder.setSize(SurvivalSniperGame.MIN_RADIUS_RANGE, (long) size * 2);
-      game.borderRaidius = -1;
-      return;
-    }
-    game.borderRaidius = (int) size;
-    game.runPlayers(p -> game.prefix.send(p, "<red>WARNING! ボーダーの速度が速くなりました"));
-    worldBorder.setSize(SurvivalSniperGame.MIN_RADIUS_RANGE, (long) time);
-  }
 
   @Override
   public void quit(PlayerQuitEvent e) {
@@ -133,7 +107,7 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
         .toList();
     if (alives.size() != 1) {
       if (alives.size() == 2) {
-        setBorder();
+        game.setBorder();
       }
       game.teleportLobby(p);
       return;

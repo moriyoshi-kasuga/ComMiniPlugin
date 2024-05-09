@@ -12,7 +12,7 @@ public class AdminGameMenuCommand extends CommandAPICommand {
     withPermission(CommandPermission.OP);
     executesPlayer((player, args) -> {
       if (GameSystem.inGame()) {
-        GameSystem.nowGame().adminMenu().openInv(player);
+        GameSystem.getNowGame().adminMenu().openInv(player);
       } else {
         new AdminGameMenu().openInv(player);
       }

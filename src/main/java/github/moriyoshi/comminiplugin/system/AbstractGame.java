@@ -1,19 +1,20 @@
 package github.moriyoshi.comminiplugin.system;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import java.util.Optional;
 import java.util.function.Consumer;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 
-@RequiredArgsConstructor
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.util.PrefixUtil;
+import lombok.Getter;
+
 public abstract class AbstractGame {
 
   public final String id;
@@ -23,8 +24,18 @@ public abstract class AbstractGame {
   public final PrefixUtil prefix;
   public final AbstractGameListener<?> listener;
 
+  public AbstractGame(String id, String name, String description, Material material, PrefixUtil prefix,
+      AbstractGameListener<?> listener) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.material = material;
+    this.prefix = prefix;
+    this.listener = listener;
+  }
+
   @Getter
-  boolean isStarted = false;
+  private boolean isStarted = false;
 
   @Getter
   protected World world;
@@ -55,12 +66,33 @@ public abstract class AbstractGame {
    * @param player 呼び出す運営
    * @return 開始できたらtrue
    */
-  public abstract boolean startGame(Player player);
+  protected abstract boolean innerStartGame(Player player);
+
+  public final boolean startGame(Player player) {
+    if (!innerStartGame(player)) {
+      return false;
+    }
+    isStarted = true;
+    ComMiniPlugin.getPlugin().registerEvent(listener);
+    // TODO: ここでGamePlayerのisingameとかのフラッグ作ってあとはGameSystemとかにちゃんとinGamePlayer() とか
+    // inStartGamePlyaer () とかの関数を用意しよう
+    // Buttonとかでいっぱいその関数使うと思うからここらで用意する
+    return true;
+  }
 
   /**
    * このメゾットを呼び出す前に自前でプレイヤーたちに対する endGame メゾット作って このゲームの設定をクリアするメゾット
    */
-  public abstract void finishGame();
+  protected abstract void innerFinishGame();
+
+  public final void finishGame() {
+    isStarted = false;
+    HandlerList.unregisterAll(listener);
+    runPlayers(p -> {
+      GameSystem.initializePlayer(p);
+    });
+    innerFinishGame();
+  }
 
   /**
    * このプレイヤーのこのゲームに参加しているか

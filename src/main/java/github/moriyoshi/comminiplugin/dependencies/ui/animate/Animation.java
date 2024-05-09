@@ -8,6 +8,7 @@ import java.util.function.UnaryOperator;
 /**
  * アニメーションは、{@link Frame}のコンテナです。 アニメーションは、{@link AnimationRunner}を使って実行できます。
  */
+@SuppressWarnings("all")
 public interface Animation {
 
   /**
@@ -278,6 +279,7 @@ class ContinuousAnimation implements Animation {
 
 }
 
+@SuppressWarnings("all")
 class InfiniteAnimation<F extends Frame<?, ?>> implements Animation {
 
   private final F startingFrame;

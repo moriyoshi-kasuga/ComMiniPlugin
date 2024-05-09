@@ -26,7 +26,7 @@ public class TeleportLobbyButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   public void onClick(@NotNull MenuHolder<ComMiniPlugin> holder,
       @NotNull InventoryClickEvent event) {
     var p = (Player) event.getWhoClicked();
-    if (GameSystem.inGame() && GameSystem.nowGame().isGamePlayer(p)) {
+    if (GameSystem.inGame() && GameSystem.getNowGame().isGamePlayer(p)) {
       ComMiniPrefix.MAIN.send(p, "<red>あなたはロビーにテレポートできません");
       return;
     }
