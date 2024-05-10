@@ -44,6 +44,7 @@ public class Bullet extends CustomItem {
     public final Sound sound;
 
   }
+
   @RequiredArgsConstructor
   public enum WARTAIL {
     WOOD(Material.OAK_BUTTON, (m) -> m.name().contains("BUTTON") && m.isFuel(), "木",
@@ -58,6 +59,7 @@ public class Bullet extends CustomItem {
     public final int plusDamage;
 
   }
+
   @RequiredArgsConstructor
   public enum OptionalItem {
     // TODO: 火薬で弾の攻撃範囲を広くする
@@ -76,6 +78,7 @@ public class Bullet extends CustomItem {
     public final Function<Triple<String, Integer, Integer>, Triple<String, Integer, Integer>> wrapper;
     public final Consumer<ItemStack> finalize;
   }
+
   private static final String NAME = "name";
 
   private static final String DAMAGE = "damage";
@@ -86,6 +89,7 @@ public class Bullet extends CustomItem {
 
   private static final double GUNPOWDER_MULTIPLE = 1.2;
   private static final int GUNPOWDER_AMOUNT = 2;
+
   public static Optional<Bullet> getFirstBullet(Player p) {
     for (ItemStack item : p.getInventory().getContents()) {
       if (CustomItem.equalsItem(item, Bullet.class)) {
@@ -94,6 +98,7 @@ public class Bullet extends CustomItem {
     }
     return Optional.empty();
   }
+
   private String name;
 
   private int damage;
@@ -142,6 +147,7 @@ public class Bullet extends CustomItem {
   public void interact(PlayerInteractEvent e) {
     e.setCancelled(false);
   }
+
   @Override
   public Optional<UUID> generatUUID() {
     return Optional.empty();

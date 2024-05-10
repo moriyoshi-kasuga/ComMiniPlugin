@@ -11,7 +11,6 @@ import org.bukkit.GameRule;
 import org.bukkit.HeightMap;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.WorldBorder;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -38,7 +37,7 @@ import net.kyori.adventure.bossbar.BossBar;
 public class SurvivalSniperGame extends AbstractGame {
 
   private final int MAX_RADIUS_RANGE = 300;
-  private final int MIN_RADIUS_RANGE = 50;
+  private final int MIN_BORDER_RANGE = 50;
   private final int MAX_SECOND = 60 * 10;
   private final int AFTER_PVP_SECOND = 60 * 5;
   private final int AIR_LIMIT = 60 * 3;
@@ -52,7 +51,6 @@ public class SurvivalSniperGame extends AbstractGame {
   private BossBar bossBar = null;
   private BukkitRunnable run = null;
   private boolean isFinalArea = false;
-  public int borderRaidius = MAX_RADIUS_RANGE * 2;
 
   public SurvivalSniperGame() {
     super(
@@ -195,13 +193,13 @@ public class SurvivalSniperGame extends AbstractGame {
           }
           p.setHealth(0);
         });
-        if (!isFinalArea && world.getWorldBorder().getSize() == MIN_RADIUS_RANGE) {
+        if (!isFinalArea && world.getWorldBorder().getSize() == MIN_BORDER_RANGE) {
           isFinalArea = true;
           runPlayers(p -> {
             prefix.send(p, "<red>最終安置になりました！(これからはモブがわきません)");
           });
           world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-          world.getNearbyLivingEntities(world.getWorldBorder().getCenter(), MIN_RADIUS_RANGE, 320, MIN_RADIUS_RANGE)
+          world.getNearbyLivingEntities(world.getWorldBorder().getCenter(), MIN_BORDER_RANGE, 320, MIN_BORDER_RANGE)
               .forEach(entity -> {
                 if (entity instanceof Player || entity instanceof Item) {
                   return;
@@ -214,7 +212,7 @@ public class SurvivalSniperGame extends AbstractGame {
     };
 
     run.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
-    world.getWorldBorder().setSize(MIN_RADIUS_RANGE, MAX_SECOND);
+    world.getWorldBorder().setSize(MIN_BORDER_RANGE, MAX_SECOND);
     world.setClearWeatherDuration(MAX_SECOND * 20);
     world.setTime(1000);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
@@ -245,8 +243,12 @@ public class SurvivalSniperGame extends AbstractGame {
         p.teleport(world.getHighestBlockAt(loc, HeightMap.MOTION_BLOCKING).getLocation());
       }
     });
+    hidePlayer();
     return true;
   }
+
+  private int previousTime = MAX_SECOND;
+  private double previousWidth = MAX_RADIUS_RANGE * 2;
 
   public void endGame(UUID winner) {
     var name = Bukkit.getPlayer(winner).getName();
@@ -282,12 +284,14 @@ public class SurvivalSniperGame extends AbstractGame {
       runPlayers(p -> p.hideBossBar(bossBar));
       bossBar = null;
     }
-    players.clear();
     canPvP = false;
     lobby = null;
     world.getWorldBorder().reset();
     isFinalArea = false;
-    borderRaidius = MAX_RADIUS_RANGE * 2;
+    previousWidth = MAX_RADIUS_RANGE * 2;
+    previousTime = MAX_SECOND;
+    showPlayer();
+    players.clear();
   }
 
   @Override
@@ -306,25 +310,19 @@ public class SurvivalSniperGame extends AbstractGame {
     return true;
   }
 
-  // WARN: バグってるかもしれん
   public void setBorder() {
-    if (getWorld().getWorldBorder().getSize() == MIN_RADIUS_RANGE) {
+    if (isFinalArea) {
       return;
     }
-    if (borderRaidius == -1) {
-      return;
-    }
-    WorldBorder worldBorder = world.getWorldBorder();
-    double size = worldBorder.getSize();
-    double time = (size / (double) (borderRaidius)) * MAX_SECOND;
-    if (2 > size / time) {
-      runPlayers(p -> prefix.send(p, "<red>WARNING! ボーダーの速度がMaxになりました"));
-      worldBorder.setSize(MIN_RADIUS_RANGE, (long) size * 2);
-      borderRaidius = -1;
-      return;
-    }
-    borderRaidius = (int) size;
-    runPlayers(p -> prefix.send(p, "<red>WARNING! ボーダーの速度が速くなりました"));
-    worldBorder.setSize(MIN_RADIUS_RANGE, (long) time);
+    double size = world.getWorldBorder().getSize();
+    double speed = previousWidth / previousTime;
+    double afterTime = previousTime - ((previousWidth - size) / speed) * 0.9;
+    previousTime = (int) afterTime;
+    previousWidth = size;
+    world.getWorldBorder().setSize(size, (long) afterTime);
+    runPlayers(p -> {
+      prefix.send(p, "<red>DANGER! ボーダーの速度が上がりました");
+    });
   }
+
 }

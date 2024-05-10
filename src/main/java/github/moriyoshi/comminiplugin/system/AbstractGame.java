@@ -1,12 +1,15 @@
 package github.moriyoshi.comminiplugin.system;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
@@ -14,6 +17,8 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import lombok.Getter;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 
 public abstract class AbstractGame {
 
@@ -117,6 +122,27 @@ public abstract class AbstractGame {
 
   public final void teleportLobby(Player player) {
     player.teleport(this.lobby);
+    player.hidePlayer(ComMiniPlugin.getPlugin(), player);
+  }
+
+  public final void hidePlayer() {
+    List<UUID> list = Bukkit.getOnlinePlayers().stream()
+        .filter(p -> !isGamePlayer(p))
+        .map(p -> p.getUniqueId()).toList();
+    ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(list);
+    runPlayers(p -> {
+      ((CraftPlayer) p).getHandle().connection.send(packet);
+    });
+  }
+
+  public final void showPlayer() {
+    var list = Bukkit.getOnlinePlayers().stream()
+        .filter(p -> !isGamePlayer(p))
+        .map(p -> ((CraftPlayer) p).getHandle()).toList();
+    ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(list);
+    runPlayers(p -> {
+      ((CraftPlayer) p).getHandle().connection.send(packet);
+    });
   }
 
 }
