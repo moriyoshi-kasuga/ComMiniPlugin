@@ -72,6 +72,7 @@ public class SurvivalSniperGame extends AbstractGame {
       if (players.get(uuid).getLeft() == isPlayer) {
         players.remove(uuid);
         var text = player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ";
+        GameSystem.initializePlayer(player);
         player.teleport(ComMiniWorld.LOBBY);
         if (isPlayer) {
           prefix.cast(text);

@@ -9,9 +9,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -49,22 +46,6 @@ public class GamePlayer extends JsonAPI {
     }
     t.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
     hidenametag = t;
-    new BukkitRunnable() {
-
-      @Override
-      public void run() {
-        Bukkit.getOnlinePlayers().forEach(p -> {
-          var uuid = p.getUniqueId();
-          var player = GamePlayer.getPlayer(uuid);
-          int tick;
-          if ((tick = player.getDisableMoveTick()) > -1) {
-            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, 255, true, false));
-            player.setDisableMoveTick(--tick);
-          }
-        });
-      }
-
-    }.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
   }
 
   public static GamePlayer getPlayer(UUID uuid) {
@@ -85,10 +66,6 @@ public class GamePlayer extends JsonAPI {
   @Getter
   @Setter
   private boolean isDebug;
-
-  @Getter
-  @Setter
-  private int disableMoveTick = -1;
 
   @Getter
   private SurvivalSniperSlot survivapsniperSlot;

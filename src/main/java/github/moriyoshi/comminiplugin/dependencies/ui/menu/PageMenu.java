@@ -1,20 +1,15 @@
 package github.moriyoshi.comminiplugin.dependencies.ui.menu;
 
-import github.moriyoshi.comminiplugin.dependencies.ui.GuiInventoryHolder;
-import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.ResetButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.util.CachedSupplier;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.Event;
 import org.bukkit.event.inventory.DragType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -27,8 +22,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import github.moriyoshi.comminiplugin.dependencies.ui.GuiInventoryHolder;
+import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.ResetButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.util.CachedSupplier;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+
 /**
- * ページを実装したメニューです。このメニューはデフォルトでは、トップインベントリの下段にある、2つのボタンしかありません。 そのため、ページ自体の大きさは45スロットを超えることはできません。
+ * ページを実装したメニューです。このメニューはデフォルトでは、トップインベントリの下段にある、2つのボタンしかありません。
+ * そのため、ページ自体の大きさは45スロットを超えることはできません。
  *
  * @param <P> your plugin type
  * @see ResetButton
@@ -67,7 +72,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
   private int renderedNextIndex, renderedPreviousIndex;
 
   /**
-   * hack to initialize the buttons when the inventory is opened for the first time
+   * hack to initialize the buttons when the inventory is opened for the first
+   * time
    */
   private boolean weHaveBeenOpened;
 
@@ -83,8 +89,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
   public PageMenu(P plugin, GuiInventoryHolder page, Supplier<PageMenu<P>> previous,
       Supplier<PageMenu<P>> next) throws IllegalArgumentException {
     this(plugin, page, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(),
-        DEFAULT_NEXT_PAGE_BUTTON.clone()
-    );
+        DEFAULT_NEXT_PAGE_BUTTON.clone());
   }
 
   /**
@@ -94,14 +99,14 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
    * @param page        the gui in this page - cannot be larger than 45 slots
    * @param previous    the previous page - can be null
    * @param next        the next page - can be null
-   * @param guiListener the listener that calls the onOpen, onClick and onClose methods
+   * @param guiListener the listener that calls the onOpen, onClick and onClose
+   *                    methods
    * @throws IllegalArgumentException if the page size is below 9 or above 45
    */
   public PageMenu(GuiListener guiListener, P plugin, GuiInventoryHolder page,
       Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) throws IllegalArgumentException {
     this(guiListener, plugin, page, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(),
-        DEFAULT_NEXT_PAGE_BUTTON.clone()
-    );
+        DEFAULT_NEXT_PAGE_BUTTON.clone());
   }
 
   /**
@@ -117,8 +122,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
   public PageMenu(P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous,
       Supplier<PageMenu<P>> next) throws IllegalArgumentException {
     this(plugin, page, title, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(),
-        DEFAULT_NEXT_PAGE_BUTTON.clone()
-    );
+        DEFAULT_NEXT_PAGE_BUTTON.clone());
   }
 
   /**
@@ -129,21 +133,22 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
    * @param title       the title of the page
    * @param previous    the previous page - can be null
    * @param next        the next page - can be null
-   * @param guiListener the listener that calls the onOpen, onClick and onClose methods
+   * @param guiListener the listener that calls the onOpen, onClick and onClose
+   *                    methods
    * @throws IllegalArgumentException if the page size is below 9 or above 45
    */
   public PageMenu(GuiListener guiListener, P plugin, GuiInventoryHolder page, String title,
       Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) throws IllegalArgumentException {
     this(guiListener, plugin, page, title, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(),
-        DEFAULT_NEXT_PAGE_BUTTON.clone()
-    );
+        DEFAULT_NEXT_PAGE_BUTTON.clone());
   }
 
   /**
    * Creates a page menu.
    *
    * @param plugin             your plugin
-   * @param page               the gui in this page - cannot be larger than 45 slots
+   * @param page               the gui in this page - cannot be larger than 45
+   *                           slots
    * @param previous           the previous page - can be null
    * @param next               the next page - can be null
    * @param previousPageButton - the ItemStack used for the previous-page button
@@ -154,20 +159,21 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
       Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton)
       throws IllegalArgumentException {
     this(GuiListener.getInstance(), plugin, page, previous, next, previousPageButton,
-        nextPageButton
-    );
+        nextPageButton);
   }
 
   /**
    * Creates a page menu.
    *
    * @param plugin             your plugin
-   * @param page               the gui in this page - cannot be larger than 45 slots
+   * @param page               the gui in this page - cannot be larger than 45
+   *                           slots
    * @param previous           the previous page - can be null
    * @param next               the next page - can be null
    * @param previousPageButton - the ItemStack used for the previous-page button
    * @param nextPageButton     - the ItemStack used for the next-page button
-   * @param guiListener        the listener that calls the onOpen, onClick and onClose methods
+   * @param guiListener        the listener that calls the onOpen, onClick and
+   *                           onClose methods
    * @throws IllegalArgumentException if the page size is below 9 or above 45
    */
   public PageMenu(GuiListener guiListener, P plugin, GuiInventoryHolder page,
@@ -190,7 +196,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
    * Creates a page menu.
    *
    * @param plugin             your plugin
-   * @param page               the gui in this page - cannot be larger than 45 slots
+   * @param page               the gui in this page - cannot be larger than 45
+   *                           slots
    * @param title              the title of the page
    * @param previous           the previous page - can be null
    * @param next               the next page - can be null
@@ -202,21 +209,22 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
       Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton)
       throws IllegalArgumentException {
     this(GuiListener.getInstance(), plugin, page, title, previous, next, previousPageButton,
-        nextPageButton
-    );
+        nextPageButton);
   }
 
   /**
    * Creates a page menu.
    *
    * @param plugin             your plugin
-   * @param page               the gui in this page - cannot be larger than 45 slots
+   * @param page               the gui in this page - cannot be larger than 45
+   *                           slots
    * @param title              the title of the page
    * @param previous           the previous page - can be null
    * @param next               the next page - can be null
    * @param previousPageButton the ItemStack used for the previous-page button
    * @param nextPageButton     the ItemStack used for the next-page button
-   * @param guiListener        the listener that calls the onOpen, onClick and onClose methods
+   * @param guiListener        the listener that calls the onOpen, onClick and
+   *                           onClose methods
    * @throws IllegalArgumentException if the page size is below 9 or above 45
    */
   public PageMenu(GuiListener guiListener, P plugin, GuiInventoryHolder page, String title,
@@ -239,7 +247,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
    * Create pages from a series of GUIs.
    *
    * @param plugin       your plugin
-   * @param pageSupplier the iterator that supplies pages - must have at least one element and can
+   * @param pageSupplier the iterator that supplies pages - must have at least one
+   *                     element and can
    *                     be infinite
    * @param <P>          your Plugin type
    * @return the menu containing the first page
@@ -247,8 +256,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
   public static <P extends Plugin> PageMenu<P> create(P plugin,
       Iterator<? extends GuiInventoryHolder<?>> pageSupplier) {
     return create(plugin, Objects.requireNonNull(pageSupplier, "PageSupplier cannot be null"),
-        DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone()
-    );
+        DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
   }
 
   /**
@@ -256,7 +264,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
    *
    * @param plugin       your plugin
    * @param title        the title of the pages
-   * @param pageSupplier the iterator that supplies pages - must have at least one element and can
+   * @param pageSupplier the iterator that supplies pages - must have at least one
+   *                     element and can
    *                     be infinite
    * @param <P>          your Plugin type
    * @return the menu containing the first page
@@ -265,15 +274,15 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
       Iterator<? extends GuiInventoryHolder<?>> pageSupplier) {
     return create(plugin, title,
         Objects.requireNonNull(pageSupplier, "PageSupplier cannot be null"),
-        DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone()
-    );
+        DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
   }
 
   /**
    * Create pages from a series of GUIs.
    *
    * @param plugin             your plugin
-   * @param pageSupplier       the iterator that supplies pages - must have at least one element and
+   * @param pageSupplier       the iterator that supplies pages - must have at
+   *                           least one element and
    *                           can be infinite
    * @param previousPageButton the ItemStack used for the previous-page button
    * @param nextPageButton     the ItemStack used for the next-page button
@@ -284,8 +293,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
       Iterator<? extends GuiInventoryHolder<?>> pageSupplier, ItemStack previousPageButton,
       ItemStack nextPageButton) {
     return create(plugin, Objects.requireNonNull(pageSupplier, "PageSupplier cannot be null"), null,
-        previousPageButton, nextPageButton
-    );
+        previousPageButton, nextPageButton);
   }
 
   /**
@@ -293,7 +301,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
    *
    * @param plugin             your plugin
    * @param title              the title of the pages
-   * @param pageSupplier       the iterator that supplies pages - must have at least one element and
+   * @param pageSupplier       the iterator that supplies pages - must have at
+   *                           least one element and
    *                           can be infinite
    * @param previousPageButton the ItemStack used for the previous-page button
    * @param nextPageButton     the ItemStack used for the next-page button
@@ -305,8 +314,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
       ItemStack nextPageButton) {
     return create(plugin, title,
         Objects.requireNonNull(pageSupplier, "PageSupplier cannot be null"), null,
-        previousPageButton, nextPageButton
-    );
+        previousPageButton, nextPageButton);
   }
 
   // private because the previous page supplier argument can only be provided by
@@ -316,8 +324,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
       ItemStack previousPageButton, ItemStack nextPageButton) {
     GuiInventoryHolder<?> page = nextSupplier.next();
     PageMenu<P> pageMenu = new PageMenu<>(plugin, page, previous, null, previousPageButton,
-        nextPageButton
-    );
+        nextPageButton);
     if (nextSupplier.hasNext()) {
       pageMenu.nextPageSupplier = new CachedSupplier<>(() -> create(plugin,
           nextSupplier, // the nextSupplier is the iterator
@@ -325,8 +332,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
           previousPageButton == null ? null : previousPageButton.clone(),
           // I don't like this because the itemstack that was passed as a parameter may
           // have changed in the meantime. well.
-          nextPageButton == null ? null : nextPageButton.clone()
-      )); // Idem
+          nextPageButton == null ? null : nextPageButton.clone())); // Idem
     }
     return pageMenu;
   }
@@ -338,16 +344,14 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
       ItemStack previousPageButton, ItemStack nextPageButton) {
     GuiInventoryHolder<?> page = nextSupplier.next();
     PageMenu<P> pageMenu = new PageMenu<>(plugin, page, previous, null, previousPageButton,
-        nextPageButton
-    );
+        nextPageButton);
     if (nextSupplier.hasNext()) {
       pageMenu.nextPageSupplier = new CachedSupplier<>(() -> create(plugin,
           title,
           nextSupplier, // the nextSupplier is the iterator
           () -> pageMenu, // the previousSupplier is the pageMenu that was created just now
           previousPageButton == null ? null : previousPageButton.clone(), // Idem
-          nextPageButton == null ? null : nextPageButton.clone()
-      )); // Idem
+          nextPageButton == null ? null : nextPageButton.clone())); // Idem
     }
     return pageMenu;
   }
@@ -370,17 +374,20 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
   }
 
   /**
-   * Tests whether this PageMenu implementation requires the next-page and previous-page buttons to
+   * Tests whether this PageMenu implementation requires the next-page and
+   * previous-page buttons to
    * use redirects (inventory re-opens).
    *
-   * @return true if re-open is a hard requirement for the next-page and previous-page buttons
+   * @return true if re-open is a hard requirement for the next-page and
+   *         previous-page buttons
    */
   protected boolean needsRedirects() {
     return getClass() != PageMenu.class;
   }
 
   /**
-   * Gets the page menu that is the hosting the next- and previous-buttons shown to the player.
+   * Gets the page menu that is the hosting the next- and previous-buttons shown
+   * to the player.
    *
    * @return the hosting page
    */
@@ -443,20 +450,24 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
   }
 
   /**
-   * Get the supplier that supplies the menu for the page that will be rendered by clicking on the
+   * Get the supplier that supplies the menu for the page that will be rendered by
+   * clicking on the
    * "next page" button.
    *
-   * @return the Optional containing the supplier, or the empty Optional of the supplier is absent.
+   * @return the Optional containing the supplier, or the empty Optional of the
+   *         supplier is absent.
    */
   public Optional<? extends Supplier<? extends PageMenu<P>>> getNextPageMenu() {
     return Optional.ofNullable(nextPageSupplier);
   }
 
   /**
-   * Get the supplier that supplies the menu for the page that will be rendered by clicking on the
+   * Get the supplier that supplies the menu for the page that will be rendered by
+   * clicking on the
    * "previous page" button.
    *
-   * @return the Optional containing the supplier, or the empty Optional of the supplier is absent.
+   * @return the Optional containing the supplier, or the empty Optional of the
+   *         supplier is absent.
    */
   public Optional<? extends Supplier<? extends PageMenu<P>>> getPreviousPageMenu() {
     return Optional.ofNullable(previousPageSupplier);
@@ -492,7 +503,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
   }
 
   /**
-   * Callback method that is called when a button is added in the page that this menu contains. This
+   * Callback method that is called when a button is added in the page that this
+   * menu contains. This
    * callback adds the icon to the inventory of this PageMenu.
    *
    * @param slot   the slot in the page
@@ -508,7 +520,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
   }
 
   /**
-   * Callback method that is called when a button in the page that this menu contains is removed.
+   * Callback method that is called when a button in the page that this menu
+   * contains is removed.
    * This callback removes the icon from the inventory of this PageMenu.
    *
    * @param slot   the slot in the page
@@ -717,8 +730,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
       }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
       InventoryDragEvent proxyEvent = new InventoryDragEvent(proxyView, newCursor, oldCursor,
-          isRightClick, proxyItems
-      );
+          isRightClick, proxyItems);
       getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
 
       dragEvent.setCursor(proxyEvent.getCursor());
@@ -795,9 +807,9 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
   @Override
   public void onClick(InventoryClickEvent clickEvent) {
     int rawSlot = clickEvent.getRawSlot();
-    // GuiInventoryHolder currentPage = getPage();
-    // int myPageSize = getPageSize();
-    // MenuButton button;
+    GuiInventoryHolder currentPage = getPage();
+    int myPageSize = getPageSize();
+    MenuButton button;
 
     int topInventorySize = clickEvent.getView().getTopInventory().getSize();
     boolean myButtonRowIsClicked = topInventorySize - 9 <= rawSlot && rawSlot < topInventorySize;
@@ -812,81 +824,75 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
 
       InventoryType.SlotType slotType = clickEvent.getSlotType();
       InventoryType.SlotType proxySlotType;
-      if (slotType == InventoryType.SlotType.OUTSIDE
-          || slotType == InventoryType.SlotType.QUICKBAR) {
+      if (slotType == InventoryType.SlotType.OUTSIDE || slotType == InventoryType.SlotType.QUICKBAR) {
         proxySlotType = slotType;
       } else {
         proxySlotType = InventoryType.SlotType.CONTAINER;
       }
 
-      int proxyRawSlot =
-          GuiInventoryHolder.getClickedInventory(clickEvent) == view.getBottomInventory() ? rawSlot
-              - 9
-              : rawSlot;
+      int proxyRawSlot = getClickedInventory(clickEvent) == view.getBottomInventory() ? rawSlot - 9 : rawSlot;
 
       InventoryClickEvent proxyEvent = new InventoryClickEvent(proxyView,
           proxySlotType,
           proxyRawSlot,
           clickEvent.getClick(),
           clickEvent.getAction(),
-          clickEvent.getHotbarButton()
-      );
+          clickEvent.getHotbarButton());
 
-      // if (rawSlot < myPageSize && currentPage instanceof MenuHolder && (button =
-      // ((MenuHolder) currentPage).getButton(rawSlot)) != null && button instanceof
-      // Redirect Button redirectButton) {
-      //
-      // //a button from the page was clicked.
-      // //if it's a redirect, then special-case it so that we stay inside a PageMenu
-      //
-      // Inventory target = redirectButton.to((MenuHolder<?>) currentPage,
-      // proxyEvent);
-      // GuiInventoryHolder<?> page = guiListener.getHolder(target); //don't use
-      // target.getHolder()! https://hub.spigotmc.org/jira/browse/SPIGOT-4274
-      //
-      // if (target.getSize() < 5 * 9) {
-      // //we have enough room to put the target inventory in a page in a PageMenu.
-      //
-      // if (page == null) {
-      // //Target inventory was not managed by GuiLib. So let's give it a
-      // GuiInventoryHolder.
-      // page = new MenuHolder<>(guiListener, getPlugin(), target) {
-      // @Override
-      // public void onClick(InventoryClickEvent event) {
-      // if (event.getResult() == Event.Result.DENY) event.setCancelled(false);
-      // super.onClick(event);
-      // }
-      //
-      // @Override
-      // public void onDrag(InventoryDragEvent event) {
-      // if (event.getResult() == Event.Result.DENY) event.setCancelled(false);
-      // super.onDrag(event);
-      // }
-      // };
-      // }
-      //
-      // PageMenu pageMenu = new PageMenu(getPlugin(), page, view.getTitle(),
-      // previousPageSupplier, nextPageSupplier);
-      // target = pageMenu.getInventory();
-      // }
-      //
-      // final Inventory open = target;
-      //
-      // //open the target inventory. It can be either the original inventory to which
-      // we were redirected, or in can be a page inside a new PageMenu.
-      // getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
-      // clickEvent.getWhoClicked().closeInventory();
-      // clickEvent.getWhoClicked().openInventory(open);
-      // });
-      //
-      // } else {
-      // //not a redirect button
-      // getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
-      // clickEvent.setCancelled(proxyEvent.isCancelled());
-      // }
+      if (rawSlot < myPageSize && currentPage instanceof MenuHolder
+          && (button = ((MenuHolder) currentPage).getButton(rawSlot)) != null && button instanceof RedirectButton) {
 
-      getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
-      clickEvent.setCancelled(proxyEvent.isCancelled());
+        // a button from the page was clicked.
+        // if it's a redirect, then special-case it so that we stay inside a PageMenu
+
+        RedirectButton redirectButton = (RedirectButton) button;
+        @SuppressWarnings("unchecked")
+        Inventory target = redirectButton.to((MenuHolder<?>) currentPage, proxyEvent);
+        GuiInventoryHolder<?> page = guiListener.getHolder(target); // don't use target.getHolder()!
+                                                                    // https://hub.spigotmc.org/jira/browse/SPIGOT-4274
+
+        if (target.getSize() < 5 * 9) {
+          // we have enough room to put the target inventory in a page in a PageMenu.
+
+          if (page == null) {
+            // Target inventory was not managed by GuiLib. So let's give it a
+            // GuiInventoryHolder.
+            page = new MenuHolder<>(guiListener, getPlugin(), target) {
+              @Override
+              public void onClick(InventoryClickEvent event) {
+                if (event.getResult() == Event.Result.DENY)
+                  event.setCancelled(false);
+                super.onClick(event);
+              }
+
+              @Override
+              public void onDrag(InventoryDragEvent event) {
+                if (event.getResult() == Event.Result.DENY)
+                  event.setCancelled(false);
+                super.onDrag(event);
+              }
+            };
+          }
+
+          @SuppressWarnings({ "deprecation", "unchecked" })
+          PageMenu pageMenu = new PageMenu(getPlugin(), page, view.getTitle(), previousPageSupplier, nextPageSupplier);
+          target = pageMenu.getInventory();
+        }
+
+        final Inventory open = target;
+
+        // open the target inventory. It can be either the original inventory to which
+        // we were redirected, or in can be a page inside a new PageMenu.
+        getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
+          clickEvent.getWhoClicked().closeInventory();
+          clickEvent.getWhoClicked().openInventory(open);
+        });
+
+      } else {
+        // not a redirect button
+        getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
+        clickEvent.setCancelled(proxyEvent.isCancelled());
+      }
 
       updateView();
     }

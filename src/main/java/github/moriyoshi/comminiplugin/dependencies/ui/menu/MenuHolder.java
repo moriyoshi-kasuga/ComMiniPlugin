@@ -48,7 +48,7 @@ import org.jetbrains.annotations.NotNull;
  * @see ChatButton
  * @see ClaimButton
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implements
     Iterable<MenuButton<?>> {
 
@@ -74,7 +74,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
    * @param plugin      your plugin
    * @param type        the inventory type
    * @param title       the title
-   * @param guiListener the gui listener that calls the onOpen, onClick and onClose methods
+   * @param guiListener the gui listener that calls the onOpen, onClick and
+   *                    onClose methods
    */
   public MenuHolder(GuiListener guiListener, P plugin, InventoryType type, String title) {
     super(guiListener, plugin, type, title);
@@ -86,7 +87,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
    * 指定されたサイズとタイトルを持つMenuHolderを作成します。
    *
    * @param plugin your plugin
-   * @param size   the chest size (should be a multiple of 9 and between 9 - 54 (inclusive)
+   * @param size   the chest size (should be a multiple of 9 and between 9 - 54
+   *               (inclusive)
    * @param title  the title
    */
   public MenuHolder(P plugin, int size, String title) {
@@ -97,9 +99,11 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
    * 指定されたサイズとタイトルを持つMenuHolderを作成します。
    *
    * @param plugin      your plugin
-   * @param size        the chest size (should be a multiple of 9 and between 9 - 54 (inclusive)
+   * @param size        the chest size (should be a multiple of 9 and between 9 -
+   *                    54 (inclusive)
    * @param title       the title
-   * @param guiListener the gui listener that calls the onOpen, onClick and onClose methods
+   * @param guiListener the gui listener that calls the onOpen, onClick and
+   *                    onClose methods
    */
   public MenuHolder(GuiListener guiListener, P plugin, int size, String title) {
     super(guiListener, plugin, size, title);
@@ -122,7 +126,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
    *
    * @param plugin      your plugin
    * @param type        the inventory type
-   * @param guiListener the gui listener that calls the onOpen, onClick and onClose methods
+   * @param guiListener the gui listener that calls the onOpen, onClick and
+   *                    onClose methods
    */
   public MenuHolder(GuiListener guiListener, P plugin, InventoryType type) {
     super(guiListener, plugin, type);
@@ -134,7 +139,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
    * 指定されたサイズのMenuHolderを作成します。
    *
    * @param plugin your plugin
-   * @param size   the chest size (should be a multiple of 9 and between 9 - 54 (inclusive)
+   * @param size   the chest size (should be a multiple of 9 and between 9 - 54
+   *               (inclusive)
    */
   public MenuHolder(P plugin, int size) {
     this(GuiListener.getInstance(), plugin, size);
@@ -144,8 +150,10 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
    * 指定されたサイズのMenuHolderを作成します。
    *
    * @param plugin      your plugin
-   * @param size        the chest size (should be a multiple of 9 and between 9 - 54 (inclusive)
-   * @param guiListener the gui listener that calls the onOpen, onClick and onClose methods
+   * @param size        the chest size (should be a multiple of 9 and between 9 -
+   *                    54 (inclusive)
+   * @param guiListener the gui listener that calls the onOpen, onClick and
+   *                    onClose methods
    */
   public MenuHolder(GuiListener guiListener, P plugin, int size) {
     super(guiListener, plugin, size);
@@ -169,7 +177,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
    *
    * @param plugin      your Plugin
    * @param inventory   the Inventory
-   * @param guiListener the gui listener that calls the onOpen, onClick and onClose methods
+   * @param guiListener the gui listener that calls the onOpen, onClick and
+   *                    onClose methods
    * @see GuiInventoryHolder#GuiInventoryHolder(GuiListener, Plugin, Inventory)
    */
   public MenuHolder(GuiListener guiListener, P plugin, Inventory inventory) {
@@ -278,7 +287,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
   }
 
   /**
-   * スロットからボタンを取り外す。 このメソッドをオーバーライドするサブクラスは、ボタンが削除されるときに{@link MenuButton#onRemove(MenuHolder, int)}
+   * スロットからボタンを取り外す。
+   * このメソッドをオーバーライドするサブクラスは、ボタンが削除されるときに{@link MenuButton#onRemove(MenuHolder, int)}
    * を呼び出すか、super.unsetButton(slot)を呼び出す必要がある。
    *
    * @param slot the slot number
@@ -451,14 +461,14 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
   /**
    * メニューのすべてのボタンをカバーするスプリッタを入手する。
    *
-   * @return a new Spliterator that has the characteristics SIZED, SUB SIZED, NONNULL and ORDERED
+   * @return a new Spliterator that has the characteristics SIZED, SUB SIZED,
+   *         NONNULL and ORDERED
    * @apiNote Slots without a button are not covered by this spliterator.
    */
   @Override
   public Spliterator<MenuButton<?>> spliterator() {
     return Spliterators.spliterator(iterator(), buttonCount,
-        Spliterator.NONNULL | Spliterator.ORDERED
-    );
+        Spliterator.NONNULL | Spliterator.ORDERED);
   }
 
   /**
@@ -527,6 +537,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
     // LinkedListのremove操作はO(n)なので、これは重要ではありません。
     removeButtonCallbacks.removeIf(ref -> buttonRemoveListener.equals(ref.get()));
   }
+
+  // TODO: add ButtonOnClickCallback interface
 
   /**
    * 登録すると、メニューにボタンが追加されたときに呼び出されるコールバックです。

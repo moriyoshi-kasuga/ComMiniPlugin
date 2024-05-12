@@ -17,9 +17,11 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 
+@RequiredArgsConstructor
 public abstract class AbstractGame {
 
   public final String id;
@@ -27,28 +29,23 @@ public abstract class AbstractGame {
   public final String description;
   public final Material material;
   public final PrefixUtil prefix;
-  public final AbstractGameListener<?> listener;
-
-  public AbstractGame(String id, String name, String description, Material material, PrefixUtil prefix,
-      AbstractGameListener<?> listener) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.material = material;
-    this.prefix = prefix;
-    this.listener = listener;
-  }
+  final AbstractGameListener<?> listener;
 
   @Getter
   private boolean isStarted = false;
 
   @Getter
   protected World world;
+
   @Getter
   protected Location lobby;
 
   public abstract MenuHolder<ComMiniPlugin> adminMenu();
 
+  // TODO: ここでoptional じゃなくて iscanopenmenu とかでやろう
+  // まあ add join addspec やるならほぼ意味ない気がするけどconfigじゃあ
+  // とりあえずメモろう、
+  // でボタンにpredicate apply すればほぼ簡単になる
   public abstract Optional<MenuHolder<ComMiniPlugin>> gameMenu(Player player);
 
   /**
@@ -57,6 +54,8 @@ public abstract class AbstractGame {
    * @param player 追加したらtrueです、追加できないならfalseを早期 return してください
    */
   public abstract boolean addSpec(Player player);
+  // TODO: addSpec だけじゃなくて addJoin も追加しよう
+  // menu に addspec だけじゃなくて addjoin もいれて config だけにする
 
   /**
    * このゲームの初期化をするメゾット
@@ -64,14 +63,6 @@ public abstract class AbstractGame {
    * @param player 初期化する運営
    */
   public abstract boolean initializeGame(Player player);
-
-  /**
-   * 主にプレイヤーの準備ができたら呼び出す、ゲームを開始するメゾット
-   *
-   * @param player 呼び出す運営
-   * @return 開始できたらtrue
-   */
-  protected abstract boolean innerStartGame(Player player);
 
   public final boolean startGame(Player player) {
     if (!innerStartGame(player)) {
@@ -84,11 +75,6 @@ public abstract class AbstractGame {
     // Buttonとかでいっぱいその関数使うと思うからここらで用意する
     return true;
   }
-
-  /**
-   * このメゾットを呼び出す前に自前でプレイヤーたちに対する endGame メゾット作って このゲームの設定をクリアするメゾット
-   */
-  protected abstract void innerFinishGame();
 
   public final void finishGame() {
     isStarted = false;
@@ -122,7 +108,6 @@ public abstract class AbstractGame {
 
   public final void teleportLobby(Player player) {
     player.teleport(this.lobby);
-    player.hidePlayer(ComMiniPlugin.getPlugin(), player);
   }
 
   public final void hidePlayer() {
@@ -144,5 +129,18 @@ public abstract class AbstractGame {
       ((CraftPlayer) p).getHandle().connection.send(packet);
     });
   }
+
+  /**
+   * 主にプレイヤーの準備ができたら呼び出す、ゲームを開始するメゾット
+   *
+   * @param player 呼び出す運営
+   * @return 開始できたらtrue
+   */
+  protected abstract boolean innerStartGame(Player player);
+
+  /**
+   * このメゾットを呼び出す前に自前でプレイヤーたちに対する endGame メゾット作って このゲームの設定をクリアするメゾット
+   */
+  protected abstract void innerFinishGame();
 
 }

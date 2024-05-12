@@ -1,7 +1,5 @@
 package github.moriyoshi.comminiplugin.system;
 
-import java.util.Objects;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,10 +15,10 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 
 public class GameListener implements Listener {
 
@@ -77,7 +75,7 @@ public class GameListener implements Listener {
       GameSystem.getNowGame().listener.death(e);
       return;
     }
-    e.getPlayer().teleport(ComMiniWorld.LOBBY);
+    GameSystem.initializePlayer(e.getPlayer());
   }
 
   @EventHandler
@@ -140,16 +138,17 @@ public class GameListener implements Listener {
   }
 
   @EventHandler
-  public void onPlayerMove(PlayerMoveEvent e) {
-    var player = GamePlayer.getPlayer(e.getPlayer().getUniqueId());
-    if (player.getDisableMoveTick() == -1) {
-      return;
-    }
-    Location from = e.getFrom();
-    Location to = Objects.requireNonNull(e.getTo());
-    from.setYaw(to.getYaw());
-    from.setPitch(to.getPitch());
-    e.setTo(from);
+  public void move(PlayerMoveEvent e) {
+    var p = e.getPlayer();
+    p.getActivePotionEffects().forEach(effect -> {
+      if (effect.getType().equals(PotionEffectType.SLOW) && effect.getAmplifier() == 138) {
+        Location from = e.getFrom();
+        Location to = e.getTo();
+        from.setYaw(to.getYaw());
+        from.setPitch(to.getPitch());
+        e.setTo(from);
+        return;
+      }
+    });
   }
-
 }

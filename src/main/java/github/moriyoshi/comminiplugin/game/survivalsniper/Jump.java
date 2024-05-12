@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.item.CooldownItem;
 import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.system.GamePlayer;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.Util;
 import net.kyori.adventure.text.Component;
@@ -75,7 +75,7 @@ public class Jump extends CustomItem implements CooldownItem {
           this.cancel();
         }
         if (p.isOnGround()) {
-          GamePlayer.getPlayer(p.getUniqueId()).setDisableMoveTick(30);
+          BukkitUtil.disableMove(p, 30);
           this.cancel();
         }
       }

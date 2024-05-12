@@ -10,6 +10,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BoundingBox;
 
 import io.papermc.paper.entity.TeleportFlag;
@@ -52,5 +54,9 @@ public final class BukkitUtil {
       }
     }
     return false;
+  }
+
+  public static void disableMove(Player player, int tick) {
+    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, tick, 138, true, false));
   }
 }
