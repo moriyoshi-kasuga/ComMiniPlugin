@@ -73,7 +73,6 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
     {
       add(12);
       add(13);
-      add(14);
     }
   };
 
@@ -88,10 +87,10 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
       }
       setButton(i, empty);
     }
-    setButton(15, new ItemButton<>(
+    setButton(14, new ItemButton<>(
         new ItemBuilder(Material.CARROT_ON_A_STICK).customModelData(4)
             .name("<yellow>作るときはクリック").build()));
-    setButton(16, none);
+    setButton(15, none);
     setButton(18, heads);
     setButton(19, tails);
   }
@@ -119,7 +118,7 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
   }
 
   public void update(InventoryClickEvent event) {
-    setButton(16, none);
+    setButton(15, none);
     new BukkitRunnable() {
 
       @Override
@@ -138,7 +137,7 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
           for (var h : Bullet.WARHEAD.values()) {
             if (h.material == material) {
               if (head != null) {
-                setButton(16, none);
+                setButton(15, none);
                 return;
               }
               head = h;
@@ -149,7 +148,7 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
           for (var t : Bullet.WARTAIL.values()) {
             if (t.predicate.test(material)) {
               if (tail != null) {
-                setButton(16, none);
+                setButton(15, none);
                 return;
               }
               tail = t;
@@ -159,7 +158,7 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
           }
         }
         if (head == null || tail == null) {
-          setButton(16, none);
+          setButton(15, none);
           return;
         }
         var tmp1 = headSlot;
@@ -174,7 +173,7 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
                 "<red>ヘッドショット<gray>:<white>" + headShot)
             .amount(head.successAmount)
             .build();
-        setButton(16, new ItemButton<>(result) {
+        setButton(15, new ItemButton<>(result) {
 
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {

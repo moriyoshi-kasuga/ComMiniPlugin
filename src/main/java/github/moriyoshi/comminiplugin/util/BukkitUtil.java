@@ -48,7 +48,7 @@ public final class BukkitUtil {
       var z = random.nextInt(-radius, radius);
       var block = world.getHighestBlockAt(bx + x, bz + z, HeightMap.WORLD_SURFACE);
       if (block.isSolid() && block.isCollidable()) {
-        entity.teleportAsync(block.getLocation(), TeleportCause.PLUGIN, TeleportFlag.Relative.YAW,
+        entity.teleportAsync(block.getLocation().add(0.5, 1, 0.5), TeleportCause.PLUGIN, TeleportFlag.Relative.YAW,
             TeleportFlag.Relative.PITCH);
         return true;
       }
