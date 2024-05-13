@@ -76,7 +76,7 @@ class Some<T> implements Option<T> {
     if (obj == this) {
       return true;
     }
-    if (!(obj instanceof Some that)) {
+    if (!(obj instanceof Some<?> that)) {
       return false;
     }
 

@@ -68,12 +68,8 @@ public class AllSoundCommand extends CommandAPICommand {
               split.remove(split.size() - 1);
             }
           }
-          var contain = materials.stream().filter(s -> s.name().toLowerCase().contains(finalname))
-              .findFirst();
-          if (contain.isPresent()) {
-            yield contain.get();
-          }
-          yield Material.BEDROCK;
+          yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalname))
+              .findFirst().orElse(Material.BEDROCK);
         }
         case "ENTITY" -> {
           while (!split.isEmpty()) {
@@ -88,12 +84,8 @@ public class AllSoundCommand extends CommandAPICommand {
               split.remove(split.size() - 1);
             }
           }
-          var contain = materials.stream().filter(s -> s.name().toLowerCase().contains(finalname))
-              .findFirst();
-          if (contain.isPresent()) {
-            yield contain.get();
-          }
-          yield Material.BEDROCK;
+          yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalname))
+              .findFirst().orElse(Material.BEDROCK);
         }
         default -> Material.BEDROCK;
       };

@@ -137,7 +137,7 @@ class SingleMask<Symbol, Item> implements Mask<Symbol, Item> {
     if (obj == this) {
       return true;
     }
-    if (!(obj instanceof SingleMask that)) {
+    if (!(obj instanceof SingleMask<?, ?> that)) {
       return false;
     }
 
@@ -188,7 +188,7 @@ class MapMask<Symbol, Item> implements Mask<Symbol, Item> {
     if (obj == this) {
       return true;
     }
-    if (!(obj instanceof MapMask that)) {
+    if (!(obj instanceof MapMask<?,?> that)) {
       return false;
     }
 

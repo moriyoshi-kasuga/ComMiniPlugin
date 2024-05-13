@@ -196,9 +196,7 @@ public class SurvivalSniperGame extends AbstractGame {
         });
         if (!isFinalArea && world.getWorldBorder().getSize() == MIN_BORDER_RANGE) {
           isFinalArea = true;
-          runPlayers(p -> {
-            prefix.send(p, "<red>最終安置になりました！(これからはモブがわきません)");
-          });
+          runPlayers(p -> prefix.send(p, "<red>最終安置になりました！(これからはモブがわきません)"));
           world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
           world.getNearbyLivingEntities(world.getWorldBorder().getCenter(), MIN_BORDER_RANGE, 320, MIN_BORDER_RANGE)
               .forEach(entity -> {
@@ -207,7 +205,6 @@ public class SurvivalSniperGame extends AbstractGame {
                 }
                 entity.remove();
               });
-          ;
         }
       }
     };
@@ -321,9 +318,7 @@ public class SurvivalSniperGame extends AbstractGame {
     previousTime = (int) afterTime;
     previousWidth = size;
     world.getWorldBorder().setSize(size, (long) afterTime);
-    runPlayers(p -> {
-      prefix.send(p, "<red>DANGER! ボーダーの速度が上がりました");
-    });
+    runPlayers(p -> prefix.send(p, "<red>DANGER! ボーダーの速度が上がりました"));
   }
 
 }

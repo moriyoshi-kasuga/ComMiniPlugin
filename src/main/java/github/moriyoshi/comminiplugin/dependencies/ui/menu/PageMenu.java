@@ -840,12 +840,11 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
           clickEvent.getHotbarButton());
 
       if (rawSlot < myPageSize && currentPage instanceof MenuHolder
-          && (button = ((MenuHolder) currentPage).getButton(rawSlot)) != null && button instanceof RedirectButton) {
+          && (button = ((MenuHolder) currentPage).getButton(rawSlot)) != null && button instanceof RedirectButton redirectButton) {
 
         // a button from the page was clicked.
         // if it's a redirect, then special-case it so that we stay inside a PageMenu
 
-        RedirectButton redirectButton = (RedirectButton) button;
         @SuppressWarnings("unchecked")
         Inventory target = redirectButton.to((MenuHolder<?>) currentPage, proxyEvent);
         GuiInventoryHolder<?> page = guiListener.getHolder(target); // don't use target.getHolder()!

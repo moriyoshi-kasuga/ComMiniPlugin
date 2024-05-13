@@ -147,7 +147,6 @@ public class GameListener implements Listener {
         from.setYaw(to.getYaw());
         from.setPitch(to.getPitch());
         e.setTo(from);
-        return;
       }
     });
   }

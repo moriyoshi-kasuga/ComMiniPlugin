@@ -122,10 +122,10 @@ public abstract class CustomItem implements InterfaceItem {
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof CustomItem item)) {
-      return false;
+    if (obj instanceof CustomItem item) {
+      return item.getIdentifier().equals(getIdentifier()) && item.getUniqueId().equals(getUniqueId());
     }
-    return item.getIdentifier().equals(getIdentifier()) && item.getUniqueId().equals(getUniqueId());
+    return false;
   }
 
   /**

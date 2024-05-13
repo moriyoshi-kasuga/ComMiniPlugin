@@ -1,9 +1,14 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import de.tr7zw.changeme.nbtapi.NBT;
+import github.moriyoshi.comminiplugin.item.CooldownItem;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.Util;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
-
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -20,13 +25,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import de.tr7zw.changeme.nbtapi.NBT;
-import github.moriyoshi.comminiplugin.item.CooldownItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
-import net.kyori.adventure.text.Component;
 
 public class Sniper extends CustomItem implements CooldownItem {
 
@@ -83,13 +81,14 @@ public class Sniper extends CustomItem implements CooldownItem {
       loc.getNearbyEntities(1, 1, 1).forEach(entity -> {
         if (entity != p && entity.getBoundingBox().overlaps(v.clone().add(BULLET_SIZE),
             v.clone().subtract(BULLET_SIZE))) {
-          if (already.getOrDefault(entity, false)) {
-            return;
-          }
           if (!(entity instanceof LivingEntity living)) {
-            if (entity instanceof org.bukkit.entity.Minecart || entity instanceof org.bukkit.entity.Boat) {
+            if (entity instanceof org.bukkit.entity.Minecart
+                || entity instanceof org.bukkit.entity.Boat) {
               entity.remove();
             }
+            return;
+          }
+          if (already.getOrDefault(living, false)) {
             return;
           }
           var eye = living.getEyeLocation().toVector();

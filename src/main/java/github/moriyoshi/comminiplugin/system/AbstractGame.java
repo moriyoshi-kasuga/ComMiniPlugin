@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
@@ -79,9 +80,7 @@ public abstract class AbstractGame {
   public final void finishGame() {
     isStarted = false;
     HandlerList.unregisterAll(listener);
-    runPlayers(p -> {
-      GameSystem.initializePlayer(p);
-    });
+    runPlayers(GameSystem::initializePlayer);
     innerFinishGame();
   }
 
@@ -113,11 +112,9 @@ public abstract class AbstractGame {
   public final void hidePlayer() {
     List<UUID> list = Bukkit.getOnlinePlayers().stream()
         .filter(p -> !isGamePlayer(p))
-        .map(p -> p.getUniqueId()).toList();
+        .map(Entity::getUniqueId).toList();
     ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(list);
-    runPlayers(p -> {
-      ((CraftPlayer) p).getHandle().connection.send(packet);
-    });
+    runPlayers(p -> ((CraftPlayer) p).getHandle().connection.send(packet));
   }
 
   public final void showPlayer() {
@@ -125,9 +122,7 @@ public abstract class AbstractGame {
         .filter(p -> !isGamePlayer(p))
         .map(p -> ((CraftPlayer) p).getHandle()).toList();
     ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(list);
-    runPlayers(p -> {
-      ((CraftPlayer) p).getHandle().connection.send(packet);
-    });
+    runPlayers(p -> ((CraftPlayer) p).getHandle().connection.send(packet));
   }
 
   /**

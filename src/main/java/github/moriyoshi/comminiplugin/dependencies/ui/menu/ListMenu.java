@@ -59,26 +59,20 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
       getPage().setButton(slot, function.apply(rewards.get(rewardStartIndex + slot)));
     }
     getDefaultMenu().ifPresent(menu -> {
-      setButton(getPageSize(), new RedirectItemButton<>(goToFirstPage, () -> menu.getInventory()));
-      getSerachMethod().ifPresent(method -> {
-        getNewRewadsMenu().ifPresent(newMethod -> {
-          setButton(getPageSize() + 8,
-              new ItemButton<>(new ItemBuilder(Material.BOOK).name("<aqua>クリックで文字検索").build()) {
-                @Override
-                public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-                  AnvilInputs
-                      .postClose(AnvilInputs.getInput(getPlugin(), "<aqua>文字で検索", (t, u) -> t,
-                          (s, completion) -> {
-                            return List.of(ResponseAction.openInventory(
-                                newMethod.apply(rewards.stream().filter(key -> method.test(s, key)).toList())
-                                    .getInventory()));
-                          }),
-                          getPlugin(), player -> player.openInventory(getInventory()))
-                      .open((Player) event.getWhoClicked());
-                }
-              });
-        });
-      });
+      setButton(getPageSize(), new RedirectItemButton<>(goToFirstPage, menu::getInventory));
+      getSerachMethod().ifPresent(method -> getNewRewadsMenu().ifPresent(newMethod -> setButton(getPageSize() + 8,
+          new ItemButton<>(new ItemBuilder(Material.BOOK).name("<aqua>クリックで文字検索").build()) {
+            @Override
+            public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+              AnvilInputs
+                  .postClose(AnvilInputs.getInput(getPlugin(), "<aqua>文字で検索", (t, u) -> t,
+                      (s, completion) -> List.of(ResponseAction.openInventory(
+                          newMethod.apply(rewards.stream().filter(key -> method.test(s, key)).toList())
+                              .getInventory()))),
+                      getPlugin(), player -> player.openInventory(getInventory()))
+                  .open((Player) event.getWhoClicked());
+            }
+          })));
     });
 
     // required for the page to even work
