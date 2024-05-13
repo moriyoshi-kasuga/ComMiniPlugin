@@ -2,7 +2,6 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -65,14 +64,18 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
     if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
       return;
     }
-    if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.CRAFTING_TABLE
-        && p.isSneaking()) {
+    if (e.getClickedBlock() != null && p.isSneaking()) {
       e.setCancelled(true);
-      var item = p.getInventory().getItemInMainHand();
-      if (item.isEmpty() || !item.getType().name().contains("PICKAXE")) {
-        new SurvivalSniperCustomMenu().openInv(p);
-      } else {
-        new SurvivalSniperTradeMenu().openInv(p);
+      switch (e.getClickedBlock().getType()) {
+        case CRAFTING_TABLE:
+          new SurvivalSniperCustomMenu().openInv(p);
+          break;
+        case FURNACE:
+          new SurvivalSniperTradeMenu().openInv(p);
+          break;
+        default:
+          break;
+
       }
     }
   }

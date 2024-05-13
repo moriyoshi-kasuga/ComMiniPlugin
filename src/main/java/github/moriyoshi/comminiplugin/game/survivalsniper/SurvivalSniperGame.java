@@ -12,6 +12,7 @@ import org.bukkit.HeightMap;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -31,9 +32,7 @@ import github.moriyoshi.comminiplugin.util.Util;
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 
-// TODO: 弾をアップグレードできるようにする
-// simple voice chat の api 使おう
-// 人数でボーダーのサイズ調整しよう
+// TODO: simple voice chat の api 使おう
 public class SurvivalSniperGame extends AbstractGame {
 
   private final int MAX_RADIUS_RANGE = 300;
@@ -203,7 +202,9 @@ public class SurvivalSniperGame extends AbstractGame {
                 if (entity instanceof Player || entity instanceof Item) {
                   return;
                 }
-                entity.remove();
+                if (entity instanceof Monster) {
+                  entity.remove();
+                }
               });
         }
       }
@@ -214,6 +215,15 @@ public class SurvivalSniperGame extends AbstractGame {
     world.setClearWeatherDuration(MAX_SECOND * 20);
     world.setTime(1000);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
+    world.getNearbyLivingEntities(world.getWorldBorder().getCenter(), MIN_BORDER_RANGE, 320, MIN_BORDER_RANGE)
+        .forEach(entity -> {
+          if (entity instanceof Player || entity instanceof Item) {
+            return;
+          }
+          if (entity instanceof Monster) {
+            entity.remove();
+          }
+        });
     var loc = lobby.clone();
     runPlayers(p -> {
       var uuid = p.getUniqueId();
