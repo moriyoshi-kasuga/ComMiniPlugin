@@ -3,10 +3,13 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
@@ -88,6 +91,16 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
     if (getGame().isGamePlayer(e.getPlayer())) {
       getGame().prefix.send(e.getPlayer(), "<red>ポータルを使うな!");
       e.setCancelled(true);
+    }
+  }
+
+  @EventHandler
+  public void entitySpawn(EntitySpawnEvent e) {
+    if (e.getEntityType() == EntityType.ENDERMAN) {
+      Entity entity = e.getEntity();
+      if (getGame().getWorld().getWorldBorder().isInside(entity.getLocation())) {
+        entity.remove();
+      }
     }
   }
 

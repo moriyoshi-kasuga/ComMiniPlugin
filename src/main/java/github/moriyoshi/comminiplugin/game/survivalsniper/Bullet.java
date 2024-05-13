@@ -1,23 +1,22 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import de.tr7zw.changeme.nbtapi.NBT;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.tuple.Triple;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import de.tr7zw.changeme.nbtapi.NBT;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
 public class Bullet extends CustomItem {
@@ -60,25 +59,6 @@ public class Bullet extends CustomItem {
 
   }
 
-  @RequiredArgsConstructor
-  public enum OptionalItem {
-    // TODO: 火薬で弾の攻撃範囲を広くする
-    GUNPOWDER(
-        new ItemBuilder(Material.GUNPOWDER).name("<red>爆発的ダメージ!")
-            .lore("<gray>追加するとダメージ" + GUNPOWDER_MULTIPLE + "倍")
-            .amount(GUNPOWDER_AMOUNT).build(),
-        (i) -> i.getType() == Material.GUNPOWDER && i.getAmount() >= GUNPOWDER_AMOUNT,
-        (triple) -> Triple.of("<u>" + triple.getLeft(),
-            (int) (triple.getMiddle() * GUNPOWDER_MULTIPLE),
-            (int) (triple.getRight() * GUNPOWDER_MULTIPLE)),
-        (item) -> item.setAmount(item.getAmount() - GUNPOWDER_AMOUNT));
-
-    public final ItemStack material;
-    public final Predicate<ItemStack> predicate;
-    public final Function<Triple<String, Integer, Integer>, Triple<String, Integer, Integer>> wrapper;
-    public final Consumer<ItemStack> finalize;
-  }
-
   private static final String NAME = "name";
 
   private static final String DAMAGE = "damage";
@@ -86,9 +66,6 @@ public class Bullet extends CustomItem {
   private static final String HEAD_SHOT = "head_shot";
 
   private static final String SOUND = "sound";
-
-  private static final double GUNPOWDER_MULTIPLE = 1.2;
-  private static final int GUNPOWDER_AMOUNT = 2;
 
   public static Optional<Bullet> getFirstBullet(Player p) {
     for (ItemStack item : p.getInventory().getContents()) {
