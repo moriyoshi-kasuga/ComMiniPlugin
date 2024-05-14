@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import github.moriyoshi.comminiplugin.system.AbstractGameListener;
+import github.moriyoshi.comminiplugin.system.game.AbstractGameListener;
 import github.moriyoshi.comminiplugin.util.Util;
 
 public class SurvivalSniperListener implements AbstractGameListener<SurvivalSniperGame> {

@@ -3,7 +3,7 @@ package github.moriyoshi.comminiplugin.constant;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.buttons.AddSpecButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.TeleportLobbyButton;

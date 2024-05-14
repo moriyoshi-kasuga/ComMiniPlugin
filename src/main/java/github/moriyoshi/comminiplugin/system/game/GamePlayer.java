@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system;
+package github.moriyoshi.comminiplugin.system.game;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

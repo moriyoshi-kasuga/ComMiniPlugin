@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system;
+package github.moriyoshi.comminiplugin.system.game;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system;
+package github.moriyoshi.comminiplugin.system.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;

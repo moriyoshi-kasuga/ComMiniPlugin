@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system;
+package github.moriyoshi.comminiplugin.system.game;
 
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;

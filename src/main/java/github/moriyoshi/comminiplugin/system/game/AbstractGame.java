@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system;
+package github.moriyoshi.comminiplugin.system.game;
 
 import java.util.List;
 import java.util.UUID;
@@ -45,6 +45,8 @@ public abstract class AbstractGame {
   public abstract MenuHolder<ComMiniPlugin> createGameMenu(Player player);
 
   public abstract boolean addSpec(Player player);
+
+  public abstract boolean addPlayer(Player player);
 
   public abstract boolean initializeGame(Player player);
 
