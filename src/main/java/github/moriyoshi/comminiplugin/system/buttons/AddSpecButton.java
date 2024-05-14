@@ -19,7 +19,6 @@ public class AddSpecButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   }
 
   public static AddSpecButton of() {
-    // TODO: まあここらへんはpredicate button をごうせいすればいいかもしれん
     if (GameSystem.isStarted()) {
       return new AddSpecButton(
           new ItemBuilder(Material.NETHER_STAR).name(

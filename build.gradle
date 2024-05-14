@@ -22,7 +22,7 @@ def anvilGUI = 'net.wesjd:anvilgui:1.9.3-SNAPSHOT'
 def commandAPI = 'dev.jorel:commandapi-bukkit-shade:9.4.0'
 def nbtAPI = 'de.tr7zw:item-nbt-api:2.12.3'
 def reflections = 'org.reflections:reflections:0.10.2'
-def simpleVoiceChatAPI = "de.maxhenkel.voicechat:voicechat-api:2.5.0"
+// def simpleVoiceChatAPI = "de.maxhenkel.voicechat:voicechat-api:2.5.0"
 
 def relocates = [
         'dev.jorel.commandapi': 'github.moriyoshi.comminiplugin.dependencies.commandapi',
@@ -41,7 +41,7 @@ dependencies {
     compileOnly lombok
 	annotationProcessor lombok
 
-    implementation simpleVoiceChatAPI
+    // implementation simpleVoiceChatAPI
 	
 	testCompileOnly lombok
 	testAnnotationProcessor lombok

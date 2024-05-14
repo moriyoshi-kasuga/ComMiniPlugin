@@ -13,7 +13,6 @@ import org.reflections.Reflections;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import de.maxhenkel.voicechat.api.BukkitVoicechatService;
 import de.tr7zw.changeme.nbtapi.NBTContainer;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
@@ -32,7 +31,6 @@ import github.moriyoshi.comminiplugin.command.MenuCommand;
 import github.moriyoshi.comminiplugin.command.RandomTeleport;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
-import github.moriyoshi.comminiplugin.dependencies.voicechat.ComMiniVoiceChatPlugin;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperCustomMenu;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemListner;
@@ -52,8 +50,6 @@ public final class ComMiniPlugin extends JavaPlugin {
 
   @Getter
   private static GuiListener guiListener;
-
-  private static ComMiniVoiceChatPlugin comMiniVoiceChatPlugin;
 
   public static ComMiniPlugin getPlugin() {
     return getPlugin(ComMiniPlugin.class);
@@ -87,25 +83,12 @@ public final class ComMiniPlugin extends JavaPlugin {
         }));
     GamePlayer.gameInitialize();
     new WorldCreator("lobby").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();
-    BukkitVoicechatService service = getServer().getServicesManager()
-        .load(BukkitVoicechatService.class);
-    if (service != null) {
-      comMiniVoiceChatPlugin = new ComMiniVoiceChatPlugin();
-      service.registerPlugin(comMiniVoiceChatPlugin);
-      ComMiniPrefix.SYSTEM.logInfo("Successfully registered voice chat plugin");
-    } else {
-      ComMiniPrefix.SYSTEM.logError("Failed to register voice chat plugin");
-    }
   }
 
   @Override
   public void onDisable() {
     GamePlayer.save();
     CommandAPI.onDisable();
-    if (comMiniVoiceChatPlugin != null) {
-      getServer().getServicesManager().unregister(comMiniVoiceChatPlugin);
-      ComMiniPrefix.SYSTEM.logInfo("Successfully unregistered voice chat plugin");
-    }
   }
 
   /**

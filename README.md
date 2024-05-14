@@ -12,7 +12,7 @@ Bukkit plugin (shaded) dependencies:
 Bukkit plugin (use api) dependencies:
 
 - [https://github.com/PaperMC/Paper](https://github.com/PaperMC/Paper) [GNU 3]
-- [https://github.com/henkelmax/simple-voice-chat](https://github.com/henkelmax/simple-voice-chat) [All Rights Reserved]
+<!-- - [https://github.com/henkelmax/simple-voice-chat](https://github.com/henkelmax/simple-voice-chat) [All Rights Reserved] -->
 
 Other dependencies:
 

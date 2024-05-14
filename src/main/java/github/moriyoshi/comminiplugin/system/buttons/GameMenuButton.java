@@ -29,13 +29,9 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   }
 
   public static GameMenuButton back() {
-    if (GameSystem.inGame() && !GameSystem.isStarted()) {
-      return new GameMenuButton(
-          new ItemBuilder(Material.IRON_DOOR).name(
-              GameSystem.getNowGame().name + "<white>のメニューに戻る").build());
-    }
     return new GameMenuButton(
-        new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開催されていません").build());
+        new ItemBuilder(Material.IRON_DOOR).name(
+            GameSystem.getNowGame().name + "<white>のメニューに戻る").build());
   }
 
   @Override
