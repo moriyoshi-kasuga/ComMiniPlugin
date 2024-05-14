@@ -13,9 +13,11 @@ public class GameMenuCommand extends CommandAPICommand {
         ComMiniPrefix.MAIN.send(player, "<red>ゲーム中ではありません");
         return;
       }
-      GameSystem.getNowGame().gameMenu(player).ifPresentOrElse(menu -> menu.openInv(player),
-          () -> ComMiniPrefix.MAIN.send(player, "<red>Menuは開けません")
-      );
+      if (GameSystem.isStarted() && GameSystem.getNowGame().isGamePlayer(player)) {
+        ComMiniPrefix.MAIN.send(player, "<red>Menuは開けません");
+        return;
+      }
+      GameSystem.getNowGame().createGameMenu(player).openInv(player);
     });
   }
 }

@@ -1,7 +1,6 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -98,16 +97,13 @@ public class SurvivalSniperGame extends AbstractGame {
   }
 
   @Override
-  public MenuHolder<ComMiniPlugin> adminMenu() {
+  public MenuHolder<ComMiniPlugin> createAdminMenu() {
     return new SurvivalSniperAdminMenu();
   }
 
   @Override
-  public Optional<MenuHolder<ComMiniPlugin>> gameMenu(Player player) {
-    if (isStarted() && isGamePlayer(player)) {
-      return Optional.empty();
-    }
-    return Optional.of(new SurvivalSniperMenu());
+  public MenuHolder<ComMiniPlugin> createGameMenu(Player player) {
+    return new SurvivalSniperMenu();
   }
 
   @Override
@@ -338,7 +334,7 @@ public class SurvivalSniperGame extends AbstractGame {
     }
     double size = world.getWorldBorder().getSize();
     double speed = previousWidth / previousTime;
-    double afterTime = previousTime - ((previousWidth - size) / speed) * 0.9;
+    double afterTime = previousTime - ((previousWidth - size) / speed) * 0.8;
     previousTime = (int) afterTime;
     previousWidth = size;
     world.getWorldBorder().setSize(size, (long) afterTime);

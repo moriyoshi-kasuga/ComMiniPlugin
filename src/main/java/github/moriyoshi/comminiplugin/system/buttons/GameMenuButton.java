@@ -42,13 +42,14 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   public void onClick(@NotNull MenuHolder<ComMiniPlugin> holder,
       @NotNull InventoryClickEvent event) {
     var p = (Player) event.getWhoClicked();
-    if (GameSystem.inGame()) {
-      GameSystem.getNowGame().gameMenu(p).ifPresentOrElse(menu -> menu.openInv(p),
-          () -> ComMiniPrefix.MAIN.send(p, "<red>Menuは開けません")
-      );
-    } else {
+    if (!GameSystem.inGame()) {
       ComMiniPrefix.MAIN.send(p, "<red>現在はゲーム中ではありません");
     }
+    if (GameSystem.isStarted() && GameSystem.getNowGame().isGamePlayer(p)) {
+      GameSystem.getNowGame().createGameMenu(p).openInv(p);
+      return;
+    }
+    ComMiniPrefix.MAIN.send(p, "<red>Menuは開けません");
   }
 
 }

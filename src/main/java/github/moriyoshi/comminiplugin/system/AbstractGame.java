@@ -1,7 +1,6 @@
 package github.moriyoshi.comminiplugin.system;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -41,28 +40,12 @@ public abstract class AbstractGame {
   @Getter
   protected Location lobby;
 
-  public abstract MenuHolder<ComMiniPlugin> adminMenu();
+  public abstract MenuHolder<ComMiniPlugin> createAdminMenu();
 
-  // TODO: ここでoptional じゃなくて iscanopenmenu とかでやろう
-  // まあ add join addspec やるならほぼ意味ない気がするけどconfigじゃあ
-  // とりあえずメモろう、
-  // でボタンにpredicate apply すればほぼ簡単になる
-  public abstract Optional<MenuHolder<ComMiniPlugin>> gameMenu(Player player);
+  public abstract MenuHolder<ComMiniPlugin> createGameMenu(Player player);
 
-  /**
-   * プレイヤーを観戦に追加します
-   *
-   * @param player 追加したらtrueです、追加できないならfalseを早期 return してください
-   */
   public abstract boolean addSpec(Player player);
-  // TODO: addSpec だけじゃなくて addJoin も追加しよう
-  // menu に addspec だけじゃなくて addjoin もいれて config だけにする
 
-  /**
-   * このゲームの初期化をするメゾット
-   *
-   * @param player 初期化する運営
-   */
   public abstract boolean initializeGame(Player player);
 
   public final boolean startGame(Player player) {
@@ -71,9 +54,6 @@ public abstract class AbstractGame {
     }
     isStarted = true;
     ComMiniPlugin.getPlugin().registerEvent(listener);
-    // TODO: ここでGamePlayerのisingameとかのフラッグ作ってあとはGameSystemとかにちゃんとinGamePlayer() とか
-    // inStartGamePlyaer () とかの関数を用意しよう
-    // Buttonとかでいっぱいその関数使うと思うからここらで用意する
     return true;
   }
 
@@ -84,19 +64,12 @@ public abstract class AbstractGame {
     innerFinishGame();
   }
 
-  /**
-   * このプレイヤーのこのゲームに参加しているか
-   *
-   * @param player 確認するプレイヤー
-   * @return 参加していたら
-   */
+  protected abstract boolean innerStartGame(Player player);
+
+  protected abstract void innerFinishGame();
+
   public abstract boolean isGamePlayer(Player player);
 
-  /**
-   * このゲームに参加しているプレイヤーに対して処理をします
-   *
-   * @param consumer する処理
-   */
   public final void runPlayers(Consumer<Player> consumer) {
     Bukkit.getOnlinePlayers().forEach(p -> {
       if (isGamePlayer(p)) {
@@ -124,18 +97,5 @@ public abstract class AbstractGame {
     ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(list);
     runPlayers(p -> ((CraftPlayer) p).getHandle().connection.send(packet));
   }
-
-  /**
-   * 主にプレイヤーの準備ができたら呼び出す、ゲームを開始するメゾット
-   *
-   * @param player 呼び出す運営
-   * @return 開始できたらtrue
-   */
-  protected abstract boolean innerStartGame(Player player);
-
-  /**
-   * このメゾットを呼び出す前に自前でプレイヤーたちに対する endGame メゾット作って このゲームの設定をクリアするメゾット
-   */
-  protected abstract void innerFinishGame();
 
 }

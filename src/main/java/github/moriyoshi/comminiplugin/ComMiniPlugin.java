@@ -86,7 +86,7 @@ public final class ComMiniPlugin extends JavaPlugin {
           ComMiniPrefix.SYSTEM.send(p, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
         }));
     GamePlayer.gameInitialize();
-    new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();
+    new WorldCreator("lobby").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();
     BukkitVoicechatService service = getServer().getServicesManager()
         .load(BukkitVoicechatService.class);
     if (service != null) {

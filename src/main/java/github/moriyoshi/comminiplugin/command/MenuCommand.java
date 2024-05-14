@@ -4,9 +4,6 @@ import dev.jorel.commandapi.CommandAPICommand;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.constant.MenuItem;
 
-/**
- * MenuCommand
- */
 public class MenuCommand extends CommandAPICommand {
 
   public MenuCommand() {

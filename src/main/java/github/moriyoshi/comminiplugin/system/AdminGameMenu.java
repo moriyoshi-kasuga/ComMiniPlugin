@@ -22,8 +22,8 @@ public class AdminGameMenu extends MenuHolder<ComMiniPlugin> {
             @NotNull InventoryClickEvent event) {
           Player player = (Player) event.getWhoClicked();
           if (GameSystem.initializeGame(player, game.id)) {
-            ((RedirectButton<MenuHolder<?>>) (MenuHolder, event1) -> game.adminMenu()
-                .getInventory()).onClick(holder, event);
+            ((RedirectButton<MenuHolder<?>>) (MenuHolder, event1) -> game.createAdminMenu().getInventory())
+                .onClick(holder, event);
           }
         }
       });
