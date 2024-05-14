@@ -20,9 +20,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import de.maxhenkel.voicechat.api.Group;
+import de.maxhenkel.voicechat.api.VoicechatConnection;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.dependencies.voicechat.ComMiniVoiceChatPlugin;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.GamePlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
@@ -32,7 +35,6 @@ import github.moriyoshi.comminiplugin.util.Util;
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 
-// TODO: simple voice chat の api 使おう
 public class SurvivalSniperGame extends AbstractGame {
 
   private final int MAX_RADIUS_RANGE = 300;
@@ -51,6 +53,8 @@ public class SurvivalSniperGame extends AbstractGame {
   private BukkitRunnable run = null;
   private boolean isFinalArea = false;
 
+  public final Group specGroup;
+
   public SurvivalSniperGame() {
     super(
         "survivalsniper",
@@ -59,6 +63,7 @@ public class SurvivalSniperGame extends AbstractGame {
         Material.SPYGLASS,
         new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"),
         new SurvivalSniperListener());
+    specGroup = ComMiniVoiceChatPlugin.getOrCreateGroup("survivalsniper_spec");
   }
 
   public final void joinPlayer(Player player, boolean isPlayer) {
@@ -233,6 +238,10 @@ public class SurvivalSniperGame extends AbstractGame {
       inv.clear();
       if (!players.get(uuid).getLeft()) {
         p.setGameMode(GameMode.SPECTATOR);
+        VoicechatConnection connection;
+        if ((connection = ComMiniVoiceChatPlugin.getApi().getConnectionOf(uuid)) != null) {
+          connection.setGroup(specGroup);
+        }
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
         teleportLobby(p);
         return;
@@ -309,12 +318,17 @@ public class SurvivalSniperGame extends AbstractGame {
 
   @Override
   public boolean addSpec(Player player) {
-    players.put(player.getUniqueId(), Pair.of(false, -1));
+    var uuid = player.getUniqueId();
+    players.put(uuid, Pair.of(false, -1));
     player.setGameMode(GameMode.SPECTATOR);
     player.getInventory().clear();
     player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
     teleportLobby(player);
     prefix.send(player, "<gray>観戦を開始しました");
+    VoicechatConnection connection;
+    if ((connection = ComMiniVoiceChatPlugin.getApi().getConnectionOf(uuid)) != null) {
+      connection.setGroup(specGroup);
+    }
     return true;
   }
 

@@ -25,7 +25,7 @@ public class RandomTeleport extends CommandAPICommand {
           (int) args.get("radius"),
           (int) args.getOrDefault("maxTry", 100)
       )) {
-        ComMiniPrefix.SYSTEM.send(p,
+        ComMiniPrefix.MAIN.send(p,
             "<red>そのあたりにテレポートはできません(もしかしたら海などです)"
         );
       }

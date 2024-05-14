@@ -16,6 +16,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
+import de.maxhenkel.voicechat.api.VoicechatConnection;
+import github.moriyoshi.comminiplugin.dependencies.voicechat.ComMiniVoiceChatPlugin;
 import github.moriyoshi.comminiplugin.system.AbstractGameListener;
 import github.moriyoshi.comminiplugin.util.Util;
 
@@ -52,6 +54,10 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
     p.setGameMode(GameMode.SPECTATOR);
     game.runPlayers(pl -> Util.send(pl, e.deathMessage()));
     game.players.put(uuid, Pair.of(false, -1));
+    VoicechatConnection connection;
+    if ((connection = ComMiniVoiceChatPlugin.getApi().getConnectionOf(uuid)) != null) {
+      connection.setGroup(game.specGroup);
+    }
     reducePlayer(p);
   }
 
