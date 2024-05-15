@@ -56,6 +56,10 @@ public class CloseButton<P extends Plugin> extends ItemButton<MenuHolder<P>> {
    */
   @Override
   public final void onClick(@NotNull MenuHolder<P> holder, @NotNull InventoryClickEvent event) {
+    close(holder, event);
+  }
+
+  public static final void close(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
     holder.getPlugin().getServer().getScheduler()
         .runTask(holder.getPlugin(), event.getView()::close);
   }

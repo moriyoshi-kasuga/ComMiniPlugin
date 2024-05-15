@@ -17,6 +17,10 @@ public interface RedirectButton<MH extends MenuHolder<?>> extends MenuButton<MH>
    */
   @Override
   default void onClick(@NotNull MH holder, @NotNull InventoryClickEvent event) {
+    redirect(holder, event);
+  }
+
+  default void redirect(@NotNull MH holder, @NotNull InventoryClickEvent event) {
     holder.getPlugin().getServer().getScheduler().runTask(holder.getPlugin(), () -> {
       event.getView().close();
 
