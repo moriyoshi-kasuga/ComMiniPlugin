@@ -8,16 +8,16 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 
-public class BattleRoyaleGame extends AbstractGame {
+public class BRGame extends AbstractGame {
 
-  public BattleRoyaleGame() {
+  public BRGame() {
     super(
         "battleroyale",
         "<yellow>バトルロワイアル",
         "<yellow>殺せ!殺せ!勝ち上がれ!",
         Material.GOLDEN_SWORD,
         new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"),
-        new BattleRoyaleListener());
+        new BRListener());
   }
 
   @Override

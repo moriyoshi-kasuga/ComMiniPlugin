@@ -81,6 +81,7 @@ public final class ComMiniPlugin extends JavaPlugin {
         }));
     GamePlayer.gameInitialize();
     new WorldCreator("lobby").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();
+    new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();
   }
 
   @Override

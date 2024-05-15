@@ -33,12 +33,9 @@ public class AllSoundCommand extends CommandAPICommand {
     });
   }
 
-  private static final List<Sound> sounds = new ArrayList<>(Arrays.asList(Sound.values()));
-  private static final List<Material> materials = new ArrayList<>(Arrays.asList(Material.values()));
-
   private static final class AllSoundMenu extends ListMenu<Sound> {
     public AllSoundMenu() {
-      super("<green>Sounds", 45, sounds, (sound) -> {
+      super("<green>Sounds", 45, new ArrayList<>(Arrays.asList(Sound.values())), (sound) -> {
         var m = getMaterial(sound);
         return new ItemButton<>(
             new ItemBuilder(m == null || m.isAir() || !m.isItem() ? Material.BEDROCK : m).addLore(
@@ -56,6 +53,7 @@ public class AllSoundCommand extends CommandAPICommand {
 
     private static Material getMaterial(Sound sound) {
       String name = sound.name();
+      var materials = new ArrayList<>(Arrays.asList(Material.values()));
       var split = new ArrayList<>(List.of(name.split("_")));
       var finalname = split.get(1).toLowerCase();
       return switch (split.remove(0)) {
