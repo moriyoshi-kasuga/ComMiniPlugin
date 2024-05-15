@@ -18,17 +18,14 @@ import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
-/**
- * SurvivalSniperCustomMenu
- */
-public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
+public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
 
   private static final int SIZE = 27;
 
   private static final RedirectItemButton<MenuHolder<ComMiniPlugin>> back = new RedirectItemButton<>(
       new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA).name("<red>カスタムメニューに戻る")
           .build(),
-      (holder, even) -> new SurvivalSniperCustomMenu().getInventory());
+      (holder, even) -> new SSCustomMenu().getInventory());
 
   private static final MenuHolder<ComMiniPlugin> WARHEADS = new MenuHolder<>(
       ComMiniPlugin.getPlugin(), 27,
@@ -79,7 +76,7 @@ public class SurvivalSniperCustomMenu extends MenuHolder<ComMiniPlugin> {
   private final ItemButton<MenuHolder<ComMiniPlugin>> none = new ItemButton<>(
       new ItemBuilder(Material.BEDROCK).name("<red>何も作れません").build());
 
-  public SurvivalSniperCustomMenu() {
+  public SSCustomMenu() {
     super(ComMiniPlugin.getPlugin(), SIZE, "<red>カスタムメニュー");
     for (int i = 0; i < SIZE; i++) {
       if (items.contains(i)) {

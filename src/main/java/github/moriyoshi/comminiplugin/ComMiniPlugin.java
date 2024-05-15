@@ -30,7 +30,7 @@ import github.moriyoshi.comminiplugin.command.MenuCommand;
 import github.moriyoshi.comminiplugin.command.RandomTeleport;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
-import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperCustomMenu;
+import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemListner;
 import github.moriyoshi.comminiplugin.system.game.GameListener;
@@ -70,7 +70,7 @@ public final class ComMiniPlugin extends JavaPlugin {
     registerCommand(new CommandAPICommand("custommenu")
         .withPermission(CommandPermission.OP)
         .executesPlayer((p, args) -> {
-          new SurvivalSniperCustomMenu().openInv(p);
+          new SSCustomMenu().openInv(p);
         }));
     registerCommand(new CommandAPICommand("gamedebug")
         .executesPlayer((p, args) -> {

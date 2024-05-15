@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
-public class SurvivalSniperSlot extends ArrayList<Integer> {
+public class SSSlot extends ArrayList<Integer> {
   public static final Map<Integer, Supplier<ItemStack>> defaults = new HashMap<>() {
     {
       put(0, () -> new Sniper().getItem());
@@ -26,7 +26,7 @@ public class SurvivalSniperSlot extends ArrayList<Integer> {
     }
   };
 
-  public SurvivalSniperSlot(Collection<Integer> collection) {
+  public SSSlot(Collection<Integer> collection) {
     super(collection);
   }
 

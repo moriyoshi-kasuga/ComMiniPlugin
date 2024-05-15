@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.constant.MenuItem;
-import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperGame;
+import github.moriyoshi.comminiplugin.game.survivalsniper.SSGame;
 import lombok.Getter;
 
 public class GameSystem {
@@ -19,7 +19,7 @@ public class GameSystem {
     {
       List.of(
           // ALl Game
-          new SurvivalSniperGame()
+          new SSGame()
       // End
       ).forEach(g -> put(g.id, g));
     }

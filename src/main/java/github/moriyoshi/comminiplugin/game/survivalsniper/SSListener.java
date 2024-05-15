@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import github.moriyoshi.comminiplugin.system.game.AbstractGameListener;
 import github.moriyoshi.comminiplugin.util.Util;
 
-public class SurvivalSniperListener implements AbstractGameListener<SurvivalSniperGame> {
+public class SSListener implements AbstractGameListener<SSGame> {
 
   @Override
   public void quit(PlayerQuitEvent e) {
@@ -43,7 +43,7 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
 
   @Override
   public void death(PlayerDeathEvent e) {
-    SurvivalSniperGame game = getGame();
+    SSGame game = getGame();
     var p = e.getPlayer();
     var uuid = p.getUniqueId();
     if (game.players.get(uuid).getRight() == 0) {
@@ -68,10 +68,10 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
       e.setCancelled(true);
       switch (e.getClickedBlock().getType()) {
         case CRAFTING_TABLE:
-          new SurvivalSniperCustomMenu().openInv(p);
+          new SSCustomMenu().openInv(p);
           break;
         case FURNACE:
-          new SurvivalSniperTradeMenu().openInv(p);
+          new SSTradeMenu().openInv(p);
           break;
         default:
           e.setCancelled(false);
@@ -109,7 +109,7 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
   }
 
   private void reducePlayer(Player p) {
-    SurvivalSniperGame game = getGame();
+    SSGame game = getGame();
     var loc = p.getLocation();
     var world = p.getWorld();
     var inv = p.getInventory();

@@ -13,14 +13,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class SurvivalSniperMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<SurvivalSniperGame> {
+public class SSMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<SSGame> {
 
   private final ItemStack JOIN = new ItemBuilder(Material.BLUE_CONCRETE).name("<blue>参加する")
       .lore("<white>もう一度クリックで参加を取りやめ").build();
   private final ItemStack SPEC = new ItemBuilder(Material.GRAY_CONCRETE).name("<gray>観戦する")
       .lore("<white>もう一度クリックで観戦を取りやめ").build();
 
-  public SurvivalSniperMenu() {
+  public SSMenu() {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>サバイバルスナイパー");
     setButton(12, new ItemButton<>(JOIN) {
       @Override
@@ -35,7 +35,7 @@ public class SurvivalSniperMenu extends MenuHolder<ComMiniPlugin> implements IGe
       }
     });
     setButton(4, new RedirectItemButton<>(new ItemBuilder(Material.BOOK).name("<green>スロットを設定する").build(),
-        (holder, event) -> new SurvivalSniperSlotMenu(
+        (holder, event) -> new SSSlotMenu(
             GamePlayer.getPlayer(event.getWhoClicked().getUniqueId()).getSurvivapsniperSlot())
             .getInventory()));
   }

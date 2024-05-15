@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class SurvivalSniperAdminMenu extends MenuHolder<ComMiniPlugin> {
+public class SSAdminMenu extends MenuHolder<ComMiniPlugin> {
 
-  public SurvivalSniperAdminMenu() {
+  public SSAdminMenu() {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>OP:サバイバルスナイパー");
     setButton(
         13,

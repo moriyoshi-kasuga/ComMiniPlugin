@@ -31,7 +31,7 @@ import github.moriyoshi.comminiplugin.util.Util;
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 
-public class SurvivalSniperGame extends AbstractGame {
+public class SSGame extends AbstractGame {
 
   private final int MAX_RADIUS_RANGE = 300;
   private final int MIN_BORDER_RANGE = 50;
@@ -49,14 +49,14 @@ public class SurvivalSniperGame extends AbstractGame {
   private BukkitRunnable run = null;
   private boolean isFinalArea = false;
 
-  public SurvivalSniperGame() {
+  public SSGame() {
     super(
         "survivalsniper",
         "<blue>サバイバルスナイパー",
         "<blue>鉄塊を集めてスナイパーで相手を殺しあいます",
         Material.SPYGLASS,
         new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"),
-        new SurvivalSniperListener());
+        new SSListener());
   }
 
   public final void joinPlayer(Player player, boolean isPlayer) {
@@ -92,12 +92,12 @@ public class SurvivalSniperGame extends AbstractGame {
 
   @Override
   public MenuHolder<ComMiniPlugin> createAdminMenu() {
-    return new SurvivalSniperAdminMenu();
+    return new SSAdminMenu();
   }
 
   @Override
   public MenuHolder<ComMiniPlugin> createGameMenu(Player player) {
-    return new SurvivalSniperMenu();
+    return new SSMenu();
   }
 
   @Override

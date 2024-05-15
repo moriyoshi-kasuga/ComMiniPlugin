@@ -16,7 +16,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class SurvivalSniperTradeMenu extends MenuHolder<ComMiniPlugin> {
+public class SSTradeMenu extends MenuHolder<ComMiniPlugin> {
 
   @RequiredArgsConstructor
   private enum TradeItem {
@@ -31,7 +31,7 @@ public class SurvivalSniperTradeMenu extends MenuHolder<ComMiniPlugin> {
     public final Consumer<Player> buyCallback;
   }
 
-  public SurvivalSniperTradeMenu() {
+  public SSTradeMenu() {
     super(ComMiniPlugin.getPlugin(), 27, "<green>Trade");
     for (int i = 0; i < 27; i++) {
       setButton(i, empty);

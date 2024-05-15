@@ -17,7 +17,7 @@ import com.google.gson.reflect.TypeToken;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.api.JsonAPI;
-import github.moriyoshi.comminiplugin.game.survivalsniper.SurvivalSniperSlot;
+import github.moriyoshi.comminiplugin.game.survivalsniper.SSSlot;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -68,7 +68,7 @@ public class GamePlayer extends JsonAPI {
   private boolean isDebug;
 
   @Getter
-  private SurvivalSniperSlot survivapsniperSlot;
+  private SSSlot survivapsniperSlot;
 
   private final String SURVIVAPSNIPER_SLOT = "survivapsniperSlot";
 
@@ -107,10 +107,10 @@ public class GamePlayer extends JsonAPI {
   @Override
   protected void generateLoadData(JsonObject data) {
     if (data.has(SURVIVAPSNIPER_SLOT)) {
-      survivapsniperSlot = new SurvivalSniperSlot(
+      survivapsniperSlot = new SSSlot(
           ComMiniPlugin.gson.fromJson(data.get(SURVIVAPSNIPER_SLOT), survivapsniperSlotType));
     } else {
-      survivapsniperSlot = new SurvivalSniperSlot(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8));
+      survivapsniperSlot = new SSSlot(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8));
     }
   }
 }

@@ -10,13 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class SurvivalSniperSlotMenu extends MenuHolder<ComMiniPlugin> {
+public class SSSlotMenu extends MenuHolder<ComMiniPlugin> {
 
-  private final SurvivalSniperSlot slots;
+  private final SSSlot slots;
 
   private int swapSlot = -1;
 
-  public SurvivalSniperSlotMenu(SurvivalSniperSlot slots) {
+  public SSSlotMenu(SSSlot slots) {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>インベントリーのカスタマイズ");
     this.slots = slots;
     set();
