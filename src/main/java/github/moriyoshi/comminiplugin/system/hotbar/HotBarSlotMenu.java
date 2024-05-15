@@ -1,22 +1,22 @@
-package github.moriyoshi.comminiplugin.game.survivalsniper;
+package github.moriyoshi.comminiplugin.system.hotbar;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
-import java.util.Collections;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class SSSlotMenu extends MenuHolder<ComMiniPlugin> {
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 
-  private final SSSlot slots;
+public final class HotBarSlotMenu extends MenuHolder<ComMiniPlugin> {
+
+  private final HotBarSlot slots;
 
   private int swapSlot = -1;
 
-  public SSSlotMenu(SSSlot slots) {
+  public HotBarSlotMenu(HotBarSlot slots) {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>インベントリーのカスタマイズ");
     this.slots = slots;
     set();
@@ -33,7 +33,7 @@ public class SSSlotMenu extends MenuHolder<ComMiniPlugin> {
       return;
     }
     p.playSound(p.getLocation(), Sound.BLOCK_IRON_TRAPDOOR_OPEN, 1, 1);
-    Collections.swap(slots, swapSlot, slot);
+    slots.swap(swapSlot, slot);
     swapSlot = -1;
     set();
   }

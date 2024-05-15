@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system.game;
+package github.moriyoshi.comminiplugin.system;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;

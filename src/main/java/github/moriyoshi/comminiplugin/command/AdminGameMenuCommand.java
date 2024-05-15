@@ -2,8 +2,8 @@ package github.moriyoshi.comminiplugin.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
-import github.moriyoshi.comminiplugin.system.game.AdminGameMenu;
-import github.moriyoshi.comminiplugin.system.game.GameSystem;
+import github.moriyoshi.comminiplugin.system.AdminGameMenu;
+import github.moriyoshi.comminiplugin.system.GameSystem;
 
 public class AdminGameMenuCommand extends CommandAPICommand {
 

@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system.game;
+package github.moriyoshi.comminiplugin.system;
 
 public enum GameStatus {
   // まだ開始されおらず、参加ができる

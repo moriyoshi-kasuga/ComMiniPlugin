@@ -4,8 +4,9 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.game.GamePlayer;
-import github.moriyoshi.comminiplugin.system.game.IGetGame;
+import github.moriyoshi.comminiplugin.system.GamePlayer;
+import github.moriyoshi.comminiplugin.system.IGetGame;
+import github.moriyoshi.comminiplugin.system.hotbar.HotBarSlotMenu;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -35,8 +36,9 @@ public class SSMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<SSGame
       }
     });
     setButton(4, new RedirectItemButton<>(new ItemBuilder(Material.BOOK).name("<green>スロットを設定する").build(),
-        (holder, event) -> new SSSlotMenu(
-            GamePlayer.getPlayer(event.getWhoClicked().getUniqueId()).getSurvivapsniperSlot())
-            .getInventory()));
+        (holder,
+            event) -> new HotBarSlotMenu(
+                GamePlayer.getPlayer(event.getWhoClicked().getUniqueId()).getSurvivapsniperSlot())
+                .getInventory()));
   }
 }

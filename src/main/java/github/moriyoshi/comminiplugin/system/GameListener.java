@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system.game;
+package github.moriyoshi.comminiplugin.system;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

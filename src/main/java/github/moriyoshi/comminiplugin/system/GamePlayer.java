@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system.game;
+package github.moriyoshi.comminiplugin.system;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -67,11 +67,6 @@ public class GamePlayer extends JsonAPI {
   @Setter
   private boolean isDebug;
 
-  @Getter
-  private SSSlot survivapsniperSlot;
-
-  private final String SURVIVAPSNIPER_SLOT = "survivapsniperSlot";
-
   private GamePlayer(UUID uuid) {
     super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
     this.uuid = uuid;
@@ -96,6 +91,11 @@ public class GamePlayer extends JsonAPI {
     return hidenametag.hasEntry(
         Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName()));
   }
+
+  @Getter
+  private SSSlot survivapsniperSlot;
+
+  private final String SURVIVAPSNIPER_SLOT = "survivapsniperSlot";
 
   @Override
   protected JsonObject generateSaveData() {

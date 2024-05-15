@@ -33,8 +33,8 @@ import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemListner;
-import github.moriyoshi.comminiplugin.system.game.GameListener;
-import github.moriyoshi.comminiplugin.system.game.GamePlayer;
+import github.moriyoshi.comminiplugin.system.GameListener;
+import github.moriyoshi.comminiplugin.system.GamePlayer;
 import lombok.Getter;
 
 public final class ComMiniPlugin extends JavaPlugin {

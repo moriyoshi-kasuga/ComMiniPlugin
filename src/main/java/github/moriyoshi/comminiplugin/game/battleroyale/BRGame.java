@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.game.AbstractGame;
+import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 
 public class BRGame extends AbstractGame {
