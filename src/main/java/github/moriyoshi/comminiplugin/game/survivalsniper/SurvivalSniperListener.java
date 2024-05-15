@@ -74,6 +74,7 @@ public class SurvivalSniperListener implements AbstractGameListener<SurvivalSnip
           new SurvivalSniperTradeMenu().openInv(p);
           break;
         default:
+          e.setCancelled(false);
           break;
 
       }

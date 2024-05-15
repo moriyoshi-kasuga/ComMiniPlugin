@@ -46,8 +46,6 @@ public abstract class AbstractGame {
 
   public abstract boolean addSpec(Player player);
 
-  public abstract boolean addPlayer(Player player);
-
   public abstract boolean initializeGame(Player player);
 
   public final boolean startGame(Player player) {

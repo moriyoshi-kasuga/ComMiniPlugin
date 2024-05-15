@@ -25,7 +25,6 @@ import github.moriyoshi.comminiplugin.command.AdminGameMenuCommand;
 import github.moriyoshi.comminiplugin.command.AllSoundCommand;
 import github.moriyoshi.comminiplugin.command.CustomItemsCommand;
 import github.moriyoshi.comminiplugin.command.FinalizeGameCommand;
-import github.moriyoshi.comminiplugin.command.GameMenuCommand;
 import github.moriyoshi.comminiplugin.command.ItemEditCommand;
 import github.moriyoshi.comminiplugin.command.MenuCommand;
 import github.moriyoshi.comminiplugin.command.RandomTeleport;
@@ -62,7 +61,6 @@ public final class ComMiniPlugin extends JavaPlugin {
     registerEvent(GameListener.getInstance());
     registerEvent(CustomItemListner.getInstance());
     registerCommand(new MenuCommand());
-    registerCommand(new GameMenuCommand());
     registerCommand(new AdminGameMenuCommand());
     registerCommand(new FinalizeGameCommand());
     registerCommand(new CustomItemsCommand());

@@ -24,7 +24,8 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
   protected UnaryOperator<T> stateUpdater;
 
   /**
-   * アイコンのみのIteratingButtonを作成します。サブクラスは {@link #currentState} と {@link #stateUpdater}
+   * アイコンのみのIteratingButtonを作成します。サブクラスは {@link #currentState} と
+   * {@link #stateUpdater}
    * フィールドを設定する必要があります。
    * または、{@link #getCurrentState()}と{@link #updateCurrentState(MenuHolder,
    * InventoryClickEvent)}をオーバーライドする方法もある。
@@ -68,7 +69,8 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
   }
 
   /**
-   * このボタンをトグルします。サブクラスは、オーバーライドすることによって、現在の状態を更新する前と後の余分な副作用を追加できます。 {beforeToggle(MenuHolder,
+   * このボタンをトグルします。サブクラスは、オーバーライドすることによって、現在の状態を更新する前と後の余分な副作用を追加できます。
+   * {beforeToggle(MenuHolder,
    * InventoryClickEvent)}と{@link #afterToggle(MenuHolder, InventoryClickEvent)}です。
    *
    * @param holder the MenuHolder
@@ -124,7 +126,8 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
   }
 
   /**
-   * アイコンの外観を決定します。 サブクラスは、{@link #setIcon(ItemStack)} を呼び出したりオーバーライドしたりせずに、このメソッドを安全にオーバーライドできます。
+   * アイコンの外観を決定します。 サブクラスは、{@link #setIcon(ItemStack)}
+   * を呼び出したりオーバーライドしたりせずに、このメソッドを安全にオーバーライドできます。
    *
    * @param menuHolder the inventory holder for the menu
    * @param event      the InventoryClickEvent that caused the button to toggle

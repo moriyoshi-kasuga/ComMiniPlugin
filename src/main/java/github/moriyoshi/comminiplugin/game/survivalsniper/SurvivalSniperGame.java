@@ -310,7 +310,6 @@ public class SurvivalSniperGame extends AbstractGame {
     player.getInventory().clear();
     player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
     teleportLobby(player);
-    prefix.send(player, "<gray>観戦を開始しました");
     return true;
   }
 
