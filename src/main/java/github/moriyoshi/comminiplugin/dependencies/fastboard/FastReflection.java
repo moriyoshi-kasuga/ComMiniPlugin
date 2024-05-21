@@ -97,7 +97,6 @@ public final class FastReflection {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public static Object enumValueOf(Class<?> enumClass, String enumName) {
     return Enum.valueOf(enumClass.asSubclass(Enum.class), enumName);
   }
@@ -163,7 +162,7 @@ public final class FastReflection {
   }
 
   @FunctionalInterface
-  interface PacketConstructor {
+  public interface PacketConstructor {
 
     Object invoke() throws Throwable;
   }

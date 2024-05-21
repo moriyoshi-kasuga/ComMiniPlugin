@@ -1,5 +1,7 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import lombok.val;
+
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -67,8 +69,8 @@ public class Bullet extends CustomItem {
 
   private static final String SOUND = "sound";
 
-  public static Optional<Bullet> getFirstBullet(Player p) {
-    for (ItemStack item : p.getInventory().getContents()) {
+  public static Optional<Bullet> getFirstBullet(final Player p) {
+    for (final ItemStack item : p.getInventory().getContents()) {
       if (CustomItem.equalsItem(item, Bullet.class)) {
         return Optional.of(new Bullet(item));
       }
@@ -89,10 +91,10 @@ public class Bullet extends CustomItem {
         Sound.ENTITY_FIREWORK_ROCKET_BLAST);
   }
 
-  public Bullet(ItemStack item) {
+  public Bullet(final ItemStack item) {
     super(item);
     NBT.modify(item, nbt -> {
-      var tag = Objects.requireNonNull(nbt.getCompound(nbtKey));
+      val tag = Objects.requireNonNull(nbt.getCompound(nbtKey));
       name = tag.getString(NAME);
       damage = tag.getInteger(DAMAGE);
       headShot = tag.getInteger(HEAD_SHOT);
@@ -100,10 +102,10 @@ public class Bullet extends CustomItem {
     });
   }
 
-  public Bullet(ItemStack item, String name, int damage, int headShot, Sound sound) {
+  public Bullet(final ItemStack item, final String name, final int damage, final int headShot, final Sound sound) {
     super(item);
     NBT.modify(item, nbt -> {
-      var tag = nbt.getOrCreateCompound(nbtKey);
+      val tag = nbt.getOrCreateCompound(nbtKey);
       tag.setString(NAME, name);
       tag.setInteger(DAMAGE, damage);
       tag.setString(SOUND, sound.name());
@@ -121,16 +123,16 @@ public class Bullet extends CustomItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interact(final PlayerInteractEvent e) {
     e.setCancelled(false);
   }
 
   @Override
-  public Optional<UUID> generatUUID() {
+  public Optional<UUID> generateUUID() {
     return Optional.empty();
   }
 
-  public void use(Player p) {
+  public void use(final Player p) {
     new ItemBuilder(getItem()).amount(getItem().getAmount() - 1);
     p.getWorld().playSound(p.getLocation(), getSound(), 6, 1);
   }

@@ -20,6 +20,7 @@ import github.moriyoshi.comminiplugin.api.JsonAPI;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSSlot;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 
 public class GamePlayer extends JsonAPI {
 
@@ -31,14 +32,14 @@ public class GamePlayer extends JsonAPI {
   }.getType();
 
   public static void save() {
-    for (Entry<UUID, GamePlayer> entry : players.entrySet()) {
-      GamePlayer p = entry.getValue();
+    for (final Entry<UUID, GamePlayer> entry : players.entrySet()) {
+      final GamePlayer p = entry.getValue();
       p.saveFile();
     }
   }
 
   public static void gameInitialize() {
-    Scoreboard score = Bukkit.getScoreboardManager().getMainScoreboard();
+    final Scoreboard score = Bukkit.getScoreboardManager().getMainScoreboard();
 
     Team t = score.getTeam("hidenametag");
     if (t == null) {
@@ -48,11 +49,11 @@ public class GamePlayer extends JsonAPI {
     hidenametag = t;
   }
 
-  public static GamePlayer getPlayer(UUID uuid) {
+  public static GamePlayer getPlayer(final UUID uuid) {
     if (players.containsKey(uuid)) {
       return players.get(uuid);
     }
-    var p = new GamePlayer(uuid);
+    val p = new GamePlayer(uuid);
     players.put(uuid, p);
     return p;
   }
@@ -67,7 +68,7 @@ public class GamePlayer extends JsonAPI {
   @Setter
   private boolean isDebug;
 
-  private GamePlayer(UUID uuid) {
+  private GamePlayer(final UUID uuid) {
     super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
     this.uuid = uuid;
     this.initialize();
@@ -78,8 +79,8 @@ public class GamePlayer extends JsonAPI {
     hidenametag.removeEntry(Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName()));
   }
 
-  public void setHideNameTag(boolean isHideNameTag) {
-    var p = Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName());
+  public void setHideNameTag(final boolean isHideNameTag) {
+    val p = Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName());
     if (isHideNameTag) {
       hidenametag.addEntry(p);
     } else {
@@ -99,13 +100,13 @@ public class GamePlayer extends JsonAPI {
 
   @Override
   protected JsonObject generateSaveData() {
-    var object = new JsonObject();
+    val object = new JsonObject();
     object.add(SURVIVAPSNIPER_SLOT, ComMiniPlugin.gson.toJsonTree(survivapsniperSlot));
     return object;
   }
 
   @Override
-  protected void generateLoadData(JsonObject data) {
+  protected void generateLoadData(final JsonObject data) {
     if (data.has(SURVIVAPSNIPER_SLOT)) {
       survivapsniperSlot = new SSSlot(
           ComMiniPlugin.gson.fromJson(data.get(SURVIVAPSNIPER_SLOT), survivapsniperSlotType));

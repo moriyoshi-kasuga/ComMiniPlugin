@@ -1,5 +1,7 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import lombok.val;
+
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -59,16 +61,16 @@ public class SSGame extends AbstractGame {
         new SSListener());
   }
 
-  public final void joinPlayer(Player player, boolean isPlayer) {
+  public final void joinPlayer(final Player player, final boolean isPlayer) {
     if (isStarted()) {
       return;
     }
-    var uuid = player.getUniqueId();
+    val uuid = player.getUniqueId();
     player.getInventory().removeItem(new ItemStack(Material.SPYGLASS));
     if (players.containsKey(uuid)) {
       if (players.get(uuid).getLeft() == isPlayer) {
         players.remove(uuid);
-        var text = player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ";
+        val text = player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ";
         GameSystem.initializePlayer(player);
         player.teleport(ComMiniWorld.LOBBY);
         if (isPlayer) {
@@ -82,7 +84,7 @@ public class SSGame extends AbstractGame {
     players.put(uuid, Pair.of(isPlayer, isPlayer ? AIR_LIMIT : -1));
     player.teleport(lobby);
     player.getInventory().addItem(new ItemStack(Material.SPYGLASS));
-    var text = player.getName() + "が" + (isPlayer ? "<blue>参加" : "<gray>観戦") + "します";
+    val text = player.getName() + "が" + (isPlayer ? "<blue>参加" : "<gray>観戦") + "します";
     if (isPlayer) {
       prefix.cast(text);
     } else {
@@ -96,17 +98,17 @@ public class SSGame extends AbstractGame {
   }
 
   @Override
-  public MenuHolder<ComMiniPlugin> createGameMenu(Player player) {
+  public MenuHolder<ComMiniPlugin> createGameMenu(final Player player) {
     return new SSMenu();
   }
 
   @Override
-  public boolean initializeGame(Player player) {
+  public boolean initializeGame(final Player player) {
     if (!player.getWorld().getName().equalsIgnoreCase("world")) {
       prefix.send(player, "<red>オーバーワールドでのみ実行可能です");
       return false;
     }
-    var temp = player.getLocation().clone();
+    val temp = player.getLocation().clone();
     world = temp.getWorld();
     lobby = world.getHighestBlockAt(temp).getLocation().add(new Vector(0, 50, 0));
     world.getWorldBorder().setCenter(lobby);
@@ -114,9 +116,9 @@ public class SSGame extends AbstractGame {
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
     world.setClearWeatherDuration(0);
     world.setTime(1000);
-    var vec = lobby.toVector();
-    var min = vec.clone().add(VOID_BLOCK_RADIUS);
-    var max = vec.clone().subtract(VOID_BLOCK_RADIUS);
+    val vec = lobby.toVector();
+    val min = vec.clone().add(VOID_BLOCK_RADIUS);
+    val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
     Util.consoleCommand(
         String.format("execute in %s run fill %s %s %s %s %s %s minecraft:barrier outline",
             "overworld",
@@ -128,14 +130,14 @@ public class SSGame extends AbstractGame {
   }
 
   @Override
-  public boolean innerStartGame(Player player) {
+  public boolean innerStartGame(final Player player) {
     if (2 > players.values().stream().filter(Pair::getLeft).toList().size()) {
       prefix.send(player, "<red>二人以上でしかプレイできません");
       return false;
     }
-    var vec = lobby.toVector();
-    var min = vec.clone().add(VOID_BLOCK_RADIUS);
-    var max = vec.clone().subtract(VOID_BLOCK_RADIUS);
+    val vec = lobby.toVector();
+    val min = vec.clone().add(VOID_BLOCK_RADIUS);
+    val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
     Util.consoleCommand(
         String.format(
             "execute in %s run fill %s %s %s %s %s %s minecraft:air replace minecraft:barrier",
@@ -172,13 +174,13 @@ public class SSGame extends AbstractGame {
           if (!u.getLeft()) {
             return;
           }
-          Player p = Bukkit.getPlayer(t);
+          final Player p = Bukkit.getPlayer(t);
           if (p == null) {
             return;
           }
           int num = u.getRight();
           p.sendActionBar(Util.mm("酸素: " + num + " /" + AIR_LIMIT));
-          boolean inCave = 7 > p.getLocation().getBlock().getLightFromSky();
+          final boolean inCave = 7 > p.getLocation().getBlock().getLightFromSky();
           if (!inCave && num == AIR_LIMIT) {
             return;
           }
@@ -219,12 +221,12 @@ public class SSGame extends AbstractGame {
             entity.remove();
           }
         });
-    var loc = lobby.clone();
+    val loc = lobby.clone();
     runPlayers(p -> {
-      var uuid = p.getUniqueId();
+      val uuid = p.getUniqueId();
       p.showBossBar(bossBar);
       Util.title(p, "<blue>サバイバルスナイパー", "<red>スタート");
-      var inv = p.getInventory();
+      val inv = p.getInventory();
       inv.clear();
       if (!players.get(uuid).getLeft()) {
         p.setGameMode(GameMode.SPECTATOR);
@@ -232,11 +234,11 @@ public class SSGame extends AbstractGame {
         teleportLobby(p);
         return;
       }
-      var gamePlayer = GamePlayer.getPlayer(uuid);
+      val gamePlayer = GamePlayer.getPlayer(uuid);
       gamePlayer.setHunger(true);
       gamePlayer.setHideNameTag(true);
       var i = 0;
-      for (var item : gamePlayer.getSurvivapsniperSlot().toItemStacks()) {
+      for (val item : gamePlayer.getSurvivapsniperSlot().toItemStacks()) {
         inv.setItem(i, item);
         i++;
       }
@@ -253,14 +255,14 @@ public class SSGame extends AbstractGame {
   private int previousTime = MAX_SECOND;
   private double previousWidth = MAX_RADIUS_RANGE * 2;
 
-  public void endGame(UUID winner) {
-    var name = Bukkit.getPlayer(winner).getName();
+  public void endGame(final UUID winner) {
+    val name = Bukkit.getPlayer(winner).getName();
     runPlayers(p -> prefix.send(p, "<red><u>" + name + "</u>が勝ちました"));
     new BukkitRunnable() {
 
       @Override
       public void run() {
-        GameSystem.finalizeGame();
+        GameSystem.finalGame();
       }
 
     }.runTaskLater(ComMiniPlugin.getPlugin(), 100);
@@ -268,9 +270,9 @@ public class SSGame extends AbstractGame {
 
   @Override
   public void innerFinishGame() {
-    var vec = lobby.toVector();
-    var min = vec.clone().add(VOID_BLOCK_RADIUS);
-    var max = vec.clone().subtract(VOID_BLOCK_RADIUS);
+    val vec = lobby.toVector();
+    val min = vec.clone().add(VOID_BLOCK_RADIUS);
+    val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
     Util.consoleCommand(
         String.format(
             "execute in %s run fill %s %s %s %s %s %s minecraft:air replace minecraft:barrier",
@@ -298,13 +300,13 @@ public class SSGame extends AbstractGame {
   }
 
   @Override
-  public boolean isGamePlayer(Player player) {
+  public boolean isGamePlayer(final Player player) {
     return players.containsKey(player.getUniqueId());
   }
 
   @Override
-  public boolean addSpec(Player player) {
-    var uuid = player.getUniqueId();
+  public boolean addSpec(final Player player) {
+    val uuid = player.getUniqueId();
     players.put(uuid, Pair.of(false, -1));
     player.setGameMode(GameMode.SPECTATOR);
     player.getInventory().clear();
@@ -317,9 +319,9 @@ public class SSGame extends AbstractGame {
     if (isFinalArea) {
       return;
     }
-    double size = world.getWorldBorder().getSize();
-    double speed = previousWidth / previousTime;
-    double afterTime = previousTime - ((previousWidth - size) / speed) * 0.8;
+    final double size = world.getWorldBorder().getSize();
+    final double speed = previousWidth / previousTime;
+    final double afterTime = previousTime - ((previousWidth - size) / speed) * 0.8;
     previousTime = (int) afterTime;
     previousWidth = size;
     world.getWorldBorder().setSize(size, (long) afterTime);

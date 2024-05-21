@@ -34,7 +34,7 @@ public class AddSpecButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       ComMiniPrefix.MAIN.send(player, "<red>ゲームは開始されていません");
       return;
     }
-    if (GameSystem.getNowGame().addSpec(player)) {
+    if (GameSystem.getGame().addSpec(player)) {
       ComMiniPrefix.MAIN.send(player, "<gray>観戦を開始しました");
     } else {
 

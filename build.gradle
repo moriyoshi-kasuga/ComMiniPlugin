@@ -17,7 +17,7 @@ repositories {
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
 }
 
-def paperAPI = 'io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT'
+//def paperAPI = 'io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT'
 def anvilGUI = 'net.wesjd:anvilgui:1.9.3-SNAPSHOT'
 def commandAPI = 'dev.jorel:commandapi-bukkit-shade:9.4.0'
 def nbtAPI = 'de.tr7zw:item-nbt-api:2.12.3'

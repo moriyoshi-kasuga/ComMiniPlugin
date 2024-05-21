@@ -18,6 +18,7 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 
@@ -48,7 +49,7 @@ public abstract class AbstractGame {
 
   public abstract boolean initializeGame(Player player);
 
-  public final boolean startGame(Player player) {
+  public final boolean startGame(final Player player) {
     if (!innerStartGame(player)) {
       return false;
     }
@@ -70,7 +71,7 @@ public abstract class AbstractGame {
 
   public abstract boolean isGamePlayer(Player player);
 
-  public final void runPlayers(Consumer<Player> consumer) {
+  public final void runPlayers(final Consumer<Player> consumer) {
     Bukkit.getOnlinePlayers().forEach(p -> {
       if (isGamePlayer(p)) {
         consumer.accept(p);
@@ -78,23 +79,23 @@ public abstract class AbstractGame {
     });
   }
 
-  public final void teleportLobby(Player player) {
+  public final void teleportLobby(final Player player) {
     player.teleport(this.lobby);
   }
 
   public final void hidePlayer() {
-    List<UUID> list = Bukkit.getOnlinePlayers().stream()
+    final List<UUID> list = Bukkit.getOnlinePlayers().stream()
         .filter(p -> !isGamePlayer(p))
         .map(Entity::getUniqueId).toList();
-    ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(list);
+    final ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(list);
     runPlayers(p -> ((CraftPlayer) p).getHandle().connection.send(packet));
   }
 
   public final void showPlayer() {
-    var list = Bukkit.getOnlinePlayers().stream()
+    val list = Bukkit.getOnlinePlayers().stream()
         .filter(p -> !isGamePlayer(p))
         .map(p -> ((CraftPlayer) p).getHandle()).toList();
-    ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(list);
+    final ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(list);
     runPlayers(p -> ((CraftPlayer) p).getHandle().connection.send(packet));
   }
 

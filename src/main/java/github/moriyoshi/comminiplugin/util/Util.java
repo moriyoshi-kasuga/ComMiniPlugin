@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
 public class Util {
 
-  public static void log(Object message) {
+  public static void log(final Object message) {
     Bukkit.getConsoleSender().sendMessage(Util.mm(message));
   }
 
@@ -32,7 +32,7 @@ public class Util {
    * @param str 変換対象
    * @return 変換物
    */
-  public static Component mm(Object str) {
+  public static Component mm(final Object str) {
     return str instanceof Component ? ((Component) str)
         : MiniMessage.miniMessage().deserialize(String.valueOf(str))
             .decoration(TextDecoration.ITALIC, false);
@@ -44,7 +44,7 @@ public class Util {
    * @param command command string (no /)
    */
 
-  public static void consoleCommand(String command) {
+  public static void consoleCommand(final String command) {
     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
   }
 
@@ -54,7 +54,7 @@ public class Util {
    * @param sender sender
    * @param str    send text
    */
-  public static void send(CommandSender sender, Object str) {
+  public static void send(final CommandSender sender, final Object str) {
     if (sender != null) {
       sender.sendMessage(Util.mm(str));
     }
@@ -66,7 +66,7 @@ public class Util {
    * @param execute player
    * @param command command
    */
-  public static void executeCommand(Player execute, String command) {
+  public static void executeCommand(final Player execute, final String command) {
     if (execute.isOp()) {
       execute.performCommand(command);
     } else {
@@ -86,7 +86,7 @@ public class Util {
    * @return component
    */
 
-  public static Component legacy(String str) {
+  public static Component legacy(final String str) {
     return LegacyComponentSerializer.legacyAmpersand().deserializeOrNull(str);
   }
 
@@ -97,7 +97,7 @@ public class Util {
    * @return convert
    */
 
-  public static String cc(String str) {
+  public static String cc(final String str) {
     return ChatColor.translateAlternateColorCodes('&', str);
   }
 
@@ -108,7 +108,7 @@ public class Util {
    * @return List<Component>
    */
 
-  public static List<Component> ListMM(@NotNull List<?> list) {
+  public static List<Component> ListMM(@NotNull final List<?> list) {
     return list.stream().map(Util::mm).collect(Collectors.toList());
   }
 
@@ -119,7 +119,7 @@ public class Util {
    * @return 変換されたString
    */
 
-  public static String serialize(Component str) {
+  public static String serialize(final Component str) {
     return MiniMessage.miniMessage().serializeOrNull(str);
   }
 
@@ -129,7 +129,7 @@ public class Util {
    * @param str component
    * @return string
    */
-  public static String serializeLegacy(Component str) {
+  public static String serializeLegacy(final Component str) {
     return LegacyComponentSerializer.legacyAmpersand().serializeOrNull(str);
   }
 
@@ -141,7 +141,7 @@ public class Util {
    * @param subtitle subtitle string
    */
 
-  public static void title(Player player, Object title, Object subtitle) {
+  public static void title(final Player player, final Object title, final Object subtitle) {
     if (player != null && player.isOnline()) {
       player.showTitle(Title.title(Util.mm(Objects.requireNonNullElse(title, "")),
           Util.mm(Objects.requireNonNullElse(subtitle, ""))));
@@ -156,7 +156,7 @@ public class Util {
    * @param subtitle subtitle
    * @param seconds  seconds
    */
-  public static void title(Player player, Object title, Object subtitle, int seconds) {
+  public static void title(final Player player, final Object title, final Object subtitle, final int seconds) {
     if (player != null && player.isOnline()) {
       player.showTitle(Title.title(Util.mm(Objects.requireNonNullElse(title, "")),
           Util.mm(Objects.requireNonNullElse(subtitle, "")),
@@ -170,7 +170,7 @@ public class Util {
    * @param str message
    */
 
-  public static void cast(Object str) {
+  public static void cast(final Object str) {
     Bukkit.broadcast(Util.mm(str));
   }
 
@@ -179,7 +179,7 @@ public class Util {
    *
    * @param str message
    */
-  public static void important(Object str) {
+  public static void important(final Object str) {
     Bukkit.getOnlinePlayers().forEach((player) -> {
       if (player.isOp()) {
         player.sendMessage(mm(str));

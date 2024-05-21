@@ -1,5 +1,7 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import lombok.val;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,7 +34,7 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
       "<yellow>弾頭") {
     {
       int slot = 1;
-      for (var head : Bullet.WARHEAD.values()) {
+      for (val head : Bullet.WARHEAD.values()) {
         setButton(slot,
             new ItemButton<>(new ItemBuilder(head.material)
                 .name(head.name).lore("<yellow>通常<gray>:<white>" + head.damage,
@@ -50,7 +52,7 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
       "<green>背面") {
     {
       int slot = 1;
-      for (var tail : Bullet.WARTAIL.values()) {
+      for (val tail : Bullet.WARTAIL.values()) {
         setButton(slot, new ItemButton<>(new ItemBuilder(tail.icon).name(tail.name)
             .lore("<green>" + tail.description, "<red>ダメージ+" + tail.plusDamage).build()));
         slot++;
@@ -93,7 +95,7 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
   }
 
   @Override
-  public void onClick(InventoryClickEvent event) {
+  public void onClick(final InventoryClickEvent event) {
     super.onClick(event);
     update(event);
     Inventory inv;
@@ -104,17 +106,17 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
   }
 
   @Override
-  public void onClose(InventoryCloseEvent event) {
-    var inv = event.getPlayer().getInventory();
-    for (var i : items) {
-      var item = getInventory().getItem(i);
+  public void onClose(final InventoryCloseEvent event) {
+    val inv = event.getPlayer().getInventory();
+    for (val i : items) {
+      val item = getInventory().getItem(i);
       if (item != null) {
         inv.addItem(item);
       }
     }
   }
 
-  public void update(InventoryClickEvent event) {
+  public void update(final InventoryClickEvent event) {
     setButton(15, none);
     new BukkitRunnable() {
 
@@ -124,14 +126,14 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
         Bullet.WARTAIL tail = null;
         int headSlot = -1;
         int tailSlot = -1;
-        var inv = getInventory();
-        root: for (int i : items) {
-          ItemStack item = inv.getItem(i);
+        val inv = getInventory();
+        root: for (final int i : items) {
+          final ItemStack item = inv.getItem(i);
           if (item == null) {
             continue;
           }
-          var material = item.getType();
-          for (var h : Bullet.WARHEAD.values()) {
+          val material = item.getType();
+          for (val h : Bullet.WARHEAD.values()) {
             if (h.material == material) {
               if (head != null) {
                 setButton(15, none);
@@ -142,7 +144,7 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
               continue root;
             }
           }
-          for (var t : Bullet.WARTAIL.values()) {
+          for (val t : Bullet.WARTAIL.values()) {
             if (t.predicate.test(material)) {
               if (tail != null) {
                 setButton(15, none);
@@ -158,13 +160,13 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
           setButton(15, none);
           return;
         }
-        var tmp1 = headSlot;
-        var tmp2 = tailSlot;
-        var sound = head.sound;
-        var name = head.name + "<reset><gray>(" + tail.name + ")";
-        var damage = head.damage + tail.plusDamage;
-        var headShot = head.headShot + tail.plusDamage;
-        var result = new ItemBuilder(Material.PHANTOM_MEMBRANE).customModelData(head.model)
+        val tmp1 = headSlot;
+        val tmp2 = tailSlot;
+        val sound = head.sound;
+        val name = head.name + "<reset><gray>(" + tail.name + ")";
+        val damage = head.damage + tail.plusDamage;
+        val headShot = head.headShot + tail.plusDamage;
+        val result = new ItemBuilder(Material.PHANTOM_MEMBRANE).customModelData(head.model)
             .name(name)
             .lore("<yellow>通常<gray>:" + damage,
                 "<red>ヘッドショット<gray>:<white>" + headShot)
@@ -173,11 +175,11 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
         setButton(15, new ItemButton<>(result) {
 
           @Override
-          public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+          public void onClick(@NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
             event.getWhoClicked().getInventory().addItem(new Bullet(result, name, damage,
                 headShot, sound).getItem());
-            var temp1 = getInventory().getItem(tmp1);
-            var temp2 = getInventory().getItem(tmp2);
+            val temp1 = getInventory().getItem(tmp1);
+            val temp2 = getInventory().getItem(tmp2);
             temp1.setAmount(temp1.getAmount() - 1);
             temp2.setAmount(temp2.getAmount() - 1);
           }

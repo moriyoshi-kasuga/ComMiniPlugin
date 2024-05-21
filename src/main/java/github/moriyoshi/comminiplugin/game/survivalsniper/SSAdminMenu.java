@@ -19,11 +19,10 @@ public class SSAdminMenu extends MenuHolder<ComMiniPlugin> {
         new ItemButton<MenuHolder<ComMiniPlugin>>(
             new ItemBuilder(Material.SPYGLASS).name("<red>Start").build()) {
           @Override
-          public void onClick(@NotNull MenuHolder<ComMiniPlugin> holder,
-              @NotNull InventoryClickEvent event) {
+          public void onClick(@NotNull final MenuHolder<ComMiniPlugin> holder,
+              @NotNull final InventoryClickEvent event) {
             GameSystem.startGame(((Player) event.getWhoClicked()));
           }
-        }
-    );
+        });
   }
 }

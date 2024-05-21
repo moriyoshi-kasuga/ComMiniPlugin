@@ -13,16 +13,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import lombok.val;
+
 public class PlayerChatInput implements ConversationAbandonedListener {
 
-  public static boolean isInputted(Player player) {
+  public static boolean isInputted(final Player player) {
     return player.isConversing();
   }
 
   private final ConversationFactory factory;
 
-  public PlayerChatInput(Plugin plugin, String prefix, boolean cancelable, Prompt prompt) {
-    var factory = new ConversationFactory(plugin).withPrefix(context -> prefix)
+  public PlayerChatInput(final Plugin plugin, final String prefix, final boolean cancelable, final Prompt prompt) {
+    val factory = new ConversationFactory(plugin).withPrefix(context -> prefix)
         .withFirstPrompt(prompt).withLocalEcho(false);
     if (cancelable) {
       factory.withEscapeSequence("cancel");
@@ -32,13 +34,13 @@ public class PlayerChatInput implements ConversationAbandonedListener {
     this.factory = factory;
   }
 
-  public PlayerChatInput(Plugin plugin, String prefix, boolean cancelable, Prompt prompt,
-      int timeout) {
+  public PlayerChatInput(final Plugin plugin, final String prefix, final boolean cancelable, final Prompt prompt,
+      final int timeout) {
     this(plugin, prefix, cancelable, prompt);
     this.factory.withTimeout(timeout);
   }
 
-  public final void build(Player player) {
+  public final void build(final Player player) {
     if (isInputted(player)) {
       throw new RuntimeException(
           "チャット入力中なのにまた入力のメゾットを使用しています player = " + player.getName());
@@ -48,10 +50,10 @@ public class PlayerChatInput implements ConversationAbandonedListener {
   }
 
   @Override
-  public void conversationAbandoned(@NotNull ConversationAbandonedEvent abandonedEvent) {
+  public void conversationAbandoned(@NotNull final ConversationAbandonedEvent abandonedEvent) {
     if (!abandonedEvent.gracefulExit()) {
-      ConversationCanceller canceller = abandonedEvent.getCanceller();
-      Conversable forWhom = abandonedEvent.getContext().getForWhom();
+      final ConversationCanceller canceller = abandonedEvent.getCanceller();
+      final Conversable forWhom = abandonedEvent.getContext().getForWhom();
       if (canceller instanceof InactivityConversationCanceller) {
         forWhom.sendRawMessage(getTimeOutCancel());
       } else if (canceller instanceof ExactMatchConversationCanceller) {

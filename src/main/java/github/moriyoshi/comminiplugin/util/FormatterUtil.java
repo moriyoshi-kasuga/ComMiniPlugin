@@ -23,14 +23,14 @@ public class FormatterUtil {
    * @param map    map
    * @return mapの値によってフォーマットされた文字列
    */
-  public static String format(String format, Map<Object, Object> map) {
-    Matcher matcher = pattern.matcher(format);
-    StringBuilder sb = new StringBuilder();
+  public static String format(final String format, final Map<Object, Object> map) {
+    final Matcher matcher = pattern.matcher(format);
+    final StringBuilder sb = new StringBuilder();
     int lastEnd = 0;
     while (matcher.find()) {
       sb.append(format, lastEnd, matcher.start());
       lastEnd = matcher.end();
-      Object parameter = map.get(matcher.group(1));
+      final Object parameter = map.get(matcher.group(1));
       if (parameter == null) {
         continue;
       }
@@ -48,11 +48,11 @@ public class FormatterUtil {
    * @return プロパティの値によってフォーマットされた文字列
    */
 
-  public static String format(String format, Properties props) {
-    Matcher matcher = pattern.matcher(format);
-    StringBuilder sb = new StringBuilder();
+  public static String format(final String format, final Properties props) {
+    final Matcher matcher = pattern.matcher(format);
+    final StringBuilder sb = new StringBuilder();
     while (matcher.find()) {
-      String parameter = props.getProperty(matcher.group(1));
+      final String parameter = props.getProperty(matcher.group(1));
       if (parameter == null) {
         continue;
       }

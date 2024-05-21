@@ -18,22 +18,22 @@ public interface CooldownItem extends InterfaceItem {
     return COOLDOWN.getOrDefault(getItemKey(), -1);
   }
 
-  default boolean inCooldown() {
-    return getCooldown() != -1;
-  }
-
-  default void setCooldown(int cooldown) {
+  default void setCooldown(final int cooldown) {
     if (1 > cooldown) {
       throw new IllegalArgumentException("クールダウンは 1 以上を指定してください");
     }
     COOLDOWN.put(getItemKey(), cooldown);
   }
 
+  default boolean inCooldown() {
+    return getCooldown() != -1;
+  }
+
   default boolean countDown() {
     if (!contains()) {
       return false;
     }
-    int cooldown;
+    final int cooldown;
     if (1 >= (cooldown = getCooldown())) {
       COOLDOWN.remove(getItemKey());
       return false;

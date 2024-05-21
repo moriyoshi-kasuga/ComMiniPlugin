@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 public abstract class HotBarSlot extends ArrayList<Integer> {
   protected abstract List<Supplier<ItemStack>> getDefaults();
 
-  public HotBarSlot(Collection<Integer> collection) {
+  public HotBarSlot(final Collection<Integer> collection) {
     super(collection);
   }
 
@@ -19,7 +19,7 @@ public abstract class HotBarSlot extends ArrayList<Integer> {
     return stream().map(slot -> getDefaults().get(slot).get()).toArray(ItemStack[]::new);
   }
 
-  public void swap(int first, int second) {
+  public void swap(final int first, final int second) {
     Collections.swap(this, first, second);
   }
 }

@@ -11,7 +11,7 @@ public class FinalizeGameCommand extends CommandAPICommand {
     super("finalize");
     withPermission(CommandPermission.OP);
     executesPlayer((p, args) -> {
-      if (!GameSystem.finalizeGame()) {
+      if (!GameSystem.finalGame()) {
         ComMiniPrefix.MAIN.send(p, "<red>現在ゲームは開催されていません");
       }
     });

@@ -25,13 +25,13 @@ public class SSMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<SSGame
     super(ComMiniPlugin.getPlugin(), 27, "<blue>サバイバルスナイパー");
     setButton(12, new ItemButton<>(JOIN) {
       @Override
-      public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+      public void onClick(@NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
         getGame().joinPlayer(((Player) event.getWhoClicked()), true);
       }
     });
     setButton(14, new ItemButton<>(SPEC) {
       @Override
-      public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+      public void onClick(@NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
         getGame().joinPlayer(((Player) event.getWhoClicked()), false);
       }
     });

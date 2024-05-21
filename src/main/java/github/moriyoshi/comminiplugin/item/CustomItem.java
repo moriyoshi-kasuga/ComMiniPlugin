@@ -23,13 +23,30 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class CustomItem implements InterfaceItem {
 
+  public static final BiMap<String, Class<? extends CustomItem>> registers = HashBiMap.create();
   @NotNull
   private final ItemStack item;
   private UUID uuid;
 
-  public static final BiMap<String, Class<? extends CustomItem>> registers = HashBiMap.create();
+  public CustomItem(@NotNull final ItemStack item) {
+    NBT.modify(item, nbt -> {
+      final var compound = nbt.getOrCreateCompound(nbtKey);
+      if (!compound.hasTag("identifier")) {
+        compound.setString("identifier", getIdentifier());
+      }
+      generateUUID().ifPresent(uuid -> {
+        if (compound.hasTag("uuid")) {
+          this.uuid = compound.getUUID("uuid");
+        } else {
+          compound.setUUID("uuid", uuid);
+          this.uuid = uuid;
+        }
+      });
+    });
+    this.item = item;
+  }
 
-  public static CustomItem getNewCustomItem(String identifier) {
+  public static CustomItem getNewCustomItem(final String identifier) {
     if (registers.containsKey(identifier)) {
       try {
         return registers.get(identifier).getDeclaredConstructor().newInstance();
@@ -42,8 +59,8 @@ public abstract class CustomItem implements InterfaceItem {
     throw new IllegalArgumentException(identifier + " のIDはカスタムアイテムに登録されていません");
   }
 
-  public static CustomItem getCustomItem(ItemStack item) {
-    var ci = getIdentifier(item);
+  public static CustomItem getCustomItem(final ItemStack item) {
+    final var ci = getIdentifier(item);
     if (ci.isPresent()) {
       try {
         return registers.get(ci.get()).getDeclaredConstructor(ItemStack.class).newInstance(item);
@@ -57,39 +74,7 @@ public abstract class CustomItem implements InterfaceItem {
         "このアイテムは CustomItem ではありません。" + item.toString());
   }
 
-  public CustomItem(@NotNull ItemStack item) {
-    NBT.modify(item, nbt -> {
-      var compound = nbt.getOrCreateCompound(nbtKey);
-      if (!compound.hasTag("identifier")) {
-        compound.setString("identifier", getIdentifier());
-      }
-      generatUUID().ifPresent(uuid -> {
-        if (compound.hasTag("uuid")) {
-          this.uuid = compound.getUUID("uuid");
-        } else {
-          compound.setUUID("uuid", uuid);
-          this.uuid = uuid;
-        }
-      });
-    });
-    this.item = item;
-  }
-
-  public Optional<UUID> generatUUID() {
-    return Optional.of(UUID.randomUUID());
-  }
-
-  @Override
-  public @NotNull UUID getUniqueId() {
-    return Objects.requireNonNull(this.uuid);
-  }
-
-  @Override
-  public @NotNull ItemStack getItem() {
-    return this.item;
-  }
-
-  public static boolean equalsItem(ItemStack itemStack, Class<?> clazz) {
+  public static boolean equalsItem(final ItemStack itemStack, final Class<?> clazz) {
     if (registers.containsValue(clazz)) {
       return equalsIdentifier(registers.inverse().get(clazz), itemStack);
     }
@@ -103,8 +88,8 @@ public abstract class CustomItem implements InterfaceItem {
    * @param item       判定するアイテム
    * @return 同じ識別子の場合trueを返します
    */
-  public static boolean equalsIdentifier(String identifier, ItemStack item) {
-    var id = getIdentifier(item);
+  public static boolean equalsIdentifier(final String identifier, final ItemStack item) {
+    final var id = getIdentifier(item);
     return id.map(s -> s.equals(identifier)).orElse(false);
   }
 
@@ -115,17 +100,9 @@ public abstract class CustomItem implements InterfaceItem {
    * @param item      item2
    * @return 同じだった場合trueを返します
    */
-  public static boolean equalsIdentifier(ItemStack itemStack, ItemStack item) {
-    var id = getIdentifier(itemStack);
+  public static boolean equalsIdentifier(final ItemStack itemStack, final ItemStack item) {
+    final var id = getIdentifier(itemStack);
     return id.filter(s -> equalsIdentifier(s, item)).isPresent();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj instanceof CustomItem item) {
-      return item.getIdentifier().equals(getIdentifier()) && item.getUniqueId().equals(getUniqueId());
-    }
-    return false;
   }
 
   /**
@@ -134,7 +111,7 @@ public abstract class CustomItem implements InterfaceItem {
    * @param item 対象のアイテム
    * @return 登録されいたらtrueを返します
    */
-  public static boolean isCustomItem(ItemStack item) {
+  public static boolean isCustomItem(final ItemStack item) {
     if (item == null || item.getType().isAir()) {
       return false;
     }
@@ -142,7 +119,7 @@ public abstract class CustomItem implements InterfaceItem {
       if (!readableNBT.hasTag(nbtKey)) {
         return false;
       }
-      ReadableNBT compound = readableNBT.getCompound(nbtKey);
+      final ReadableNBT compound = readableNBT.getCompound(nbtKey);
       assert compound != null;
       return compound.hasTag("identifier");
     });
@@ -156,7 +133,7 @@ public abstract class CustomItem implements InterfaceItem {
    * @throws IllegalArgumentException 渡されたアイテムがCustomItemではない場合にthrowされます
    */
   @NotNull
-  public static Optional<String> getIdentifier(ItemStack item) {
+  public static Optional<String> getIdentifier(final ItemStack item) {
     if (item == null || item.getType().isAir()) {
       return Optional.empty();
     }
@@ -164,10 +141,33 @@ public abstract class CustomItem implements InterfaceItem {
       if (!nbt.hasTag(nbtKey)) {
         return Optional.empty();
       }
-      ReadableNBT compound = nbt.getCompound(nbtKey);
+      final ReadableNBT compound = nbt.getCompound(nbtKey);
       assert compound != null;
       return Optional.of(compound.getString("identifier"));
     });
+  }
+
+  public Optional<UUID> generateUUID() {
+    return Optional.of(UUID.randomUUID());
+  }
+
+  @Override
+  public @NotNull UUID getUniqueId() {
+    return Objects.requireNonNull(this.uuid);
+  }
+
+  @Override
+  public @NotNull ItemStack getItem() {
+    return this.item;
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (obj instanceof final CustomItem item) {
+      return item.getIdentifier().equals(getIdentifier()) && item.getUniqueId()
+          .equals(getUniqueId());
+    }
+    return false;
   }
 
   /**
@@ -175,7 +175,7 @@ public abstract class CustomItem implements InterfaceItem {
    *
    * @param e event
    */
-  public void interact(PlayerInteractEvent e) {
+  public void interact(final PlayerInteractEvent e) {
   }
 
   /**
@@ -183,15 +183,15 @@ public abstract class CustomItem implements InterfaceItem {
    *
    * @param e event
    */
-  public void heldOfThis(PlayerItemHeldEvent e) {
-    Player player = e.getPlayer();
-    CustomItem v = this;
+  public void heldOfThis(final PlayerItemHeldEvent e) {
+    final Player player = e.getPlayer();
+    final CustomItem v = this;
     if (heldItem(getItem()).isPresent()) {
       new BukkitRunnable() {
 
         @Override
         public void run() {
-          ItemStack item = player.getInventory().getItemInMainHand();
+          final ItemStack item = player.getInventory().getItemInMainHand();
           if (CustomItem.isCustomItem(item) && v.equals(CustomItem.getCustomItem(item))) {
             heldItem(item).ifPresent(consumer -> consumer.accept(player));
             return;
@@ -207,7 +207,7 @@ public abstract class CustomItem implements InterfaceItem {
    *
    * @param e event
    */
-  public void heldOfOther(PlayerItemHeldEvent e) {
+  public void heldOfOther(final PlayerItemHeldEvent e) {
   }
 
   /**
@@ -215,7 +215,7 @@ public abstract class CustomItem implements InterfaceItem {
    *
    * @param e event
    */
-  public void shiftItem(PlayerToggleSneakEvent e) {
+  public void shiftItem(final PlayerToggleSneakEvent e) {
   }
 
   /**
@@ -223,8 +223,7 @@ public abstract class CustomItem implements InterfaceItem {
    *
    * @param e event
    */
-  public void dropItem(PlayerDropItemEvent e) {
-
+  public void dropItem(final PlayerDropItemEvent e) {
   }
 
   /**
@@ -232,8 +231,7 @@ public abstract class CustomItem implements InterfaceItem {
    *
    * @param e event
    */
-  public void swapToMainHand(PlayerSwapHandItemsEvent e) {
-
+  public void swapToMainHand(final PlayerSwapHandItemsEvent e) {
   }
 
   /**
@@ -241,11 +239,10 @@ public abstract class CustomItem implements InterfaceItem {
    *
    * @param e event
    */
-  public void swapToOffHand(PlayerSwapHandItemsEvent e) {
-
+  public void swapToOffHand(final PlayerSwapHandItemsEvent e) {
   }
 
-  public boolean canMoveOtherInv(InventoryClickEvent e) {
+  public boolean canMoveOtherInv(final InventoryClickEvent e) {
     return true;
   }
 
@@ -254,8 +251,7 @@ public abstract class CustomItem implements InterfaceItem {
    *
    * @param e event
    */
-  public void clickItem(InventoryClickEvent e) {
-
+  public void clickItem(final InventoryClickEvent e) {
   }
 
   /**
@@ -263,6 +259,6 @@ public abstract class CustomItem implements InterfaceItem {
    *
    * @param e event
    */
-  public void itemSpawn(ItemSpawnEvent e) {
+  public void itemSpawn(final ItemSpawnEvent e) {
   }
 }

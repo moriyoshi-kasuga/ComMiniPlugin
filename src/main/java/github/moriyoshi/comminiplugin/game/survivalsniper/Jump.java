@@ -1,5 +1,7 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import lombok.val;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -31,7 +33,7 @@ public class Jump extends CustomItem implements CooldownItem {
     this(new ItemBuilder(Material.PHANTOM_MEMBRANE).name(DEFAULT_NAME).lore(DESCRIPTION).build());
   }
 
-  public Jump(ItemStack item) {
+  public Jump(final ItemStack item) {
     super(item);
   }
 
@@ -41,13 +43,13 @@ public class Jump extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interact(final PlayerInteractEvent e) {
     if (e.getAction().isLeftClick()) {
       e.setCancelled(false);
       return;
     }
-    var p = e.getPlayer();
-    var eyeLoc = p.getEyeLocation();
+    val p = e.getPlayer();
+    val eyeLoc = p.getEyeLocation();
     if (inCooldown()) {
       if ((DEFAULT_COOLDOWN_TICK - 10) > getCooldown()) {
         p.playSound(eyeLoc, Sound.BLOCK_DISPENSER_FAIL, 1, 1);
@@ -84,24 +86,24 @@ public class Jump extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void runTick(Player player) {
+  public void runTick(final Player player) {
     if (!countDown()) {
       new ItemBuilder(getItem()).type(Material.PHANTOM_MEMBRANE);
     }
   }
 
   @Override
-  public boolean canMoveOtherInv(InventoryClickEvent e) {
+  public boolean canMoveOtherInv(final InventoryClickEvent e) {
     return false;
   }
 
   @Override
-  public void dropItem(PlayerDropItemEvent e) {
+  public void dropItem(final PlayerDropItemEvent e) {
     e.setCancelled(true);
   }
 
   @Override
-  public void itemSpawn(ItemSpawnEvent e) {
+  public void itemSpawn(final ItemSpawnEvent e) {
     e.getEntity().remove();
   }
 }

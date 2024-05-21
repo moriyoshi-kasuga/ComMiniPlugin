@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.item;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,24 +20,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class CustomItemListner implements Listener {
+public class CustomItemListener implements Listener {
 
-  private static final CustomItemListner INSTANCE = new CustomItemListner();
+  private static final CustomItemListener INSTANCE = new CustomItemListener();
 
-  public static CustomItemListner getInstance() {
-    return INSTANCE;
-  }
-
-  private CustomItemListner() {
+  private CustomItemListener() {
     new BukkitRunnable() {
       private int tick = 0;
 
       @Override
       public void run() {
-        var flag = tick <= 0;
+        val flag = tick <= 0;
         Bukkit.getOnlinePlayers().forEach(p -> p.getInventory().forEach(i -> {
           if (CustomItem.isCustomItem(i)) {
-            var custom = CustomItem.getCustomItem(i);
+            val custom = CustomItem.getCustomItem(i);
             custom.runTick(p);
             if (flag) {
               custom.runSecond(p);
@@ -52,44 +49,48 @@ public class CustomItemListner implements Listener {
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
   }
 
+  public static CustomItemListener getInstance() {
+    return INSTANCE;
+  }
+
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void dropItem(PlayerDropItemEvent e) {
-    ItemStack item = e.getItemDrop().getItemStack();
+  public void dropItem(final PlayerDropItemEvent e) {
+    final ItemStack item = e.getItemDrop().getItemStack();
     if (!CustomItem.isCustomItem(item)) {
       return;
     }
-    CustomItem customItem = CustomItem.getCustomItem(item);
+    final CustomItem customItem = CustomItem.getCustomItem(item);
     customItem.dropItem(e);
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void shiftItem(PlayerToggleSneakEvent e) {
-    Player player = e.getPlayer();
-    ItemStack item = player.getInventory().getItemInMainHand();
+  public void shiftItem(final PlayerToggleSneakEvent e) {
+    final Player player = e.getPlayer();
+    final ItemStack item = player.getInventory().getItemInMainHand();
     if (!CustomItem.isCustomItem(item)) {
       return;
     }
-    CustomItem customItem = CustomItem.getCustomItem(item);
+    final CustomItem customItem = CustomItem.getCustomItem(item);
     customItem.shiftItem(e);
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void customItemInteract(PlayerInteractEvent e) {
-    ItemStack item = e.getItem();
+  public void customItemInteract(final PlayerInteractEvent e) {
+    final ItemStack item = e.getItem();
     if (!CustomItem.isCustomItem(item)) {
       return;
     }
-    CustomItem customItem = CustomItem.getCustomItem(item);
+    final CustomItem customItem = CustomItem.getCustomItem(item);
     e.setCancelled(true);
     customItem.interact(e);
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void swapItem(PlayerItemHeldEvent e) {
-    Player player = e.getPlayer();
-    PlayerInventory inventory = player.getInventory();
-    ItemStack previousItem = inventory.getItem(e.getPreviousSlot());
-    ItemStack newItem = inventory.getItem(e.getNewSlot());
+  public void swapItem(final PlayerItemHeldEvent e) {
+    final Player player = e.getPlayer();
+    final PlayerInventory inventory = player.getInventory();
+    final ItemStack previousItem = inventory.getItem(e.getPreviousSlot());
+    final ItemStack newItem = inventory.getItem(e.getNewSlot());
     if (CustomItem.isCustomItem(previousItem)) {
       CustomItem.getCustomItem(previousItem).heldOfOther(e);
     }
@@ -99,9 +100,9 @@ public class CustomItemListner implements Listener {
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void offhandItem(PlayerSwapHandItemsEvent e) {
-    var main = e.getMainHandItem();
-    var off = e.getOffHandItem();
+  public void offhandItem(final PlayerSwapHandItemsEvent e) {
+    val main = e.getMainHandItem();
+    val off = e.getOffHandItem();
     if (CustomItem.isCustomItem(off)) {
       CustomItem.getCustomItem(off).swapToOffHand(e);
       if (e.isCancelled()) {
@@ -114,10 +115,10 @@ public class CustomItemListner implements Listener {
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void inventoryClick(InventoryClickEvent e) {
-    var item = e.getCursor();
-    var click = e.getCurrentItem();
-    List<CustomItem> list = new ArrayList<>();
+  public void inventoryClick(final InventoryClickEvent e) {
+    val item = e.getCursor();
+    val click = e.getCurrentItem();
+    final List<CustomItem> list = new ArrayList<>();
     if (CustomItem.isCustomItem(item)) {
       list.add(CustomItem.getCustomItem(item));
     }
@@ -129,7 +130,7 @@ public class CustomItemListner implements Listener {
         if (i.canMoveOtherInv(e)) {
           return false;
         }
-        var type = e.getView().getTopInventory().getType();
+        val type = e.getView().getTopInventory().getType();
         return switch (type) {
           case CRAFTING, WORKBENCH -> false;
           default -> true;
@@ -139,7 +140,7 @@ public class CustomItemListner implements Listener {
         return;
       }
     }
-    for (CustomItem customItem : list) {
+    for (final CustomItem customItem : list) {
       customItem.clickItem(e);
       if (e.isCancelled()) {
         return;
@@ -148,8 +149,8 @@ public class CustomItemListner implements Listener {
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void itemSpawn(ItemSpawnEvent e) {
-    var item = e.getEntity().getItemStack();
+  public void itemSpawn(final ItemSpawnEvent e) {
+    val item = e.getEntity().getItemStack();
     if (CustomItem.isCustomItem(item)) {
       CustomItem.getCustomItem(item).itemSpawn(e);
     }

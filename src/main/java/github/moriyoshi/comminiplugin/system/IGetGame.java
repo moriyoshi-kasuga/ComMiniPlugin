@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull;
 
 public interface IGetGame<T extends AbstractGame> {
 
-  @SuppressWarnings("unchecked")
   @NotNull
+  @SuppressWarnings("unchecked")
   default T getGame() {
-    return Objects.requireNonNull((T) GameSystem.getNowGame());
+    return Objects.requireNonNull((T) GameSystem.getGame());
   }
 
 }

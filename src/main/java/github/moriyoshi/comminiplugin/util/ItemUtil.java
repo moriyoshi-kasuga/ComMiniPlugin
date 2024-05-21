@@ -12,11 +12,11 @@ public class ItemUtil {
    * @param itemStack 消すアイテム
    * @param amount    消す数
    */
-  public static void removeItemStack(Player player, ItemStack itemStack, int amount) {
-    ItemStack[] inventory = player.getInventory().getContents();
-    for (ItemStack item : inventory) {
+  public static void removeItemStack(final Player player, final ItemStack itemStack, int amount) {
+    final ItemStack[] inventory = player.getInventory().getContents();
+    for (final ItemStack item : inventory) {
       if (item != null && item.isSimilar(itemStack)) {
-        int iAmount = item.getAmount();
+        final int iAmount = item.getAmount();
         if (iAmount <= amount) {
           item.setAmount(0);
           amount -= iAmount;
@@ -35,10 +35,10 @@ public class ItemUtil {
    * @param itemStack 数えるアイテム
    * @return 合計
    */
-  public static int sumItemStack(Player player, ItemStack itemStack) {
-    ItemStack[] inventory = player.getInventory().getContents();
+  public static int sumItemStack(final Player player, final ItemStack itemStack) {
+    final ItemStack[] inventory = player.getInventory().getContents();
     int count = 0;
-    for (ItemStack item : inventory) {
+    for (final ItemStack item : inventory) {
       if (item != null && item.isSimilar(itemStack)) {
         count += item.getAmount();
       }
@@ -54,7 +54,7 @@ public class ItemUtil {
    * @param amount    amount
    * @return 持っているならtrue
    */
-  public static boolean hasItemStack(Player player, ItemStack itemStack, int amount) {
+  public static boolean hasItemStack(final Player player, final ItemStack itemStack, final int amount) {
     return player.getInventory().containsAtLeast(itemStack, amount);
   }
 }

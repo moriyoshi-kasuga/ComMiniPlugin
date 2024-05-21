@@ -49,7 +49,7 @@ public interface InterfaceItem {
    * @return 処理
    */
   @NotNull
-  default Optional<Consumer<Player>> heldItem(ItemStack item) {
+  default Optional<Consumer<Player>> heldItem(final ItemStack item) {
     return Optional.empty();
   }
 
@@ -58,7 +58,7 @@ public interface InterfaceItem {
    *
    * @param player player
    */
-  default void runTick(Player player) {
+  default void runTick(final Player player) {
   }
 
   /**
@@ -66,7 +66,7 @@ public interface InterfaceItem {
    *
    * @param player player
    */
-  default void runSecond(Player player) {
+  default void runSecond(final Player player) {
   }
 
 }

@@ -1,5 +1,7 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import lombok.val;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -19,17 +21,17 @@ public class EscapeDeep extends CustomItem {
         .customModelData(1).build());
   }
 
-  public EscapeDeep(ItemStack item) {
+  public EscapeDeep(final ItemStack item) {
     super(item);
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interact(final PlayerInteractEvent e) {
     if (e.getAction().isLeftClick()) {
       e.setCancelled(false);
       return;
     }
-    var p = e.getPlayer();
+    val p = e.getPlayer();
     if (!BukkitUtil.randomTeleport(p, p.getLocation(), 10)) {
       ComMiniPrefix.MAIN.send(p, "<red>ここの地上に脱出できません(海の可能性があります)");
       return;

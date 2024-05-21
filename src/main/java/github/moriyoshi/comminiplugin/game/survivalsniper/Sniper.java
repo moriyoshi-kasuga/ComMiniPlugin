@@ -5,6 +5,8 @@ import github.moriyoshi.comminiplugin.item.CooldownItem;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.Util;
+import lombok.val;
+
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -38,7 +40,7 @@ public class Sniper extends CustomItem implements CooldownItem {
     this(new ItemBuilder(Material.SPYGLASS).name(DEFAULT_NAME).customModelData(1).build());
   }
 
-  public Sniper(ItemStack item) {
+  public Sniper(final ItemStack item) {
     super(item);
   }
 
@@ -48,30 +50,30 @@ public class Sniper extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void swapToOffHand(PlayerSwapHandItemsEvent e) {
+  public void swapToOffHand(final PlayerSwapHandItemsEvent e) {
     e.setCancelled(true);
-    var p = e.getPlayer();
-    var eyeLoc = p.getEyeLocation();
+    val p = e.getPlayer();
+    val eyeLoc = p.getEyeLocation();
     if (inCooldown()) {
       p.playSound(eyeLoc, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
       return;
     }
-    var optBullet = Bullet.getFirstBullet(p);
+    val optBullet = Bullet.getFirstBullet(p);
     if (optBullet.isEmpty()) {
       p.playSound(eyeLoc, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
       return;
     }
-    var bullet = optBullet.get();
+    val bullet = optBullet.get();
     bullet.use(p);
     setCooldown(DEFAULT_COOLDOWN_TICK);
-    var world = eyeLoc.getWorld();
-    var vec = eyeLoc.getDirection().normalize().multiply(0.1);
-    var loc = eyeLoc.clone();
-    var already = new HashMap<LivingEntity, Boolean>();
+    val world = eyeLoc.getWorld();
+    val vec = eyeLoc.getDirection().normalize().multiply(0.1);
+    val loc = eyeLoc.clone();
+    val already = new HashMap<LivingEntity, Boolean>();
     for (int i = 1; i < MAX_LENGTH; i += 1) {
       loc.add(vec);
-      var v = loc.toVector();
-      var block = loc.getBlock();
+      val v = loc.toVector();
+      val block = loc.getBlock();
       if (block.isCollidable() && block.getBoundingBox().contains(v)) {
         break;
       }
@@ -81,7 +83,7 @@ public class Sniper extends CustomItem implements CooldownItem {
       loc.getNearbyEntities(1, 1, 1).forEach(entity -> {
         if (entity != p && entity.getBoundingBox().overlaps(v.clone().add(BULLET_SIZE),
             v.clone().subtract(BULLET_SIZE))) {
-          if (!(entity instanceof LivingEntity living)) {
+          if (!(entity instanceof final LivingEntity living)) {
             if (entity instanceof org.bukkit.entity.Minecart
                 || entity instanceof org.bukkit.entity.Boat) {
               entity.remove();
@@ -91,10 +93,10 @@ public class Sniper extends CustomItem implements CooldownItem {
           if (already.getOrDefault(living, false)) {
             return;
           }
-          var eye = living.getEyeLocation().toVector();
-          var min = eye.clone().subtract(EYE_SIZE);
-          var max = eye.clone().add(EYE_SIZE);
-          var isHeadShot = BoundingBox.of(min, max).contains(v);
+          val eye = living.getEyeLocation().toVector();
+          val min = eye.clone().subtract(EYE_SIZE);
+          val max = eye.clone().add(EYE_SIZE);
+          val isHeadShot = BoundingBox.of(min, max).contains(v);
           already.put(living, isHeadShot);
         }
       });
@@ -109,23 +111,23 @@ public class Sniper extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void heldOfThis(PlayerItemHeldEvent e) {
+  public void heldOfThis(final PlayerItemHeldEvent e) {
     super.heldOfThis(e);
-    Player player = e.getPlayer();
+    final Player player = e.getPlayer();
     player.getWorld().playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_DIAMOND, 2, 1);
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interact(final PlayerInteractEvent e) {
     e.setCancelled(false);
   }
 
   @Override
-  public @NotNull Optional<Consumer<Player>> heldItem(ItemStack item) {
+  public @NotNull Optional<Consumer<Player>> heldItem(final ItemStack item) {
     return Optional.of(player -> {
-      String bullet = Bullet.getFirstBullet(player).map(Bullet::getName).orElse(null);
-      boolean flag = NBT.modify(item, nbt -> {
-        var compound = nbt.getCompound(nbtKey);
+      final String bullet = Bullet.getFirstBullet(player).map(Bullet::getName).orElse(null);
+      final boolean flag = NBT.modify(item, nbt -> {
+        val compound = nbt.getCompound(nbtKey);
         if (compound.hasTag("nextBullet")) {
           return !compound.getString("nextBullet").equals(bullet);
         }
@@ -143,24 +145,24 @@ public class Sniper extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void runTick(Player player) {
+  public void runTick(final Player player) {
     if (!countDown()) {
       new ItemBuilder(getItem()).type(Material.SPYGLASS);
     }
   }
 
   @Override
-  public void dropItem(PlayerDropItemEvent e) {
+  public void dropItem(final PlayerDropItemEvent e) {
     e.setCancelled(true);
   }
 
   @Override
-  public boolean canMoveOtherInv(InventoryClickEvent e) {
+  public boolean canMoveOtherInv(final InventoryClickEvent e) {
     return false;
   }
 
   @Override
-  public void itemSpawn(ItemSpawnEvent e) {
+  public void itemSpawn(final ItemSpawnEvent e) {
     e.getEntity().remove();
   }
 }

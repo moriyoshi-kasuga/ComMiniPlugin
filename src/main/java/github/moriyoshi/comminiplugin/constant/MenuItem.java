@@ -17,12 +17,12 @@ public class MenuItem extends CustomItem {
     this(new ItemBuilder(Material.BOOK).name("<red>Menu").glow().build());
   }
 
-  public MenuItem(@NotNull ItemStack item) {
+  public MenuItem(@NotNull final ItemStack item) {
     super(item);
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interact(final PlayerInteractEvent e) {
     MenuCommand.open(e.getPlayer());
   }
 
@@ -32,12 +32,12 @@ public class MenuItem extends CustomItem {
   }
 
   @Override
-  public void dropItem(PlayerDropItemEvent e) {
+  public void dropItem(final PlayerDropItemEvent e) {
     e.setCancelled(true);
   }
 
   @Override
-  public boolean canMoveOtherInv(InventoryClickEvent e) {
+  public boolean canMoveOtherInv(final InventoryClickEvent e) {
     return false;
   }
 

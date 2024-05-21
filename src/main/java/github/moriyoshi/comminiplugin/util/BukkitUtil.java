@@ -15,12 +15,13 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BoundingBox;
 
 import io.papermc.paper.entity.TeleportFlag;
+import lombok.val;
 
 public final class BukkitUtil {
 
   public static final Random random = new Random();
 
-  public static List<Player> getSquarePlayers(BoundingBox square) {
+  public static List<Player> getSquarePlayers(final BoundingBox square) {
 
     return Bukkit
         .getOnlinePlayers().stream()
@@ -28,25 +29,27 @@ public final class BukkitUtil {
         .filter(player -> square.contains(player.getLocation().toVector())).toList();
   }
 
-  public static boolean randomTeleport(Entity entity, Location center, int radius) {
+  public static boolean randomTeleport(final Entity entity, final Location center, final int radius) {
     return randomTeleport(entity, center, radius, 100);
   }
 
-  public static boolean randomTeleport(Entity entity, Location center, int radius, int maxTry) {
+  public static boolean randomTeleport(final Entity entity, final Location center, final int radius, final int maxTry) {
     return randomTeleport(entity, center.getWorld(), center.getBlockX(), center.getBlockZ(), radius,
         maxTry);
   }
 
-  public static boolean randomTeleport(Entity entity, World world, int bx, int bz, int radius) {
+  public static boolean randomTeleport(final Entity entity, final World world, final int bx, final int bz,
+      final int radius) {
     return randomTeleport(entity, world, bx, bz, radius, 100);
   }
 
-  public static boolean randomTeleport(Entity entity, World world, int bx, int bz, int radius,
-      int maxTry) {
+  public static boolean randomTeleport(final Entity entity, final World world, final int bx, final int bz,
+      final int radius,
+      final int maxTry) {
     for (int i = 0; i < maxTry; i++) {
-      var x = random.nextInt(-radius, radius);
-      var z = random.nextInt(-radius, radius);
-      var block = world.getHighestBlockAt(bx + x, bz + z, HeightMap.WORLD_SURFACE);
+      val x = random.nextInt(-radius, radius);
+      val z = random.nextInt(-radius, radius);
+      val block = world.getHighestBlockAt(bx + x, bz + z, HeightMap.WORLD_SURFACE);
       if (block.isSolid() && block.isCollidable()) {
         entity.teleportAsync(block.getLocation().add(0.5, 1, 0.5), TeleportCause.PLUGIN, TeleportFlag.Relative.YAW,
             TeleportFlag.Relative.PITCH);
@@ -56,7 +59,7 @@ public final class BukkitUtil {
     return false;
   }
 
-  public static void disableMove(Player player, int tick) {
+  public static void disableMove(final Player player, final int tick) {
     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, tick, 138, true, false));
   }
 }

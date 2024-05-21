@@ -281,14 +281,7 @@ class ArraySchedule implements Schedule {
 
 }
 
-class ConcatSchedule implements Schedule {
-
-  final Schedule one, two;
-
-  ConcatSchedule(Schedule one, Schedule two) {
-    this.one = one;
-    this.two = two;
-  }
+record ConcatSchedule(Schedule one, Schedule two) implements Schedule {
 
   @Override
   public void reset() {
@@ -305,11 +298,6 @@ class ConcatSchedule implements Schedule {
 
     next = two.next();
     return next;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(one, two);
   }
 
   @Override
@@ -554,13 +542,7 @@ class TimeLimitedSchedule implements Schedule {
 
 }
 
-class FixedRateSchedule implements Schedule {
-
-  final long period;
-
-  FixedRateSchedule(long period) {
-    this.period = period;
-  }
+record FixedRateSchedule(long period) implements Schedule {
 
   @Override
   public void reset() {
@@ -588,11 +570,6 @@ class FixedRateSchedule implements Schedule {
   @Override
   public Schedule repeat() {
     return this;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(period);
   }
 
   @Override

@@ -16,11 +16,11 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
 
   private GameMenuButton() {
-    if (!GameSystem.inGame()) {
+    if (!GameSystem.isIn()) {
       setIcon(new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開催されていません").build());
       return;
     }
-    var game = GameSystem.getNowGame();
+    var game = GameSystem.getGame();
     setIcon(new ItemBuilder(game.material).name(game.name).lore(game.description).build());
   }
 
@@ -34,14 +34,14 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
 
   public static GameMenuButton back() {
     return new GameMenuButton(
-        new ItemBuilder(Material.IRON_DOOR).name(GameSystem.getNowGame().name + "<white>のメニューに戻る").build());
+        new ItemBuilder(Material.IRON_DOOR).name(GameSystem.getGame().name + "<white>のメニューに戻る").build());
   }
 
   @Override
   public void onClick(@NotNull MenuHolder<ComMiniPlugin> holder,
       @NotNull InventoryClickEvent event) {
     var player = (Player) event.getWhoClicked();
-    if (!GameSystem.inGame()) {
+    if (!GameSystem.isIn()) {
       ComMiniPrefix.MAIN.send(player, "<red>ゲーム中ではありません");
       return;
     }
@@ -49,7 +49,7 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       ComMiniPrefix.MAIN.send(player, "<red>Menuは開けません");
       return;
     }
-    GameSystem.getNowGame().createGameMenu(player).openInv(player);
+    GameSystem.getGame().createGameMenu(player).openInv(player);
   }
 
 }

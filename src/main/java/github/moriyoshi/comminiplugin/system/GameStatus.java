@@ -12,5 +12,5 @@ public enum GameStatus {
   // 常に参加できない
   DISABLE,
   // ゲームが開催されていない
-  NON;
+  NON
 }

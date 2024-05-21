@@ -1,5 +1,18 @@
 package github.moriyoshi.comminiplugin.command;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.BlockStateArgument;
@@ -11,17 +24,6 @@ import github.moriyoshi.comminiplugin.util.FormatterUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import org.bukkit.Material;
-import org.bukkit.block.BlockState;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 
 public class ItemEditCommand extends CommandAPICommand {
 
@@ -69,7 +71,7 @@ public class ItemEditCommand extends CommandAPICommand {
 
   public ItemEditCommand() {
     super("itemedit");
-    setAliases(new String[]{"ie"});
+    setAliases(new String[] { "ie" });
     withPermission(CommandPermission.OP);
     withSubcommand(new CommandAPICommand("help")
         .executesPlayer((player, objects) -> {
@@ -81,11 +83,10 @@ public class ItemEditCommand extends CommandAPICommand {
             .withArguments(new GreedyStringArgument("name"))
             .executesPlayer((sender, args) -> {
               itemEdit(sender, builder -> {
-                int arg = (int) args.get(0);
+                final int arg = (int) args.get(0);
                 if (builder.getLore().size() < arg) {
                   IE.send(sender,
-                      FormatterUtil.format(ONLYLORE, Map.of("lore", builder.getLore().size()))
-                  );
+                      FormatterUtil.format(ONLYLORE, Map.of("lore", builder.getLore().size())));
                   return builder;
                 }
                 IE.send(sender, FormatterUtil.format(REMOVELORE, Map.of("lore", arg)));
@@ -96,7 +97,7 @@ public class ItemEditCommand extends CommandAPICommand {
         new CommandAPICommand("addlore")
             .withArguments(new GreedyStringArgument("name"))
             .executesPlayer((sender, args) -> {
-              String s = args.get(0).toString();
+              final String s = args.get(0).toString();
               itemEdit(sender, builder -> {
                 IE.send(sender, FormatterUtil.format(ADDLORE, Map.of("name", s)));
                 return builder.addLore(Util.mm(s));
@@ -108,11 +109,10 @@ public class ItemEditCommand extends CommandAPICommand {
             .withArguments(new GreedyStringArgument("name"))
             .executesPlayer((player, objects) -> {
               itemEdit(player, builder -> {
-                int i = (int) objects.get(0);
-                String s = objects.get(1).toString();
+                final int i = (int) objects.get(0);
+                final String s = objects.get(1).toString();
                 IE.send(player,
-                    FormatterUtil.format(SETLORE, Map.of("lore", i, "name", s))
-                );
+                    FormatterUtil.format(SETLORE, Map.of("lore", i, "name", s)));
                 return builder.setLore(i - 1, Util.mm(s));
               });
             }));
@@ -122,17 +122,15 @@ public class ItemEditCommand extends CommandAPICommand {
             .withArguments(new GreedyStringArgument("name"))
             .executesPlayer((player, objects) -> {
               itemEdit(player, builder -> {
-                int i = (int) objects.get(0);
+                final int i = (int) objects.get(0);
                 if (builder.getLore().size() < i) {
                   IE.send(player,
-                      FormatterUtil.format(ONLYLORE, Map.of("lore", builder.getLore().size()))
-                  );
+                      FormatterUtil.format(ONLYLORE, Map.of("lore", builder.getLore().size())));
                   return builder;
                 }
-                String s = objects.get(1).toString();
+                final String s = objects.get(1).toString();
                 IE.send(player,
-                    FormatterUtil.format(INSERTLORE, Map.of("lore", i, "name", s))
-                );
+                    FormatterUtil.format(INSERTLORE, Map.of("lore", i, "name", s)));
                 return builder.insertLore(i - 1, Util.mm(s));
               });
             }));
@@ -142,7 +140,7 @@ public class ItemEditCommand extends CommandAPICommand {
             .withArguments(new GreedyStringArgument("name"))
             .executesPlayer((sender, args) -> {
               itemEdit(sender, builder -> {
-                String s = args.get(0).toString();
+                final String s = args.get(0).toString();
                 IE.send(sender, FormatterUtil.format(RENAME, Map.of("name", s)));
                 return builder.name(Util.mm(s));
               });
@@ -151,7 +149,7 @@ public class ItemEditCommand extends CommandAPICommand {
         new CommandAPICommand("getskull")
             .withArguments(new EntitySelectorArgument.OnePlayer("player"))
             .executesPlayer((player, objects) -> {
-              String s = ((Player) objects.get("player")).getName();
+              final String s = ((Player) objects.get("player")).getName();
               IE.send(player, FormatterUtil.format(GETSKULL, Map.of("player", s)));
               player.getInventory().addItem(ItemBuilder.createSkull(s).build());
             }));
@@ -160,10 +158,9 @@ public class ItemEditCommand extends CommandAPICommand {
             .withArguments(new IntegerArgument("value"))
             .executesPlayer((player, objects) -> {
               itemEdit(player, builder -> {
-                int object = (int) objects.get(0);
+                final int object = (int) objects.get(0);
                 IE.send(player,
-                    FormatterUtil.format(CUSTOMMODELDATA, Map.of("data", object))
-                );
+                    FormatterUtil.format(CUSTOMMODELDATA, Map.of("data", object)));
                 return builder.changeItemMeta(itemMeta -> itemMeta.setCustomModelData(object));
               });
             }));
@@ -189,12 +186,10 @@ public class ItemEditCommand extends CommandAPICommand {
                 .withArguments(new EnchantmentArgument("enchant"))
                 .executesPlayer((player, objects) -> {
                   itemEdit(player, builder -> {
-                    Enchantment object = (Enchantment) objects.get(0);
+                    final Enchantment object = (Enchantment) objects.get(0);
                     IE.send(player,
                         FormatterUtil.format(ENCHANT_SET,
-                            Map.of("level", 1, "enchant", object.getKey().getKey())
-                        )
-                    );
+                            Map.of("level", 1, "enchant", object.getKey().getKey())));
                     return builder.enchant(object, 1);
                   });
                 }))
@@ -204,14 +199,12 @@ public class ItemEditCommand extends CommandAPICommand {
                 .withArguments(new IntegerArgument("level", 0))
                 .executesPlayer((player, objects) -> {
                   itemEdit(player, builder -> {
-                    Enchantment object = (Enchantment) objects.get(0);
-                    int i = (int) objects.get(1);
+                    final Enchantment object = (Enchantment) objects.get(0);
+                    final int i = (int) objects.get(1);
                     IE.send(player,
                         FormatterUtil.format(ENCHANT_SET,
                             Map.of("level", i, "enchant", object.getKey()
-                                .getKey())
-                        )
-                    );
+                                .getKey())));
                     return builder.enchant(object, i);
                   });
                 }))
@@ -220,12 +213,10 @@ public class ItemEditCommand extends CommandAPICommand {
                 .withArguments(new EnchantmentArgument("enchant"))
                 .executesPlayer((player, objects) -> {
                   itemEdit(player, builder -> {
-                    Enchantment object = (Enchantment) objects.get(0);
+                    final Enchantment object = (Enchantment) objects.get(0);
                     IE.send(player,
                         FormatterUtil.format(ENCHANT_REMOVE,
-                            Map.of("enchant", object.getKey().getKey())
-                        )
-                    );
+                            Map.of("enchant", object.getKey().getKey())));
                     return builder.unEnchant(object);
                   });
                 })));
@@ -234,7 +225,7 @@ public class ItemEditCommand extends CommandAPICommand {
             .withArguments(new BlockStateArgument("material"))
             .executesPlayer((sender, args) -> {
               itemEdit(sender, builder -> {
-                Material material = ((BlockState) args.get("material")).getType();
+                final Material material = ((BlockState) args.get("material")).getType();
                 IE.send(sender, FormatterUtil.format(TYPE, Map.of("type", material.name())));
                 return builder.type(material);
               });
@@ -244,17 +235,15 @@ public class ItemEditCommand extends CommandAPICommand {
             .withArguments(new IntegerArgument("durability"))
             .executesPlayer((sender, args) -> {
               itemEdit(sender, builder -> {
-                int max = builder.build().getType().getMaxDurability();
-                int size = (int) args.get(0);
+                final int max = builder.build().getType().getMaxDurability();
+                final int size = (int) args.get(0);
                 if (size > max) {
                   IE.send(sender, MAXDURABILITY);
                   return builder;
                 }
                 IE.send(sender,
                     FormatterUtil.format(DURABILITY,
-                        Map.of("durability", size)
-                    )
-                );
+                        Map.of("durability", size)));
                 return builder.changeMeta(
                     (Consumer<Damageable>) consumer -> consumer.setDamage(max - size));
               });
@@ -275,8 +264,8 @@ public class ItemEditCommand extends CommandAPICommand {
         }));
   }
 
-  private void itemEdit(Player player, Function<ItemBuilder, ItemBuilder> function) {
-    ItemStack item = player.getInventory().getItemInMainHand();
+  private void itemEdit(final Player player, final Function<ItemBuilder, ItemBuilder> function) {
+    final ItemStack item = player.getInventory().getItemInMainHand();
     if (item.getType() == Material.AIR) {
       IE.send(player, HASITEM);
       return;

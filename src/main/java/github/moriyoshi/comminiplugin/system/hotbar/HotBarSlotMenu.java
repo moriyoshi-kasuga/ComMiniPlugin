@@ -9,6 +9,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
+import lombok.val;
 
 public final class HotBarSlotMenu extends MenuHolder<ComMiniPlugin> {
 
@@ -16,7 +17,7 @@ public final class HotBarSlotMenu extends MenuHolder<ComMiniPlugin> {
 
   private int swapSlot = -1;
 
-  public HotBarSlotMenu(HotBarSlot slots) {
+  public HotBarSlotMenu(final HotBarSlot slots) {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>インベントリーのカスタマイズ");
     this.slots = slots;
     set();
@@ -26,7 +27,7 @@ public final class HotBarSlotMenu extends MenuHolder<ComMiniPlugin> {
     setButton(18, GameMenuButton.of());
   }
 
-  private void update(Player p, int slot) {
+  private void update(final Player p, final int slot) {
     if (swapSlot == -1) {
       swapSlot = slot;
       p.playSound(p.getLocation(), Sound.BLOCK_IRON_TRAPDOOR_OPEN, 1, 1);
@@ -40,11 +41,11 @@ public final class HotBarSlotMenu extends MenuHolder<ComMiniPlugin> {
 
   private void set() {
     var i = 0;
-    for (var item : slots.toItemStacks()) {
+    for (val item : slots.toItemStacks()) {
       setButton(i, new ItemButton<>(item) {
 
         @Override
-        public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+        public void onClick(@NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
           if (holder.getInventory().equals(event.getClickedInventory())) {
             update(((Player) event.getWhoClicked()), event.getSlot());
           }

@@ -7,8 +7,9 @@ import github.moriyoshi.comminiplugin.util.PrefixUtil;
 
 public abstract class AbstractMiniGame extends AbstractGame {
 
-  public AbstractMiniGame(String id, String name, String description, Material material, PrefixUtil prefix,
-      AbstractGameListener<?> listener) {
+  public AbstractMiniGame(final String id, final String name, final String description, final Material material,
+      final PrefixUtil prefix,
+      final AbstractGameListener<?> listener) {
     super(id, name, description, material, prefix, listener);
   }
 

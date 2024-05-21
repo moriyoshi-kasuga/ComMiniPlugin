@@ -1,5 +1,7 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import lombok.val;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -22,9 +24,9 @@ import github.moriyoshi.comminiplugin.util.Util;
 public class SSListener implements AbstractGameListener<SSGame> {
 
   @Override
-  public void quit(PlayerQuitEvent e) {
-    var p = e.getPlayer();
-    var flag = getGame().players.remove(p.getUniqueId()).getLeft();
+  public void quit(final PlayerQuitEvent e) {
+    val p = e.getPlayer();
+    val flag = getGame().players.remove(p.getUniqueId()).getLeft();
     if (!flag) {
       return;
     }
@@ -32,8 +34,8 @@ public class SSListener implements AbstractGameListener<SSGame> {
   }
 
   @EventHandler
-  public void tp(PlayerTeleportEvent e) {
-    var p = e.getPlayer();
+  public void tp(final PlayerTeleportEvent e) {
+    val p = e.getPlayer();
     if (e.getCause().equals(TeleportCause.SPECTATE)
         && !getGame().getLobby().getWorld().getWorldBorder().isInside(e.getTo())) {
       getGame().prefix.send(p, "<red>範囲外にスペクテイターのテレポートは使えません");
@@ -42,10 +44,10 @@ public class SSListener implements AbstractGameListener<SSGame> {
   }
 
   @Override
-  public void death(PlayerDeathEvent e) {
-    SSGame game = getGame();
-    var p = e.getPlayer();
-    var uuid = p.getUniqueId();
+  public void death(final PlayerDeathEvent e) {
+    final SSGame game = getGame();
+    val p = e.getPlayer();
+    val uuid = p.getUniqueId();
     if (game.players.get(uuid).getRight() == 0) {
       e.deathMessage(Util.mm(p.getName() + "は洞窟で酸素がなくなった..."));
     }
@@ -56,8 +58,8 @@ public class SSListener implements AbstractGameListener<SSGame> {
   }
 
   @EventHandler
-  public void interact(PlayerInteractEvent e) {
-    var p = e.getPlayer();
+  public void interact(final PlayerInteractEvent e) {
+    val p = e.getPlayer();
     if (!getGame().isGamePlayer(p)) {
       return;
     }
@@ -82,16 +84,16 @@ public class SSListener implements AbstractGameListener<SSGame> {
   }
 
   @Override
-  public void damageByEntity(EntityDamageByEntityEvent e) {
+  public void damageByEntity(final EntityDamageByEntityEvent e) {
     if (!getGame().isCanPvP() && e.getEntity() instanceof Player
-        && e.getDamager() instanceof Player attacker) {
+        && e.getDamager() instanceof final Player attacker) {
       getGame().prefix.send(attacker, "<red>まだPvPはできません");
       e.setCancelled(true);
     }
   }
 
   @EventHandler
-  public void moevDimension(PlayerPortalEvent e) {
+  public void moevDimension(final PlayerPortalEvent e) {
     if (getGame().isGamePlayer(e.getPlayer())) {
       getGame().prefix.send(e.getPlayer(), "<red>ポータルを使うな!");
       e.setCancelled(true);
@@ -99,20 +101,20 @@ public class SSListener implements AbstractGameListener<SSGame> {
   }
 
   @EventHandler
-  public void entitySpawn(EntitySpawnEvent e) {
+  public void entitySpawn(final EntitySpawnEvent e) {
     if (e.getEntityType() == EntityType.ENDERMAN) {
-      Entity entity = e.getEntity();
+      final Entity entity = e.getEntity();
       if (getGame().getWorld().getWorldBorder().isInside(entity.getLocation())) {
         entity.remove();
       }
     }
   }
 
-  private void reducePlayer(Player p) {
-    SSGame game = getGame();
-    var loc = p.getLocation();
-    var world = p.getWorld();
-    var inv = p.getInventory();
+  private void reducePlayer(final Player p) {
+    final SSGame game = getGame();
+    val loc = p.getLocation();
+    val world = p.getWorld();
+    val inv = p.getInventory();
     inv.forEach(i -> {
       if (i == null || i.isEmpty()) {
         return;
@@ -120,7 +122,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
       world.dropItemNaturally(loc, i);
     });
     inv.clear();
-    var alives = game.players.entrySet().stream().filter(entry -> entry.getValue().getLeft())
+    val alives = game.players.entrySet().stream().filter(entry -> entry.getValue().getLeft())
         .toList();
     if (alives.size() != 1) {
       if (alives.size() == 2) {

@@ -15,22 +15,6 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
 public class MenuCommand extends CommandAPICommand {
 
-  public MenuCommand() {
-    super("menu");
-    executesPlayer((p, args) -> {
-      open(p);
-    });
-  }
-
-  public static boolean open(Player p) {
-    if (GameSystem.isStarted() && GameSystem.getNowGame().isGamePlayer(p)) {
-      ComMiniPrefix.MAIN.send(p, "<red>あなたはmenuを開けません");
-      return false;
-    }
-    new InnerMenu().openInv(p);
-    return true;
-  }
-
   private static class InnerMenu extends MenuHolder<ComMiniPlugin> {
 
     public InnerMenu() {
@@ -42,6 +26,22 @@ public class MenuCommand extends CommandAPICommand {
       }
       setButton(14, new ItemButton<>(new ItemBuilder(Material.BEDROCK).name("まだ開始されていません").build()));
     }
+  }
+
+  public static boolean open(final Player p) {
+    if (GameSystem.isStarted() && GameSystem.getGame().isGamePlayer(p)) {
+      ComMiniPrefix.MAIN.send(p, "<red>あなたはmenuを開けません");
+      return false;
+    }
+    new InnerMenu().openInv(p);
+    return true;
+  }
+
+  public MenuCommand() {
+    super("menu");
+    executesPlayer((p, args) -> {
+      open(p);
+    });
   }
 
 }

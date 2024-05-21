@@ -20,77 +20,70 @@ import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ListMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import lombok.val;
 
-/**
- * AllSoundCommand
- */
 public class AllSoundCommand extends CommandAPICommand {
 
-  public AllSoundCommand() {
-    super("allsound");
-    executesPlayer((p, args) -> {
-      new AllSoundMenu().openInv(p);
-    });
-  }
-
   private static final class AllSoundMenu extends ListMenu<Sound> {
-    public AllSoundMenu() {
-      super("<green>Sounds", 45, new ArrayList<>(Arrays.asList(Sound.values())), (sound) -> {
-        var m = getMaterial(sound);
-        return new ItemButton<>(
-            new ItemBuilder(m == null || m.isAir() || !m.isItem() ? Material.BEDROCK : m).addLore(
-                "")
-                .addLore(sound.name())
-                .build()) {
-          @Override
-          public void onClick(@NotNull MenuHolder<ComMiniPlugin> holder, @NotNull InventoryClickEvent event) {
-            var p = ((Player) event.getWhoClicked());
-            p.playSound(event.getWhoClicked().getLocation(), sound, 1, 1);
-          }
-        };
-      });
-    }
-
-    private static Material getMaterial(Sound sound) {
-      String name = sound.name();
-      var materials = new ArrayList<>(Arrays.asList(Material.values()));
-      var split = new ArrayList<>(List.of(name.split("_")));
-      var finalname = split.get(1).toLowerCase();
+    private static Material getMaterial(final Sound sound) {
+      final String name = sound.name();
+      val materials = new ArrayList<>(Arrays.asList(Material.values()));
+      val split = new ArrayList<>(List.of(name.split("_")));
+      val finalName = split.get(1).toLowerCase();
       return switch (split.remove(0)) {
         case "AMBIENT" -> Material.STONE;
         case "BLOCK" -> {
           while (!split.isEmpty()) {
             try {
               yield Material.valueOf(String.join("_", split));
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
               split.remove(split.size() - 1);
             }
           }
-          yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalname))
+          yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalName))
               .findFirst().orElse(Material.BEDROCK);
         }
         case "ENTITY" -> {
           while (!split.isEmpty()) {
-            var str = String.join("_", split);
+            val str = String.join("_", split);
             try {
-              yield Material.valueOf(str + "_SPAWNN_EGG");
-            } catch (IllegalArgumentException e) {
+              yield Material.valueOf(str + "_SPAWN_EGG");
+            } catch (final IllegalArgumentException e) {
               try {
                 yield Material.valueOf(str);
-              } catch (IllegalArgumentException ignore) {
+              } catch (final IllegalArgumentException ignore) {
               }
               split.remove(split.size() - 1);
             }
           }
-          yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalname))
+          yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalName))
               .findFirst().orElse(Material.BEDROCK);
         }
         default -> Material.BEDROCK;
       };
     }
 
-    public AllSoundMenu(ComMiniPlugin plugin, String title, int pageSize, List<Sound> rewards, int rewardStartIndex,
-        int rewardEndIndex, Function<Sound, MenuButton<MenuHolder<ComMiniPlugin>>> function) {
+    public AllSoundMenu() {
+      super("<green>Sounds", 45, new ArrayList<>(Arrays.asList(Sound.values())), (sound) -> {
+        val m = getMaterial(sound);
+        return new ItemButton<>(
+            new ItemBuilder(m == null || m.isAir() || !m.isItem() ? Material.BEDROCK : m).addLore(
+                "")
+                .addLore(sound.name())
+                .build()) {
+          @Override
+          public void onClick(@NotNull final MenuHolder<ComMiniPlugin> holder,
+              @NotNull final InventoryClickEvent event) {
+            val p = ((Player) event.getWhoClicked());
+            p.playSound(event.getWhoClicked().getLocation(), sound, 1, 1);
+          }
+        };
+      });
+    }
+
+    public AllSoundMenu(final ComMiniPlugin plugin, final String title, final int pageSize, final List<Sound> rewards,
+        final int rewardStartIndex,
+        final int rewardEndIndex, final Function<Sound, MenuButton<MenuHolder<ComMiniPlugin>>> function) {
       super(plugin, title, pageSize, rewards, rewardStartIndex, rewardEndIndex, function);
     }
 
@@ -111,6 +104,13 @@ public class AllSoundCommand extends CommandAPICommand {
       return Optional.of((key, sound) -> sound.name().toLowerCase().contains(key.toLowerCase()));
     }
 
+  }
+
+  public AllSoundCommand() {
+    super("allsound");
+    executesPlayer((p, args) -> {
+      new AllSoundMenu().openInv(p);
+    });
   }
 
 }

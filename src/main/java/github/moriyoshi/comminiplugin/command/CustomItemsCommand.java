@@ -22,22 +22,14 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
 public class CustomItemsCommand extends CommandAPICommand {
 
-  public CustomItemsCommand() {
-    super("customitems");
-    withPermission(CommandPermission.OP);
-    executesPlayer((sender, args) -> {
-      new CustomItemMenu().openInv(sender);
-    });
-  }
-
   private static final class CustomItemMenu extends ListMenu<String> {
     public CustomItemMenu() {
       super("<green>CustomItems", 45, new ArrayList<>(CustomItem.registers.keySet()), (key) -> {
-        ItemStack item = CustomItem.getNewCustomItem(key).getItem();
+        final ItemStack item = CustomItem.getNewCustomItem(key).getItem();
         return new ItemButton<>(new ItemBuilder(item).addLore("").addLore(key).build()) {
           @Override
-          public void onClick(@NotNull MenuHolder<ComMiniPlugin> holder,
-              @NotNull InventoryClickEvent event) {
+          public void onClick(@NotNull final MenuHolder<ComMiniPlugin> holder,
+              @NotNull final InventoryClickEvent event) {
             event.getWhoClicked().getInventory()
                 .addItem(CustomItem.getNewCustomItem(key).getItem());
           }
@@ -45,8 +37,8 @@ public class CustomItemsCommand extends CommandAPICommand {
       });
     }
 
-    public CustomItemMenu(ComMiniPlugin plugin, String title, int pageSize, List<String> rewards, int rewardStartIndex,
-        int rewardEndIndex, Function<String, MenuButton<MenuHolder<ComMiniPlugin>>> function) {
+    public CustomItemMenu(final ComMiniPlugin plugin, final String title, final int pageSize, final List<String> rewards, final int rewardStartIndex,
+        final int rewardEndIndex, final Function<String, MenuButton<MenuHolder<ComMiniPlugin>>> function) {
       super(plugin, title, pageSize, rewards, rewardStartIndex, rewardEndIndex, function);
     }
 
@@ -66,5 +58,13 @@ public class CustomItemsCommand extends CommandAPICommand {
       return Optional.of((search, key) -> key.toLowerCase().contains(search.toLowerCase()));
     }
 
+  }
+
+  public CustomItemsCommand() {
+    super("customitems");
+    withPermission(CommandPermission.OP);
+    executesPlayer((sender, args) -> {
+      new CustomItemMenu().openInv(sender);
+    });
   }
 }

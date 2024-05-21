@@ -42,8 +42,8 @@ public class SSTradeMenu extends MenuHolder<ComMiniPlugin> {
           .addLore("<green>" + item.tradeDescription + "でトレード").build()) {
 
         @Override
-        public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-          var p = (Player) event.getWhoClicked();
+        public void onClick(@NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
+          val p = (Player) event.getWhoClicked();
           if (!item.predicate.test(p)) {
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_AMBIENT, 1, 1);
             return;

@@ -30,10 +30,10 @@ public class GameSystem {
   public static final List<AbstractMiniGame> minigames = new ArrayList<>();
 
   @Getter
-  private static AbstractGame nowGame = null;
+  private static AbstractGame game = null;
 
   public static <T extends AbstractGame> T getNowGame(Class<T> t) {
-    return t.cast(nowGame);
+    return t.cast(game);
   }
 
   /**
@@ -44,10 +44,10 @@ public class GameSystem {
    * @return 呼び出せたらtrue
    */
   public static boolean initializeGame(Player player, String gameName) {
-    if (inGame()) {
+    if (isIn()) {
       ComMiniPrefix.SYSTEM.send(
           player,
-          "<green>現在は <u>" + nowGame.name + "<reset><green>が開催されています!");
+          "<green>現在は <u>" + game.name + "<reset><green>が開催されています!");
       return false;
     }
     if (!games.containsKey(gameName)) {
@@ -61,8 +61,8 @@ public class GameSystem {
           "<red>" + gameName + "を始められません、初期化条件が存在します!");
       return false;
     }
-    nowGame = temp;
-    nowGame.prefix.cast("<green>開催します!");
+    game = temp;
+    game.prefix.cast("<green>開催します!");
     return true;
   }
 
@@ -70,22 +70,16 @@ public class GameSystem {
    * ゲームを開始します、initializeGameではただゲームを開催するということだけ
    *
    * @param player スタートする運営
-   * @return スタートできたらtrue
    */
-  public static boolean startGame(Player player) {
-    if (!inGame()) {
+  public static void startGame(Player player) {
+    if (!isIn()) {
       ComMiniPrefix.SYSTEM.send(player, "<red>現在は何も開催されていません!");
-      return false;
     }
     if (isStarted()) {
-      nowGame.prefix.send(player, "<red>すでに始まっています!");
-      return false;
+      game.prefix.send(player, "<red>すでに始まっています!");
     }
-    if (!nowGame.startGame(player)) {
-      return false;
-    }
-    nowGame.prefix.cast("<green>開始します");
-    return true;
+    game.startGame(player);
+    game.prefix.cast("<green>開始します");
   }
 
   /**
@@ -93,22 +87,22 @@ public class GameSystem {
    *
    * @return trueでゲーム終了
    */
-  public static boolean finalizeGame() {
-    if (!inGame()) {
+  public static boolean finalGame() {
+    if (!isIn()) {
       return false;
     }
-    nowGame.finishGame();
-    nowGame.prefix.cast("<green>閉幕です");
-    nowGame = null;
+    game.finishGame();
+    game.prefix.cast("<green>閉幕です");
+    game = null;
     return true;
   }
 
-  public static boolean inGame() {
-    return nowGame != null;
+  public static boolean isIn() {
+    return game != null;
   }
 
   public static boolean isStarted() {
-    return inGame() && nowGame.isStarted();
+    return isIn() && game.isStarted();
   }
 
   /**

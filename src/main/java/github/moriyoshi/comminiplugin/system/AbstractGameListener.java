@@ -17,7 +17,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
    * @param e event
    * @return false で そのプレイヤーを初期化します(とくに処理がない場合にfalseを返してロビーにテレポなどをします)
    */
-  default boolean join(PlayerJoinEvent e) {
+  default boolean join(final PlayerJoinEvent e) {
     return false;
   }
 
@@ -26,7 +26,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
    *
    * @param e event
    */
-  default void quit(PlayerQuitEvent e) {
+  default void quit(final PlayerQuitEvent e) {
   }
 
   /**
@@ -34,13 +34,13 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
    *
    * @param e event
    */
-  default void death(PlayerDeathEvent e) {
+  default void death(final PlayerDeathEvent e) {
   }
 
   /**
    * @param e event
    */
-  default void damage(EntityDamageEvent e) {
+  default void damage(final EntityDamageEvent e) {
   }
 
   /**
@@ -48,7 +48,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
    *
    * @param e event
    */
-  default void damageByEntity(EntityDamageByEntityEvent e) {
+  default void damageByEntity(final EntityDamageByEntityEvent e) {
   }
 
   /**
@@ -56,7 +56,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
    *
    * @param e event
    */
-  default void blockBreak(BlockBreakEvent e) {
+  default void blockBreak(final BlockBreakEvent e) {
   }
 
   /**
@@ -64,6 +64,6 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
    *
    * @param e event
    */
-  default void blockPlace(BlockPlaceEvent e) {
+  default void blockPlace(final BlockPlaceEvent e) {
   }
 }

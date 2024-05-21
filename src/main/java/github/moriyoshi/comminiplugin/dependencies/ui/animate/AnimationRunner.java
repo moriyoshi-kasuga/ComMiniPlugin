@@ -128,17 +128,17 @@ public final class AnimationRunner<Item> {
       }
       return true;
     } else if (schedule instanceof FixedRateSchedule) {
-      task = sr.runTaskTimer(plugin, 0L, ((FixedRateSchedule) schedule).period);
+      task = sr.runTaskTimer(plugin, 0L, ((FixedRateSchedule) schedule).period());
       return true;
     } else if (schedule instanceof StepLimitedSchedule) {
       return trySpecialCaseRun(sr, ((StepLimitedSchedule) schedule).source);
     } else if (schedule instanceof TimeLimitedSchedule) {
       return trySpecialCaseRun(sr, ((TimeLimitedSchedule) schedule).source);
     } else if (schedule instanceof ConcatSchedule concatSchedule) {
-      if (concatSchedule.one instanceof OneTimeSchedule
-          && concatSchedule.two instanceof RunFixedRate) {
-        task = sr.runTaskTimer(plugin, ((OneTimeSchedule) concatSchedule.one).when,
-            ((RunFixedRate) concatSchedule.two).period
+      if (concatSchedule.one() instanceof OneTimeSchedule
+          && concatSchedule.two() instanceof RunFixedRate) {
+        task = sr.runTaskTimer(plugin, ((OneTimeSchedule) concatSchedule.one()).when,
+            ((RunFixedRate) concatSchedule.two()).period
         );
         return true;
       }
@@ -154,10 +154,10 @@ public final class AnimationRunner<Item> {
         task = null;
       });
     } else if (schedule instanceof FixedRateSchedule s) {
-      return new RunFixedRate(s.period, this::showFrame);
+      return new RunFixedRate(s.period(), this::showFrame);
     } else if (schedule instanceof ConcatSchedule s) {
-      CommonRunnable one = tryComputeCommonRunnable(s.one);
-      CommonRunnable two = tryComputeCommonRunnable(s.two);
+      CommonRunnable one = tryComputeCommonRunnable(s.one());
+      CommonRunnable two = tryComputeCommonRunnable(s.two());
       if (one != null && two != null) {
         return new RunConcat(one, two);
       }
