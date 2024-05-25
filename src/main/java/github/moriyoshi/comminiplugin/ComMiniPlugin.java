@@ -2,8 +2,7 @@ package github.moriyoshi.comminiplugin;
 
 import java.lang.reflect.InvocationTargetException;
 
-import javax.tools.DocumentationTool.Location;
-
+import org.bukkit.Location;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
@@ -23,6 +22,7 @@ import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.CommandTree;
 import github.moriyoshi.comminiplugin.api.serializer.ItemStackSerializer;
 import github.moriyoshi.comminiplugin.api.serializer.LocationSerializer;
+import github.moriyoshi.comminiplugin.command.LocationsCommands;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
@@ -39,8 +39,8 @@ public final class ComMiniPlugin extends JavaPlugin {
    * {@link Location} and {@link ItemStack} を Serializer and Deserializer できる
    * {@link Gson}
    */
-  public static final Gson gson = new GsonBuilder().registerTypeAdapter(ItemStack.class,
-      new ItemStackSerializer()).registerTypeAdapter(Location.class, new LocationSerializer()).create();
+  public static final Gson gson = new GsonBuilder().registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
+      .registerTypeAdapter(Location.class, new LocationSerializer()).create();
 
   @Getter
   private static GuiListener guiListener;
@@ -83,14 +83,17 @@ public final class ComMiniPlugin extends JavaPlugin {
       ComMiniPrefix.SYSTEM.send(p, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
     }));
     GamePlayer.gameInitialize();
-    new WorldCreator("lobby").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();
-    new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).createWorld();
+    new WorldCreator("lobby").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
+        .createWorld();
+    new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
+        .createWorld();
   }
 
   @Override
   public void onDisable() {
     GamePlayer.save();
     CommandAPI.onDisable();
+    LocationsCommands.getManager().saveFile();
   }
 
   /**

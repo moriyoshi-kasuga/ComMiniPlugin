@@ -26,8 +26,7 @@ public class LocationSerializer implements JsonSerializer<Location>, JsonDeseria
     JsonObject obj = jsonElement.getAsJsonObject();
     return new Location(Bukkit.getWorld(obj.get("world").getAsString()),
         obj.get("x").getAsDouble(), obj.get("y").getAsDouble(), obj.get("z").getAsDouble(),
-        obj.get("yaw").getAsFloat(), obj.get("pitch").getAsFloat()
-    );
+        obj.get("yaw").getAsFloat(), obj.get("pitch").getAsFloat());
   }
 
 }

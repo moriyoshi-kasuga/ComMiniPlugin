@@ -1,24 +1,27 @@
 package github.moriyoshi.comminiplugin.api;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.Objects;
+
 import org.bukkit.plugin.Plugin;
-import org.codehaus.plexus.util.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonReader;
+
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import lombok.val;
 
 /**
  * .json ファイルを読み込む {@link FileAPI}
  */
-public abstract class JsonAPI extends FileAPI<JsonObject> {
+public abstract class JsonAPI extends FileAPI<JsonElement> {
 
   public JsonAPI(Plugin plugin, String name) {
     super(plugin, name);
@@ -109,13 +112,12 @@ public abstract class JsonAPI extends FileAPI<JsonObject> {
   public void loadData() {
     try {
       FileReader fileReader = new FileReader(file);
-      if (FileUtils.fileRead(file).trim().isEmpty()) {
+      if (file.length() == 0) {
         ComMiniPlugin.gson.toJson("{}", new FileWriter(file));
         generateLoadData(new JsonObject());
       } else {
         generateLoadData(ComMiniPlugin.gson.fromJson(new JsonReader(fileReader),
-            JsonObject.class
-        ));
+            JsonObject.class));
       }
     } catch (IOException ignored) {
       generateLoadData(new JsonObject());
@@ -128,7 +130,8 @@ public abstract class JsonAPI extends FileAPI<JsonObject> {
   @Override
   public void saveFile() {
     try (Writer writer = new FileWriter(file)) {
-      ComMiniPlugin.gson.toJson(generateSaveData(), writer);
+      val obj = generateSaveData();
+      ComMiniPlugin.gson.toJson(obj, writer);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -147,4 +150,7 @@ public abstract class JsonAPI extends FileAPI<JsonObject> {
       throw new RuntimeException(e);
     }
   }
+
+
+  protected abstract void generateLoadData(JsonElement dataElement);
 }

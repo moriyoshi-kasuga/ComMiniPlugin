@@ -62,8 +62,6 @@ public class BRGame extends AbstractGame {
 
   @Override
   protected void fieldInitialize(boolean isCreatingInstance) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'fieldInitialize'");
   }
 
 }
