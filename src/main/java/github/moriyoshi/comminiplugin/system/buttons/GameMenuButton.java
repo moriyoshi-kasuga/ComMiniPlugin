@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.constant.Messages;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.GameSystem;
@@ -42,7 +43,7 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       @NotNull InventoryClickEvent event) {
     var player = (Player) event.getWhoClicked();
     if (!GameSystem.isIn()) {
-      ComMiniPrefix.MAIN.send(player, "<red>ゲーム中ではありません");
+      Messages.GAME_NOT_FOUND.send(player);
       return;
     }
     if (GameSystem.isStarted()) {

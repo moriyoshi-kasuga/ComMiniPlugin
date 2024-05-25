@@ -538,8 +538,6 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
     removeButtonCallbacks.removeIf(ref -> buttonRemoveListener.equals(ref.get()));
   }
 
-  // TODO: add ButtonOnClickCallback interface
-
   /**
    * 登録すると、メニューにボタンが追加されたときに呼び出されるコールバックです。
    *

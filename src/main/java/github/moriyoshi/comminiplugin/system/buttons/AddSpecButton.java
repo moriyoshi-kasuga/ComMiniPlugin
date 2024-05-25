@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.constant.Messages;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.GameSystem;
@@ -31,13 +32,12 @@ public class AddSpecButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       @NotNull InventoryClickEvent event) {
     var player = (Player) event.getWhoClicked();
     if (!GameSystem.isStarted()) {
-      ComMiniPrefix.MAIN.send(player, "<red>ゲームは開始されていません");
+      Messages.GAME_NOT_FOUND.send(player);
       return;
     }
     if (GameSystem.getGame().addSpec(player)) {
       ComMiniPrefix.MAIN.send(player, "<gray>観戦を開始しました");
     } else {
-
       ComMiniPrefix.MAIN.send(player, "<red>観戦に入れません");
     }
   }

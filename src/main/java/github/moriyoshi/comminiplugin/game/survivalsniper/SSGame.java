@@ -73,11 +73,7 @@ public class SSGame extends AbstractGame {
         val text = player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ";
         GameSystem.initializePlayer(player);
         player.teleport(ComMiniWorld.LOBBY);
-        if (isPlayer) {
-          prefix.cast(text);
-        } else {
-          prefix.send(player, text);
-        }
+        prefix.cast(text);
         return;
       }
     }
@@ -85,11 +81,7 @@ public class SSGame extends AbstractGame {
     player.teleport(lobby);
     player.getInventory().addItem(new ItemStack(Material.SPYGLASS));
     val text = player.getName() + "が" + (isPlayer ? "<blue>参加" : "<gray>観戦") + "します";
-    if (isPlayer) {
-      prefix.cast(text);
-    } else {
-      prefix.send(player, text);
-    }
+    prefix.cast(text);
   }
 
   @Override

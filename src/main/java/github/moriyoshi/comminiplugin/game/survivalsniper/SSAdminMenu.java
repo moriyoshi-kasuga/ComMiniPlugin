@@ -1,28 +1,13 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.jetbrains.annotations.NotNull;
+import github.moriyoshi.comminiplugin.system.buttons.GameStartButton;
 
 public class SSAdminMenu extends MenuHolder<ComMiniPlugin> {
 
   public SSAdminMenu() {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>OP:サバイバルスナイパー");
-    setButton(
-        13,
-        new ItemButton<MenuHolder<ComMiniPlugin>>(
-            new ItemBuilder(Material.SPYGLASS).name("<red>Start").build()) {
-          @Override
-          public void onClick(@NotNull final MenuHolder<ComMiniPlugin> holder,
-              @NotNull final InventoryClickEvent event) {
-            GameSystem.startGame(((Player) event.getWhoClicked()));
-          }
-        });
+    setButton(13, new GameStartButton());
   }
 }

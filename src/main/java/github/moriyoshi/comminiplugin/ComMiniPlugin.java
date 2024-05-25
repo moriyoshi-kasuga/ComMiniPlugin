@@ -1,33 +1,9 @@
 package github.moriyoshi.comminiplugin;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import de.tr7zw.changeme.nbtapi.NBTContainer;
-import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPIBukkitConfig;
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandPermission;
-import dev.jorel.commandapi.CommandTree;
-import github.moriyoshi.comminiplugin.api.serializer.ItemStackSerializer;
-import github.moriyoshi.comminiplugin.api.serializer.LocationSerializer;
-import github.moriyoshi.comminiplugin.command.AdminGameMenuCommand;
-import github.moriyoshi.comminiplugin.command.AllSoundCommand;
-import github.moriyoshi.comminiplugin.command.CustomItemsCommand;
-import github.moriyoshi.comminiplugin.command.FinalizeGameCommand;
-import github.moriyoshi.comminiplugin.command.ItemEditCommand;
-import github.moriyoshi.comminiplugin.command.MenuCommand;
-import github.moriyoshi.comminiplugin.command.RandomTeleport;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
-import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.item.CustomItemListener;
-import github.moriyoshi.comminiplugin.system.GameListener;
-import github.moriyoshi.comminiplugin.system.GamePlayer;
 import java.lang.reflect.InvocationTargetException;
+
 import javax.tools.DocumentationTool.Location;
-import lombok.Getter;
-import lombok.val;
+
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
@@ -36,14 +12,35 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import de.tr7zw.changeme.nbtapi.NBTContainer;
+import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandPermission;
+import dev.jorel.commandapi.CommandTree;
+import github.moriyoshi.comminiplugin.api.serializer.ItemStackSerializer;
+import github.moriyoshi.comminiplugin.api.serializer.LocationSerializer;
+import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
+import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.item.CustomItemListener;
+import github.moriyoshi.comminiplugin.system.GameListener;
+import github.moriyoshi.comminiplugin.system.GamePlayer;
+import lombok.Getter;
+import lombok.val;
+
 public final class ComMiniPlugin extends JavaPlugin {
 
   /**
-   * {@link Location} and {@link ItemStack} を Serializer and Deserializer できる {@link Gson}
+   * {@link Location} and {@link ItemStack} を Serializer and Deserializer できる
+   * {@link Gson}
    */
   public static final Gson gson = new GsonBuilder().registerTypeAdapter(ItemStack.class,
-      new ItemStackSerializer()
-  ).registerTypeAdapter(Location.class, new LocationSerializer()).create();
+      new ItemStackSerializer()).registerTypeAdapter(Location.class, new LocationSerializer()).create();
 
   @Getter
   private static GuiListener guiListener;
@@ -58,13 +55,23 @@ public final class ComMiniPlugin extends JavaPlugin {
     registerEvent(guiListener = GuiListener.getInstance());
     registerEvent(GameListener.getInstance());
     registerEvent(CustomItemListener.getInstance());
-    registerCommand(new MenuCommand());
-    registerCommand(new AdminGameMenuCommand());
-    registerCommand(new FinalizeGameCommand());
-    registerCommand(new CustomItemsCommand());
-    registerCommand(new ItemEditCommand());
-    registerCommand(new AllSoundCommand());
-    registerCommand(new RandomTeleport());
+    val commands = new Reflections("github.moriyoshi.comminiplugin.command");
+    for (Class<? extends CommandAPICommand> command : commands.getSubTypesOf(CommandAPICommand.class)) {
+      try {
+        registerCommand(command.getDeclaredConstructor().newInstance());
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+          | NoSuchMethodException | SecurityException e) {
+        e.printStackTrace();
+      }
+    }
+    for (Class<? extends CommandTree> command : commands.getSubTypesOf(CommandTree.class)) {
+      try {
+        registerCommand(command.getDeclaredConstructor().newInstance());
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+          | NoSuchMethodException | SecurityException e) {
+        e.printStackTrace();
+      }
+    }
     registerCommand(new CommandAPICommand("custommenu").withPermission(CommandPermission.OP)
         .executesPlayer((p, args) -> {
           new SSCustomMenu().openInv(p);
@@ -117,13 +124,12 @@ public final class ComMiniPlugin extends JavaPlugin {
 
   @Override
   public void onLoad() {
-    final Reflections reflections = new Reflections("github.moriyoshi.comminiplugin");
+    val reflections = new Reflections("github.moriyoshi.comminiplugin");
     for (Class<? extends CustomItem> item : reflections.getSubTypesOf(CustomItem.class)) {
       String id;
       try {
         id = item.getDeclaredConstructor().newInstance().getIdentifier();
-      } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-               NoSuchMethodException e) {
+      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
         throw new RuntimeException(e);
       }
       if (CustomItem.registers.containsKey(id)) {

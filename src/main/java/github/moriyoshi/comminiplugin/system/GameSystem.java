@@ -32,7 +32,7 @@ public class GameSystem {
   @Getter
   private static AbstractGame game = null;
 
-  public static <T extends AbstractGame> T getNowGame(Class<T> t) {
+  public static <T extends AbstractGame> T getGame(Class<T> t) {
     return t.cast(game);
   }
 

@@ -13,7 +13,7 @@ public class BRGame extends AbstractGame {
   public BRGame() {
     super(
         "battleroyale",
-        "<yellow>バトルロワイアル",
+        "<yellow>バトルロワイヤル",
         "<yellow>殺せ!殺せ!勝ち上がれ!",
         Material.GOLDEN_SWORD,
         new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"),
@@ -22,14 +22,12 @@ public class BRGame extends AbstractGame {
 
   @Override
   public MenuHolder<ComMiniPlugin> createAdminMenu() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'createAdminMenu'");
+    return new BRAdminMenu();
   }
 
   @Override
   public MenuHolder<ComMiniPlugin> createGameMenu(Player player) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'createGameMenu'");
+    return new BRMenu();
   }
 
   @Override
