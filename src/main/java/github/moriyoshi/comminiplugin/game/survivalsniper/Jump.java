@@ -4,7 +4,6 @@ import lombok.val;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -61,8 +60,6 @@ public class Jump extends CustomItem implements CooldownItem {
     setCooldown(DEFAULT_COOLDOWN_TICK);
     p.setFallDistance(0);
     p.setVelocity(eyeLoc.getDirection().multiply(MULTIPLY));
-    // p.getInventory().setItemInMainHand(new
-    // ItemBuilder(getItem()).type(Material.CLOCK).build());
     new ItemBuilder(getItem()).type(Material.CLOCK);
     new BukkitRunnable() {
 
@@ -72,7 +69,7 @@ public class Jump extends CustomItem implements CooldownItem {
       @Override
       public void run() {
         p.setFallDistance(0);
-        if (20 > num) {
+        if (10 > num) {
           num++;
           return;
         }

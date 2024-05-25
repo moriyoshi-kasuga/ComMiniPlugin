@@ -313,10 +313,10 @@ public class SSGame extends AbstractGame {
     }
     final double size = world.getWorldBorder().getSize();
     final double speed = previousWidth / previousTime;
-    final double afterTime = previousTime - ((previousWidth - size) / speed) * 0.8;
+    final double afterTime = (previousTime - ((previousWidth - size) / speed)) * 0.8;
     previousTime = (int) afterTime;
     previousWidth = size;
-    world.getWorldBorder().setSize(size, (long) afterTime);
+    world.getWorldBorder().setSize(MIN_BORDER_RANGE, (long) afterTime);
     runPlayers(p -> prefix.send(p, "<red>DANGER! ボーダーの速度が上がりました"));
   }
 

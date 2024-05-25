@@ -19,8 +19,6 @@ import lombok.val;
 
 public final class BukkitUtil {
 
-  public static final Random random = new Random();
-
   public static List<Player> getSquarePlayers(final BoundingBox square) {
 
     return Bukkit
@@ -47,6 +45,7 @@ public final class BukkitUtil {
       final int radius,
       final int maxTry) {
     for (int i = 0; i < maxTry; i++) {
+      val random = new Random();
       val x = random.nextInt(-radius, radius);
       val z = random.nextInt(-radius, radius);
       val block = world.getHighestBlockAt(bx + x, bz + z, HeightMap.WORLD_SURFACE);
