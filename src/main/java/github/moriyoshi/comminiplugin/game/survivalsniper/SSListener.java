@@ -126,7 +126,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
         .toList();
     if (alives.size() != 1) {
       if (alives.size() == 2) {
-        game.setBorder();
+        game.speedUpBorder();
       }
       game.teleportLobby(p);
       return;

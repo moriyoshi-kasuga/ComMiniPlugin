@@ -17,12 +17,10 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 
-@RequiredArgsConstructor
 public abstract class AbstractGame {
 
   public final String id;
@@ -31,6 +29,19 @@ public abstract class AbstractGame {
   public final Material material;
   public final PrefixUtil prefix;
   final AbstractGameListener<?> listener;
+
+  public AbstractGame(String id, String name, String description, Material material, PrefixUtil prefix,
+      AbstractGameListener<?> listener) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.material = material;
+    this.prefix = prefix;
+    this.listener = listener;
+    this.fieldInitialize(true);
+  }
+  
+  protected abstract void fieldInitialize(boolean isCreatingInstance);
 
   @Getter
   private boolean isStarted = false;
@@ -63,6 +74,7 @@ public abstract class AbstractGame {
     HandlerList.unregisterAll(listener);
     runPlayers(GameSystem::initializePlayer);
     innerFinishGame();
+    fieldInitialize(false);
   }
 
   protected abstract boolean innerStartGame(Player player);

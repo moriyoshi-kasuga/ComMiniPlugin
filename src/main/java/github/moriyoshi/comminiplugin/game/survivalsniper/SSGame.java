@@ -1,7 +1,5 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import lombok.val;
-
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -27,10 +25,12 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.GamePlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.gametype.StageTypeGame;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
 import lombok.Getter;
+import lombok.val;
 import net.kyori.adventure.bossbar.BossBar;
 
 public class SSGame extends AbstractGame {
@@ -46,10 +46,12 @@ public class SSGame extends AbstractGame {
   public final HashMap<UUID, Pair<Boolean, Integer>> players = new HashMap<>();
 
   @Getter
-  private boolean canPvP = false;
-  private BossBar bossBar = null;
-  private BukkitRunnable run = null;
-  private boolean isFinalArea = false;
+  private boolean canPvP;
+  private BossBar bossBar;
+  private BukkitRunnable run;
+  private boolean isFinalArea;
+
+  private StageTypeGame stageTypeGame;
 
   public SSGame() {
     super(
@@ -103,8 +105,8 @@ public class SSGame extends AbstractGame {
     val temp = player.getLocation().clone();
     world = temp.getWorld();
     lobby = world.getHighestBlockAt(temp).getLocation().add(new Vector(0, 50, 0));
-    world.getWorldBorder().setCenter(lobby);
-    world.getWorldBorder().setSize(MAX_RADIUS_RANGE * 2);
+    stageTypeGame = new StageTypeGame(world, lobby, MAX_RADIUS_RANGE * 2, MIN_BORDER_RANGE, MAX_SECOND);
+    stageTypeGame.stageInitialize();
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
     world.setClearWeatherDuration(0);
     world.setTime(1000);
@@ -157,7 +159,7 @@ public class SSGame extends AbstractGame {
               prefix.send(p, "<red>PvP解禁!!!");
             });
             if (players.size() == 2) {
-              setBorder();
+              speedUpBorder();
             }
           }
           second--;
@@ -186,33 +188,17 @@ public class SSGame extends AbstractGame {
           isFinalArea = true;
           runPlayers(p -> prefix.send(p, "<red>最終安置になりました！(これからはモブがわきません)"));
           world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-          world.getNearbyLivingEntities(world.getWorldBorder().getCenter(), MIN_BORDER_RANGE, 320, MIN_BORDER_RANGE)
-              .forEach(entity -> {
-                if (entity instanceof Player || entity instanceof Item) {
-                  return;
-                }
-                if (entity instanceof Monster) {
-                  entity.remove();
-                }
-              });
+          clearMonster();
         }
       }
     };
 
     run.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
-    world.getWorldBorder().setSize(MIN_BORDER_RANGE, MAX_SECOND);
+    stageTypeGame.stageStart();
     world.setClearWeatherDuration(MAX_SECOND * 20);
     world.setTime(1000);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
-    world.getNearbyLivingEntities(world.getWorldBorder().getCenter(), MIN_BORDER_RANGE, 320, MIN_BORDER_RANGE)
-        .forEach(entity -> {
-          if (entity instanceof Player || entity instanceof Item) {
-            return;
-          }
-          if (entity instanceof Monster) {
-            entity.remove();
-          }
-        });
+    clearMonster();
     val loc = lobby.clone();
     runPlayers(p -> {
       val uuid = p.getUniqueId();
@@ -244,9 +230,6 @@ public class SSGame extends AbstractGame {
     return true;
   }
 
-  private int previousTime = MAX_SECOND;
-  private double previousWidth = MAX_RADIUS_RANGE * 2;
-
   public void endGame(final UUID winner) {
     val name = Bukkit.getPlayer(winner).getName();
     runPlayers(p -> prefix.send(p, "<red><u>" + name + "</u>が勝ちました"));
@@ -273,22 +256,7 @@ public class SSGame extends AbstractGame {
             min.getBlockY(),
             min.getBlockZ(), max.getBlockX(), max.getBlockY(), max.getBlockZ()));
 
-    if (run != null) {
-      run.cancel();
-      run = null;
-    }
-    if (bossBar != null) {
-      runPlayers(p -> p.hideBossBar(bossBar));
-      bossBar = null;
-    }
-    canPvP = false;
-    lobby = null;
-    world.getWorldBorder().reset();
-    isFinalArea = false;
-    previousWidth = MAX_RADIUS_RANGE * 2;
-    previousTime = MAX_SECOND;
     showPlayer();
-    players.clear();
   }
 
   @Override
@@ -307,17 +275,47 @@ public class SSGame extends AbstractGame {
     return true;
   }
 
-  public void setBorder() {
+  public void speedUpBorder() {
     if (isFinalArea) {
       return;
     }
-    final double size = world.getWorldBorder().getSize();
-    final double speed = previousWidth / previousTime;
-    final double afterTime = (previousTime - ((previousWidth - size) / speed)) * 0.8;
-    previousTime = (int) afterTime;
-    previousWidth = size;
-    world.getWorldBorder().setSize(MIN_BORDER_RANGE, (long) afterTime);
+    stageTypeGame.speedUpBorder();
     runPlayers(p -> prefix.send(p, "<red>DANGER! ボーダーの速度が上がりました"));
+  }
+
+  public void clearMonster() {
+    world.getNearbyLivingEntities(world.getWorldBorder().getCenter(), MIN_BORDER_RANGE, 320, MIN_BORDER_RANGE)
+        .forEach(entity -> {
+          if (entity instanceof Player || entity instanceof Item) {
+            return;
+          }
+          if (entity instanceof Monster) {
+            entity.remove();
+          }
+        });
+  }
+
+  @Override
+  protected void fieldInitialize(boolean isCreatingInstance) {
+    if (!isCreatingInstance) {
+      if (stageTypeGame != null) {
+        stageTypeGame.stageEnd();
+      }
+      if (run != null) {
+        run.cancel();
+      }
+      if (bossBar != null) {
+        runPlayers(p -> p.hideBossBar(bossBar));
+      }
+      players.clear();
+    }
+    canPvP = false;
+    lobby = null;
+    world = null;
+    bossBar = null;
+    run = null;
+    isFinalArea = false;
+    stageTypeGame = null;
   }
 
 }
