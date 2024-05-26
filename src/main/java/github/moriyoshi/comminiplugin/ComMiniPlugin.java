@@ -20,8 +20,8 @@ import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.CommandTree;
-import github.moriyoshi.comminiplugin.api.serializer.ItemStackSerializer;
-import github.moriyoshi.comminiplugin.api.serializer.LocationSerializer;
+import github.moriyoshi.comminiplugin.api.serializer.ItemStackAdapter;
+import github.moriyoshi.comminiplugin.api.serializer.LocationAdapter;
 import github.moriyoshi.comminiplugin.command.LocationsCommands;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
@@ -39,8 +39,8 @@ public final class ComMiniPlugin extends JavaPlugin {
    * {@link Location} and {@link ItemStack} を Serializer and Deserializer できる
    * {@link Gson}
    */
-  public static final Gson gson = new GsonBuilder().registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
-      .registerTypeAdapter(Location.class, new LocationSerializer()).create();
+  public static final Gson gson = new GsonBuilder().registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
+      .registerTypeAdapter(Location.class, new LocationAdapter()).create();
 
   @Getter
   private static GuiListener guiListener;

@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-public class LocationSerializer implements JsonSerializer<Location>, JsonDeserializer<Location> {
+public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializer<Location> {
 
   @Override
   public JsonElement serialize(Location src, Type typeOfSrc, JsonSerializationContext context) {

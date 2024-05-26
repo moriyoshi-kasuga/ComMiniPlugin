@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import java.util.Base64;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
+public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
 
   @Override
   public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
