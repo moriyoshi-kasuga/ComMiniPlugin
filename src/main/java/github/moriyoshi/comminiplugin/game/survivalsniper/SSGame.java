@@ -10,7 +10,7 @@ import org.bukkit.GameRule;
 import org.bukkit.HeightMap;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -284,19 +284,13 @@ public class SSGame extends AbstractGame {
   }
 
   public void clearMonster() {
-    world.getNearbyLivingEntities(world.getWorldBorder().getCenter(), MIN_BORDER_RANGE, 320, MIN_BORDER_RANGE)
-        .forEach(entity -> {
-          if (entity instanceof Player || entity instanceof Item) {
-            return;
-          }
-          if (entity instanceof Monster) {
-            entity.remove();
-          }
-        });
+    world.getNearbyLivingEntities(world.getWorldBorder().getCenter(), MIN_BORDER_RANGE, 320, MIN_BORDER_RANGE,
+        (entity) -> entity instanceof Monster)
+        .forEach(LivingEntity::remove);
   }
 
   @Override
-  protected void fieldInitialize(boolean isCreatingInstance) {
+  protected void fieldInitialize(final boolean isCreatingInstance) {
     if (!isCreatingInstance) {
       if (stageTypeGame != null) {
         stageTypeGame.stageEnd();

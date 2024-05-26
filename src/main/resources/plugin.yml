@@ -5,4 +5,3 @@ main: github.moriyoshi.comminiplugin.ComMiniPlugin
 api-version: 1.13
 author: moriyoshi-kasuga
 load: POSTWORLD
-depend: [ voicechat ]

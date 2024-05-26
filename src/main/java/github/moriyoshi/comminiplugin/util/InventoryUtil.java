@@ -3,7 +3,7 @@ package github.moriyoshi.comminiplugin.util;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemUtil {
+public class InventoryUtil {
 
   /**
    * プレイヤーから特定のアイテムを個数文消します
