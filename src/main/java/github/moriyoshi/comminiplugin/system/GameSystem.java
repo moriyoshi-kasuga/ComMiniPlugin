@@ -1,8 +1,9 @@
 package github.moriyoshi.comminiplugin.system;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ public class GameSystem {
     }
   };
 
-  public static final List<AbstractMiniGame> minigames = new ArrayList<>();
+  public static final Map<UUID, AbstractMiniGame> minigames = new HashMap<>();
 
   @Getter
   private static AbstractGame game = null;

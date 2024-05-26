@@ -9,6 +9,7 @@ import github.moriyoshi.comminiplugin.util.Util;
 import net.kyori.adventure.text.Component;
 
 public enum Messages {
+  GAME_FINAL_OR_START("<red>ゲームが開始されたか閉幕しました!"),
   GAME_NOT_FOUND("<red>現在ゲームは開催されていません!"),
   GAME_NOT_START("<red>ゲームは開始されていません!"),
   GAME_ALREADY_START("<red>既にゲームは開始されています!");
