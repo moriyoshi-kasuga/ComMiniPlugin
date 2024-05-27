@@ -26,6 +26,7 @@ import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.GamePlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.gametype.StageTypeGame;
+import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
@@ -33,9 +34,9 @@ import lombok.Getter;
 import lombok.val;
 import net.kyori.adventure.bossbar.BossBar;
 
-public class SSGame extends AbstractGame {
+public class SSGame extends AbstractGame implements WinnerTypeGame {
 
-  private final int MAX_RADIUS_RANGE = 300;
+  private final int MAX_RADIUS_RANGE = 600;
   private final int MIN_BORDER_RANGE = 50;
   private final int MAX_SECOND = 60 * 10;
   private final int AFTER_PVP_SECOND = 60 * 5;
@@ -105,7 +106,7 @@ public class SSGame extends AbstractGame {
     val temp = player.getLocation().clone();
     world = temp.getWorld();
     lobby = world.getHighestBlockAt(temp).getLocation().add(new Vector(0, 50, 0));
-    stageTypeGame = new StageTypeGame(world, lobby, MAX_RADIUS_RANGE * 2, MIN_BORDER_RANGE, MAX_SECOND);
+    stageTypeGame = new StageTypeGame(world, lobby, MAX_RADIUS_RANGE, MIN_BORDER_RANGE, MAX_SECOND);
     stageTypeGame.stageInitialize();
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
     world.setClearWeatherDuration(0);
@@ -222,25 +223,12 @@ public class SSGame extends AbstractGame {
       }
       p.setSaturation(6);
       p.setGameMode(GameMode.SURVIVAL);
-      if (!BukkitUtil.randomTeleport(p, loc, MAX_RADIUS_RANGE - 10)) {
+      if (!BukkitUtil.randomTeleport(p, loc, (MAX_RADIUS_RANGE / 2) - 10)) {
         p.teleport(world.getHighestBlockAt(loc, HeightMap.MOTION_BLOCKING).getLocation());
       }
     });
     hidePlayer();
     return true;
-  }
-
-  public void endGame(final UUID winner) {
-    val name = Bukkit.getPlayer(winner).getName();
-    runPlayers(p -> prefix.send(p, "<red><u>" + name + "</u>が勝ちました"));
-    new BukkitRunnable() {
-
-      @Override
-      public void run() {
-        GameSystem.finalGame();
-      }
-
-    }.runTaskLater(ComMiniPlugin.getPlugin(), 100);
   }
 
   @Override
@@ -255,7 +243,10 @@ public class SSGame extends AbstractGame {
             min.getBlockX(),
             min.getBlockY(),
             min.getBlockZ(), max.getBlockX(), max.getBlockY(), max.getBlockZ()));
-
+    stageTypeGame.stageEnd();
+    runPlayers(p -> p.hideBossBar(bossBar));
+    run.cancel();
+    players.clear();
     showPlayer();
   }
 
@@ -291,18 +282,6 @@ public class SSGame extends AbstractGame {
 
   @Override
   protected void fieldInitialize(final boolean isCreatingInstance) {
-    if (!isCreatingInstance) {
-      if (stageTypeGame != null) {
-        stageTypeGame.stageEnd();
-      }
-      if (run != null) {
-        run.cancel();
-      }
-      if (bossBar != null) {
-        runPlayers(p -> p.hideBossBar(bossBar));
-      }
-      players.clear();
-    }
     canPvP = false;
     lobby = null;
     world = null;

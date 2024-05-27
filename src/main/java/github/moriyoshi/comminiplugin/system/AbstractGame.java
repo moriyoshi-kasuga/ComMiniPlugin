@@ -21,12 +21,13 @@ import lombok.val;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 
-public abstract class AbstractGame {
+public abstract class AbstractGame implements InterfaceGame {
 
   public final String id;
   public final String name;
   public final String description;
   public final Material material;
+  @Getter
   public final PrefixUtil prefix;
   final AbstractGameListener<?> listener;
 
@@ -55,10 +56,6 @@ public abstract class AbstractGame {
 
   public abstract MenuHolder<ComMiniPlugin> createGameMenu(Player player);
 
-  public abstract boolean addSpec(Player player);
-
-  public abstract boolean initializeGame(Player player);
-
   public final boolean startGame(final Player player) {
     if (!innerStartGame(player)) {
       return false;
@@ -71,12 +68,10 @@ public abstract class AbstractGame {
   public final void finishGame() {
     isStarted = false;
     HandlerList.unregisterAll(listener);
-    runPlayers(GameSystem::initializePlayer);
     innerFinishGame();
+    runPlayers(GameSystem::initializePlayer);
     fieldInitialize(false);
   }
-
-  public abstract boolean isGamePlayer(Player player);
 
   public final void runPlayers(final Consumer<Player> consumer) {
     Bukkit.getOnlinePlayers().forEach(p -> {

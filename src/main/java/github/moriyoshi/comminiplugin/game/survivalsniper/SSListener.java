@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 import lombok.val;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -36,6 +37,9 @@ public class SSListener implements AbstractGameListener<SSGame> {
   @EventHandler
   public void tp(final PlayerTeleportEvent e) {
     val p = e.getPlayer();
+    if (!getGame().isGamePlayer(p)) {
+      return;
+    }
     if (e.getCause().equals(TeleportCause.SPECTATE)
         && !getGame().getLobby().getWorld().getWorldBorder().isInside(e.getTo())) {
       getGame().prefix.send(p, "<red>範囲外にスペクテイターのテレポートは使えません");
@@ -131,7 +135,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
       game.teleportLobby(p);
       return;
     }
-    game.endGame(alives.get(0).getKey());
+    game.endGame(Bukkit.getPlayer(alives.get(0).getKey()));
   }
 
 }

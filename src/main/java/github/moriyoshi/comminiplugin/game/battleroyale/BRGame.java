@@ -4,18 +4,26 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
+import github.moriyoshi.comminiplugin.system.gametype.StageTypeGame;
+import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import lombok.val;
 
-public class BRGame extends AbstractGame {
+public class BRGame extends AbstractGame implements WinnerTypeGame {
+
+  private final int MAX_RADIUS_RANGE = 600;
+  private final int MIN_BORDER_RANGE = 50;
+  private final int MAX_SECOND = 60 * 10;
 
   public final HashMap<UUID, Boolean> players = new HashMap<>();
 
@@ -27,7 +35,11 @@ public class BRGame extends AbstractGame {
         Material.GOLDEN_SWORD,
         new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"),
         new BRListener());
+    this.world = ComMiniWorld.GAME_WORLD;
+    this.lobby = new Location(ComMiniWorld.GAME_WORLD, 1000.5, 0, 1000.5);
   }
+
+  private StageTypeGame stageTypeGame;
 
   @Override
   public MenuHolder<ComMiniPlugin> createAdminMenu() {
@@ -52,12 +64,9 @@ public class BRGame extends AbstractGame {
 
   @Override
   public boolean initializeGame(final Player player) {
-    if (lobby == null) {
-      prefix.send(player, "<red>battle royale lobby not found!");
-      return false;
-    }
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'initializeGame'");
+    stageTypeGame = new StageTypeGame(world, lobby, MAX_RADIUS_RANGE, MIN_BORDER_RANGE, MAX_SECOND);
+    stageTypeGame.stageInitialize();
+    return true;
   }
 
   @Override
@@ -67,18 +76,21 @@ public class BRGame extends AbstractGame {
 
   @Override
   protected boolean innerStartGame(final Player player) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'innerStartGame'");
+    if (2 > players.values().stream().filter(v -> v).toList().size()) {
+      prefix.send(player, "<red>二人以上でしかプレイできません");
+      return false;
+    }
+    stageTypeGame.stageStart();
+    return true;
   }
 
   @Override
   protected void innerFinishGame() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'innerFinishGame'");
+    stageTypeGame.stageEnd();
   }
 
   @Override
   protected void fieldInitialize(final boolean isCreatingInstance) {
+    this.stageTypeGame = null;
   }
-
 }
