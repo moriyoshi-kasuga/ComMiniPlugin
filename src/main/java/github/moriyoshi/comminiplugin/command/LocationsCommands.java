@@ -11,6 +11,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
@@ -25,6 +26,7 @@ public class LocationsCommands extends JsonAPI {
   public static class PutLocCommand extends CommandAPICommand {
     public PutLocCommand() {
       super("putloc");
+      withPermission(CommandPermission.OP);
       withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> {
         return CompletableFuture.supplyAsync(() -> {
           return getManager().locations.keySet().toArray(String[]::new);
@@ -40,6 +42,7 @@ public class LocationsCommands extends JsonAPI {
     @SuppressWarnings("unchecked")
     public MvLocCommand() {
       super("mvloc");
+      withPermission(CommandPermission.OP);
       withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> {
         return CompletableFuture.supplyAsync(() -> {
           return getManager().locations.keySet().toArray(String[]::new);
@@ -62,6 +65,7 @@ public class LocationsCommands extends JsonAPI {
   public static class DelLocCommand extends CommandAPICommand {
     public DelLocCommand() {
       super("delloc");
+      withPermission(CommandPermission.OP);
       withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> {
         return CompletableFuture.supplyAsync(() -> {
           return getManager().locations.keySet().toArray(String[]::new);

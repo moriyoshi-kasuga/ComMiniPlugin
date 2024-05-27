@@ -21,9 +21,9 @@ import lombok.val;
 
 public class BRGame extends AbstractGame implements WinnerTypeGame {
 
-  private final int MAX_RADIUS_RANGE = 600;
+  private final int MAX_RADIUS_RANGE = 400;
   private final int MIN_BORDER_RANGE = 50;
-  private final int MAX_SECOND = 60 * 10;
+  private final int MAX_SECOND = 60 * 7;
 
   public final HashMap<UUID, Boolean> players = new HashMap<>();
 
@@ -36,7 +36,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"),
         new BRListener());
     this.world = ComMiniWorld.GAME_WORLD;
-    this.lobby = new Location(ComMiniWorld.GAME_WORLD, 1000.5, 0, 1000.5);
+    this.lobby = new Location(ComMiniWorld.GAME_WORLD, 1000.5, 60, 1000.5);
   }
 
   private StageTypeGame stageTypeGame;
@@ -64,8 +64,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
   @Override
   public boolean initializeGame(final Player player) {
-    stageTypeGame = new StageTypeGame(world, lobby, MAX_RADIUS_RANGE, MIN_BORDER_RANGE, MAX_SECOND);
-    stageTypeGame.stageInitialize();
     return true;
   }
 
@@ -80,6 +78,8 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
       prefix.send(player, "<red>二人以上でしかプレイできません");
       return false;
     }
+    stageTypeGame = new StageTypeGame(world, lobby, MAX_RADIUS_RANGE, MIN_BORDER_RANGE, MAX_SECOND);
+    stageTypeGame.stageInitialize();
     stageTypeGame.stageStart();
     return true;
   }
