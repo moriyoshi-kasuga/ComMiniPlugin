@@ -16,13 +16,14 @@ public class StageTypeGame {
 
   private double speedRate = 1.25;
 
-  public StageTypeGame setSpeedRate(double speedRate) {
+  private long previousTime;
+
+  private double previousBorderSize;
+
+  public StageTypeGame setSpeedRate(final double speedRate) {
     this.speedRate = speedRate;
     return this;
   }
-
-  private long previousTime;
-  private double previousBorderSize;
 
   public void stageInitialize() {
     this.previousTime = secondsToMinSize;
@@ -40,7 +41,7 @@ public class StageTypeGame {
     world.getWorldBorder().reset();
   }
 
-  public void speedUpBorder() {
+  public void stageSpeedUP() {
     val size = world.getWorldBorder().getSize();
     val speed = previousBorderSize / previousTime;
     val afterTime = (previousTime - ((previousBorderSize - size) / speed)) * (1.0 / speedRate);

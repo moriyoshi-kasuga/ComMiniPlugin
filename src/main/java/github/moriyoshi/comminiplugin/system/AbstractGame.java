@@ -30,19 +30,6 @@ public abstract class AbstractGame {
   public final PrefixUtil prefix;
   final AbstractGameListener<?> listener;
 
-  public AbstractGame(String id, String name, String description, Material material, PrefixUtil prefix,
-      AbstractGameListener<?> listener) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.material = material;
-    this.prefix = prefix;
-    this.listener = listener;
-    this.fieldInitialize(true);
-  }
-  
-  protected abstract void fieldInitialize(boolean isCreatingInstance);
-
   @Getter
   private boolean isStarted = false;
 
@@ -51,6 +38,18 @@ public abstract class AbstractGame {
 
   @Getter
   protected Location lobby;
+
+  public AbstractGame(final String id, final String name, final String description, final Material material,
+      final PrefixUtil prefix,
+      final AbstractGameListener<?> listener) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.material = material;
+    this.prefix = prefix;
+    this.listener = listener;
+    this.fieldInitialize(true);
+  }
 
   public abstract MenuHolder<ComMiniPlugin> createAdminMenu();
 
@@ -76,10 +75,6 @@ public abstract class AbstractGame {
     innerFinishGame();
     fieldInitialize(false);
   }
-
-  protected abstract boolean innerStartGame(Player player);
-
-  protected abstract void innerFinishGame();
 
   public abstract boolean isGamePlayer(Player player);
 
@@ -110,5 +105,11 @@ public abstract class AbstractGame {
     final ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(list);
     runPlayers(p -> ((CraftPlayer) p).getHandle().connection.send(packet));
   }
+
+  protected abstract void fieldInitialize(boolean isCreatingInstance);
+
+  protected abstract boolean innerStartGame(Player player);
+
+  protected abstract void innerFinishGame();
 
 }

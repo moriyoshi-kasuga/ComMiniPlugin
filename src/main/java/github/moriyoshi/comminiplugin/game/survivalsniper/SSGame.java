@@ -279,7 +279,7 @@ public class SSGame extends AbstractGame {
     if (isFinalArea) {
       return;
     }
-    stageTypeGame.speedUpBorder();
+    stageTypeGame.stageSpeedUP();
     runPlayers(p -> prefix.send(p, "<red>DANGER! ボーダーの速度が上がりました"));
   }
 
