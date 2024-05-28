@@ -133,7 +133,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
             p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1);
             p.hideBossBar(bossBar);
           });
-          //TODO: ここに投下するさいの地面を開ける処理を書く
+          // TODO: ここに投下するさいの地面を開ける処理を書く
           this.cancel();
           return;
         }

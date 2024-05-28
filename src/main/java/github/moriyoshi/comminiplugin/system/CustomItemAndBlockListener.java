@@ -1,6 +1,10 @@
-package github.moriyoshi.comminiplugin.item;
+package github.moriyoshi.comminiplugin.system;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.item.CustomItemFlag;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -24,11 +29,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import de.tr7zw.changeme.nbtapi.NBT;
 
-public class CustomItemListener implements Listener {
+public class CustomItemAndBlockListener implements Listener {
 
-  private static final CustomItemListener INSTANCE = new CustomItemListener();
+  private static final CustomItemAndBlockListener INSTANCE = new CustomItemAndBlockListener();
 
-  private CustomItemListener() {
+  private CustomItemAndBlockListener() {
     new BukkitRunnable() {
       private int tick = 0;
 
@@ -53,7 +58,7 @@ public class CustomItemListener implements Listener {
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
   }
 
-  public static CustomItemListener getInstance() {
+  public static CustomItemAndBlockListener getInstance() {
     return INSTANCE;
   }
 
@@ -99,18 +104,42 @@ public class CustomItemListener implements Listener {
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void customItemInteract(final PlayerInteractEvent e) {
+  public void interact(final PlayerInteractEvent e) {
     final ItemStack item = e.getItem();
     if (!getCustomItemFlag(item, CustomItemFlag.CLICK_INTERACT).orElse(true)) {
       e.setCancelled(true);
       return;
     }
     if (!CustomItem.isCustomItem(item)) {
+      customBlockInteract(e);
       return;
     }
-    final CustomItem customItem = CustomItem.getCustomItem(item);
     e.setCancelled(true);
-    customItem.interact(e);
+    CustomItem.getCustomItem(item).interact(e);
+    customBlockInteract(e);
+  }
+
+  @EventHandler(priority = EventPriority.HIGHEST)
+  public void blockBreak(BlockBreakEvent e) {
+    val block = e.getBlock();
+    if (!CustomBlock.isCustomBlock(block)) {
+      return;
+    }
+    e.setDropItems(false);
+    CustomBlock.getCustomBlock(block).blockBreak(e);
+  }
+
+  public boolean customBlockInteract(PlayerInteractEvent e) {
+    if (!e.hasBlock()) {
+      return false;
+    }
+    val block = e.getClickedBlock();
+    if (!CustomBlock.isCustomBlock(block)) {
+      return false;
+    }
+    e.setCancelled(true);
+    CustomBlock.getCustomBlock(block).interact(e);
+    return true;
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)

@@ -22,15 +22,17 @@ import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.CommandTree;
 import github.moriyoshi.comminiplugin.api.serializer.ItemStackAdapter;
 import github.moriyoshi.comminiplugin.api.serializer.LocationAdapter;
+import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.block.CustomModelBlock;
 import github.moriyoshi.comminiplugin.command.LocationsCommands;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
 import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.item.CustomItemListener;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
+import github.moriyoshi.comminiplugin.system.CustomItemAndBlockListener;
 import lombok.Getter;
 import lombok.val;
 
@@ -55,7 +57,7 @@ public final class ComMiniPlugin extends JavaPlugin {
     CommandAPI.onEnable();
     registerEvent(guiListener = GuiListener.getInstance());
     registerEvent(GameListener.getInstance());
-    registerEvent(CustomItemListener.getInstance());
+    registerEvent(CustomItemAndBlockListener.getInstance());
     val commands = new Reflections("github.moriyoshi.comminiplugin.command");
     for (Class<? extends CommandAPICommand> command : commands.getSubTypesOf(CommandAPICommand.class)) {
       try {
@@ -148,7 +150,12 @@ public final class ComMiniPlugin extends JavaPlugin {
       }
       CustomItem.registers.put(id, item);
     }
-    CommandAPI.onLoad(
-        new CommandAPIBukkitConfig(this).initializeNBTAPI(NBTContainer.class, NBTContainer::new));
+    for (Class<? extends CustomBlock> block : reflections.getSubTypesOf(CustomBlock.class)) {
+      if (block.equals(CustomModelBlock.class)) {
+        return;
+      }
+      CustomBlock.register(block.getSimpleName(), block);
+    }
+    CommandAPI.onLoad(new CommandAPIBukkitConfig(this).initializeNBTAPI(NBTContainer.class, NBTContainer::new));
   }
 }
