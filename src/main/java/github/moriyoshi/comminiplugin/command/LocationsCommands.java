@@ -82,6 +82,20 @@ public class LocationsCommands extends JsonAPI {
     }
   }
 
+  public static class ListLocCommand extends CommandAPICommand {
+    public ListLocCommand() {
+      super("listloc");
+      withPermission(CommandPermission.OP);
+      executesPlayer((p, args) -> {
+        getManager().locations.forEach((name, location) -> {
+          ComMiniPrefix.SYSTEM.send(p,
+              "<gray>" + name + " : " + location.getWorld().getName() + " " + location.getX() + " " + location.getY()
+                  + " " + location.getZ());
+        });
+      });
+    }
+  }
+
   @Getter(lazy = true)
   private static final LocationsCommands manager = new LocationsCommands();
 
