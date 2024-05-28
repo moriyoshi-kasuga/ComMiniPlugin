@@ -50,9 +50,8 @@ public abstract class CustomItem implements InterfaceItem {
     if (registers.containsKey(identifier)) {
       try {
         return registers.get(identifier).getDeclaredConstructor().newInstance();
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
-               InvocationTargetException
-               | NoSuchMethodException | SecurityException e) {
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+          | NoSuchMethodException | SecurityException e) {
         throw new RuntimeException(e);
       }
     }
@@ -64,9 +63,8 @@ public abstract class CustomItem implements InterfaceItem {
     if (ci.isPresent()) {
       try {
         return registers.get(ci.get()).getDeclaredConstructor(ItemStack.class).newInstance(item);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
-               InvocationTargetException
-               | NoSuchMethodException | SecurityException e) {
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+          | NoSuchMethodException | SecurityException e) {
         throw new RuntimeException(e);
       }
     }
@@ -112,7 +110,7 @@ public abstract class CustomItem implements InterfaceItem {
    * @return 登録されいたらtrueを返します
    */
   public static boolean isCustomItem(final ItemStack item) {
-    if (item == null || item.getType().isAir()) {
+    if (item == null || item.isEmpty()) {
       return false;
     }
     return NBT.get(item, readableNBT -> {
@@ -261,4 +259,5 @@ public abstract class CustomItem implements InterfaceItem {
    */
   public void itemSpawn(final ItemSpawnEvent e) {
   }
+
 }

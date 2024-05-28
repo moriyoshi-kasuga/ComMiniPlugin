@@ -11,8 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import lombok.val;
 
 public abstract class HotbarSlot extends ArrayList<Integer> {
-  protected abstract List<Supplier<ItemStack>> getDefaults();
-
   public HotbarSlot() {
     super(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8));
   }
@@ -25,7 +23,7 @@ public abstract class HotbarSlot extends ArrayList<Integer> {
     return stream().map(slot -> getDefaults().get(slot).get()).toArray(ItemStack[]::new);
   }
 
-  public void setItems(Inventory inv) {
+  public void setItems(final Inventory inv) {
     var i = 0;
     for (val item : toItemStacks()) {
       inv.setItem(i, item);
@@ -36,4 +34,6 @@ public abstract class HotbarSlot extends ArrayList<Integer> {
   public void swap(final int first, final int second) {
     this.set(first, this.set(second, this.get(first)));
   }
+
+  protected abstract List<Supplier<ItemStack>> getDefaults();
 }

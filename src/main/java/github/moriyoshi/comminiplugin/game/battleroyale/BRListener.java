@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -69,6 +70,17 @@ public class BRListener implements AbstractGameListener<BRGame> {
       return;
     }
     game.endGame(Bukkit.getPlayer(alives.get(0).getKey()));
+  }
+
+  @Override
+  public void damageByEntity(EntityDamageByEntityEvent e) {
+    val player = (Player) e.getDamager();
+    val item = player.getInventory().getItemInMainHand();
+    if (item == null || item.isEmpty()) {
+      getGame().prefix.send(player, "<red>素手での殴りは禁止されています!");
+      e.setCancelled(true);
+      return;
+    }
   }
 
 }

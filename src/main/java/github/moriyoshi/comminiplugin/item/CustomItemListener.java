@@ -3,6 +3,8 @@ package github.moriyoshi.comminiplugin.item;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,6 +21,8 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import de.tr7zw.changeme.nbtapi.NBT;
 
 public class CustomItemListener implements Listener {
 
@@ -53,9 +57,29 @@ public class CustomItemListener implements Listener {
     return INSTANCE;
   }
 
+  public static Optional<Boolean> getCustomItemFlag(ItemStack item, CustomItemFlag flag) {
+    return getCustomItemFlag(item, flag.id);
+  }
+
+  public static Optional<Boolean> getCustomItemFlag(ItemStack item, String flag) {
+    if (item == null || item.isEmpty()) {
+      return Optional.empty();
+    }
+    return NBT.get(item, nbt -> {
+      if (!nbt.hasTag("customitemflag")) {
+        return Optional.empty();
+      }
+      return Optional.of(nbt.getCompound("customitemflag").getBoolean(flag));
+    });
+  }
+
   @EventHandler(priority = EventPriority.HIGHEST)
   public void dropItem(final PlayerDropItemEvent e) {
     final ItemStack item = e.getItemDrop().getItemStack();
+    if (!getCustomItemFlag(item, CustomItemFlag.DROP).orElse(true)) {
+      e.setCancelled(true);
+      return;
+    }
     if (!CustomItem.isCustomItem(item)) {
       return;
     }
@@ -77,6 +101,10 @@ public class CustomItemListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void customItemInteract(final PlayerInteractEvent e) {
     final ItemStack item = e.getItem();
+    if (!getCustomItemFlag(item, CustomItemFlag.CLICK_INTERACT).orElse(true)) {
+      e.setCancelled(true);
+      return;
+    }
     if (!CustomItem.isCustomItem(item)) {
       return;
     }
@@ -118,6 +146,12 @@ public class CustomItemListener implements Listener {
   public void inventoryClick(final InventoryClickEvent e) {
     val item = e.getCursor();
     val click = e.getCurrentItem();
+    List.of(item, click).forEach(i -> {
+      if (!getCustomItemFlag(i, CustomItemFlag.MOVE_INV).orElse(true)) {
+        e.setCancelled(true);
+        return;
+      }
+    });
     final List<CustomItem> list = new ArrayList<>();
     if (CustomItem.isCustomItem(item)) {
       list.add(CustomItem.getCustomItem(item));
@@ -126,14 +160,11 @@ public class CustomItemListener implements Listener {
       list.add(CustomItem.getCustomItem(click));
     }
     if (!list.isEmpty()) {
-      if (list.stream().allMatch(i -> {
-        if (i.canMoveOtherInv(e)) {
-          return false;
-        }
+      if (list.stream().anyMatch(i -> {
         val type = e.getView().getTopInventory().getType();
         return switch (type) {
           case CRAFTING, WORKBENCH -> false;
-          default -> true;
+          default -> !i.canMoveOtherInv(e);
         };
       })) {
         e.setCancelled(true);
@@ -151,6 +182,10 @@ public class CustomItemListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void itemSpawn(final ItemSpawnEvent e) {
     val item = e.getEntity().getItemStack();
+    if (!getCustomItemFlag(item, CustomItemFlag.ITEM_SPAWN).orElse(true)) {
+      e.setCancelled(true);
+      return;
+    }
     if (CustomItem.isCustomItem(item)) {
       CustomItem.getCustomItem(item).itemSpawn(e);
     }

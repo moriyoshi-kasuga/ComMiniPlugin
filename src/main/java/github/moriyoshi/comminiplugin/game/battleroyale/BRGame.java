@@ -6,9 +6,12 @@ import java.util.UUID;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
@@ -18,7 +21,9 @@ import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.gametype.StageTypeGame;
 import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
+import github.moriyoshi.comminiplugin.util.Util;
 import lombok.val;
+import net.kyori.adventure.bossbar.BossBar;
 
 public class BRGame extends AbstractGame implements WinnerTypeGame {
 
@@ -29,6 +34,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   public final HashMap<UUID, Boolean> players = new HashMap<>();
 
   private StageTypeGame stageTypeGame;
+  private BossBar bossBar;
 
   public BRGame() {
     super(
@@ -40,6 +46,19 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         new BRListener());
     this.world = ComMiniWorld.GAME_WORLD;
     this.lobby = new Location(ComMiniWorld.GAME_WORLD, 1000.5, 60, 1000.5);
+  }
+
+  public final void joinPlayer(final Player player, final boolean isPlayer) {
+    val uuid = player.getUniqueId();
+    if (players.containsKey(uuid)) {
+      if (players.get(uuid) == isPlayer) {
+        players.remove(uuid);
+        prefix.cast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
+        return;
+      }
+    }
+    players.put(uuid, isPlayer);
+    prefix.cast(player.getName() + "が" + (isPlayer ? "<blue>参加" : "<gray>観戦") + "します");
   }
 
   @Override
@@ -86,26 +105,60 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
       val uuid = p.getUniqueId();
       val inv = p.getInventory();
       inv.clear();
-      if (!players.get(uuid)) {
+      if (players.get(uuid)) {
+        val gamePlayer = ComMiniPlayer.getPlayer(uuid);
+        gamePlayer.setHideNameTag(true);
+        gamePlayer.getGamePlayerData(BRPlayer.class).getHotbar().setItems(inv);
+        p.setSaturation(6);
+        p.setGameMode(GameMode.SURVIVAL);
+      } else {
         p.setGameMode(GameMode.SPECTATOR);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
-        teleportLobby(p);
-        return;
+        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
       }
-      val gamePlayer = ComMiniPlayer.getPlayer(uuid);
-      gamePlayer.setHideNameTag(true);
       teleportLobby(p);
     });
+
+    bossBar = BossBar.bossBar(Util.mm("<red>投下まで<u>10</u>秒"), 1f,
+        BossBar.Color.RED,
+        BossBar.Overlay.NOTCHED_10);
+
+    new BukkitRunnable() {
+
+      private int time = 11;
+
+      @Override
+      public void run() {
+        if (--time == 0) {
+          runPlayers(p -> {
+            p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1);
+            p.hideBossBar(bossBar);
+          });
+          //TODO: ここに投下するさいの地面を開ける処理を書く
+          this.cancel();
+          return;
+        }
+        bossBar.name(Util.mm("<red>投下まで<u>" + time + "</u>秒")).progress((float) time / (float) 10);
+      }
+
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
+
+    hidePlayer();
     return true;
   }
 
   @Override
   protected void innerFinishGame() {
     stageTypeGame.stageEnd();
+    players.clear();
+    if (bossBar != null) {
+      runPlayers(p -> p.hideBossBar(bossBar));
+    }
+    showPlayer();
   }
 
   @Override
   protected void fieldInitialize(final boolean isCreatingInstance) {
     this.stageTypeGame = null;
+    this.bossBar = null;
   }
 }

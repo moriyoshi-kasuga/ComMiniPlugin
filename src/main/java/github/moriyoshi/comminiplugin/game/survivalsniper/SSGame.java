@@ -20,7 +20,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
@@ -65,26 +64,20 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   }
 
   public final void joinPlayer(final Player player, final boolean isPlayer) {
-    if (isStarted()) {
-      return;
-    }
     val uuid = player.getUniqueId();
     player.getInventory().removeItem(new ItemStack(Material.SPYGLASS));
     if (players.containsKey(uuid)) {
       if (players.get(uuid).getLeft() == isPlayer) {
         players.remove(uuid);
-        val text = player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ";
         GameSystem.initializePlayer(player);
-        player.teleport(ComMiniWorld.LOBBY);
-        prefix.cast(text);
+        prefix.cast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
         return;
       }
     }
     players.put(uuid, Pair.of(isPlayer, isPlayer ? AIR_LIMIT : -1));
     player.teleport(lobby);
     player.getInventory().addItem(new ItemStack(Material.SPYGLASS));
-    val text = player.getName() + "が" + (isPlayer ? "<blue>参加" : "<gray>観戦") + "します";
-    prefix.cast(text);
+    prefix.cast(player.getName() + "が" + (isPlayer ? "<blue>参加" : "<gray>観戦") + "します");
   }
 
   @Override
@@ -209,7 +202,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
       inv.clear();
       if (!players.get(uuid).getLeft()) {
         p.setGameMode(GameMode.SPECTATOR);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
         teleportLobby(p);
         return;
       }
@@ -240,7 +233,9 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             min.getBlockY(),
             min.getBlockZ(), max.getBlockX(), max.getBlockY(), max.getBlockZ()));
     stageTypeGame.stageEnd();
-    runPlayers(p -> p.hideBossBar(bossBar));
+    if (bossBar != null) {
+      runPlayers(p -> p.hideBossBar(bossBar));
+    }
     if (run != null) {
       run.cancel();
     }

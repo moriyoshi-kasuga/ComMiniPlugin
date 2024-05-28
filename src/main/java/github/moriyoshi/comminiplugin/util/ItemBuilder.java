@@ -2,6 +2,8 @@ package github.moriyoshi.comminiplugin.util;
 
 import com.google.common.collect.Multimap;
 
+import de.tr7zw.changeme.nbtapi.NBT;
+import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import lombok.val;
 
 import java.util.ArrayList;
@@ -244,7 +246,7 @@ public class ItemBuilder {
   /**
    * アイテムを壊せるかどうか設定します
    *
-   * @param unbreakable 壊せるかどうか (true = 不可壊)
+   * @param unbreakable 壊せないかどうか (true = 不可壊)
    * @return new instance (use {@link #build()} to create)
    */
   public ItemBuilder unbreakable(final boolean unbreakable) {
@@ -354,6 +356,18 @@ public class ItemBuilder {
       consumer.accept(meta);
       i.setItemMeta(meta);
     });
+  }
+
+  public ItemBuilder customItemFlag(final String flag, boolean isEnable) {
+    return change(i -> {
+      NBT.modify(i, nbt -> {
+        nbt.getOrCreateCompound("customitemflag").setBoolean(flag, isEnable);
+      });
+    });
+  }
+
+  public ItemBuilder customItemFlag(final CustomItemFlag flag, boolean isEnable) {
+    return customItemFlag(flag.id, isEnable);
   }
 
   /**
