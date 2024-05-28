@@ -10,18 +10,18 @@ import lombok.val;
 public class SSPlayer implements InterfaceGamePlayer, HotbarGamePlayer {
 
   @Getter
-  private SSSlot slot;
+  private SSSlot hotbar;
 
   @Override
   public JsonObject generateSaveData() {
     val object = new JsonObject();
-    object.add(getHotBarPath(), getHotBarJson(slot));
+    object.add(getHotBarPath(), getHotBarJson(hotbar));
     return object;
   }
 
   @Override
   public void generateLoadData(JsonObject object) {
-    this.slot = getHotBar(SSSlot.class, object.get(getHotBarPath()));
+    this.hotbar = getHotBar(SSSlot.class, object.get(getHotBarPath()));
   }
 
 }

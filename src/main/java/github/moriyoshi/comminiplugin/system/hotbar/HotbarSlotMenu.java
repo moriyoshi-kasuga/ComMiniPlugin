@@ -11,13 +11,13 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 import lombok.val;
 
-public final class HotBarSlotMenu extends MenuHolder<ComMiniPlugin> {
+public final class HotbarSlotMenu extends MenuHolder<ComMiniPlugin> {
 
-  private final HotBarSlot slots;
+  private final HotbarSlot slots;
 
   private int swapSlot = -1;
 
-  public HotBarSlotMenu(final HotBarSlot slots) {
+  public HotbarSlotMenu(final HotbarSlot slots) {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>インベントリーのカスタマイズ");
     this.slots = slots;
     set();

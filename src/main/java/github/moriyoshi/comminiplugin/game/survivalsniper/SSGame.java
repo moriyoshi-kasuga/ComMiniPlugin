@@ -121,6 +121,29 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             min.getBlockZ(), max.getBlockX(), max.getBlockY(), max.getBlockZ()));
     Util.consoleCommand("chunky worldborder");
     Util.consoleCommand("chunky start");
+
+    return true;
+  }
+
+  @Override
+  public boolean innerStartGame(final Player player) {
+    if (2 > players.values().stream().filter(Pair::getLeft).toList().size()) {
+      prefix.send(player, "<red>二人以上でしかプレイできません");
+      return false;
+    }
+    val vec = lobby.toVector();
+    val min = vec.clone().add(VOID_BLOCK_RADIUS);
+    val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
+    Util.consoleCommand(
+        String.format(
+            "execute in %s run fill %s %s %s %s %s %s minecraft:air replace minecraft:barrier",
+            "overworld", min.getBlockX(), min.getBlockY(), min.getBlockZ(),
+            max.getBlockX(), max.getBlockY(), max.getBlockZ()));
+
+    bossBar = BossBar.bossBar(Util.mm("<red>PvP解禁まで<u>" + AFTER_PVP_SECOND + "</u>秒"), 1f,
+        BossBar.Color.RED,
+        BossBar.Overlay.NOTCHED_10);
+
     run = new BukkitRunnable() {
       private int second = AFTER_PVP_SECOND;
 
@@ -171,29 +194,6 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         }
       }
     };
-
-    return true;
-  }
-
-  @Override
-  public boolean innerStartGame(final Player player) {
-    if (2 > players.values().stream().filter(Pair::getLeft).toList().size()) {
-      prefix.send(player, "<red>二人以上でしかプレイできません");
-      return false;
-    }
-    val vec = lobby.toVector();
-    val min = vec.clone().add(VOID_BLOCK_RADIUS);
-    val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
-    Util.consoleCommand(
-        String.format(
-            "execute in %s run fill %s %s %s %s %s %s minecraft:air replace minecraft:barrier",
-            "overworld", min.getBlockX(), min.getBlockY(), min.getBlockZ(),
-            max.getBlockX(), max.getBlockY(), max.getBlockZ()));
-
-    bossBar = BossBar.bossBar(Util.mm("<red>PvP解禁まで<u>" + AFTER_PVP_SECOND + "</u>秒"), 1f,
-        BossBar.Color.RED,
-        BossBar.Overlay.NOTCHED_10);
-
     run.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
     stageTypeGame.stageStart();
     world.setClearWeatherDuration(MAX_SECOND * 20);
@@ -216,7 +216,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
       val gamePlayer = ComMiniPlayer.getPlayer(uuid);
       gamePlayer.setHunger(true);
       gamePlayer.setHideNameTag(true);
-      gamePlayer.getGamePlayerData(SSPlayer.class).getSlot().setItems(inv);
+      gamePlayer.getGamePlayerData(SSPlayer.class).getHotbar().setItems(inv);
       p.setSaturation(6);
       p.setGameMode(GameMode.SURVIVAL);
       if (!BukkitUtil.randomTeleport(p, loc, (MAX_RADIUS_RANGE / 2) - 10)) {
@@ -241,7 +241,9 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             min.getBlockZ(), max.getBlockX(), max.getBlockY(), max.getBlockZ()));
     stageTypeGame.stageEnd();
     runPlayers(p -> p.hideBossBar(bossBar));
-    run.cancel();
+    if (run != null) {
+      run.cancel();
+    }
     players.clear();
     showPlayer();
   }

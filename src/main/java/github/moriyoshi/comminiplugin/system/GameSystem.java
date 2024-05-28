@@ -74,9 +74,11 @@ public class GameSystem {
     }
     if (isStarted()) {
       game.prefix.send(player, "<red>すでに始まっています!");
+      return;
     }
-    game.startGame(player);
-    game.prefix.cast("<green>開始します");
+    if (game.startGame(player)) {
+      game.prefix.cast("<green>開始します");
+    }
   }
 
   /**

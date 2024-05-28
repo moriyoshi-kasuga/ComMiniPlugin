@@ -7,10 +7,10 @@ import java.util.function.Supplier;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import github.moriyoshi.comminiplugin.system.hotbar.HotBarSlot;
+import github.moriyoshi.comminiplugin.system.hotbar.HotbarSlot;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
-public class SSSlot extends HotBarSlot {
+public class SSSlot extends HotbarSlot {
 
   public SSSlot() {
     super();

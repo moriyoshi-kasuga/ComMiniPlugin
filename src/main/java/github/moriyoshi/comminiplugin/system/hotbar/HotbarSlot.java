@@ -10,14 +10,14 @@ import org.bukkit.inventory.ItemStack;
 
 import lombok.val;
 
-public abstract class HotBarSlot extends ArrayList<Integer> {
+public abstract class HotbarSlot extends ArrayList<Integer> {
   protected abstract List<Supplier<ItemStack>> getDefaults();
 
-  public HotBarSlot() {
+  public HotbarSlot() {
     super(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8));
   }
 
-  public HotBarSlot(final Collection<Integer> collection) {
+  public HotbarSlot(final Collection<Integer> collection) {
     super(collection);
   }
 

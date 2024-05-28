@@ -12,9 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.IGetGame;
-import github.moriyoshi.comminiplugin.system.buttons.HotBarSlotButton;
+import github.moriyoshi.comminiplugin.system.buttons.HotbarSlotButton;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
@@ -41,9 +40,7 @@ public class SSMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<SSGame
         getGame().joinPlayer(((Player) event.getWhoClicked()), false);
       }
     });
-    setButton(4, new HotBarSlotButton((holder, event) -> ComMiniPlayer.getPlayer(event.getWhoClicked().getUniqueId())
-        .getGamePlayerData(SSPlayer.class)
-        .getSlot()));
+    setButton(4, new HotbarSlotButton(SSPlayer.class));
   }
 
   @Override
