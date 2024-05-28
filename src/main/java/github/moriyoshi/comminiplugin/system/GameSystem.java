@@ -108,7 +108,7 @@ public class GameSystem {
    * @param p target player
    */
   public static void initializePlayer(Player p) {
-    GamePlayer.getPlayer(p.getUniqueId()).initialize();
+    ComMiniPlayer.getPlayer(p.getUniqueId()).initialize();
     p.getInventory().clear();
     p.getInventory().addItem(new MenuItem().getItem());
     p.setExperienceLevelAndProgress(0);

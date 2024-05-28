@@ -33,7 +33,7 @@ public class GameListener implements Listener {
   }
 
   public static boolean isDebugPlayer(Player p) {
-    return GamePlayer.getPlayer(p.getUniqueId()).isDebug();
+    return ComMiniPlayer.getPlayer(p.getUniqueId()).isDebug();
   }
 
   private GameListener() {
@@ -42,7 +42,7 @@ public class GameListener implements Listener {
       @Override
       public void run() {
         Bukkit.getOnlinePlayers().forEach(p -> {
-          if (GamePlayer.getPlayer(p.getUniqueId()).isHunger()) {
+          if (ComMiniPlayer.getPlayer(p.getUniqueId()).isHunger()) {
             return;
           }
           p.setFoodLevel(20);

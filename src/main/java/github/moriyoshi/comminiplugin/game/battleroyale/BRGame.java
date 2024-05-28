@@ -14,6 +14,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
+import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.gametype.StageTypeGame;
 import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
@@ -27,6 +28,8 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
   public final HashMap<UUID, Boolean> players = new HashMap<>();
 
+  private StageTypeGame stageTypeGame;
+
   public BRGame() {
     super(
         "battleroyale",
@@ -38,8 +41,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     this.world = ComMiniWorld.GAME_WORLD;
     this.lobby = new Location(ComMiniWorld.GAME_WORLD, 1000.5, 60, 1000.5);
   }
-
-  private StageTypeGame stageTypeGame;
 
   @Override
   public MenuHolder<ComMiniPlugin> createAdminMenu() {
@@ -81,6 +82,20 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     stageTypeGame = new StageTypeGame(world, lobby, MAX_RADIUS_RANGE, MIN_BORDER_RANGE, MAX_SECOND);
     stageTypeGame.stageInitialize();
     stageTypeGame.stageStart();
+    runPlayers(p -> {
+      val uuid = p.getUniqueId();
+      val inv = p.getInventory();
+      inv.clear();
+      if (!players.get(uuid)) {
+        p.setGameMode(GameMode.SPECTATOR);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
+        teleportLobby(p);
+        return;
+      }
+      val gamePlayer = ComMiniPlayer.getPlayer(uuid);
+      gamePlayer.setHideNameTag(true);
+      teleportLobby(p);
+    });
     return true;
   }
 

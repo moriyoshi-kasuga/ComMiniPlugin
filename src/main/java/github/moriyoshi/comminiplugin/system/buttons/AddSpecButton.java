@@ -32,7 +32,7 @@ public class AddSpecButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       @NotNull InventoryClickEvent event) {
     var player = (Player) event.getWhoClicked();
     if (!GameSystem.isStarted()) {
-      Messages.GAME_NOT_FOUND.send(player);
+      Messages.GAME_NOT_START.send(player);
       return;
     }
     if (GameSystem.getGame().addSpec(player)) {

@@ -12,6 +12,10 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
 public class SSSlot extends HotBarSlot {
 
+  public SSSlot() {
+    super();
+  }
+
   public SSSlot(final Collection<Integer> collection) {
     super(collection);
   }

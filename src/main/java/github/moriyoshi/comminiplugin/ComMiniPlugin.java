@@ -29,7 +29,8 @@ import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemListener;
 import github.moriyoshi.comminiplugin.system.GameListener;
-import github.moriyoshi.comminiplugin.system.GamePlayer;
+import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import lombok.Getter;
 import lombok.val;
 
@@ -77,12 +78,12 @@ public final class ComMiniPlugin extends JavaPlugin {
           new SSCustomMenu().openInv(p);
         }));
     registerCommand(new CommandAPICommand("gamedebug").executesPlayer((p, args) -> {
-      final GamePlayer player = GamePlayer.getPlayer(p.getUniqueId());
+      final ComMiniPlayer player = ComMiniPlayer.getPlayer(p.getUniqueId());
       val flag = !player.isDebug();
       player.setDebug(flag);
       ComMiniPrefix.SYSTEM.send(p, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
     }));
-    GamePlayer.gameInitialize();
+    ComMiniPlayer.gameInitialize();
     new WorldCreator("lobby").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
         .createWorld();
     new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
@@ -93,7 +94,10 @@ public final class ComMiniPlugin extends JavaPlugin {
 
   @Override
   public void onDisable() {
-    GamePlayer.save();
+    ComMiniPlayer.save();
+    if (GameSystem.isIn()) {
+      GameSystem.finalGame();
+    }
     CommandAPI.onDisable();
     LocationsCommands.getManager().saveFile();
   }
