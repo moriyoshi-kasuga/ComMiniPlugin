@@ -46,7 +46,7 @@ public class ToggleButton<MH extends MenuHolder<?>> extends CycleButton<Boolean,
       return stack;
     }
 
-    stack.addUnsafeEnchantment(Enchantment.DURABILITY, 3);
+    stack.addUnsafeEnchantment(Enchantment.UNBREAKING, 3);
     meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     stack.setItemMeta(meta);
 

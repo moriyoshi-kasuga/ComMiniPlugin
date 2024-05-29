@@ -141,7 +141,7 @@ public class GameListener implements Listener {
   public void move(PlayerMoveEvent e) {
     var p = e.getPlayer();
     p.getActivePotionEffects().forEach(effect -> {
-      if (effect.getType().equals(PotionEffectType.SLOW) && effect.getAmplifier() == 138) {
+      if (effect.getType().equals(PotionEffectType.SLOWNESS) && effect.getAmplifier() == 138) {
         Location from = e.getFrom();
         Location to = e.getTo();
         from.setYaw(to.getYaw());

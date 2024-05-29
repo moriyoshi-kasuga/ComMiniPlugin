@@ -22,13 +22,14 @@ import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.CommandTree;
 import github.moriyoshi.comminiplugin.api.serializer.ItemStackAdapter;
 import github.moriyoshi.comminiplugin.api.serializer.LocationAdapter;
+import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.command.LocationsCommands;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
-import github.moriyoshi.comminiplugin.system.CustomItemAndBlockListener;
+import github.moriyoshi.comminiplugin.system.CustomListener;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import lombok.Getter;
@@ -55,7 +56,7 @@ public final class ComMiniPlugin extends JavaPlugin {
     CommandAPI.onEnable();
     registerEvent(guiListener = GuiListener.getInstance());
     registerEvent(GameListener.getInstance());
-    registerEvent(CustomItemAndBlockListener.getInstance());
+    registerEvent(CustomListener.getInstance());
     val commands = new Reflections("github.moriyoshi.comminiplugin.command");
     for (Class<? extends CommandAPICommand> command : commands.getSubTypesOf(CommandAPICommand.class)) {
       try {
@@ -134,7 +135,7 @@ public final class ComMiniPlugin extends JavaPlugin {
   @Override
   public void onLoad() {
     CustomItem.registers("github.moriyoshi.comminiplugin");
-    CustomItem.registers("github.moriyoshi.comminiplugin");
+    CustomBlock.registers("github.moriyoshi.comminiplugin");
     CommandAPI.onLoad(new CommandAPIBukkitConfig(this).initializeNBTAPI(NBTContainer.class, NBTContainer::new));
   }
 }

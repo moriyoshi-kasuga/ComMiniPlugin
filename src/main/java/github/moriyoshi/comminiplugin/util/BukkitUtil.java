@@ -50,7 +50,7 @@ public final class BukkitUtil {
       val z = random.nextInt(-radius, radius);
       val block = world.getHighestBlockAt(bx + x, bz + z, HeightMap.WORLD_SURFACE);
       if (block.isSolid() && block.isCollidable()) {
-        entity.teleportAsync(block.getLocation().add(0.5, 1, 0.5), TeleportCause.PLUGIN, TeleportFlag.Relative.YAW,
+        entity.teleport(block.getLocation().add(0.5, 1, 0.5), TeleportCause.PLUGIN, TeleportFlag.Relative.YAW,
             TeleportFlag.Relative.PITCH);
         return true;
       }
@@ -59,6 +59,6 @@ public final class BukkitUtil {
   }
 
   public static void disableMove(final Player player, final int tick) {
-    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, tick, 138, true, false));
+    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, tick, 138, true, false));
   }
 }

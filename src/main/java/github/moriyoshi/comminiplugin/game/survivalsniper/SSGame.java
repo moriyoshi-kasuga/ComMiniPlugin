@@ -112,8 +112,6 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             "overworld",
             min.getBlockX(), min.getBlockY(),
             min.getBlockZ(), max.getBlockX(), max.getBlockY(), max.getBlockZ()));
-    Util.consoleCommand("chunky worldborder");
-    Util.consoleCommand("chunky start");
 
     return true;
   }

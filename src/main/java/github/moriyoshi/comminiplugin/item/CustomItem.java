@@ -8,6 +8,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import lombok.val;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -52,6 +53,9 @@ public abstract class CustomItem implements InterfaceItem {
   public static void registers(final String packageName) {
     val reflections = new Reflections(packageName);
     for (Class<? extends CustomItem> item : reflections.getSubTypesOf(CustomItem.class)) {
+      if (Modifier.isAbstract(item.getModifiers())) {
+        return;
+      }
       String id;
       try {
         id = item.getDeclaredConstructor().newInstance().getIdentifier();

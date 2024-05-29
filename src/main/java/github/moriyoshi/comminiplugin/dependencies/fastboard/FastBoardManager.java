@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import org.bukkit.entity.Player;
 
+import fr.mrmicky.fastboard.adventure.FastBoard;
 import lombok.val;
 
 public class FastBoardManager {

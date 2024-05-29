@@ -1,58 +1,57 @@
+import io.papermc.paperweight.userdev.ReobfArtifactConfiguration
+
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'maven-publish'
-    id 'io.papermc.paperweight.userdev'  version '1.7.0'
+    id 'io.github.goooler.shadow' version '8.1.7'
+    id 'io.papermc.paperweight.userdev' version '1.7.1'
 }
 
 group = 'github.moriyoshi'
-version = '1.0.0'
+version = '2.0.0'
 
 repositories {
     mavenCentral()
-    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
     maven { url = 'https://oss.sonatype.org/content/groups/public/' }
     maven { url = 'https://repo.codemc.org/repository/maven-public/' }
     maven { url = 'https://libraries.minecraft.net' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
 }
 
-//def paperAPI = 'io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT'
-def anvilGUI = 'net.wesjd:anvilgui:1.9.3-SNAPSHOT'
-def commandAPI = 'dev.jorel:commandapi-bukkit-shade:9.4.0'
-def nbtAPI = 'de.tr7zw:item-nbt-api:2.12.3'
+def anvilGUI = 'net.wesjd:anvilgui:1.9.4-SNAPSHOT'
+def commandAPI = 'dev.jorel:commandapi-bukkit-shade:9.4.2'
+def nbtAPI = 'de.tr7zw:item-nbt-api:2.12.4'
 def reflections = 'org.reflections:reflections:0.10.2'
-// def simpleVoiceChatAPI = "de.maxhenkel.voicechat:voicechat-api:2.5.0"
+def fastBoard = 'fr.mrmicky:fastboard:2.1.2'
 
 def relocates = [
-        'dev.jorel.commandapi': 'github.moriyoshi.comminiplugin.dependencies.commandapi',
-        'net.wesjd.anvilgui'  : 'github.moriyoshi.comminiplugin.dependencies.anvilgui',
-        'de.tr7zw.changeme.nbtapi'  : 'github.moriyoshi.comminiplugin.dependencies.nbtapi',
-        'org.reflections': 'github.moriyoshi.comminiplugin.dependencies.reflections'
+        'dev.jorel.commandapi'    : 'github.moriyoshi.comminiplugin.dependencies.commandapi',
+        'net.wesjd.anvilgui'      : 'github.moriyoshi.comminiplugin.dependencies.anvilgui',
+        'de.tr7zw.changeme.nbtapi': 'github.moriyoshi.comminiplugin.dependencies.nbtapi',
+        'org.reflections'         : 'github.moriyoshi.comminiplugin.dependencies.reflections',
+        'fr.mrmicky.fastboard'    : 'github.moriyoshi.comminiplugin.dependencies.reflections'
 ]
 
 def lombok = 'org.projectlombok:lombok:1.18.32'
 
+paperweight.reobfArtifactConfiguration = ReobfArtifactConfiguration.Companion.MOJANG_PRODUCTION
+
 dependencies {
-    paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
-    // compileOnly paperAPI
-    // testCompileOnly paperAPI
+    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 
     compileOnly lombok
-	annotationProcessor lombok
+    annotationProcessor lombok
 
-    // implementation simpleVoiceChatAPI
-	
-	testCompileOnly lombok
-	testAnnotationProcessor lombok
+    testCompileOnly lombok
+    testAnnotationProcessor lombok
 
     shadow reflections
     shadow anvilGUI
     shadow commandAPI
     shadow nbtAPI
+    shadow fastBoard
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
@@ -71,16 +70,15 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 processResources {
-   def props = [version: version]
-   inputs.properties props
-   filteringCharset 'UTF-8'
-   filesMatching('plugin.yml') {
-       expand props
-   }
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
 }
 
 shadowJar {
-    archiveClassifier.set('')
     configurations = [project.configurations.shadow]
 
     relocates.each { originalPackage, relocatedPackage -> relocate originalPackage, relocatedPackage }
@@ -88,9 +86,8 @@ shadowJar {
 
 tasks.register('copyPlugin') {
     dependsOn reobfJar
-    // dependsOn shadowJar
     doLast {
-        if (file("./build/libs/ComMiniPlugin-${version}.jar").exists()) {
+        if (file("./build/libs/ComMiniPlugin-${version}-reobf.jar").exists()) {
             if (file('./copy.bat').exists()) {
                 exec {
                     workingDir '.'
@@ -117,9 +114,8 @@ tasks.register('copyPlugin') {
 
 tasks.register('runPlugin') {
     dependsOn reobfJar
-    // dependsOn shadowJar
     doLast {
-        if (file("./build/libs/ComMiniPlugin-${version}.jar").exists()) {
+        if (file("./build/libs/ComMiniPlugin-${version}-reobf.jar").exists()) {
             if (file('./copy.bat').exists()) {
                 exec {
                     workingDir '.'

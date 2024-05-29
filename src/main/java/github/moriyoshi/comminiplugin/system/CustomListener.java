@@ -29,11 +29,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import de.tr7zw.changeme.nbtapi.NBT;
 
-public class CustomItemAndBlockListener implements Listener {
+public class CustomListener implements Listener {
 
-  private static final CustomItemAndBlockListener INSTANCE = new CustomItemAndBlockListener();
+  private static final CustomListener INSTANCE = new CustomListener();
 
-  private CustomItemAndBlockListener() {
+  private CustomListener() {
     new BukkitRunnable() {
       private int tick = 0;
 
@@ -58,7 +58,7 @@ public class CustomItemAndBlockListener implements Listener {
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
   }
 
-  public static CustomItemAndBlockListener getInstance() {
+  public static CustomListener getInstance() {
     return INSTANCE;
   }
 
@@ -175,12 +175,14 @@ public class CustomItemAndBlockListener implements Listener {
   public void inventoryClick(final InventoryClickEvent e) {
     val item = e.getCursor();
     val click = e.getCurrentItem();
-    List.of(item, click).forEach(i -> {
-      if (!getCustomItemFlag(i, CustomItemFlag.MOVE_INV).orElse(true)) {
-        e.setCancelled(true);
-        return;
-      }
-    });
+    if (!getCustomItemFlag(item, CustomItemFlag.MOVE_INV).orElse(true)) {
+      e.setCancelled(true);
+      return;
+    }
+    if (!getCustomItemFlag(click, CustomItemFlag.MOVE_INV).orElse(true)) {
+      e.setCancelled(true);
+      return;
+    }
     final List<CustomItem> list = new ArrayList<>();
     if (CustomItem.isCustomItem(item)) {
       list.add(CustomItem.getCustomItem(item));
