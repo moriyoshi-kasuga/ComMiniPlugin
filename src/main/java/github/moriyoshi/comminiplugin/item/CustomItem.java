@@ -5,6 +5,8 @@ import com.google.common.collect.HashBiMap;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import lombok.val;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,6 +22,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
 
 public abstract class CustomItem implements InterfaceItem {
 
@@ -44,6 +47,24 @@ public abstract class CustomItem implements InterfaceItem {
       });
     });
     this.item = item;
+  }
+
+  public static void registers(final String packageName) {
+    val reflections = new Reflections(packageName);
+    for (Class<? extends CustomItem> item : reflections.getSubTypesOf(CustomItem.class)) {
+      String id;
+      try {
+        id = item.getDeclaredConstructor().newInstance().getIdentifier();
+      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        throw new RuntimeException(e);
+      }
+      if (CustomItem.registers.containsKey(id)) {
+        throw new IllegalArgumentException(
+            id + "のカスタムアイテムがかぶっています、" + item.getName() + " >>==<< "
+                + CustomItem.registers.get(id).getName());
+      }
+      CustomItem.registers.put(id, item);
+    }
   }
 
   public static CustomItem getNewCustomItem(final String identifier) {
@@ -258,6 +279,11 @@ public abstract class CustomItem implements InterfaceItem {
    * @param e event
    */
   public void itemSpawn(final ItemSpawnEvent e) {
+  }
+
+  @Override
+  public @NotNull String getIdentifier() {
+    return getClass().getSimpleName();
   }
 
 }

@@ -24,11 +24,6 @@ public class WingItem extends CustomItem {
   }
 
   @Override
-  public @NotNull String getIdentifier() {
-    return "wing";
-  }
-
-  @Override
   public void interact(PlayerInteractEvent e) {
     if (e.getAction().isLeftClick()) {
       return;

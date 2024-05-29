@@ -45,11 +45,6 @@ public class Sniper extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public @NotNull String getIdentifier() {
-    return "sniper";
-  }
-
-  @Override
   public void swapToOffHand(final PlayerSwapHandItemsEvent e) {
     e.setCancelled(true);
     val p = e.getPlayer();

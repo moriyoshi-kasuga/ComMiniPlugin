@@ -11,10 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
 
 import com.google.gson.JsonObject;
 
+import javassist.Modifier;
 import lombok.Getter;
+import lombok.val;
 
 /**
  * 左クリック、右クリックで処理を受け取るカスタムブロック {@link
@@ -53,15 +56,14 @@ public abstract class CustomBlock {
     remove(block.getLocation());
   }
 
-  /**
-   * ここでブロックの登録をおこないます
-   *
-   * @param identifier ブロックの識別子
-   * @param clazz      作成したカスタムブロックのclass
-   */
-  public static void register(String identifier,
-      Class<? extends CustomBlock> clazz) {
-    customBlocks.put(identifier, clazz);
+  public static void registers(final String packageName) {
+    val reflections = new Reflections(packageName);
+    for (Class<? extends CustomBlock> block : reflections.getSubTypesOf(CustomBlock.class)) {
+      if (Modifier.isAbstract(block.getModifiers())) {
+        return;
+      }
+      customBlocks.put(block.getSimpleName(), block);
+    }
   }
 
   /**
@@ -242,7 +244,8 @@ public abstract class CustomBlock {
    *
    * @return 識別子
    */
-  public String getIdentifier() {
+  public @NotNull String getIdentifier() {
     return getClass().getSimpleName();
-  };
+  }
+
 }

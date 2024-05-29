@@ -1,7 +1,5 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import lombok.val;
-
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,13 +10,13 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import de.tr7zw.changeme.nbtapi.NBT;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 @Getter
 public class Bullet extends CustomItem {
@@ -115,11 +113,6 @@ public class Bullet extends CustomItem {
     this.damage = damage;
     this.headShot = headShot;
     this.sound = sound;
-  }
-
-  @Override
-  public @NotNull String getIdentifier() {
-    return "bullet";
   }
 
   @Override

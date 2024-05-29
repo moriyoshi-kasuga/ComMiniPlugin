@@ -1,17 +1,15 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import lombok.val;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import lombok.val;
 
 public class EscapeDeep extends CustomItem {
 
@@ -39,10 +37,5 @@ public class EscapeDeep extends CustomItem {
     p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_HURT, 8, 1);
     new ItemBuilder(getItem()).amount(0);
     BukkitUtil.disableMove(p, 100);
-  }
-
-  @Override
-  public @NotNull String getIdentifier() {
-    return "escape_deep";
   }
 }

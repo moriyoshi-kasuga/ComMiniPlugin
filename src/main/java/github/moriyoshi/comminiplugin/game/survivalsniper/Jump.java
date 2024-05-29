@@ -1,7 +1,5 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import lombok.val;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -12,7 +10,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.item.CooldownItem;
@@ -20,6 +17,7 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.Util;
+import lombok.val;
 import net.kyori.adventure.text.Component;
 
 public class Jump extends CustomItem implements CooldownItem {
@@ -35,11 +33,6 @@ public class Jump extends CustomItem implements CooldownItem {
 
   public Jump(final ItemStack item) {
     super(item);
-  }
-
-  @Override
-  public @NotNull String getIdentifier() {
-    return "jump";
   }
 
   @Override
