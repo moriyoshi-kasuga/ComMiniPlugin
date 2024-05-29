@@ -288,4 +288,8 @@ public abstract class CustomItem implements InterfaceItem {
     return getClass().getSimpleName();
   }
 
+  public void itemUse() {
+    getItem().setAmount(getItem().getAmount() - 1);
+  }
+
 }

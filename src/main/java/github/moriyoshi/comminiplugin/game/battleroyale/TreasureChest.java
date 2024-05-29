@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -15,11 +15,12 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
 public class TreasureChest extends CustomModelBlock {
 
+  // 鉄Lv.1 エメラルドLv.2 ラピスラズリLv.3 ダイアlv.4 アメジストLv.5
   private int level = 1;
 
   @Override
   public void interact(PlayerInteractEvent e) {
-    ComMiniPrefix.MAIN.send(e.getPlayer(), "<red>don't touch me!");
+    e.setCancelled(false);
   }
 
   @Override
@@ -27,20 +28,22 @@ public class TreasureChest extends CustomModelBlock {
     ComMiniPrefix.MAIN.send(e.getPlayer(), "<red>don't break me!");
   }
 
-  public TreasureChest(Location location) {
-    super(location);
+  public TreasureChest(Block block) {
+    super(block);
+    updateDisplayItem();
   }
 
-  public TreasureChest(Location location, JsonObject data) {
-    super(location, data);
+  public TreasureChest(Block block, JsonObject data) {
+    super(block, data);
     if (data.has("level")) {
       this.level = data.get("level").getAsInt();
     }
     updateDisplayItem();
   }
 
-  public TreasureChest(Location location, Player player) {
-    super(location, player);
+  public TreasureChest(Block block, Player player) {
+    super(block, player);
+    updateDisplayItem();
   }
 
   @Override

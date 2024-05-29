@@ -50,7 +50,7 @@ public class CustomBlockData extends JsonAPI {
       json.add("location", ComMiniPlugin.gson.toJsonTree(location));
       json.addProperty("identifier", customBlock.getIdentifier());
       json.add("data", customBlock.getBlockData());
-      customBlock.clearData(customBlock.getLocation());
+      customBlock.clearData();
       data.add(json);
     });
     object.add("blocks", data);

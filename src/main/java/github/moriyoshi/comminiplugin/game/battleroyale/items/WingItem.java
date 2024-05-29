@@ -1,5 +1,8 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -34,7 +37,7 @@ public class WingItem extends CustomItem {
     player.getEquipment().setItem(EquipmentSlot.CHEST,
         new ItemBuilder(Material.ELYTRA).name("<yellow>Wing").customItemFlag(CustomItemFlag.MOVE_INV, false).build(),
         false);
-    getItem().setAmount(0);
+    itemUse();
     new BukkitRunnable() {
 
       @SuppressWarnings("deprecation")
@@ -48,6 +51,11 @@ public class WingItem extends CustomItem {
       }
 
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 10, 1);
+  }
+
+  @Override
+  public Optional<UUID> generateUUID() {
+    return Optional.empty();
   }
 
 }

@@ -35,7 +35,7 @@ public class EscapeDeep extends CustomItem {
       return;
     }
     p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_HURT, 8, 1);
-    new ItemBuilder(getItem()).amount(0);
+    itemUse();
     BukkitUtil.disableMove(p, 100);
   }
 }

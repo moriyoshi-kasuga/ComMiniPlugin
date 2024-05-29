@@ -99,35 +99,34 @@ public abstract class CustomBlock {
     return blocks;
   }
 
-  static void loadCustomBlock(String identifier, Location location,
-      JsonObject object) {
+  static void loadCustomBlock(String identifier, Location location, JsonObject object) {
     if (!isRegister(identifier)) {
       throw new IllegalArgumentException(identifier +
           "のCustomBlockは登録されていません");
     }
     try {
       CustomBlock.customBlocks.get(identifier)
-          .getDeclaredConstructor(Location.class, JsonObject.class)
-          .newInstance(location, object);
+          .getDeclaredConstructor(Block.class, JsonObject.class)
+          .newInstance(location.getBlock(), object);
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
   }
 
   @Getter
-  protected final Location location;
+  protected final Block block;
 
   /**
    * カスタムブロックの初期化コンストラクタ
    *
    * @param location カスタムブロックの位置
    */
-  public CustomBlock(Location location) {
-    this.location = location.toBlockLocation();
-    if (blocks.containsKey(this.location)) {
+  public CustomBlock(Block block) {
+    this.block = block;
+    if (blocks.containsKey(this.block.getLocation())) {
       throw new RuntimeException("このBlockはすでにCustomBlockです");
     }
-    blocks.put(this.location, this);
+    blocks.put(this.block.getLocation(), this);
   }
 
   /**
@@ -137,8 +136,8 @@ public abstract class CustomBlock {
    * @param location カスタムブロックの位置
    * @param data     ロードするデータ
    */
-  public CustomBlock(Location location, JsonObject data) {
-    this(location);
+  public CustomBlock(Block block, JsonObject data) {
+    this(block);
   }
 
   /**
@@ -147,28 +146,25 @@ public abstract class CustomBlock {
    * @param location カスタムブロックの位置
    * @param player   設置したプレイヤー
    */
-  public CustomBlock(Location location, Player player) {
-    this(location);
+  public CustomBlock(Block block, Player player) {
+    this(block);
   }
 
   /**
    * {@link #remove(Location)} をinstance methodから呼び出せるように
    */
   public final void remove() {
-    Location block = location.toBlockLocation();
-    if (isCustomBlock(block)) {
-      getCustomBlock(block).clearData(location);
-      blocks.remove(block);
+    Location loc = block.getLocation();
+    if (isCustomBlock(loc)) {
+      getCustomBlock(loc).clearData();
+      blocks.remove(loc);
     }
   }
 
   /**
-   * {@link CustomModelBlock#clearData(Location)}
-   * のようにブロックを削除する場合の処理
-   *
-   * @param Location このブロックのlocation
+   * block を削除される前の処理 (セーブされるまえも)
    */
-  public abstract void clearData(Location Location);
+  public abstract void clearData();
 
   /**
    * 何かブロックにデータを保存させたい場合はここにデータを保存してください

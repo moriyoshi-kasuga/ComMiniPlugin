@@ -42,7 +42,7 @@ public class TestItem extends CustomItem {
         ComMiniPrefix.SYSTEM.send(player, "<red>already a custom block");
         return;
       }
-      new TreasureChest(block.getLocation());
+      new TreasureChest(block, player);
     }
   }
 
