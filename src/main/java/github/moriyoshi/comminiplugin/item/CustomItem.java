@@ -1,17 +1,10 @@
 package github.moriyoshi.comminiplugin.item;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import lombok.val;
-
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -24,6 +17,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 
 public abstract class CustomItem implements InterfaceItem {
 
@@ -50,12 +51,8 @@ public abstract class CustomItem implements InterfaceItem {
     this.item = item;
   }
 
-  public static void registers(final String packageName) {
-    val reflections = new Reflections(packageName);
-    for (Class<? extends CustomItem> item : reflections.getSubTypesOf(CustomItem.class)) {
-      if (Modifier.isAbstract(item.getModifiers())) {
-        return;
-      }
+  public static void registers(final Reflections reflections) {
+    github.moriyoshi.comminiplugin.util.ReflectionUtil.forEachAllClass(reflections, CustomItem.class, (item) -> {
       String id;
       try {
         id = item.getDeclaredConstructor().newInstance().getIdentifier();
@@ -67,8 +64,9 @@ public abstract class CustomItem implements InterfaceItem {
             id + "のカスタムアイテムがかぶっています、" + item.getName() + " >>==<< "
                 + CustomItem.registers.get(id).getName());
       }
+      ComMiniPrefix.SYSTEM.logDebug("<gray>REGISTER ITEM " + item.getSimpleName());
       CustomItem.registers.put(id, item);
-    }
+    });
   }
 
   public static CustomItem getNewCustomItem(final String identifier) {

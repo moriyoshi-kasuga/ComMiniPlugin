@@ -23,6 +23,7 @@ import dev.jorel.commandapi.CommandTree;
 import github.moriyoshi.comminiplugin.api.serializer.ItemStackAdapter;
 import github.moriyoshi.comminiplugin.api.serializer.LocationAdapter;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.block.CustomBlockData;
 import github.moriyoshi.comminiplugin.command.LocationsCommands;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
@@ -32,6 +33,7 @@ import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.CustomListener;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.util.ReflectionUtil;
 import lombok.Getter;
 import lombok.val;
 
@@ -57,23 +59,27 @@ public final class ComMiniPlugin extends JavaPlugin {
     registerEvent(guiListener = GuiListener.getInstance());
     registerEvent(GameListener.getInstance());
     registerEvent(CustomListener.getInstance());
+    val reflections = new Reflections("github.moriyoshi.comminiplugin");
+    CustomItem.registers(reflections);
+    CustomBlock.registers(reflections);
     val commands = new Reflections("github.moriyoshi.comminiplugin.command");
-    for (Class<? extends CommandAPICommand> command : commands.getSubTypesOf(CommandAPICommand.class)) {
+    ReflectionUtil.forEachAllClass(commands, CommandAPICommand.class, command -> {
       try {
         registerCommand(command.getDeclaredConstructor().newInstance());
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
           | NoSuchMethodException | SecurityException e) {
         e.printStackTrace();
       }
-    }
-    for (Class<? extends CommandTree> command : commands.getSubTypesOf(CommandTree.class)) {
+    });
+    ReflectionUtil.forEachAllClass(commands, CommandTree.class, command -> {
       try {
         registerCommand(command.getDeclaredConstructor().newInstance());
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
           | NoSuchMethodException | SecurityException e) {
         e.printStackTrace();
       }
-    }
+    });
+
     registerCommand(new CommandAPICommand("custommenu").withPermission(CommandPermission.OP)
         .executesPlayer((p, args) -> {
           new SSCustomMenu().openInv(p);
@@ -91,6 +97,8 @@ public final class ComMiniPlugin extends JavaPlugin {
         .createWorld();
 
     new WorldCreator("SkiResort").environment(Environment.NORMAL).createWorld();
+    new WorldCreator("Fantacy").environment(Environment.NORMAL).createWorld();
+    CustomBlockData.getInstance();
   }
 
   @Override
@@ -99,6 +107,7 @@ public final class ComMiniPlugin extends JavaPlugin {
     if (GameSystem.isIn()) {
       GameSystem.finalGame();
     }
+    CustomBlockData.getInstance().saveFile();
     CommandAPI.onDisable();
     LocationsCommands.getManager().saveFile();
   }
@@ -134,8 +143,6 @@ public final class ComMiniPlugin extends JavaPlugin {
 
   @Override
   public void onLoad() {
-    CustomItem.registers("github.moriyoshi.comminiplugin");
-    CustomBlock.registers("github.moriyoshi.comminiplugin");
     CommandAPI.onLoad(new CommandAPIBukkitConfig(this).initializeNBTAPI(NBTContainer.class, NBTContainer::new));
   }
 }

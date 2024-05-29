@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -116,7 +117,9 @@ public class CustomListener implements Listener {
     }
     e.setCancelled(true);
     CustomItem.getCustomItem(item).interact(e);
-    customBlockInteract(e);
+    if (e.useInteractedBlock() != Result.DENY) {
+      customBlockInteract(e);
+    }
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
@@ -125,6 +128,7 @@ public class CustomListener implements Listener {
     if (!CustomBlock.isCustomBlock(block)) {
       return;
     }
+    e.setCancelled(true);
     e.setDropItems(false);
     CustomBlock.getCustomBlock(block).blockBreak(e);
   }

@@ -3,8 +3,9 @@ package github.moriyoshi.comminiplugin.block;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Display.Billboard;
-import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.Display.Brightness;
 import org.bukkit.entity.ItemDisplay.ItemDisplayTransform;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
@@ -18,17 +19,19 @@ import lombok.Getter;
 public abstract class CustomModelBlock extends CustomBlock {
 
   @Getter
-  private final ItemDisplay display;
+  protected final ItemDisplay display;
 
   public CustomModelBlock(Location location) {
     super(location);
     location.getBlock().setType(getOriginMaterial());
+
     display = location.getWorld().spawn(location, ItemDisplay.class, display -> {
       display.setItemStack(getItem());
-      display.setTransformation(
-          new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(1.001f), new AxisAngle4f()));
+      display.setTransformation(new Transformation(new Vector3f(0.5f, 0.5f, 0.5f), new AxisAngle4f(0, 0, 0, 1),
+          new Vector3f(1.001f), new AxisAngle4f(0, 0, 0, 1)));
       display.setBillboard(Billboard.FIXED);
-      display.setItemDisplayTransform(ItemDisplayTransform.FIXED);
+      display.setBrightness(new Brightness(0, 15));
+      display.setItemDisplayTransform(ItemDisplayTransform.NONE);
       display.setRotation(0, 0);
       display.setPersistent(true);
     });
@@ -40,6 +43,10 @@ public abstract class CustomModelBlock extends CustomBlock {
 
   public CustomModelBlock(Location location, Player player) {
     this(location);
+  }
+
+  public void updateDisplayItem() {
+    this.display.setItemStack(getItem());
   }
 
   @Override

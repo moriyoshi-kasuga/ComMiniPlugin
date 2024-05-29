@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.annotation.Nullable;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -15,9 +17,9 @@ import org.reflections.Reflections;
 
 import com.google.gson.JsonObject;
 
-import javassist.Modifier;
+import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.util.ReflectionUtil;
 import lombok.Getter;
-import lombok.val;
 
 /**
  * 左クリック、右クリックで処理を受け取るカスタムブロック {@link
@@ -34,36 +36,11 @@ public abstract class CustomBlock {
   private static final TreeMap<String, Class<? extends CustomBlock>> customBlocks = new TreeMap<>();
   private static final Map<Location, CustomBlock> blocks = new HashMap<>();
 
-  /**
-   * この位置のブロックを削除します
-   *
-   * @param location 削除する位置
-   */
-  public static void remove(Location location) {
-    Location block = location.toBlockLocation();
-    if (isCustomBlock(block)) {
-      getCustomBlock(block).clearData(location);
-      blocks.remove(block);
-    }
-  }
-
-  /**
-   * {@link #remove(Location)} をブロックでできるように
-   *
-   * @param block block
-   */
-  public static void remove(Block block) {
-    remove(block.getLocation());
-  }
-
-  public static void registers(final String packageName) {
-    val reflections = new Reflections(packageName);
-    for (Class<? extends CustomBlock> block : reflections.getSubTypesOf(CustomBlock.class)) {
-      if (Modifier.isAbstract(block.getModifiers())) {
-        return;
-      }
+  public static void registers(final Reflections reflections) {
+    ReflectionUtil.forEachAllClass(reflections, CustomBlock.class, block -> {
+      ComMiniPrefix.SYSTEM.logDebug("<aqua>REGISTER BLOCK " + block.getSimpleName());
       customBlocks.put(block.getSimpleName(), block);
-    }
+    });
   }
 
   /**
@@ -97,41 +74,12 @@ public abstract class CustomBlock {
   }
 
   /**
-   * blockにあるカスタムブロックの識別子を取得します
-   *
-   * @param block 取得するカスタムブロックのブロック
-   * @return カスタムブロックの識別子
-   */
-  @NotNull
-  public static String getIdentifier(Block block) {
-    return getIdentifier(block.getLocation());
-  }
-
-  /**
-   * locationにあるカスタムブロックの識別子を取得します
-   *
-   * @param location 取得するカスタムブロックの場所
-   * @return カスタムブロックの識別子
-   */
-  @NotNull
-  public static String getIdentifier(Location location) {
-    Location bLoc = location.toBlockLocation();
-    if (isCustomBlock(bLoc)) {
-      return getCustomBlock(bLoc).getIdentifier();
-    }
-    throw new IllegalArgumentException(
-        "そのBlockはCustomBlockではありません(もしくは登録されていません)");
-  }
-
-  /**
    * {@link #getCustomBlock(Location)} を {@link Block} でも取得できるように
    *
    * @param block 対象の場所
    * @return 取得したCustomBlock
-   * @throws IllegalArgumentException
-   *                                  そのlocationにCustomBlockがない場合はなります
    */
-  @NotNull
+  @Nullable
   public static CustomBlock getCustomBlock(Block block) {
     return getCustomBlock(block.getLocation());
   }
@@ -141,16 +89,10 @@ public abstract class CustomBlock {
    *
    * @param location 取得する場所
    * @return 取得したCustomBlock
-   * @throws IllegalArgumentException
-   *                                  そのlocationにCustomBlockがない場合はなります
    */
-  @NotNull
+  @Nullable
   public static CustomBlock getCustomBlock(Location location) {
-    var block = location.toBlockLocation();
-    if (isCustomBlock(block)) {
-      return blocks.get(block);
-    }
-    throw new IllegalArgumentException("そのBlockはCustomBlockではありません");
+    return blocks.get(location.toBlockLocation());
   }
 
   static Map<Location, CustomBlock> getBlocks() {
@@ -173,7 +115,7 @@ public abstract class CustomBlock {
   }
 
   @Getter
-  private final Location location;
+  protected final Location location;
 
   /**
    * カスタムブロックの初期化コンストラクタ
@@ -213,7 +155,11 @@ public abstract class CustomBlock {
    * {@link #remove(Location)} をinstance methodから呼び出せるように
    */
   public final void remove() {
-    remove(getLocation());
+    Location block = location.toBlockLocation();
+    if (isCustomBlock(block)) {
+      getCustomBlock(block).clearData(location);
+      blocks.remove(block);
+    }
   }
 
   /**
@@ -233,9 +179,21 @@ public abstract class CustomBlock {
     return new JsonObject();
   }
 
+  /**
+   * default cancelled
+   * please {@code e.setCancelled(false);}
+   *
+   * @param e event
+   */
   public void interact(PlayerInteractEvent e) {
   }
 
+  /**
+   * default cancelled
+   * please {@code e.setCancelled(false);}
+   *
+   * @param e event
+   */
   public void blockBreak(BlockBreakEvent e) {
   }
 

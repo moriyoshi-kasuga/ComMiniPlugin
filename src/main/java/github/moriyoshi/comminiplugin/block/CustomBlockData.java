@@ -10,9 +10,13 @@ import com.google.gson.JsonObject;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.api.JsonAPI;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import lombok.Getter;
 import lombok.val;
 
 public class CustomBlockData extends JsonAPI {
+
+  @Getter(lazy = true)
+  private static final CustomBlockData instance = new CustomBlockData(ComMiniPlugin.getPlugin());
 
   public CustomBlockData(Plugin plugin) {
     super(plugin, "customBlockData");
