@@ -61,7 +61,6 @@ public abstract class AbstractGame implements InterfaceGame {
       return false;
     }
     isStarted = true;
-    ComMiniPlugin.getPlugin().registerEvent(listener);
     return true;
   }
 

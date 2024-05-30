@@ -130,4 +130,9 @@ public class Bullet extends CustomItem {
     p.getWorld().playSound(p.getLocation(), getSound(), 6, 1);
   }
 
+  @Override
+  public boolean canShowing() {
+    return false;
+  }
+
 }

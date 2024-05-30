@@ -1,10 +1,9 @@
 package github.moriyoshi.comminiplugin.api;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,10 +23,10 @@ import lombok.val;
 public abstract class BlockInputsAPI<T> extends JsonAPI {
 
   @Getter
-  private final Set<Player> players = new HashSet<>();
+  private final Map<UUID, Player> players = new HashMap<>();
 
   @Getter
-  private final Map<Location, T> locations = new HashMap<>();
+  private Map<Location, T> locations;
 
   public BlockInputsAPI(Plugin plugin, String name) {
     super(plugin, name);
@@ -39,7 +38,7 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
 
   public final void addLocation(Location location, Player player) {
     location.setYaw(BukkitUtil.convertBlockFaceToYaw(player.getFacing().getOppositeFace()));
-    innerAddLocation(location, player);
+    innerAddLocation(location.toBlockLocation(), player);
   }
 
   protected abstract void innerAddLocation(Location location, Player player);
@@ -51,16 +50,39 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
   }
 
   public final void addPlayer(Player player) {
-    players.add(player);
-    showAllLocation(player);
+    if (players.put(player.getUniqueId(), player) == null) {
+      showAllLocation(player);
+    }
   }
 
   public final void removePlayer(Player player) {
-    players.remove(player);
-    hideAllLocation(player);
+    if (players.remove(player.getUniqueId()) != null) {
+      hideAllLocation(player);
+    }
   }
 
-  public final boolean containsLocation(Location location) {
+  public final void clearPlayer() {
+    players.values().forEach(p -> hideAllLocation(p));
+    players.clear();
+  }
+
+  public final boolean containsPlayer(Player player) {
+    return players.containsKey(player.getUniqueId());
+  }
+
+  public final T getLocationData(Location loc) {
+    val location = loc.toBlockLocation();
+    for (val yaw : List.of(180, 90, -90, 0)) {
+      location.setYaw(yaw);
+      if (locations.containsKey(location)) {
+        return locations.get(location);
+      }
+    }
+    return null;
+  }
+
+  public final boolean containsLocation(Location loc) {
+    val location = loc.toBlockLocation();
     for (val yaw : List.of(180, 90, -90, 0)) {
       location.setYaw(yaw);
       if (locations.containsKey(location)) {
@@ -70,7 +92,8 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
     return false;
   }
 
-  public final void removeLocation(Location location) {
+  public final void removeLocation(Location loc) {
+    val location = loc.toBlockLocation();
     for (val yaw : List.of(180, 90, -90, 0)) {
       location.setYaw(yaw);
       if (locations.remove(location) != null) {
@@ -84,10 +107,11 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
   }
 
   public final void hideLocation(Location location) {
-    players.forEach(p -> hideLocation(location, p));
+    players.values().forEach(p -> hideLocation(location, p));
   }
 
-  public final void hideLocation(Location location, Player player) {
+  public final void hideLocation(Location loc, Player player) {
+    val location = loc.toBlockLocation();
     try {
       ComMiniPlugin.getGlowingBlocks().unsetGlowing(location, player);
     } catch (ReflectiveOperationException e) {
@@ -100,16 +124,19 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
   }
 
   public final void showLocation(Location location) {
-    players.forEach(p -> showLocation(location, p));
+    players.values().forEach(p -> showLocation(location, p));
   }
 
-  public final void showLocation(Location location, Player player) {
+  public final void showLocation(Location loc, Player player) {
+    val location = loc.toBlockLocation();
     try {
-      ComMiniPlugin.getGlowingBlocks().setGlowing(location, player, ChatColor.WHITE);
+      ComMiniPlugin.getGlowingBlocks().setGlowing(location, player, getColor(location));
     } catch (ReflectiveOperationException e) {
       e.printStackTrace();
     }
   }
+
+  public abstract ChatColor getColor(Location location);
 
   public abstract T loadLocData(JsonElement element);
 
@@ -117,11 +144,12 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
 
   @Override
   protected void generateLoadData(JsonElement dataElement) {
+    locations = new HashMap<>();
     val data = dataElement.getAsJsonObject();
     if (data.has("locations")) {
       data.getAsJsonArray("locations").forEach(element -> {
         val obj = element.getAsJsonObject();
-        locations.put(ComMiniPlugin.gson.fromJson(obj.get("loc"), Location.class), loadLocData(obj.get("data")));
+        getLocations().put(ComMiniPlugin.gson.fromJson(obj.get("loc"), Location.class), loadLocData(obj.get("data")));
       });
     }
   }

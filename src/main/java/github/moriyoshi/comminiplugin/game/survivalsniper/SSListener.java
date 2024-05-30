@@ -31,18 +31,24 @@ public class SSListener implements AbstractGameListener<SSGame> {
     if (!flag) {
       return;
     }
-    reducePlayer(p);
+    if (getGame().isStarted()) {
+      reducePlayer(p);
+    }
   }
 
   @EventHandler
   public void tp(final PlayerTeleportEvent e) {
+    val game = getGame();
+    if (!game.isStarted()) {
+      return;
+    }
     val p = e.getPlayer();
-    if (!getGame().isGamePlayer(p)) {
+    if (!game.isGamePlayer(p)) {
       return;
     }
     if (e.getCause().equals(TeleportCause.SPECTATE)
-        && !getGame().getLobby().getWorld().getWorldBorder().isInside(e.getTo())) {
-      getGame().prefix.send(p, "<red>範囲外にスペクテイターのテレポートは使えません");
+        && !game.getLobby().getWorld().getWorldBorder().isInside(e.getTo())) {
+      game.prefix.send(p, "<red>範囲外にスペクテイターのテレポートは使えません");
       e.setCancelled(true);
     }
   }
@@ -50,6 +56,9 @@ public class SSListener implements AbstractGameListener<SSGame> {
   @Override
   public void death(final PlayerDeathEvent e) {
     final SSGame game = getGame();
+    if (!game.isStarted()) {
+      return;
+    }
     val p = e.getPlayer();
     val uuid = p.getUniqueId();
     if (game.players.get(uuid).getRight() == 0) {
@@ -64,6 +73,9 @@ public class SSListener implements AbstractGameListener<SSGame> {
   @EventHandler
   public void interact(final PlayerInteractEvent e) {
     val p = e.getPlayer();
+    if (!getGame().isStarted()) {
+      return;
+    }
     if (!getGame().isGamePlayer(p)) {
       return;
     }
@@ -89,6 +101,10 @@ public class SSListener implements AbstractGameListener<SSGame> {
 
   @Override
   public void damageByEntity(final EntityDamageByEntityEvent e) {
+    if (!getGame().isStarted()) {
+      e.setCancelled(true);
+      return;
+    }
     if (!getGame().isCanPvP() && e.getEntity() instanceof Player
         && e.getDamager() instanceof final Player attacker) {
       getGame().prefix.send(attacker, "<red>まだPvPはできません");
@@ -98,7 +114,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
 
   @EventHandler
   public void moevDimension(final PlayerPortalEvent e) {
-    if (getGame().isGamePlayer(e.getPlayer())) {
+    if (getGame().isStarted() && getGame().isGamePlayer(e.getPlayer())) {
       getGame().prefix.send(e.getPlayer(), "<red>ポータルを使うな!");
       e.setCancelled(true);
     }
@@ -106,7 +122,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
 
   @EventHandler
   public void entitySpawn(final EntitySpawnEvent e) {
-    if (e.getEntityType() == EntityType.ENDERMAN) {
+    if (getGame().isStarted() && e.getEntityType() == EntityType.ENDERMAN) {
       final Entity entity = e.getEntity();
       if (getGame().getWorld().getWorldBorder().isInside(entity.getLocation())) {
         entity.remove();

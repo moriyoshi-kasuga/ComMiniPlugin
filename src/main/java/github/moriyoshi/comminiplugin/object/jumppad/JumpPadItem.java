@@ -24,7 +24,7 @@ public class JumpPadItem extends CustomItem {
   @Override
   public void interact(PlayerInteractEvent e) {
     val player = e.getPlayer();
-    val block = player.getTargetBlockExact(10);
+    val block = e.getClickedBlock();
     if (block == null || block.isEmpty()) {
       ComMiniPrefix.SYSTEM.send(player, "<red>please look at a target block");
       return;

@@ -25,7 +25,7 @@ public class CustomItemsCommand extends CommandAPICommand {
 
   private static final class CustomItemMenu extends ListMenu<String> {
     public CustomItemMenu() {
-      super("<green>CustomItems", 45, new ArrayList<>(CustomItem.registers.keySet()), (key) -> {
+      super("<green>CustomItems", 45, new ArrayList<>(CustomItem.canShowingRegisters.keySet()), (key) -> {
         final ItemStack item = CustomItem.getNewCustomItem(key).getItem();
         return new ItemButton<>(new ItemBuilder(item).addLore("").addLore(key).build()) {
           @Override

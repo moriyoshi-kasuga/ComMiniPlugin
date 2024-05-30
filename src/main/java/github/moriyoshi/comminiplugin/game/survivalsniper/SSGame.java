@@ -24,7 +24,6 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.system.gametype.StageTypeGame;
 import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
@@ -42,6 +41,10 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   private final int AIR_LIMIT = 60 * 3;
   private final Vector VOID_BLOCK_RADIUS = new Vector(3, 3, 3);
 
+  private final double speedRate = 1.25;
+  private long previousTime;
+  private double previousBorderSize;
+
   // true は生きている、falseは観戦者(死んで観戦者で機能を統一)
   public final HashMap<UUID, Pair<Boolean, Integer>> players = new HashMap<>();
 
@@ -50,8 +53,6 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   private BossBar bossBar;
   private BukkitRunnable run;
   private boolean isFinalArea;
-
-  private StageTypeGame stageTypeGame;
 
   public SSGame() {
     super(
@@ -99,8 +100,8 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     val temp = player.getLocation().clone();
     world = temp.getWorld();
     lobby = world.getHighestBlockAt(temp).getLocation().add(new Vector(0, 50, 0));
-    stageTypeGame = new StageTypeGame(world, lobby, MAX_RADIUS_RANGE, MIN_BORDER_RANGE, MAX_SECOND);
-    stageTypeGame.stageInitialize();
+    world.getWorldBorder().setCenter(lobby);
+    world.getWorldBorder().setSize(MAX_RADIUS_RANGE);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
     world.setClearWeatherDuration(0);
     world.setTime(1000);
@@ -186,7 +187,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
       }
     };
     run.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
-    stageTypeGame.stageStart();
+    world.getWorldBorder().setSize(MIN_BORDER_RANGE, MAX_SECOND);
     world.setClearWeatherDuration(MAX_SECOND * 20);
     world.setTime(1000);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
@@ -230,7 +231,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             min.getBlockX(),
             min.getBlockY(),
             min.getBlockZ(), max.getBlockX(), max.getBlockY(), max.getBlockZ()));
-    stageTypeGame.stageEnd();
+    world.getWorldBorder().reset();
     if (bossBar != null) {
       runPlayers(p -> p.hideBossBar(bossBar));
     }
@@ -261,7 +262,12 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     if (isFinalArea) {
       return;
     }
-    stageTypeGame.stageSpeedUP();
+    val size = world.getWorldBorder().getSize();
+    val speed = previousBorderSize / previousTime;
+    val afterTime = (previousTime - ((previousBorderSize - size) / speed)) * (1.0 / speedRate);
+    previousTime = (int) afterTime;
+    previousBorderSize = size;
+    world.getWorldBorder().setSize(MIN_BORDER_RANGE, (long) afterTime);
     runPlayers(p -> prefix.send(p, "<red>DANGER! ボーダーの速度が上がりました"));
   }
 
@@ -279,7 +285,8 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     bossBar = null;
     run = null;
     isFinalArea = false;
-    stageTypeGame = null;
+    previousBorderSize = MAX_RADIUS_RANGE;
+    previousTime = MAX_SECOND;
   }
 
 }

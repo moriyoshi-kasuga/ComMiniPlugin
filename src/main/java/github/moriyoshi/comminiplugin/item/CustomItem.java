@@ -25,10 +25,13 @@ import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import lombok.val;
 
 public abstract class CustomItem implements InterfaceItem {
 
-  public static final BiMap<String, Class<? extends CustomItem>> registers = HashBiMap.create();
+  private static final BiMap<String, Class<? extends CustomItem>> registers = HashBiMap.create();
+
+  public static final BiMap<String, Class<? extends CustomItem>> canShowingRegisters = HashBiMap.create();
   @NotNull
   private final ItemStack item;
   private UUID uuid;
@@ -54,8 +57,11 @@ public abstract class CustomItem implements InterfaceItem {
   public static void registers(final Reflections reflections) {
     github.moriyoshi.comminiplugin.util.ReflectionUtil.forEachAllClass(reflections, CustomItem.class, item -> {
       String id;
+      boolean canShowing;
       try {
-        id = item.getDeclaredConstructor().newInstance().getIdentifier();
+        val instance = item.getDeclaredConstructor().newInstance();
+        id = instance.getIdentifier();
+        canShowing = instance.canShowing();
       } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
         throw new RuntimeException(e);
       }
@@ -64,8 +70,12 @@ public abstract class CustomItem implements InterfaceItem {
             id + "のカスタムアイテムがかぶっています、" + item.getName() + " >>==<< "
                 + CustomItem.registers.get(id).getName());
       }
-      ComMiniPrefix.SYSTEM.logDebug("<gray>REGISTER ITEM " + item.getSimpleName());
+      ComMiniPrefix.SYSTEM
+          .logDebug("<gray>REGISTER ITEM " + item.getSimpleName() + " (canShowing: " + canShowing + ")");
       CustomItem.registers.put(id, item);
+      if (canShowing) {
+        CustomItem.canShowingRegisters.putIfAbsent(id, item);
+      }
     });
   }
 
@@ -290,6 +300,15 @@ public abstract class CustomItem implements InterfaceItem {
 
   public void itemUse() {
     getItem().setAmount(getItem().getAmount() - 1);
+  }
+
+  /**
+   * {@code CustomItemsCommand } に載せるかどうか?
+   *
+   * @return true なら載せる
+   */
+  public boolean canShowing() {
+    return true;
   }
 
 }

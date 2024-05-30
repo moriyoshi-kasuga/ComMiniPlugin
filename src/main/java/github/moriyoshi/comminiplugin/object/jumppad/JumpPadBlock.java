@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
-public class JumpPadBlock extends CustomBlock {
+class JumpPadBlock extends CustomBlock {
 
   private BukkitRunnable task;
 

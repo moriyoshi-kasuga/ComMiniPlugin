@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -28,8 +29,8 @@ public class GameListener implements Listener {
     return INSTANCE;
   }
 
-  public static boolean isGamePlayer(Player p) {
-    return GameSystem.isStarted() && GameSystem.getGame().isGamePlayer(p);
+  public static boolean isGamePlayer(Player p, Class<? extends Event> clazz) {
+    return GameSystem.isIn() && GameSystem.getGame().isGamePlayer(p, clazz);
   }
 
   public static boolean isDebugPlayer(Player p) {
@@ -55,7 +56,7 @@ public class GameListener implements Listener {
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
-    if (isGamePlayer(p) && GameSystem.getGame().listener.join(e)) {
+    if (isGamePlayer(p, PlayerJoinEvent.class) && GameSystem.getGame().listener.join(e)) {
       return;
     }
     GameSystem.initializePlayer(p);
@@ -63,7 +64,7 @@ public class GameListener implements Listener {
 
   @EventHandler
   public void quit(PlayerQuitEvent e) {
-    if (isGamePlayer(e.getPlayer())) {
+    if (isGamePlayer(e.getPlayer(), PlayerQuitEvent.class)) {
       GameSystem.getGame().listener.quit(e);
     }
   }
@@ -71,7 +72,7 @@ public class GameListener implements Listener {
   @EventHandler
   public void death(PlayerDeathEvent e) {
     e.setCancelled(true);
-    if (isGamePlayer(e.getPlayer())) {
+    if (isGamePlayer(e.getPlayer(), PlayerDeathEvent.class)) {
       GameSystem.getGame().listener.death(e);
       return;
     }
@@ -81,7 +82,7 @@ public class GameListener implements Listener {
   @EventHandler
   public void damage(EntityDamageEvent e) {
     if (e.getEntity() instanceof Player attacker
-        && !isGamePlayer(attacker)
+        && !isGamePlayer(attacker, EntityDamageEvent.class)
         && e.getCause().equals(DamageCause.FALL)) {
       e.setCancelled(true);
       return;
@@ -97,7 +98,7 @@ public class GameListener implements Listener {
       return;
     }
 
-    if (isGamePlayer(attacker)) {
+    if (isGamePlayer(attacker, EntityDamageByEntityEvent.class)) {
       GameSystem.getGame().listener.damageByEntity(e);
       return;
     }
@@ -111,7 +112,7 @@ public class GameListener implements Listener {
 
   @EventHandler
   public void blockBreak(BlockBreakEvent e) {
-    if (isGamePlayer(e.getPlayer())) {
+    if (isGamePlayer(e.getPlayer(), BlockBreakEvent.class)) {
       GameSystem.getGame().listener.blockBreak(e);
       return;
     }
@@ -125,7 +126,7 @@ public class GameListener implements Listener {
 
   @EventHandler
   public void blockPlace(BlockPlaceEvent e) {
-    if (isGamePlayer(e.getPlayer())) {
+    if (isGamePlayer(e.getPlayer(), BlockPlaceEvent.class)) {
       GameSystem.getGame().listener.blockPlace(e);
       return;
     }

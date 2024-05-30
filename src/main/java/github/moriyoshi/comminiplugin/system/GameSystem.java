@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRGame;
@@ -60,6 +61,7 @@ public class GameSystem {
     }
     game = temp;
     game.prefix.cast("<green>開催します!");
+    ComMiniPlugin.getPlugin().registerEvent(game.listener);
     return true;
   }
 
@@ -100,8 +102,16 @@ public class GameSystem {
     return game != null;
   }
 
+  public static boolean isIn(Class<? extends AbstractGame> clazz) {
+    return game != null && clazz.isAssignableFrom(game.getClass());
+  }
+
   public static boolean isStarted() {
     return isIn() && game.isStarted();
+  }
+
+  public static boolean isStarted(Class<? extends AbstractGame> clazz) {
+    return isIn() && game.isStarted() && clazz.isAssignableFrom(game.getClass());
   }
 
   /**

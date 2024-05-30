@@ -20,6 +20,7 @@ import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
+import lombok.Getter;
 import lombok.val;
 import net.kyori.adventure.bossbar.BossBar;
 
@@ -29,9 +30,13 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
   private BossBar bossBar;
 
+  @Getter
   private BRField field;
 
   public void setField(final BRField field) {
+    if (this.field != null) {
+      this.field.stop();
+    }
     this.field = field;
   }
 
@@ -100,7 +105,10 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
       prefix.send(player, "<red>フィールドを選択してください");
       return false;
     }
-    field.start();
+    field.initialize();
+    field.start(field.getLobby(), 60, 30, flag -> {
+
+    });
 
     runPlayers(p -> {
       val uuid = p.getUniqueId();
@@ -149,7 +157,9 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
   @Override
   protected void innerFinishGame() {
-    field.stop();
+    if (field != null) {
+      field.stop();
+    }
     players.clear();
     if (bossBar != null) {
       runPlayers(p -> p.hideBossBar(bossBar));
