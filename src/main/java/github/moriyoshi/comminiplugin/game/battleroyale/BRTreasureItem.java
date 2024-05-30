@@ -16,11 +16,13 @@ import lombok.val;
 public class BRTreasureItem extends CustomItem {
   public BRTreasureItem() {
     this(new ItemBuilder(Material.ENDER_CHEST).name("<red>Treasure Creater")
-        .lore("<gray>Click to create treasure at the look block!",
+        .lore("<gray>RightClick to create",
             "<gray>if look block is already treasure,",
             "<gray> open treasure settings menu",
+            "<gray>Left Click to remove!",
             "<gray>how to choose (number range 1~5)",
-            "<gray> first: 1 (single select)", "<gray> second: 1,2,3,4 (multiple select)",
+            "<gray> first: 1 (single select)",
+            "<gray> second: 1,2,3,4 (multiple select)",
             "<gray> third: 2~3 (range select, equals 2,3)")
         .build());
     ;

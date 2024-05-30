@@ -93,13 +93,6 @@ public final class ComMiniPlugin extends JavaPlugin {
     CustomBlockData.getInstance();
     ComMiniPlayer.gameInitialize();
 
-    registerCommand(new CommandAPICommand("debugmode").executesPlayer((p, args) -> {
-      final ComMiniPlayer player = ComMiniPlayer.getPlayer(p.getUniqueId());
-      val flag = !player.isDebug();
-      player.setDebug(flag);
-      ComMiniPrefix.SYSTEM.send(p, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
-    }));
-
     new WorldCreator("lobby").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
         .createWorld();
     new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)

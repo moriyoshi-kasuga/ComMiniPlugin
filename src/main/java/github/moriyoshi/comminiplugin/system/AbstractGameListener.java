@@ -13,6 +13,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
 
   /**
    * プレイヤーがサーバーに入ったら呼び出されます (すべてゲームのプレイヤーだけです)
+   * (このメゾットはゲーム開始前でも呼ばれます,initialize時からです)
    *
    * @param e event
    * @return false で そのプレイヤーを初期化します(とくに処理がない場合にfalseを返してロビーにテレポなどをします)
@@ -23,6 +24,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
 
   /**
    * プレイヤーがサーバーから抜けたら呼び出されます (すべてゲームのプレイヤーだけです)
+   * (このメゾットはゲーム開始前でも呼ばれます,initialize時からです)
    *
    * @param e event
    */

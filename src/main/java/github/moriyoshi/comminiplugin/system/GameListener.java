@@ -30,7 +30,7 @@ public class GameListener implements Listener {
   }
 
   public static boolean isGamePlayer(Player p, Class<? extends Event> clazz) {
-    return GameSystem.isIn() && GameSystem.getGame().isGamePlayer(p, clazz);
+    return GameSystem.isStarted() && GameSystem.getGame().isGamePlayer(p, clazz);
   }
 
   public static boolean isDebugPlayer(Player p) {
@@ -56,7 +56,8 @@ public class GameListener implements Listener {
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
-    if (isGamePlayer(p, PlayerJoinEvent.class) && GameSystem.getGame().listener.join(e)) {
+    if (GameSystem.isIn() && GameSystem.getGame().isGamePlayer(p, PlayerJoinEvent.class)
+        && GameSystem.getGame().listener.join(e)) {
       return;
     }
     GameSystem.initializePlayer(p);
@@ -64,7 +65,7 @@ public class GameListener implements Listener {
 
   @EventHandler
   public void quit(PlayerQuitEvent e) {
-    if (isGamePlayer(e.getPlayer(), PlayerQuitEvent.class)) {
+    if (GameSystem.isIn() && GameSystem.getGame().isGamePlayer(e.getPlayer(), PlayerQuitEvent.class)) {
       GameSystem.getGame().listener.quit(e);
     }
   }

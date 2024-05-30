@@ -1,6 +1,7 @@
 package github.moriyoshi.comminiplugin.object.jumppad;
 
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,7 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
-class JumpPadBlock extends CustomBlock {
+public class JumpPadBlock extends CustomBlock {
 
   private BukkitRunnable task;
 
@@ -40,10 +41,10 @@ class JumpPadBlock extends CustomBlock {
   private Material material = Material.BEDROCK;
   @Getter
   @Setter
-  private Sound sound = Sound.ENTITY_GENERIC_EXPLODE;
+  private Sound sound = Sound.ENTITY_ENDER_DRAGON_FLAP;
   @Getter
   @Setter
-  private Particle particle = null;
+  private Particle particle = Particle.HAPPY_VILLAGER;
 
   public JumpPadBlock(Block block, Player player) {
     super(block, player);
@@ -103,17 +104,18 @@ class JumpPadBlock extends CustomBlock {
   }
 
   private void spawn() {
+    val random = new Random();
     this.task = new BukkitRunnable() {
       private final Location loc = getBlock().getLocation();
-      private final Location shift = getBlock().getLocation().add(0.5, 1.1, 0.5);
+      private final Location shift = getBlock().getLocation().add(0.5, 0.9, 0.5);
       private final Vector l = loc.toVector();
 
       private int cooldown = 0;
 
       @Override
       public void run() {
-        if (particle != null) {
-          shift.getWorld().spawnParticle(particle, shift, 1);
+        if (particle != null && random.nextInt(5) >= 3) {
+          shift.getWorld().spawnParticle(particle, shift, 1, 0.4, 0.2, 0.4);
         }
         if (--cooldown > 0) {
           return;

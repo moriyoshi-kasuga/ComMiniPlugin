@@ -14,7 +14,12 @@ import lombok.val;
 public class JumpPadItem extends CustomItem {
 
   public JumpPadItem() {
-    this(new ItemBuilder(Material.SLIME_BLOCK).name("<red>Jump Pad Tool").build());
+    this(new ItemBuilder(Material.SLIME_BLOCK).name("<red>Jump Pad Tool")
+        .lore("<gray>Right Click to create!",
+            "<gray>if look block is already jumppad,",
+            "<gray> open jumppad settings menu",
+            "<gray>Left Click to remove!")
+        .build());
   }
 
   public JumpPadItem(@NotNull ItemStack item) {

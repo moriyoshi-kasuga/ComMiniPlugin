@@ -43,9 +43,6 @@ public class BRListener implements AbstractGameListener<BRGame> {
   @EventHandler
   public void tp(final PlayerTeleportEvent e) {
     val p = e.getPlayer();
-    if (!getGame().isStarted()) {
-      return;
-    }
     if (!getGame().isGamePlayer(p)) {
       return;
     }
@@ -58,18 +55,23 @@ public class BRListener implements AbstractGameListener<BRGame> {
 
   @Override
   public void death(PlayerDeathEvent e) {
-    if (!getGame().isStarted()) {
-      return;
-    }
     val p = e.getPlayer();
     p.setGameMode(GameMode.SPECTATOR);
     val game = getGame();
     game.runPlayers(pl -> Util.send(pl, e.deathMessage()));
     game.players.put(p.getUniqueId(), false);
-    if (!getGame().isStarted()) {
+    reducePlayer(p);
+  }
+
+  @Override
+  public void damageByEntity(EntityDamageByEntityEvent e) {
+    val player = (Player) e.getDamager();
+    val item = player.getInventory().getItemInMainHand();
+    if (item == null || item.isEmpty()) {
+      getGame().prefix.send(player, "<red>素手での殴りは禁止されています!");
+      e.setCancelled(true);
       return;
     }
-    reducePlayer(p);
   }
 
   private void reducePlayer(final Player p) {
@@ -81,21 +83,6 @@ public class BRListener implements AbstractGameListener<BRGame> {
       return;
     }
     game.endGame(Bukkit.getPlayer(alives.get(0).getKey()));
-  }
-
-  @Override
-  public void damageByEntity(EntityDamageByEntityEvent e) {
-    if (!getGame().isStarted()) {
-      e.setCancelled(true);
-      return;
-    }
-    val player = (Player) e.getDamager();
-    val item = player.getInventory().getItemInMainHand();
-    if (item == null || item.isEmpty()) {
-      getGame().prefix.send(player, "<red>素手での殴りは禁止されています!");
-      e.setCancelled(true);
-      return;
-    }
   }
 
 }
