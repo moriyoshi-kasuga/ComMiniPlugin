@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -61,4 +62,23 @@ public final class BukkitUtil {
   public static void disableMove(final Player player, final int tick) {
     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, tick, 138, true, false));
   }
+
+  public static int convertBlockFaceToYaw(BlockFace face) {
+    return switch (face) {
+      case NORTH -> 180;
+      case WEST -> 90;
+      case EAST -> -90;
+      default -> 0;
+    };
+  }
+
+  public static BlockFace convertYawToBlockFace(int yaw) {
+    return switch (yaw) {
+      case 180 -> BlockFace.NORTH;
+      case 90 -> BlockFace.WEST;
+      case -90 -> BlockFace.EAST;
+      default -> BlockFace.SOUTH;
+    };
+  }
+
 }

@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.constant;
+package github.moriyoshi.comminiplugin.object;
 
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;

@@ -52,7 +52,7 @@ public abstract class CustomItem implements InterfaceItem {
   }
 
   public static void registers(final Reflections reflections) {
-    github.moriyoshi.comminiplugin.util.ReflectionUtil.forEachAllClass(reflections, CustomItem.class, (item) -> {
+    github.moriyoshi.comminiplugin.util.ReflectionUtil.forEachAllClass(reflections, CustomItem.class, item -> {
       String id;
       try {
         id = item.getDeclaredConstructor().newInstance().getIdentifier();

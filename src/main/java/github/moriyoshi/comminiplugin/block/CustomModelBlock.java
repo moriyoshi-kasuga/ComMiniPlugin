@@ -1,6 +1,5 @@
 package github.moriyoshi.comminiplugin.block;
 
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Display.Billboard;
@@ -13,9 +12,12 @@ import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import lombok.Getter;
+import lombok.val;
 
 public abstract class CustomModelBlock extends CustomBlock {
 
@@ -24,7 +26,6 @@ public abstract class CustomModelBlock extends CustomBlock {
 
   public CustomModelBlock(Block block) {
     super(block);
-    block.setType(getOriginMaterial());
 
     display = block.getWorld().spawn(block.getLocation().add(0.5f, 0.5f, 0.5f), ItemDisplay.class, display -> {
       display.setItemStack(getItem());
@@ -38,8 +39,12 @@ public abstract class CustomModelBlock extends CustomBlock {
     });
   }
 
-  public CustomModelBlock(Block block, JsonObject data) {
+  public CustomModelBlock(Block block, JsonElement dataElement) {
     this(block);
+    val data = dataElement.getAsJsonObject();
+    if (data.has("face")) {
+      setFace(BlockFace.valueOf(data.get("face").getAsString()));
+    }
   }
 
   public CustomModelBlock(Block block, Player player) {
@@ -47,16 +52,20 @@ public abstract class CustomModelBlock extends CustomBlock {
     setFace(player.getFacing().getOppositeFace());
   }
 
+  @Override
+  public JsonElement getBlockData() {
+    JsonObject json = new JsonObject();
+    if (block.getBlockData() instanceof org.bukkit.block.data.Directional directional) {
+      json.addProperty("face", directional.getFacing().name());
+    }
+    return json;
+  }
+
   public void setFace(BlockFace face) {
     if (block.getBlockData() instanceof org.bukkit.block.data.Directional directional) {
       directional.setFacing(face);
       block.setBlockData(directional);
-      display.setRotation(switch (face) {
-        case NORTH -> 180;
-        case WEST -> 90;
-        case EAST -> -90;
-        default -> 0;
-      }, 0);
+      display.setRotation(BukkitUtil.convertBlockFaceToYaw(face), 0);
     }
   }
 
@@ -67,11 +76,8 @@ public abstract class CustomModelBlock extends CustomBlock {
   @Override
   public void clearData() {
     display.remove();
-    block.setType(Material.AIR);
   }
 
   public abstract ItemStack getItem();
-
-  public abstract Material getOriginMaterial();
 
 }

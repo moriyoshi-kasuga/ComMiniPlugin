@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -15,11 +16,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.util.ReflectionUtil;
 import lombok.Getter;
+import lombok.val;
 
 /**
  * 左クリック、右クリックで処理を受け取るカスタムブロック {@link
@@ -63,6 +66,14 @@ public abstract class CustomBlock {
     return blocks.containsKey(location.toBlockLocation());
   }
 
+  public static boolean isCustomBlock(Location location, Class<? extends CustomBlock> clazz) {
+    val temp = blocks.get(location.toBlockLocation());
+    if (temp == null) {
+      return false;
+    }
+    return temp.getClass().isAssignableFrom(clazz);
+  }
+
   /**
    * このBlockにカスタムブロックが存在するかどうか
    *
@@ -70,7 +81,15 @@ public abstract class CustomBlock {
    * @return trueの場合存在します
    */
   public static boolean isCustomBlock(Block block) {
-    return isCustomBlock(block.getLocation());
+    return blocks.containsKey(block.getLocation());
+  }
+
+  public static boolean isCustomBlock(Block block, Class<? extends CustomBlock> clazz) {
+    val temp = blocks.get(block.getLocation());
+    if (temp == null) {
+      return false;
+    }
+    return temp.getClass().isAssignableFrom(clazz);
   }
 
   /**
@@ -81,7 +100,12 @@ public abstract class CustomBlock {
    */
   @Nullable
   public static CustomBlock getCustomBlock(Block block) {
-    return getCustomBlock(block.getLocation());
+    return blocks.get(block.getLocation());
+  }
+
+  @NotNull
+  public static <T extends CustomBlock> T getCustomBlock(Block block, Class<T> clazz) {
+    return clazz.cast(blocks.get(block.getLocation()));
   }
 
   /**
@@ -95,19 +119,24 @@ public abstract class CustomBlock {
     return blocks.get(location.toBlockLocation());
   }
 
+  @NotNull
+  public static <T extends CustomBlock> T getCustomBlock(Location location, Class<T> clazz) {
+    return clazz.cast(blocks.get(location.toBlockLocation()));
+  }
+
   static Map<Location, CustomBlock> getBlocks() {
     return blocks;
   }
 
-  static void loadCustomBlock(String identifier, Location location, JsonObject object) {
+  static void loadCustomBlock(String identifier, Location location, JsonElement element) {
     if (!isRegister(identifier)) {
       throw new IllegalArgumentException(identifier +
           "のCustomBlockは登録されていません");
     }
     try {
       CustomBlock.customBlocks.get(identifier)
-          .getDeclaredConstructor(Block.class, JsonObject.class)
-          .newInstance(location.getBlock(), object);
+          .getDeclaredConstructor(Block.class, JsonElement.class)
+          .newInstance(location.getBlock(), element);
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
@@ -122,21 +151,22 @@ public abstract class CustomBlock {
    * @param location カスタムブロックの位置
    */
   public CustomBlock(Block block) {
-    this.block = block;
-    if (blocks.containsKey(this.block.getLocation())) {
+    if (blocks.containsKey(block.getLocation())) {
       throw new RuntimeException("このBlockはすでにCustomBlockです");
     }
-    blocks.put(this.block.getLocation(), this);
+    block.setType(getOriginMaterial());
+    blocks.put(block.getLocation(), this);
+    this.block = block;
   }
 
   /**
    * ここで鯖起動もしくは再起動時に独自の値を持たせている場合に{@link
    * #getBlockData()} 保存したものを読み込むためのコンストラクタです
    *
-   * @param location カスタムブロックの位置
-   * @param data     ロードするデータ
+   * @param block       カスタムブロックのブロック
+   * @param dataElement ロードするデータ
    */
-  public CustomBlock(Block block, JsonObject data) {
+  public CustomBlock(Block block, JsonElement dataElement) {
     this(block);
   }
 
@@ -154,11 +184,9 @@ public abstract class CustomBlock {
    * {@link #remove(Location)} をinstance methodから呼び出せるように
    */
   public final void remove() {
-    Location loc = block.getLocation();
-    if (isCustomBlock(loc)) {
-      getCustomBlock(loc).clearData();
-      blocks.remove(loc);
-    }
+    getCustomBlock(block).clearData();
+    block.setType(Material.AIR);
+    blocks.remove(block.getLocation());
   }
 
   /**
@@ -168,10 +196,11 @@ public abstract class CustomBlock {
 
   /**
    * 何かブロックにデータを保存させたい場合はここにデータを保存してください
+   * (null or JsonNull を返すと保存しなくなります)
    *
    * @return data
    */
-  public JsonObject getBlockData() {
+  public JsonElement getBlockData() {
     return new JsonObject();
   }
 
@@ -201,5 +230,7 @@ public abstract class CustomBlock {
   public @NotNull String getIdentifier() {
     return getClass().getSimpleName();
   }
+
+  protected abstract @NotNull Material getOriginMaterial();
 
 }

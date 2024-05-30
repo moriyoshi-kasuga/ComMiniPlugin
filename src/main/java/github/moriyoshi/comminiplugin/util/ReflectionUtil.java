@@ -7,12 +7,9 @@ import org.reflections.Reflections;
 
 public class ReflectionUtil {
 
-  private ReflectionUtil() {
-  }
-
-  public static <T> void forEachAllClass(Reflections reflections, Class<? extends T> clazz,
-      Consumer<Class<? extends T>> consumer) {
-    for (Class<? extends T> item : reflections.getSubTypesOf(clazz)) {
+  public static <T> void forEachAllClass(final Reflections reflections, final Class<? extends T> clazz,
+      final Consumer<Class<? extends T>> consumer) {
+    for (final Class<? extends T> item : reflections.getSubTypesOf(clazz)) {
       if (Modifier.isAbstract(item.getModifiers())) {
         forEachAllClass(reflections, item, consumer);
         return;
@@ -21,14 +18,17 @@ public class ReflectionUtil {
     }
   }
 
-  public static <T> void forEachClass(Reflections reflections, Class<T> clazz,
-      Consumer<Class<? extends T>> consumer) {
-    for (Class<? extends T> item : reflections.getSubTypesOf(clazz)) {
+  public static <T> void forEachOnlyClass(final Reflections reflections, final Class<T> clazz,
+      final Consumer<Class<? extends T>> consumer) {
+    for (final Class<? extends T> item : reflections.getSubTypesOf(clazz)) {
       if (Modifier.isAbstract(item.getModifiers())) {
         return;
       }
       consumer.accept(item);
     }
+  }
+
+  private ReflectionUtil() {
   }
 
 }

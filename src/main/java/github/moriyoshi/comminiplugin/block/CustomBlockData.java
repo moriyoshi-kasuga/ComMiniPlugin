@@ -30,13 +30,13 @@ public class CustomBlockData extends JsonAPI {
     }
     data.getAsJsonArray("blocks").forEach(jsonElement -> {
       JsonObject object = jsonElement.getAsJsonObject();
-      Location loc = ComMiniPlugin.gson.fromJson(object.getAsJsonObject("location"), Location.class);
       String identifier = object.get("identifier").getAsString();
-      JsonObject blockData = object.getAsJsonObject("data");
       if (!CustomBlock.isRegister(identifier)) {
         ComMiniPrefix.SYSTEM.logError(identifier + "はCustomBlockに登録されていませんのでロードされませんでした");
         return;
       }
+      Location loc = ComMiniPlugin.gson.fromJson(object.get("location"), Location.class);
+      JsonElement blockData = object.get("data");
       CustomBlock.loadCustomBlock(identifier, loc, blockData);
     });
   }
@@ -47,11 +47,16 @@ public class CustomBlockData extends JsonAPI {
     JsonArray data = new JsonArray();
     CustomBlock.getBlocks().forEach((location, customBlock) -> {
       JsonObject json = new JsonObject();
+      val element = customBlock.getBlockData();
+      if (element == null || element.isJsonNull()) {
+        customBlock.clearData();
+        return;
+      }
+      json.add("data", element);
       json.add("location", ComMiniPlugin.gson.toJsonTree(location));
       json.addProperty("identifier", customBlock.getIdentifier());
-      json.add("data", customBlock.getBlockData());
-      customBlock.clearData();
       data.add(json);
+      customBlock.clearData();
     });
     object.add("blocks", data);
     return object;
