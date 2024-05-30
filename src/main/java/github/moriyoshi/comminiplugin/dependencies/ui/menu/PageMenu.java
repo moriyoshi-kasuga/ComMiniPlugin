@@ -596,11 +596,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
             updateView();
 
           } else {
-            // redirect required
-            holder.getPlugin().getServer().getScheduler().runTask(holder.getPlugin(), () -> {
-              event.getView().close();
-              event.getWhoClicked().openInventory(nextPageMenu.getInventory());
-            });
+            event.getWhoClicked().openInventory(nextPageMenu.getInventory());
           }
         }
       };
@@ -645,11 +641,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
             updateView();
 
           } else {
-            // redirect required
-            holder.getPlugin().getServer().getScheduler().runTask(holder.getPlugin(), () -> {
-              event.getView().close();
-              event.getWhoClicked().openInventory(previousPageMenu.getInventory());
-            });
+            event.getWhoClicked().openInventory(previousPageMenu.getInventory());
           }
         }
       };
@@ -840,7 +832,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
           clickEvent.getHotbarButton());
 
       if (rawSlot < myPageSize && currentPage instanceof MenuHolder
-          && (button = ((MenuHolder) currentPage).getButton(rawSlot)) != null && button instanceof RedirectButton redirectButton) {
+          && (button = ((MenuHolder) currentPage).getButton(rawSlot)) != null
+          && button instanceof RedirectButton redirectButton) {
 
         // a button from the page was clicked.
         // if it's a redirect, then special-case it so that we stay inside a PageMenu
@@ -878,14 +871,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements
           target = pageMenu.getInventory();
         }
 
-        final Inventory open = target;
-
-        // open the target inventory. It can be either the original inventory to which
-        // we were redirected, or in can be a page inside a new PageMenu.
-        getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
-          clickEvent.getWhoClicked().closeInventory();
-          clickEvent.getWhoClicked().openInventory(open);
-        });
+        clickEvent.getWhoClicked().openInventory(target);
 
       } else {
         // not a redirect button

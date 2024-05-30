@@ -55,7 +55,8 @@ public class RedirectItemButton<MH extends MenuHolder<?>> extends ItemButton<MH>
   }
 
   /**
-   * リンク {@link #to(MenuHolder, InventoryClickEvent)}によって供給されるインベントリにプレイヤーをリダイレクトします。
+   * リンク
+   * {@link #to(MenuHolder, InventoryClickEvent)}によって供給されるインベントリにプレイヤーをリダイレクトします。
    * <p>
    * このメソッドをオーバーライドするサブクラスは、常に{@code super.onClick(menuHolder, event);}を呼び出す必要があります。
    *

@@ -21,15 +21,11 @@ public interface RedirectButton<MH extends MenuHolder<?>> extends MenuButton<MH>
   }
 
   default void redirect(@NotNull MH holder, @NotNull InventoryClickEvent event) {
-    holder.getPlugin().getServer().getScheduler().runTask(holder.getPlugin(), () -> {
-      event.getView().close();
-
-      HumanEntity player = event.getWhoClicked();
-      Inventory to = to(holder, event);
-      if (to != null) {
-        player.openInventory(to);
-      }
-    });
+    HumanEntity player = event.getWhoClicked();
+    Inventory to = to(holder, event);
+    if (to != null) {
+      player.openInventory(to);
+    }
   }
 
   /**

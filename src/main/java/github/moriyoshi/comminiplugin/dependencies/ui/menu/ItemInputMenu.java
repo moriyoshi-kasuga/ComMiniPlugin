@@ -18,11 +18,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
 
-  private static final ItemStack DEFAULT = new ItemBuilder(Material.END_CRYSTAL).name(
-      "ドラッグでアイテムをセット").build();
-  private static final ItemStack YES_STACK = new ItemBuilder(Material.LIME_CONCRETE).name(
+  private final ItemStack YES_STACK = new ItemBuilder(Material.LIME_CONCRETE).name(
       "Yes - continue").build();
-  private static final ItemStack NO_STACK = new ItemBuilder(Material.RED_CONCRETE).name(
+  private final ItemStack NO_STACK = new ItemBuilder(Material.RED_CONCRETE).name(
       "No - cancel").build();
 
   private final ItemStack defaultItemStack;
@@ -43,7 +41,8 @@ public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
 
   public ItemInputMenu(P plugin, String title, BiConsumer<ItemStack, InventoryClickEvent> yesAction,
       BiConsumer<ItemStack, InventoryClickEvent> noAction) {
-    this(plugin, title, DEFAULT, yesAction, noAction);
+    this(plugin, title, new ItemBuilder(Material.END_CRYSTAL).name(
+        "ドラッグでアイテムをセット").build(), yesAction, noAction);
   }
 
   protected void setupButtons() {
@@ -71,8 +70,7 @@ public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
       getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
         event.getPlayer().openInventory(getInventory());
         Util.send(event.getPlayer(),
-            "<red>このインベントリーを閉じることはできるません<gray>(noボタンを押して閉じてください)"
-        );
+            "<red>このインベントリーを閉じることはできるません<gray>(noボタンを押して閉じてください)");
       });
     }
   }
