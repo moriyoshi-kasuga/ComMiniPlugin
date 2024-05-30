@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -26,18 +27,10 @@ public class WingItem extends CustomItem {
     super(item);
   }
 
-  @Override
-  public void interact(PlayerInteractEvent e) {
-    if (e.getAction().isLeftClick()) {
-      return;
-    }
-    val player = e.getPlayer();
-
-    player.setVelocity(player.getVelocity().setY(2));
+  public static void setWing(Player player) {
     player.getEquipment().setItem(EquipmentSlot.CHEST,
         new ItemBuilder(Material.ELYTRA).name("<yellow>Wing").customItemFlag(CustomItemFlag.MOVE_INV, false).build(),
         false);
-    itemUse();
     new BukkitRunnable() {
 
       @SuppressWarnings("deprecation")
@@ -51,6 +44,17 @@ public class WingItem extends CustomItem {
       }
 
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 10, 1);
+  }
+
+  @Override
+  public void interact(PlayerInteractEvent e) {
+    if (e.getAction().isLeftClick()) {
+      return;
+    }
+    itemUse();
+    val player = e.getPlayer();
+    player.setVelocity(player.getVelocity().setY(2));
+    setWing(player);
   }
 
   @Override
