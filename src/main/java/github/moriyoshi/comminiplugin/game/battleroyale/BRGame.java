@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -18,7 +17,6 @@ import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
-import github.moriyoshi.comminiplugin.system.gametype.StageTypeGame;
 import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
@@ -27,14 +25,15 @@ import net.kyori.adventure.bossbar.BossBar;
 
 public class BRGame extends AbstractGame implements WinnerTypeGame {
 
-  private final int MAX_RADIUS_RANGE = 400;
-  private final int MIN_BORDER_RANGE = 50;
-  private final int MAX_SECOND = 60 * 7;
-
   public final HashMap<UUID, Boolean> players = new HashMap<>();
 
-  private StageTypeGame stageTypeGame;
   private BossBar bossBar;
+
+  private BRField field;
+
+  public void setField(final BRField field) {
+    this.field = field;
+  }
 
   public BRGame() {
     super(
@@ -45,7 +44,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"),
         new BRListener());
     this.world = ComMiniWorld.GAME_WORLD;
-    this.lobby = new Location(ComMiniWorld.GAME_WORLD, 1000.5, 60, 1000.5);
   }
 
   public final void joinPlayer(final Player player, final boolean isPlayer) {
@@ -98,9 +96,12 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
       prefix.send(player, "<red>二人以上でしかプレイできません");
       return false;
     }
-    stageTypeGame = new StageTypeGame(world, lobby, MAX_RADIUS_RANGE, MIN_BORDER_RANGE, MAX_SECOND);
-    stageTypeGame.stageInitialize();
-    stageTypeGame.stageStart();
+    if (field == null) {
+      prefix.send(player, "<red>フィールドを選択してください");
+      return false;
+    }
+    field.start();
+
     runPlayers(p -> {
       val uuid = p.getUniqueId();
       val inv = p.getInventory();
@@ -148,7 +149,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
   @Override
   protected void innerFinishGame() {
-    stageTypeGame.stageEnd();
+    field.stop();
     players.clear();
     if (bossBar != null) {
       runPlayers(p -> p.hideBossBar(bossBar));
@@ -158,7 +159,12 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
   @Override
   protected void fieldInitialize(final boolean isCreatingInstance) {
-    this.stageTypeGame = null;
+    this.field = null;
     this.bossBar = null;
+  }
+
+  @Override
+  public void teleportLobby(Player player) {
+    player.teleport(field.getLobby());
   }
 }

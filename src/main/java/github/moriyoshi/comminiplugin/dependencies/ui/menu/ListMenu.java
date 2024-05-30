@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.dependencies.ui.menu;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
@@ -59,35 +60,43 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
       getPage().setButton(slot, function.apply(rewards.get(rewardStartIndex + slot)));
     }
     getDefaultMenu().ifPresent(menu -> {
-      setButton(getPageSize(), new RedirectItemButton<>(goToFirstPage, menu::getInventory));
-      getSerachMethod().ifPresent(method -> getNewRewadsMenu().ifPresent(newMethod -> setButton(getPageSize() + 8,
+      setButton(getPageSize(), new RedirectItemButton<>(goToFirstPage, () -> menu.get().getInventory()));
+      getSerachMethod().ifPresent(method -> setButton(getPageSize() + 8,
           new ItemButton<>(new ItemBuilder(Material.BOOK).name("<aqua>クリックで文字検索").build()) {
             @Override
             public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-              AnvilInputs
-                  .postClose(AnvilInputs.getInput(getPlugin(), "<aqua>文字で検索", (t, u) -> t,
+              AnvilInputs.postClose(
+                  AnvilInputs.getInput(getPlugin(), "<aqua>文字で検索", (t, u) -> t,
                       (s, completion) -> List.of(ResponseAction.openInventory(
-                          newMethod.apply(rewards.stream().filter(key -> method.test(s, key)).toList())
+                          getNewRewadsMenu(rewards.stream().filter(key -> method.test(s, key)).toList())
                               .getInventory()))),
-                      getPlugin(), player -> player.openInventory(getInventory()))
+                  ComMiniPlugin.getPlugin(), state -> {
+                    state.getPlayer().openInventory(getInventory());
+                  })
                   .open((Player) event.getWhoClicked());
             }
-          })));
+          }));
     });
 
     // required for the page to even work
     super.onOpen(event);
   }
 
+  @Override
+  public void onClick(InventoryClickEvent clickEvent) {
+    super.onClick(clickEvent);
+  }
+
   public Optional<BiPredicate<String, T>> getSerachMethod() {
     return Optional.empty();
   }
 
-  public Optional<Function<List<T>, ListMenu<T>>> getNewRewadsMenu() {
-    return Optional.empty();
+  public ListMenu<T> getNewRewadsMenu(List<T> list) {
+    return getNewMenu(list, 0, Math.min(list.size(), getPageSize()));
   }
 
-  public Optional<ListMenu<T>> getDefaultMenu() {
+  @NotNull
+  public Optional<Supplier<ListMenu<T>>> getDefaultMenu() {
     return Optional.empty();
   }
 
@@ -99,16 +108,26 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
     super.onClose(event);
   }
 
+  @SuppressWarnings("unchecked")
+  public ListMenu<T> getNewMenu(List<T> list, int rewardStartIndex, int rewardEndIndex) {
+    try {
+      return getClass()
+          .getDeclaredConstructor(ComMiniPlugin.class, String.class, int.class, List.class, int.class, int.class,
+              Function.class)
+          .newInstance(getPlugin(), title, getPageSize(), list, rewardStartIndex, rewardEndIndex, function);
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+        | NoSuchMethodException | SecurityException e) {
+      throw new RuntimeException("Failed to create new " + getClass().getSimpleName() + " of index", e);
+    }
+  }
+
   @Override
   public Optional<Supplier<ListMenu<T>>> getNextPageMenu() {
     // there is a next page if the current range upper bound is smaller than the end
     // of the list
     if (rewardEndIndex < rewards.size()) {
-      return Optional.of(() -> new ListMenu<>(getPlugin(), title, getPageSize(), rewards, rewardEndIndex,
-          Math.min(rewards.size(), rewardEndIndex + getPageSize()), function));
-      // return Optional.of(() -> new ListMenu<>(getPlugin(), title, getPageSize(),
-      // rewards, rewardEndIndex,
-      // Math.min(rewards.size(), rewardEndIndex + getPageSize())));
+      return Optional
+          .of(() -> getNewMenu(rewards, rewardEndIndex, Math.min(rewards.size(), rewardEndIndex + getPageSize())));
     } else {
       return Optional.empty();
     }
@@ -118,8 +137,8 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
   public Optional<Supplier<ListMenu<T>>> getPreviousPageMenu() {
     // there is a previous page if we didn't start 0
     if (rewardStartIndex > 0) {
-      return Optional.of(() -> new ListMenu<>(getPlugin(), title, getPageSize(), rewards,
-          Math.max(0, rewardStartIndex - getPageSize()), Math.min(rewardStartIndex, rewards.size()), function));
+      return Optional.of(() -> getNewMenu(rewards, Math.max(0, rewardStartIndex - getPageSize()),
+          Math.min(rewardStartIndex, rewards.size())));
     } else {
       return Optional.empty();
     }

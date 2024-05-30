@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
-import github.moriyoshi.comminiplugin.constant.MenuItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRGame;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSGame;
+import github.moriyoshi.comminiplugin.object.MenuItem;
 import lombok.Getter;
 
 public class GameSystem {

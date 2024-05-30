@@ -18,7 +18,6 @@ import de.tr7zw.changeme.nbtapi.NBTContainer;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.CommandTree;
 import github.moriyoshi.comminiplugin.api.serializer.ItemStackAdapter;
 import github.moriyoshi.comminiplugin.api.serializer.LocationAdapter;
@@ -26,8 +25,9 @@ import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.block.CustomBlockData;
 import github.moriyoshi.comminiplugin.command.LocationsCommands;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.dependencies.glowing.GlowingBlocks;
+import github.moriyoshi.comminiplugin.dependencies.glowing.GlowingEntities;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
-import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.CustomListener;
@@ -53,15 +53,25 @@ public final class ComMiniPlugin extends JavaPlugin {
     return getPlugin(ComMiniPlugin.class);
   }
 
+  @Getter
+  private static GlowingEntities glowingEntities;
+  @Getter
+  private static GlowingBlocks glowingBlocks;
+
   @Override
   public void onEnable() {
     CommandAPI.onEnable();
+    glowingEntities = new GlowingEntities(this);
+    glowingBlocks = new GlowingBlocks(this);
     registerEvent(guiListener = GuiListener.getInstance());
     registerEvent(GameListener.getInstance());
     registerEvent(CustomListener.getInstance());
-    val reflections = new Reflections("github.moriyoshi.comminiplugin");
-    CustomItem.registers(reflections);
-    CustomBlock.registers(reflections);
+    val reflectionsObject = new Reflections("github.moriyoshi.comminiplugin.object");
+    val reflectionsGame = new Reflections("github.moriyoshi.comminiplugin.game");
+    CustomItem.registers(reflectionsObject);
+    CustomItem.registers(reflectionsGame);
+    CustomBlock.registers(reflectionsObject);
+    CustomBlock.registers(reflectionsGame);
     val commands = new Reflections("github.moriyoshi.comminiplugin.command");
     ReflectionUtil.forEachAllClass(commands, CommandAPICommand.class, command -> {
       try {
@@ -80,17 +90,16 @@ public final class ComMiniPlugin extends JavaPlugin {
       }
     });
 
-    registerCommand(new CommandAPICommand("custommenu").withPermission(CommandPermission.OP)
-        .executesPlayer((p, args) -> {
-          new SSCustomMenu().openInv(p);
-        }));
-    registerCommand(new CommandAPICommand("gamedebug").executesPlayer((p, args) -> {
+    CustomBlockData.getInstance();
+    ComMiniPlayer.gameInitialize();
+
+    registerCommand(new CommandAPICommand("debugmode").executesPlayer((p, args) -> {
       final ComMiniPlayer player = ComMiniPlayer.getPlayer(p.getUniqueId());
       val flag = !player.isDebug();
       player.setDebug(flag);
       ComMiniPrefix.SYSTEM.send(p, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
     }));
-    ComMiniPlayer.gameInitialize();
+
     new WorldCreator("lobby").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
         .createWorld();
     new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
@@ -98,7 +107,6 @@ public final class ComMiniPlugin extends JavaPlugin {
 
     new WorldCreator("SkiResort").environment(Environment.NORMAL).createWorld();
     new WorldCreator("Fantacy").environment(Environment.NORMAL).createWorld();
-    CustomBlockData.getInstance();
   }
 
   @Override
@@ -110,6 +118,9 @@ public final class ComMiniPlugin extends JavaPlugin {
     CustomBlockData.getInstance().saveFile();
     CommandAPI.onDisable();
     LocationsCommands.getManager().saveFile();
+
+    glowingEntities.disable();
+    glowingBlocks.disable();
   }
 
   /**

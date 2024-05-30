@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.test;
+package github.moriyoshi.comminiplugin.object.jumppad;
 
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -7,18 +7,17 @@ import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.game.battleroyale.TreasureChest;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
 
-public class TestItem extends CustomItem {
+public class JumpPadItem extends CustomItem {
 
-  public TestItem() {
-    this(new ItemBuilder(Material.BARRIER).name("<red>test").build());
+  public JumpPadItem() {
+    this(new ItemBuilder(Material.SLIME_BLOCK).name("<red>Jump Pad Tool").build());
   }
 
-  public TestItem(@NotNull ItemStack item) {
+  public JumpPadItem(@NotNull ItemStack item) {
     super(item);
   }
 
@@ -31,18 +30,22 @@ public class TestItem extends CustomItem {
       return;
     }
     if (e.getAction().isLeftClick()) {
-      if (!CustomBlock.isCustomBlock(block)) {
-        ComMiniPrefix.SYSTEM.send(player, "<red>please look at a custom block");
+      if (!CustomBlock.isCustomBlock(block, JumpPadBlock.class)) {
+        ComMiniPrefix.SYSTEM.send(player, "<red>please look at a jumppad block");
         return;
       }
       CustomBlock.getCustomBlock(block).remove();
-      ComMiniPrefix.SYSTEM.send(player, "<green>successfully removed custom block");
+      ComMiniPrefix.SYSTEM.send(player, "<green>successfully removed jumppad block");
     } else {
       if (CustomBlock.isCustomBlock(block)) {
-        ComMiniPrefix.SYSTEM.send(player, "<red>already a custom block");
+        if (!CustomBlock.isCustomBlock(block, JumpPadBlock.class)) {
+          ComMiniPrefix.SYSTEM.send(player, "<red>please look at a jumppad block not a custom block");
+          return;
+        }
+        CustomBlock.getCustomBlock(block, JumpPadBlock.class).settings(player);
         return;
       }
-      new TreasureChest(block, player);
+      new JumpPadBlock(block, player);
     }
   }
 

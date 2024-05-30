@@ -81,7 +81,7 @@ public abstract class AbstractGame implements InterfaceGame {
     });
   }
 
-  public final void teleportLobby(final Player player) {
+  public void teleportLobby(final Player player) {
     player.teleport(this.lobby);
   }
 

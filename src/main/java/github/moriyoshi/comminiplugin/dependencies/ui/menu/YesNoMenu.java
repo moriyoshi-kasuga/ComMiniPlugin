@@ -17,7 +17,8 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * アクションの確認やキャンセルを促すメニューのこと。 このメニューは、「はい」ボタンまたは「いいえ」ボタンがクリックされたときに閉じます。 実行するアクションがNULLの場合、何も起こりません。
+ * アクションの確認やキャンセルを促すメニューのこと。 このメニューは、「はい」ボタンまたは「いいえ」ボタンがクリックされたときに閉じます。
+ * 実行するアクションがNULLの場合、何も起こりません。
  *
  * @param <P> your plugin's type
  */
@@ -104,7 +105,8 @@ public class YesNoMenu<P extends Plugin> extends MenuHolder<P> {
   }
 
   /**
-   * Creates the YesNoMenu. The inventory title defaults to {@code "Are you sure?"}.
+   * Creates the YesNoMenu. The inventory title defaults to
+   * {@code "Are you sure?"}.
    *
    * @param plugin    the plugin
    * @param yesAction the action to perform when the yes-button is clicked
@@ -131,8 +133,7 @@ public class YesNoMenu<P extends Plugin> extends MenuHolder<P> {
       getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
         event.getPlayer().openInventory(getInventory());
         Util.send(event.getPlayer(),
-            "<red>このインベントリーを閉じることはできるません<gray>(noボタンを押して閉じてください)"
-        );
+            "<red>このインベントリーを閉じることはできるません<gray>(noボタンを押して閉じてください)");
       });
     }
   }
@@ -145,8 +146,7 @@ public class YesNoMenu<P extends Plugin> extends MenuHolder<P> {
     setButton(getInventory().getSize() - 1, makeButton(false));
     getMiddleItem()
         .ifPresent(itemStack -> setButton((int) (getInventory().getSize() / 2.0),
-            new ItemButton<>(itemStack)
-        ));
+            new ItemButton<>(itemStack)));
   }
 
   public Optional<ItemStack> getMiddleItem() {
@@ -167,18 +167,16 @@ public class YesNoMenu<P extends Plugin> extends MenuHolder<P> {
 
       @Override
       public void onClick(@NotNull YesNoMenu<P> holder, @NotNull InventoryClickEvent event) {
-        getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
-          if (isCloseable) {
-            event.getView().close();
-          } else {
-            isCloseable = true;
-            event.getView().close();
-            isCloseable = false;
-          }
-          if (action != null) {
-            action.accept(event);
-          }
-        });
+        if (isCloseable) {
+          event.getView().close();
+        } else {
+          isCloseable = true;
+          event.getView().close();
+          isCloseable = false;
+        }
+        if (action != null) {
+          action.accept(event);
+        }
       }
     };
   }

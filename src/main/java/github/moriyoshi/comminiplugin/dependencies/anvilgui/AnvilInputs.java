@@ -1,20 +1,21 @@
 package github.moriyoshi.comminiplugin.dependencies.anvilgui;
 
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
-import net.wesjd.anvilgui.AnvilGUI;
-import net.wesjd.anvilgui.AnvilGUI.StateSnapshot;
+
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.Util;
+import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
+import net.wesjd.anvilgui.AnvilGUI;
+import net.wesjd.anvilgui.AnvilGUI.StateSnapshot;
 
 public class AnvilInputs {
 
@@ -25,8 +26,7 @@ public class AnvilInputs {
       @NotNull BiFunction<String, StateSnapshot, T> toClazz,
       @NotNull BiFunction<T, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
     return getInput(plugin, title, (s, state) -> Optional.of(toClazz.apply(s, state)),
-        (s, state) -> Collections.emptyList(), func
-    );
+        (s, state) -> Collections.emptyList(), func);
   }
 
   public static <T> AnvilGUI.Builder getInput(@NotNull Plugin plugin, @NotNull Object title,
@@ -51,12 +51,11 @@ public class AnvilInputs {
   }
 
   public static AnvilGUI.Builder postClose(@NotNull AnvilGUI.Builder builder, Plugin plugin,
-      Consumer<Player> consumer) {
+      Consumer<StateSnapshot> consumer) {
     builder.onClose(state -> plugin.getServer().getScheduler().runTask(plugin, () -> {
-      Player player = state.getPlayer();
-      InventoryType type = player.getOpenInventory().getType();
+      InventoryType type = state.getPlayer().getOpenInventory().getType();
       if (type == InventoryType.CRAFTING || type == InventoryType.CREATIVE) {
-        consumer.accept(player);
+        consumer.accept(state);
       }
     }));
     return builder;

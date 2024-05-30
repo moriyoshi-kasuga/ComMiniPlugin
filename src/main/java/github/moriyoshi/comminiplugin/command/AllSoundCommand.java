@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -23,51 +24,52 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
 
 public class AllSoundCommand extends CommandAPICommand {
+  
+  public static Material getMaterial(final Sound sound) {
+    final String name = sound.name();
+    val materials = new ArrayList<>(Arrays.asList(Material.values()));
+    val split = new ArrayList<>(List.of(name.split("_")));
+    val finalName = split.get(1).toLowerCase();
+    return switch (split.remove(0)) {
+      case "AMBIENT" -> Material.STONE;
+      case "BLOCK" -> {
+        while (!split.isEmpty()) {
+          try {
+            yield Material.valueOf(String.join("_", split));
+          } catch (final IllegalArgumentException e) {
+            split.remove(split.size() - 1);
+          }
+        }
+        yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalName))
+            .findFirst().orElse(Material.BEDROCK);
+      }
+      case "ENTITY" -> {
+        while (!split.isEmpty()) {
+          val str = String.join("_", split);
+          try {
+            yield Material.valueOf(str + "_SPAWN_EGG");
+          } catch (final IllegalArgumentException e) {
+            try {
+              yield Material.valueOf(str);
+            } catch (final IllegalArgumentException ignore) {
+            }
+            split.remove(split.size() - 1);
+          }
+        }
+        yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalName))
+            .findFirst().orElse(Material.BEDROCK);
+      }
+      default -> Material.BEDROCK;
+    };
+  }
 
-  private static final class AllSoundMenu extends ListMenu<Sound> {
-    private static Material getMaterial(final Sound sound) {
-      final String name = sound.name();
-      val materials = new ArrayList<>(Arrays.asList(Material.values()));
-      val split = new ArrayList<>(List.of(name.split("_")));
-      val finalName = split.get(1).toLowerCase();
-      return switch (split.remove(0)) {
-        case "AMBIENT" -> Material.STONE;
-        case "BLOCK" -> {
-          while (!split.isEmpty()) {
-            try {
-              yield Material.valueOf(String.join("_", split));
-            } catch (final IllegalArgumentException e) {
-              split.remove(split.size() - 1);
-            }
-          }
-          yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalName))
-              .findFirst().orElse(Material.BEDROCK);
-        }
-        case "ENTITY" -> {
-          while (!split.isEmpty()) {
-            val str = String.join("_", split);
-            try {
-              yield Material.valueOf(str + "_SPAWN_EGG");
-            } catch (final IllegalArgumentException e) {
-              try {
-                yield Material.valueOf(str);
-              } catch (final IllegalArgumentException ignore) {
-              }
-              split.remove(split.size() - 1);
-            }
-          }
-          yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalName))
-              .findFirst().orElse(Material.BEDROCK);
-        }
-        default -> Material.BEDROCK;
-      };
-    }
+  public static final class AllSoundMenu extends ListMenu<Sound> {
 
     public AllSoundMenu() {
       super("<green>Sounds", 45, new ArrayList<>(Arrays.asList(Sound.values())), (sound) -> {
         val m = getMaterial(sound);
         return new ItemButton<>(
-            new ItemBuilder(m == null || m.isAir() || !m.isItem() ? Material.BEDROCK : m).addLore(
+            new ItemBuilder(m == null || m.isEmpty() || !m.isItem() ? Material.BEDROCK : m).addLore(
                 "")
                 .addLore(sound.name())
                 .build()) {
@@ -88,15 +90,8 @@ public class AllSoundCommand extends CommandAPICommand {
     }
 
     @Override
-    public Optional<ListMenu<Sound>> getDefaultMenu() {
-      return Optional.of(new AllSoundMenu());
-    }
-
-    @Override
-    public Optional<Function<List<Sound>, ListMenu<Sound>>> getNewRewadsMenu() {
-      return Optional
-          .of((r -> new AllSoundMenu(getPlugin(), title, getPageSize(), r, 0, Math.min(r.size(), getPageSize()),
-              function)));
+    public Optional<Supplier<ListMenu<Sound>>> getDefaultMenu() {
+      return Optional.of(() -> new AllSoundMenu());
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -37,20 +38,15 @@ public class CustomItemsCommand extends CommandAPICommand {
       });
     }
 
-    public CustomItemMenu(final ComMiniPlugin plugin, final String title, final int pageSize, final List<String> rewards, final int rewardStartIndex,
+    public CustomItemMenu(final ComMiniPlugin plugin, final String title, final int pageSize,
+        final List<String> rewards, final int rewardStartIndex,
         final int rewardEndIndex, final Function<String, MenuButton<MenuHolder<ComMiniPlugin>>> function) {
       super(plugin, title, pageSize, rewards, rewardStartIndex, rewardEndIndex, function);
     }
 
     @Override
-    public Optional<ListMenu<String>> getDefaultMenu() {
-      return Optional.of(new CustomItemMenu());
-    }
-
-    @Override
-    public Optional<Function<List<String>, ListMenu<String>>> getNewRewadsMenu() {
-      return Optional.of((r -> new CustomItemMenu(getPlugin(), title, getPageSize(), r, 0,
-          Math.min(r.size(), getPageSize()), function)));
+    public Optional<Supplier<ListMenu<String>>> getDefaultMenu() {
+      return Optional.of(() -> new CustomItemMenu());
     }
 
     @Override

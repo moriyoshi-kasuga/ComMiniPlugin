@@ -53,7 +53,7 @@ public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
       public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
         ItemStack cursor = event.getCursor();
         if (cursor.isEmpty()) {
-          event.getInventory().setItem(event.getSlot(), stack);
+          event.getClickedInventory().setItem(event.getSlot(), stack);
           itemStack = null;
           return;
         }
@@ -107,18 +107,16 @@ public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
 
       @Override
       public void onClick(@NotNull ItemInputMenu<P> holder, @NotNull InventoryClickEvent event) {
-        getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
-          if (isCloseable) {
-            event.getView().close();
-          } else {
-            isCloseable = true;
-            event.getView().close();
-            isCloseable = false;
-          }
-          if (action != null) {
-            action.accept(getItemStack(), event);
-          }
-        });
+        if (isCloseable) {
+          event.getView().close();
+        } else {
+          isCloseable = true;
+          event.getView().close();
+          isCloseable = false;
+        }
+        if (action != null) {
+          action.accept(getItemStack(), event);
+        }
       }
     };
   }

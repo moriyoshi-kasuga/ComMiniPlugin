@@ -7,6 +7,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import github.moriyoshi.comminiplugin.block.CustomModelBlock;
@@ -33,17 +34,32 @@ public class TreasureChest extends CustomModelBlock {
     updateDisplayItem();
   }
 
+  public TreasureChest(Block block, int level) {
+    super(block);
+    this.level = level;
+    updateDisplayItem();
+  }
+
   public TreasureChest(Block block, JsonObject data) {
     super(block, data);
-    if (data.has("level")) {
-      this.level = data.get("level").getAsInt();
-    }
+    this.level = data.get("level").getAsInt();
     updateDisplayItem();
   }
 
   public TreasureChest(Block block, Player player) {
     super(block, player);
     updateDisplayItem();
+  }
+
+  public TreasureChest(Block block, Player player, int level) {
+    super(block, player);
+    this.level = level;
+    updateDisplayItem();
+  }
+
+  @Override
+  public JsonElement getBlockData() {
+    return null;
   }
 
   @Override
