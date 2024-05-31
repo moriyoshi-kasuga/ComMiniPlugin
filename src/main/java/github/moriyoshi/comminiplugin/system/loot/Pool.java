@@ -62,8 +62,9 @@ public class Pool {
     entries.forEach(entry -> random.add(entry.weight, entry));
     for (int i = 0; i < (rolls + bonusRolls.getAsInt()); i++) {
       val entry = random.next();
-      if (!entry.itemStack.isEmpty() && entry.condition.getAsBoolean()) {
-        list.add(entry.itemStack);
+      val item = entry.supplier.get();
+      if (!item.isEmpty() && entry.condition.getAsBoolean()) {
+        list.add(item);
       }
     }
 

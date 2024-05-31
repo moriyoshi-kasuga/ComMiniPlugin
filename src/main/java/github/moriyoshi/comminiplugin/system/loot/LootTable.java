@@ -16,7 +16,7 @@ import lombok.val;
 
 public class LootTable {
 
-  public final List<Pool> pools;
+  private final List<Pool> pools;
 
   public LootTable() {
     this.pools = new ArrayList<>();
