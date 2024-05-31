@@ -160,19 +160,25 @@ public interface Shape {
         // there does not seem to be any horse- or llama inventory type.
         // I think bukkit should have these. (with isCreatable() returning false).
 
-        if (inventory instanceof LlamaInventory) {
-          if (((Llama) inventory.getHolder()).isCarryingChest()) {
-            return CHEST_LLAMA;
-          } else {
-            return LLAMA;
+        switch (inventory) {
+          case LlamaInventory itemStacks -> {
+            if (((Llama) inventory.getHolder()).isCarryingChest()) {
+              return CHEST_LLAMA;
+            } else {
+              return LLAMA;
+            }
           }
-        } else if (inventory instanceof HorseInventory) {
-          return HORSE;
-        } else if (inventory instanceof AbstractHorseInventory) {
-          if (((Mule) inventory.getHolder()).isCarryingChest()) {
-            return CHEST_MULE;
-          } else {
-            return MULE;
+          case HorseInventory itemStacks -> {
+            return HORSE;
+          }
+          case AbstractHorseInventory itemStacks -> {
+            if (((Mule) inventory.getHolder()).isCarryingChest()) {
+              return CHEST_MULE;
+            } else {
+              return MULE;
+            }
+          }
+          default -> {
           }
         }
 

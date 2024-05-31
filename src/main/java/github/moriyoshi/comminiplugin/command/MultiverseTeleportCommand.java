@@ -27,17 +27,9 @@ public class MultiverseTeleportCommand extends CommandAPICommand {
         args.getOptional("location").ifPresentOrElse((temp2) -> {
           val location = (Location) temp2;
           location.setWorld(world);
-          players.forEach(player -> {
-            player.teleport(location);
-          });
-        }, () -> {
-          players.forEach(player -> {
-            player.teleport(world.getSpawnLocation());
-          });
-        });
-      }, () -> {
-        p.teleport(world.getSpawnLocation());
-      });
+          players.forEach(player -> player.teleport(location));
+        }, () -> players.forEach(player -> player.teleport(world.getSpawnLocation())));
+      }, () -> p.teleport(world.getSpawnLocation()));
     });
   }
 }

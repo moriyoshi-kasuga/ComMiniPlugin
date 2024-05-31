@@ -70,9 +70,8 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
                       (s, completion) -> List.of(ResponseAction.openInventory(
                           getNewRewadsMenu(rewards.stream().filter(key -> method.test(s, key)).toList())
                               .getInventory()))),
-                  ComMiniPlugin.getPlugin(), state -> {
-                    state.getPlayer().openInventory(getInventory());
-                  })
+                  ComMiniPlugin.getPlugin(), state -> state.getPlayer().openInventory(getInventory())
+                  )
                   .open((Player) event.getWhoClicked());
             }
           }));

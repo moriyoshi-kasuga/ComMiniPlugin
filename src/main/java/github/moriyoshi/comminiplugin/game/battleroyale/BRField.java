@@ -132,9 +132,9 @@ public class BRField {
     });
   }
 
-  public static enum SIGNAL {
+  public enum SIGNAL {
     END,
     MIN,
-    NONE;
+    NONE
   }
 }

@@ -52,9 +52,7 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<B
           field.getTreasure().addPlayer((Player) event.getWhoClicked());
           ComMiniPrefix.SYSTEM.send(event.getWhoClicked(), "<green>宝箱設定開始しました");
           event.getWhoClicked().getInventory().addItem(new BRTreasureItem().getItem());
-        }, () -> {
-          ComMiniPrefix.SYSTEM.send(event.getWhoClicked(), "<red>宝箱を配置するフィールドを設定してから実行してください");
-        });
+        }, () -> ComMiniPrefix.SYSTEM.send(event.getWhoClicked(), "<red>宝箱を配置するフィールドを設定してから実行してください"));
       }
     });
     setButton(5, new ItemButton<>(new ItemBuilder(Material.RED_CONCRETE).name("<red>宝箱の設置終了").build()) {
@@ -63,9 +61,7 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<B
         Optional.ofNullable(getGame().getField()).ifPresentOrElse(field -> {
           field.getTreasure().removePlayer((Player) event.getWhoClicked());
           ComMiniPrefix.SYSTEM.send(event.getWhoClicked(), "<red>宝箱設定終了しました");
-        }, () -> {
-          ComMiniPrefix.SYSTEM.send(event.getWhoClicked(), "<red>宝箱を配置するフィールドを設定してから実行してください");
-        });
+        }, () -> ComMiniPrefix.SYSTEM.send(event.getWhoClicked(), "<red>宝箱を配置するフィールドを設定してから実行してください"));
       }
     });
   }

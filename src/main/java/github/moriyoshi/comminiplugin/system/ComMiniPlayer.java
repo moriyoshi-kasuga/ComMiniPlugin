@@ -107,7 +107,8 @@ public final class ComMiniPlayer extends JsonAPI {
       e.printStackTrace();
     }
     val name = clazz.getSimpleName();
-    data.generateLoadData(Optional.ofNullable(datas.getAsJsonObject(name)).orElseGet(() -> new JsonObject()));
+    data.generateLoadData(Optional.ofNullable(datas.getAsJsonObject(name)).orElseGet(
+        JsonObject::new));
     gamePlayerDatas.put(clazz, data);
     return data;
   }
@@ -116,9 +117,7 @@ public final class ComMiniPlayer extends JsonAPI {
   protected JsonElement generateSaveData() {
     val object = new JsonObject();
     val finalDatas = new JsonObject();
-    gamePlayerDatas.forEach((clazz, instance) -> {
-      finalDatas.add(clazz.getSimpleName(), instance.generateSaveData());
-    });
+    gamePlayerDatas.forEach((clazz, instance) -> finalDatas.add(clazz.getSimpleName(), instance.generateSaveData()));
     object.add("datas", finalDatas);
     return object;
   }

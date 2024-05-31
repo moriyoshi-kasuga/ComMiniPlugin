@@ -14,7 +14,7 @@ public enum Messages {
   GAME_NOT_START("<red>ゲームは開始されていません!"),
   GAME_ALREADY_START("<red>既にゲームは開始されています!");
 
-  public Component message;
+  public final Component message;
 
   Messages(String message) {
     this.message = Util.mm(message);
@@ -25,9 +25,7 @@ public enum Messages {
   }
 
   public void send(Collection<CommandSender> senders) {
-    senders.forEach(sender -> {
-      ComMiniPrefix.MAIN.send(sender, this.message);
-    });
+    senders.forEach(sender -> ComMiniPrefix.MAIN.send(sender, this.message));
   }
 
   public void send(CommandSender... senders) {

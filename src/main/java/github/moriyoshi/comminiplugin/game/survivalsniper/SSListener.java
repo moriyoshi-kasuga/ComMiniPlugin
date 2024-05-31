@@ -138,7 +138,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
       game.teleportLobby(p);
       return;
     }
-    game.endGame(Bukkit.getPlayer(alives.get(0).getKey()));
+    game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()));
   }
 
 }

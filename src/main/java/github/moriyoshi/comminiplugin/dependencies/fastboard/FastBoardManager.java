@@ -27,7 +27,7 @@ public class FastBoardManager {
   }
 
   public final void addAll(Collection<Player> c) {
-    c.forEach(player -> add(player));
+    c.forEach(this::add);
   }
 
   public final void addAll(Player... players) {

@@ -20,13 +20,12 @@ import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import lombok.Getter;
 import lombok.val;
 
+@Getter
 @SuppressWarnings("deprecation")
 public abstract class BlockInputsAPI<T> extends JsonAPI {
 
-  @Getter
   private final Map<UUID, Player> players = new HashMap<>();
 
-  @Getter
   private Map<Location, T> locations;
 
   public BlockInputsAPI(Plugin plugin, String name) {
@@ -63,7 +62,7 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
   }
 
   public final void clearPlayer() {
-    players.values().forEach(p -> hideAllLocation(p));
+    players.values().forEach(this::hideAllLocation);
     players.clear();
   }
 

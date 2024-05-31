@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.object.jumppad;
 import java.util.List;
 import java.util.Random;
 
+import java.util.stream.Stream;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -121,8 +122,8 @@ public class JumpPadBlock extends CustomBlock {
           return;
         }
         for (val player : loc.getNearbyPlayers(1.5)) {
-          if (!List.of(player.getLocation().subtract(0, 0.1, 0), player.getLocation()).stream()
-              .anyMatch(temp -> temp.toBlockLocation().toVector().equals(l))) {
+          if (Stream.of(player.getLocation().subtract(0, 0.1, 0), player.getLocation())
+              .noneMatch(temp -> temp.toBlockLocation().toVector().equals(l))) {
             continue;
           }
           Location launchLocation = player.getLocation();

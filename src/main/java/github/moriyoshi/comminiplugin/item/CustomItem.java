@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -291,6 +292,14 @@ public abstract class CustomItem implements InterfaceItem {
    * @param e event
    */
   public void itemSpawn(final ItemSpawnEvent e) {
+  }
+
+  /**
+   * このアイテムをメインハンドに持ってブロックを破壊したさいに呼ばれます
+   *
+   * @param e event
+   */
+  public void blockBreak(final BlockBreakEvent e) {
   }
 
   @Override

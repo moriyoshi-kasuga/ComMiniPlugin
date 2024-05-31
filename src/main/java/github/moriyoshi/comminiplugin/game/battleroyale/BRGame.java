@@ -25,8 +25,8 @@ import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
-import github.moriyoshi.comminiplugin.util.tuple.Sequence;
 import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.util.tuple.Sequence;
 import lombok.Getter;
 import lombok.val;
 import net.kyori.adventure.bossbar.BossBar;
@@ -145,9 +145,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
       @Override
       public void run() {
         if (--time == 0) {
-          runPlayers(p -> {
-            p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1);
-          });
+          runPlayers(p -> p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1));
           final List<Sequence<Integer, Integer, Material, BlockData>> blocks = new ArrayList<>();
 
           val loc = getLobby().clone().subtract(0, 1, 0);
@@ -158,9 +156,20 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
               temp.setType(Material.AIR);
             }
           }
-          runPlayers(p -> WingItem.setWing(p));
+          runPlayers(WingItem::setWing);
 
-          field.startContraction(bossBar, field.getLobby(), 60, 30, signal -> {
+          field.startContraction(bossBar, field.getLobby(), 60, 10, signal -> {
+            switch (signal) {
+              case NONE -> {
+                prefix.cast("none");
+              }
+              case MIN -> {
+                prefix.cast("min");
+              }
+              case END -> {
+                prefix.cast("end");
+              }
+            }
             // TODO: ここでボーダー関係の実装
           });
 

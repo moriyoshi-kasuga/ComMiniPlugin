@@ -7,9 +7,9 @@ import github.moriyoshi.comminiplugin.system.player.InterfaceGamePlayer;
 import lombok.Getter;
 import lombok.val;
 
+@Getter
 public class BRPlayer implements InterfaceGamePlayer, HotbarGamePlayer {
 
-  @Getter
   private BRSlot hotbar;
 
   @Override

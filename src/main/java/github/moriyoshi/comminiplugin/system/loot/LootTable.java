@@ -35,7 +35,7 @@ public class LootTable {
   }
 
   public List<ItemStack> random() {
-    return pools.stream().map(pool -> pool.random()).flatMap(List::stream).collect(Collectors.toList());
+    return pools.stream().map(Pool::random).flatMap(List::stream).collect(Collectors.toList());
   }
 
   public void fillInventory(Inventory inventory) {
@@ -48,7 +48,7 @@ public class LootTable {
       if (range.isEmpty()) {
         break;
       }
-      inventory.setItem(range.remove(0), item);
+      inventory.setItem(range.removeFirst(), item);
     }
   }
 

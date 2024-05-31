@@ -45,8 +45,8 @@ public class CustomItemsCommand extends CommandAPICommand {
     }
 
     @Override
-    public Optional<Supplier<ListMenu<String>>> getDefaultMenu() {
-      return Optional.of(() -> new CustomItemMenu());
+    public @NotNull Optional<Supplier<ListMenu<String>>> getDefaultMenu() {
+      return Optional.of(CustomItemMenu::new);
     }
 
     @Override

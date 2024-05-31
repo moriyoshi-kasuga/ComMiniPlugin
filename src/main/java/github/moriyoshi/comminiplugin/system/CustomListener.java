@@ -1,21 +1,15 @@
 package github.moriyoshi.comminiplugin.system;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.block.CustomBlock;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.item.CustomItemFlag;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -29,6 +23,11 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import de.tr7zw.changeme.nbtapi.NBT;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.item.CustomItemFlag;
+import lombok.val;
 
 public class CustomListener implements Listener {
 
@@ -123,7 +122,14 @@ public class CustomListener implements Listener {
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void blockBreak(BlockBreakEvent e) {
+  public void blockBreak(final BlockBreakEvent e) {
+    val item = e.getPlayer().getInventory().getItemInMainHand();
+    if (CustomItem.isCustomItem(item)) {
+      CustomItem.getCustomItem(item).blockBreak(e);
+      if (e.isCancelled()) {
+        return;
+      }
+    }
     val block = e.getBlock();
     if (!CustomBlock.isCustomBlock(block)) {
       return;

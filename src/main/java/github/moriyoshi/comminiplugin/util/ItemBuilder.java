@@ -359,11 +359,9 @@ public class ItemBuilder {
   }
 
   public ItemBuilder customItemFlag(final String flag, boolean isEnable) {
-    return change(i -> {
-      NBT.modify(i, nbt -> {
-        nbt.getOrCreateCompound("customitemflag").setBoolean(flag, isEnable);
-      });
-    });
+    return change(i -> NBT.modify(i, nbt -> {
+      nbt.getOrCreateCompound("customitemflag").setBoolean(flag, isEnable);
+    }));
   }
 
   public ItemBuilder customItemFlag(final CustomItemFlag flag, boolean isEnable) {

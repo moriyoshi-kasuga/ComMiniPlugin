@@ -1,12 +1,16 @@
 package github.moriyoshi.comminiplugin.block;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.util.ReflectionUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
 import javax.annotation.Nullable;
-
+import lombok.Getter;
+import lombok.val;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,28 +20,51 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.util.ReflectionUtil;
-import lombok.Getter;
-import lombok.val;
-
 /**
- * 左クリック、右クリックで処理を受け取るカスタムブロック {@link
- * #clearData(Location)} を自分で拡張して {@link #remove()}
- * でブロックを削除できます
+ * 左クリック、右クリックで処理を受け取るカスタムブロック {@link #clearData()} を自分で拡張して {@link #remove()} でブロックを削除できます
  * <p>
- * サーバー起動時に登録する場合は {@link
- * RMPlugin#registerBlock(String, Class)} で登録してください
- * サーバーが起動中に登録する場合は
- * {@link #register(String, Class)} で登録してください
+ * 登録する場合は {@link #registers(Reflections)} で登録してください
  */
+@Getter
 public abstract class CustomBlock {
 
   private static final TreeMap<String, Class<? extends CustomBlock>> customBlocks = new TreeMap<>();
   private static final Map<Location, CustomBlock> blocks = new HashMap<>();
+  protected final Block block;
+
+  /**
+   * カスタムブロックの初期化コンストラクタ
+   *
+   * @param block カスタムブロックの位置
+   */
+  public CustomBlock(Block block) {
+    if (blocks.containsKey(block.getLocation())) {
+      throw new RuntimeException("このBlockはすでにCustomBlockです");
+    }
+    block.setType(getOriginMaterial());
+    blocks.put(block.getLocation(), this);
+    this.block = block;
+  }
+
+  /**
+   * ここで鯖起動もしくは再起動時に独自の値を持たせている場合に{@link #getBlockData()} 保存したものを読み込むためのコンストラクタです
+   *
+   * @param block       カスタムブロックのブロック
+   * @param dataElement ロードするデータ
+   */
+  public CustomBlock(Block block, JsonElement dataElement) {
+    this(block);
+  }
+
+  /**
+   * これはブロックをプレイヤーが設置したという風に処理したい場合に使用します
+   *
+   * @param block  カスタムブロックの位置
+   * @param player 設置したプレイヤー
+   */
+  public CustomBlock(Block block, Player player) {
+    this(block);
+  }
 
   public static void registers(final Reflections reflections) {
     ReflectionUtil.forEachAllClass(reflections, CustomBlock.class, block -> {
@@ -137,52 +164,12 @@ public abstract class CustomBlock {
       CustomBlock.customBlocks.get(identifier)
           .getDeclaredConstructor(Block.class, JsonElement.class)
           .newInstance(location.getBlock(), element);
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+             NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
   }
 
-  @Getter
-  protected final Block block;
-
-  /**
-   * カスタムブロックの初期化コンストラクタ
-   *
-   * @param location カスタムブロックの位置
-   */
-  public CustomBlock(Block block) {
-    if (blocks.containsKey(block.getLocation())) {
-      throw new RuntimeException("このBlockはすでにCustomBlockです");
-    }
-    block.setType(getOriginMaterial());
-    blocks.put(block.getLocation(), this);
-    this.block = block;
-  }
-
-  /**
-   * ここで鯖起動もしくは再起動時に独自の値を持たせている場合に{@link
-   * #getBlockData()} 保存したものを読み込むためのコンストラクタです
-   *
-   * @param block       カスタムブロックのブロック
-   * @param dataElement ロードするデータ
-   */
-  public CustomBlock(Block block, JsonElement dataElement) {
-    this(block);
-  }
-
-  /**
-   * これはブロックをプレイヤーが設置したという風に処理したい場合に使用します
-   *
-   * @param location カスタムブロックの位置
-   * @param player   設置したプレイヤー
-   */
-  public CustomBlock(Block block, Player player) {
-    this(block);
-  }
-
-  /**
-   * {@link #remove(Location)} をinstance methodから呼び出せるように
-   */
   public final void remove() {
     this.clearData();
     block.setType(Material.AIR);
@@ -195,8 +182,7 @@ public abstract class CustomBlock {
   public abstract void clearData();
 
   /**
-   * 何かブロックにデータを保存させたい場合はここにデータを保存してください
-   * (null or JsonNull を返すと保存しなくなります)
+   * 何かブロックにデータを保存させたい場合はここにデータを保存してください (null or JsonNull を返すと保存しなくなります)
    *
    * @return data
    */
@@ -205,8 +191,7 @@ public abstract class CustomBlock {
   }
 
   /**
-   * default cancelled
-   * please {@code e.setCancelled(false);}
+   * default cancelled please {@code e.setCancelled(false);}
    *
    * @param e event
    */
@@ -214,8 +199,7 @@ public abstract class CustomBlock {
   }
 
   /**
-   * default cancelled
-   * please {@code e.setCancelled(false);}
+   * default cancelled please {@code e.setCancelled(false);}
    *
    * @param e event
    */

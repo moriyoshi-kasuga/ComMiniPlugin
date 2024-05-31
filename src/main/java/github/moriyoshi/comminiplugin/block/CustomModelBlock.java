@@ -19,9 +19,9 @@ import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import lombok.Getter;
 import lombok.val;
 
+@Getter
 public abstract class CustomModelBlock extends CustomBlock {
 
-  @Getter
   protected final ItemDisplay display;
 
   public CustomModelBlock(Block block) {

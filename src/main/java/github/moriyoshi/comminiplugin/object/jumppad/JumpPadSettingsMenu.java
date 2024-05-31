@@ -10,6 +10,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import java.util.stream.Stream;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -70,25 +71,22 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
     setButton(11, new RedirectItemButton<>(
         new ItemBuilder(jumpPadBlock.getMaterial()).name("<green>material: " + jumpPadBlock.getMaterial().name())
             .build(),
-        (holder, event) -> {
-          return new ItemInputMenu<>(holder.getPlugin(), "<red>please input block material", (item, e) -> {
-            if (item == null || item.isEmpty()) {
-              ComMiniPrefix.SYSTEM.send(e.getWhoClicked(), "<red>please input block material (ignore air)");
-              return;
-            }
-            val material = item.getType();
-            if (material.isEmpty() || !material.isBlock()) {
-              ComMiniPrefix.SYSTEM.send(e.getWhoClicked(), "<red>please input block material (ignore air)");
-              return;
-            }
-            setConsumer(block -> {
-              block.setMaterial(material);
-              block.getBlock().setType(material);
-            }, isIncludeLinked);
-          }, (item, e) -> {
-            e.getWhoClicked().openInventory(JumpPadSettingsMenu.this.getInventory());
-          }).getInventory();
-        }));
+        (holder, event) -> new ItemInputMenu<>(holder.getPlugin(), "<red>please input block material", (item, e) -> {
+          if (item == null || item.isEmpty()) {
+            ComMiniPrefix.SYSTEM.send(e.getWhoClicked(), "<red>please input block material (ignore air)");
+            return;
+          }
+          val material = item.getType();
+          if (material.isEmpty() || !material.isBlock()) {
+            ComMiniPrefix.SYSTEM.send(e.getWhoClicked(), "<red>please input block material (ignore air)");
+            return;
+          }
+          setConsumer(block -> {
+            block.setMaterial(material);
+            block.getBlock().setType(material);
+          }, isIncludeLinked);
+        }, (item, e) -> e.getWhoClicked().openInventory(JumpPadSettingsMenu.this.getInventory())).getInventory()
+    ));
 
     setButton(12,
         new ItemButton<>(new ItemBuilder(Material.TNT).name("<red>power: " + jumpPadBlock.getPower()).build()) {
@@ -102,16 +100,13 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                       } catch (NumberFormatException e) {
                         return Optional.empty();
                       }
-                    }, (str, state) -> {
-                      return Collections.emptyList();
-                    }, (value, state) -> {
+                    }, (str, state) -> Collections.emptyList(), (value, state) -> {
                       setConsumer(block -> block.setPower(value), isIncludeLinked);
                       return List.of(
                           AnvilGUI.ResponseAction.openInventory(new JumpPadSettingsMenu(jumpPadBlock).getInventory()));
                     }),
-                getPlugin(), state -> {
-                  state.getPlayer().openInventory(JumpPadSettingsMenu.this.getInventory());
-                })
+                getPlugin(), state -> state.getPlayer().openInventory(JumpPadSettingsMenu.this.getInventory())
+                )
                 .open((Player) event.getWhoClicked());
           }
         });
@@ -129,15 +124,11 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                   } catch (NumberFormatException e) {
                     return Optional.empty();
                   }
-                }, (str, state) -> {
-                  return Collections.emptyList();
-                }, (value, state) -> {
+                }, (str, state) -> Collections.emptyList(), (value, state) -> {
                   setConsumer(block -> block.setAngel(value), isIncludeLinked);
                   return List.of(
                       AnvilGUI.ResponseAction.openInventory(new JumpPadSettingsMenu(jumpPadBlock).getInventory()));
-                }), getPlugin(), state -> {
-                  state.getPlayer().openInventory(JumpPadSettingsMenu.this.getInventory());
-                })
+                }), getPlugin(), state -> state.getPlayer().openInventory(JumpPadSettingsMenu.this.getInventory()))
                 .open((Player) event.getWhoClicked());
           }
         });
@@ -163,15 +154,11 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                   } catch (IllegalArgumentException e) {
                     return Optional.empty();
                   }
-                }, (str, state) -> {
-                  return Collections.emptyList();
-                }, (value, state) -> {
+                }, (str, state) -> Collections.emptyList(), (value, state) -> {
                   setConsumer(block -> block.setParticle(value == Particle.BLOCK ? null : value), isIncludeLinked);
                   return List.of(
                       AnvilGUI.ResponseAction.openInventory(new JumpPadSettingsMenu(jumpPadBlock).getInventory()));
-                }), getPlugin(), state -> {
-                  state.getPlayer().openInventory(JumpPadSettingsMenu.this.getInventory());
-                })
+                }), getPlugin(), state -> state.getPlayer().openInventory(JumpPadSettingsMenu.this.getInventory()))
                 .open((Player) event.getWhoClicked());
           }
         });
@@ -216,7 +203,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
 
     public SelectSound(JumpPadBlock jumpPadBlock, boolean isIncludeLinked) {
       super("<red>select sound", 45,
-          List.of(Sound.values()).stream().toList(),
+          Stream.of(Sound.values()).toList(),
           sound -> {
             val m = AllSoundCommand.getMaterial(sound);
             return new ItemButton<>(

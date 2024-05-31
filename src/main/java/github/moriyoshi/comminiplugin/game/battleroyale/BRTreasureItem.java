@@ -25,7 +25,6 @@ public class BRTreasureItem extends CustomItem {
             "<gray> second: 1,2,3,4 (multiple select)",
             "<gray> third: 2~3 (range select, equals 2,3)")
         .build());
-    ;
   }
 
   public BRTreasureItem(@NotNull ItemStack item) {
@@ -48,7 +47,7 @@ public class BRTreasureItem extends CustomItem {
       ComMiniPrefix.SYSTEM.send(player, "<red>宝箱を配置するフィールドを設定してから実行してください");
       return;
     }
-    val block = e.getClickedBlock();
+    val block = player.getTargetBlockExact(5);
     if (block == null || block.isEmpty()) {
       ComMiniPrefix.SYSTEM.send(player, "<red>please look at a target block");
       return;
@@ -64,7 +63,7 @@ public class BRTreasureItem extends CustomItem {
     } else {
       if (treasure.containsLocation(block.getLocation())) {
         ComMiniPrefix.SYSTEM.send(player, "<red>treasure values: "
-            + treasure.getLocationData(block.getLocation()).stream().map(i -> String.valueOf(i))
+            + treasure.getLocationData(block.getLocation()).stream().map(String::valueOf)
                 .collect(Collectors.joining(",")));
         return;
       }

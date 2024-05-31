@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
+import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -67,22 +68,21 @@ public class BRListener implements AbstractGameListener<BRGame> {
   public void damageByEntity(EntityDamageByEntityEvent e) {
     val player = (Player) e.getDamager();
     val item = player.getInventory().getItemInMainHand();
-    if (item == null || item.isEmpty()) {
+    if (item.isEmpty()) {
       getGame().prefix.send(player, "<red>素手での殴りは禁止されています!");
       e.setCancelled(true);
-      return;
     }
   }
 
   private void reducePlayer(final Player p) {
     val game = getGame();
     p.getInventory().clear();
-    val alives = game.players.entrySet().stream().filter(entry -> entry.getValue()).toList();
+    val alives = game.players.entrySet().stream().filter(Entry::getValue).toList();
     if (alives.size() != 1) {
       game.teleportLobby(p);
       return;
     }
-    game.endGame(Bukkit.getPlayer(alives.get(0).getKey()));
+    game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()));
   }
 
 }

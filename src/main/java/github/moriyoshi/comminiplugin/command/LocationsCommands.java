@@ -27,11 +27,7 @@ public class LocationsCommands extends JsonAPI {
     public PutLocCommand() {
       super("putloc");
       withPermission(CommandPermission.OP);
-      withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> {
-        return CompletableFuture.supplyAsync(() -> {
-          return getManager().locations.keySet().toArray(String[]::new);
-        });
-      })));
+      withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> CompletableFuture.supplyAsync(() -> getManager().locations.keySet().toArray(String[]::new)))));
       executesPlayer((p, args) -> {
         getManager().locations.put((String) args.get("name"), p.getLocation());
       });
@@ -43,11 +39,7 @@ public class LocationsCommands extends JsonAPI {
     public MvLocCommand() {
       super("mvloc");
       withPermission(CommandPermission.OP);
-      withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> {
-        return CompletableFuture.supplyAsync(() -> {
-          return getManager().locations.keySet().toArray(String[]::new);
-        });
-      })));
+      withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> CompletableFuture.supplyAsync(() -> getManager().locations.keySet().toArray(String[]::new)))));
       withOptionalArguments(new EntitySelectorArgument.ManyPlayers("players"));
       executesPlayer((p, args) -> {
         if (!getManager().locations.containsKey((String) args.get("name"))) {
@@ -55,9 +47,7 @@ public class LocationsCommands extends JsonAPI {
           return;
         }
         val loc = getManager().locations.get((String) args.get("name"));
-        args.getOptional("players").ifPresentOrElse((players) -> {
-          ((Collection<Player>) players).forEach(player -> player.teleport(loc));
-        }, () -> p.teleport(loc));
+        args.getOptional("players").ifPresentOrElse((players) -> ((Collection<Player>) players).forEach(player -> player.teleport(loc)), () -> p.teleport(loc));
       });
     }
   }
@@ -66,11 +56,7 @@ public class LocationsCommands extends JsonAPI {
     public DelLocCommand() {
       super("delloc");
       withPermission(CommandPermission.OP);
-      withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> {
-        return CompletableFuture.supplyAsync(() -> {
-          return getManager().locations.keySet().toArray(String[]::new);
-        });
-      })));
+      withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> CompletableFuture.supplyAsync(() -> getManager().locations.keySet().toArray(String[]::new)))));
       executesPlayer((p, args) -> {
         val name = (String) args.get("name");
         if (!getManager().locations.containsKey(name)) {
@@ -87,11 +73,9 @@ public class LocationsCommands extends JsonAPI {
       super("listloc");
       withPermission(CommandPermission.OP);
       executesPlayer((p, args) -> {
-        getManager().locations.forEach((name, location) -> {
-          ComMiniPrefix.SYSTEM.send(p,
-              "<gray>" + name + " : " + location.getWorld().getName() + " " + location.getX() + " " + location.getY()
-                  + " " + location.getZ());
-        });
+        getManager().locations.forEach((name, location) -> ComMiniPrefix.SYSTEM.send(p,
+            "<gray>" + name + " : " + location.getWorld().getName() + " " + location.getX() + " " + location.getY()
+                + " " + location.getZ()));
       });
     }
   }

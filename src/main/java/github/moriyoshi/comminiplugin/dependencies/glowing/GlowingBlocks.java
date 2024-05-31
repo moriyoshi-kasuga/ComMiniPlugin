@@ -74,15 +74,13 @@ public class GlowingBlocks implements Listener {
     if (!enabled)
       return;
     HandlerList.unregisterAll(this);
-    glowing.values().forEach(playerData -> {
-      playerData.datas.values().forEach(glowingData -> {
-        try {
-          glowingData.remove();
-        } catch (ReflectiveOperationException e) {
-          e.printStackTrace();
-        }
-      });
-    });
+    glowing.values().forEach(playerData -> playerData.datas.values().forEach(glowingData -> {
+      try {
+        glowingData.remove();
+      } catch (ReflectiveOperationException e) {
+        e.printStackTrace();
+      }
+    }));
     entities.disable();
     glowing = null;
     enabled = false;

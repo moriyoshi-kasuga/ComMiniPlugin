@@ -58,8 +58,21 @@ public final class ComMiniPlugin extends JavaPlugin {
   @Getter
   private static GlowingBlocks glowingBlocks;
 
+  public void loadWorlds() {
+    new WorldCreator("lobby").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
+        .createWorld();
+    new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
+        .createWorld();
+
+    new WorldCreator("SkiResort").environment(Environment.NORMAL).createWorld();
+    new WorldCreator("Fantacy").environment(Environment.NORMAL).createWorld();
+  }
+
   @Override
   public void onEnable() {
+    // WARN: required first
+    loadWorlds();
+
     CommandAPI.onEnable();
     glowingEntities = new GlowingEntities(this);
     glowingBlocks = new GlowingBlocks(this);
@@ -93,13 +106,6 @@ public final class ComMiniPlugin extends JavaPlugin {
     CustomBlockData.getInstance();
     ComMiniPlayer.gameInitialize();
 
-    new WorldCreator("lobby").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
-        .createWorld();
-    new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
-        .createWorld();
-
-    new WorldCreator("SkiResort").environment(Environment.NORMAL).createWorld();
-    new WorldCreator("Fantacy").environment(Environment.NORMAL).createWorld();
   }
 
   @Override

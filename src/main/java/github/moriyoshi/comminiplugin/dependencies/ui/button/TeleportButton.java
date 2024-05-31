@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.dependencies.ui.button;
 
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -18,6 +19,7 @@ public class TeleportButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
   private Location location;
 
+  @Getter
   private TeleportCause cause;
   /**
    * TeleportButtonを作成します。
@@ -61,10 +63,6 @@ public class TeleportButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
   public void setCause(@NonNull TeleportCause cause) {
     this.cause = cause;
-  }
-
-  public TeleportCause getCause() {
-    return cause;
   }
 
   /**

@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import java.util.stream.Stream;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -22,6 +23,7 @@ import lombok.Getter;
 import lombok.val;
 import net.wesjd.anvilgui.AnvilGUI.ResponseAction;
 
+@Getter
 @SuppressWarnings("deprecation")
 public class TreasureLocation extends BlockInputsAPI<List<Integer>> {
 
@@ -29,15 +31,12 @@ public class TreasureLocation extends BlockInputsAPI<List<Integer>> {
     super(ComMiniPlugin.getPlugin(), "br/treasure", name);
   }
 
-  @Getter
   private int level = 1;
 
   public final void setLevel(int level) {
     this.level = level;
     val game = GameSystem.getGame(BRGame.class);
-    getPlayers().values().forEach(p -> {
-      game.prefix.send(p, "<red>change Treasure level to <yellow>" + level);
-    });
+    getPlayers().values().forEach(p -> game.prefix.send(p, "<red>change Treasure level to <yellow>" + level));
   }
 
   @Override
@@ -57,10 +56,10 @@ public class TreasureLocation extends BlockInputsAPI<List<Integer>> {
         return Optional.of(List.of(1));
       }
       if (str.contains(",")) {
-        return checkData(List.of(str.split(",")).stream().map(s -> Integer.valueOf(s)).toList());
+        return checkData(Stream.of(str.split(",")).map(Integer::valueOf).toList());
       }
       if (str.contains("~")) {
-        val list = List.of(str.split("~")).stream().map(s -> Integer.valueOf(s)).toList();
+        val list = Stream.of(str.split("~")).map(Integer::valueOf).toList();
         return checkData(IntStream.range(list.get(0), list.get(1) + 1).boxed().toList());
       }
       try {
@@ -68,9 +67,7 @@ public class TreasureLocation extends BlockInputsAPI<List<Integer>> {
       } catch (NumberFormatException e) {
         return Optional.empty();
       }
-    }, (str, state) -> {
-      return Collections.emptyList();
-    }, (list, state) -> {
+    }, (str, state) -> Collections.emptyList(), (list, state) -> {
       finalAddLocation(location, list);
       return List.of(ResponseAction.close());
     }).open(player);
@@ -100,9 +97,7 @@ public class TreasureLocation extends BlockInputsAPI<List<Integer>> {
 
   public void setTreasures() {
     val random = new Random();
-    getLocations().forEach((loc, list) -> {
-      new TreasureChest(loc.getBlock(), list.get(random.nextInt(list.size())));
-    });
+    getLocations().forEach((loc, list) -> new TreasureChest(loc.getBlock(), list.get(random.nextInt(list.size()))));
   }
 
   public void clearTreasures() {

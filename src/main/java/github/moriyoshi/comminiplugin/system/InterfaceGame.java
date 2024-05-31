@@ -25,7 +25,7 @@ public interface InterfaceGame {
 
   default boolean isGamePlayer(Player player, Class<? extends Event> event) {
     return isGamePlayer(player);
-  };
+  }
 
   void runPlayers(Consumer<Player> consumer);
 

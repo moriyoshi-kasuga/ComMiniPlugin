@@ -30,14 +30,14 @@ public class AllSoundCommand extends CommandAPICommand {
     val materials = new ArrayList<>(Arrays.asList(Material.values()));
     val split = new ArrayList<>(List.of(name.split("_")));
     val finalName = split.get(1).toLowerCase();
-    return switch (split.remove(0)) {
+    return switch (split.removeFirst()) {
       case "AMBIENT" -> Material.STONE;
       case "BLOCK" -> {
         while (!split.isEmpty()) {
           try {
             yield Material.valueOf(String.join("_", split));
           } catch (final IllegalArgumentException e) {
-            split.remove(split.size() - 1);
+            split.removeLast();
           }
         }
         yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalName))
@@ -53,7 +53,7 @@ public class AllSoundCommand extends CommandAPICommand {
               yield Material.valueOf(str);
             } catch (final IllegalArgumentException ignore) {
             }
-            split.remove(split.size() - 1);
+            split.removeLast();
           }
         }
         yield materials.stream().filter(s -> s.name().toLowerCase().contains(finalName))
@@ -90,8 +90,8 @@ public class AllSoundCommand extends CommandAPICommand {
     }
 
     @Override
-    public Optional<Supplier<ListMenu<Sound>>> getDefaultMenu() {
-      return Optional.of(() -> new AllSoundMenu());
+    public @NotNull Optional<Supplier<ListMenu<Sound>>> getDefaultMenu() {
+      return Optional.of(AllSoundMenu::new);
     }
 
     @Override
