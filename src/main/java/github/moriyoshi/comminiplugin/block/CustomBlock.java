@@ -21,7 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
 /**
- * 左クリック、右クリックで処理を受け取るカスタムブロック {@link #clearData()} を自分で拡張して {@link #remove()} でブロックを削除できます
+ * 左クリック、右クリックで処理を受け取るカスタムブロック {@link #clearData()} を自分で拡張して {@link #remove()}
+ * でブロックを削除できます
  * <p>
  * 登録する場合は {@link #registers(Reflections)} で登録してください
  */
@@ -90,11 +91,11 @@ public abstract class CustomBlock {
    * @return trueの場合存在します
    */
   public static boolean isCustomBlock(Location location) {
-    return blocks.containsKey(location.toBlockLocation());
+    return blocks.containsKey(toBlockLocation(location));
   }
 
   public static boolean isCustomBlock(Location location, Class<? extends CustomBlock> clazz) {
-    val temp = blocks.get(location.toBlockLocation());
+    val temp = blocks.get(toBlockLocation(location));
     if (temp == null) {
       return false;
     }
@@ -143,12 +144,12 @@ public abstract class CustomBlock {
    */
   @Nullable
   public static CustomBlock getCustomBlock(Location location) {
-    return blocks.get(location.toBlockLocation());
+    return blocks.get(toBlockLocation(location));
   }
 
   @NotNull
   public static <T extends CustomBlock> T getCustomBlock(Location location, Class<T> clazz) {
-    return clazz.cast(blocks.get(location.toBlockLocation()));
+    return clazz.cast(blocks.get(toBlockLocation(location)));
   }
 
   static Map<Location, CustomBlock> getBlocks() {
@@ -164,8 +165,7 @@ public abstract class CustomBlock {
       CustomBlock.customBlocks.get(identifier)
           .getDeclaredConstructor(Block.class, JsonElement.class)
           .newInstance(location.getBlock(), element);
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-             NoSuchMethodException e) {
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
   }
@@ -216,5 +216,12 @@ public abstract class CustomBlock {
   }
 
   protected abstract @NotNull Material getOriginMaterial();
+
+  public static Location toBlockLocation(Location location) {
+    val loc = location.toBlockLocation();
+    loc.setYaw(0);
+    loc.setPitch(0);
+    return loc;
+  }
 
 }

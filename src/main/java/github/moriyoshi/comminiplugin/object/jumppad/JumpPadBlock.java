@@ -1,7 +1,6 @@
 package github.moriyoshi.comminiplugin.object.jumppad;
 
 import java.util.Random;
-import java.util.stream.Stream;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,7 +10,6 @@ import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.JsonElement;
@@ -32,7 +30,7 @@ public class JumpPadBlock extends CustomBlock {
   private float angel = 30;
   @Getter
   @Setter
-  private float direction = 0;
+  private float direction = -1;
   @Getter
   @Setter
   private float power = 10;
@@ -82,7 +80,7 @@ public class JumpPadBlock extends CustomBlock {
     val data = new JsonObject();
     data.addProperty("angel", angel);
     data.addProperty("power", power);
-    if (direction != 0.0) {
+    if (direction != -1.0) {
       data.addProperty("direction", direction);
     }
     data.addProperty("material", material.name());
@@ -98,47 +96,35 @@ public class JumpPadBlock extends CustomBlock {
     return material == null ? Material.BEDROCK : material;
   }
 
-  @Override
-  public void clearData() {
-    task.cancel();
+  public void jump(Player player, Location launchLocation) {
+    launchLocation.setPitch(-angel);
+    if (direction != -1.0) {
+      launchLocation.setYaw(direction);
+    }
+    player.setVelocity(launchLocation.getDirection().normalize().multiply(power / 10f));
+    val loc = getBlock().getLocation();
+    loc.getWorld().playSound(loc, sound, SoundCategory.MASTER, 1, 1);
   }
 
   private void spawn() {
     val random = new Random();
     this.task = new BukkitRunnable() {
-      private final Location loc = getBlock().getLocation();
       private final Location shift = getBlock().getLocation().add(0.5, 0.9, 0.5);
-      private final Vector l = loc.toVector();
-
-      private int cooldown = 0;
 
       @Override
       public void run() {
         if (particle != null && random.nextInt(5) >= 3) {
           shift.getWorld().spawnParticle(particle, shift, 1, 0.4, 0.2, 0.4);
         }
-        if (--cooldown > 0) {
-          return;
-        }
-        for (val player : loc.getNearbyPlayers(1.5)) {
-          if (Stream.of(player.getLocation().subtract(0, 0.1, 0), player.getLocation())
-              .noneMatch(temp -> temp.toBlockLocation().toVector().equals(l))) {
-            continue;
-          }
-          Location launchLocation = player.getLocation();
-          launchLocation.setPitch(-angel);
-          if (direction != 0.0) {
-            launchLocation.setYaw(direction);
-          }
-          player.setVelocity(launchLocation.getDirection().normalize().multiply(power / 10f));
-          loc.getWorld().playSound(loc, sound, SoundCategory.MASTER, 1, 1);
-          cooldown = 2;
-          return;
-        }
       }
 
     };
     task.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
+  }
+
+  @Override
+  public void clearData() {
+    this.task.cancel();
   }
 
 }

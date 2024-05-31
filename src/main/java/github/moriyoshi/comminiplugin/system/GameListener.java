@@ -1,5 +1,7 @@
 package github.moriyoshi.comminiplugin.system;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -20,6 +22,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
+import lombok.val;
 
 public class GameListener implements Listener {
 
@@ -43,10 +48,10 @@ public class GameListener implements Listener {
       @Override
       public void run() {
         Bukkit.getOnlinePlayers().forEach(p -> {
-          if (ComMiniPlayer.getPlayer(p.getUniqueId()).isHunger()) {
-            return;
+          val gp = ComMiniPlayer.getPlayer(p.getUniqueId());
+          if (!gp.isHunger()) {
+            p.setFoodLevel(20);
           }
-          p.setFoodLevel(20);
         });
       }
 
@@ -139,6 +144,7 @@ public class GameListener implements Listener {
     }
   }
 
+  //TODO: custom jumppad の source を見る
   @EventHandler
   public void move(PlayerMoveEvent e) {
     var p = e.getPlayer();
@@ -149,7 +155,15 @@ public class GameListener implements Listener {
         from.setYaw(to.getYaw());
         from.setPitch(to.getPitch());
         e.setTo(from);
+        return;
       }
     });
+    val to = e.getTo().clone();
+    for (val loc : List.of(to, to.clone().subtract(0, 0.1, 0))) {
+      if (CustomBlock.isCustomBlock(loc, JumpPadBlock.class)) {
+        CustomBlock.getCustomBlock(loc, JumpPadBlock.class).jump(p, to);
+        return;
+      }
+    }
   }
 }
