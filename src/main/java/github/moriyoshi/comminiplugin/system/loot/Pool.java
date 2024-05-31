@@ -63,8 +63,11 @@ public class Pool {
       var temp = target;
       for (val entry : entries) {
         temp -= entry.weight;
-        if (0 > temp && !entry.itemStack.isEmpty() && entry.condition.getAsBoolean()) {
-          list.add(entry.itemStack);
+        if (0 >= temp) {
+          if (!entry.itemStack.isEmpty() && entry.condition.getAsBoolean()) {
+            list.add(entry.itemStack);
+          }
+          break;
         }
       }
     }

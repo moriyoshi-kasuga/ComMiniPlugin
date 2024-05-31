@@ -41,7 +41,7 @@ public class LootTable {
   public void fillInventory(Inventory inventory) {
     val range = IntStream.range(0, inventory.getSize()).filter(i -> {
       val item = inventory.getItem(i);
-      return item != null && !item.isEmpty();
+      return item == null || item.isEmpty();
     }).boxed().collect(Collectors.toList());
     Collections.shuffle(range);
     for (val item : random()) {

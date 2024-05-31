@@ -24,13 +24,13 @@ public class Entry {
     this.condition = () -> true;
   }
 
-  public Entry(@NonNull ItemStack itemStack, double weight, BooleanSupplier condition) {
+  public Entry(@NonNull ItemStack itemStack, double weight, @NonNull BooleanSupplier condition) {
     this.itemStack = itemStack;
     this.weight = weight;
     this.condition = condition;
   }
 
-  public Entry(@NonNull ItemStack itemStack, BooleanSupplier condition) {
+  public Entry(@NonNull ItemStack itemStack, @NonNull BooleanSupplier condition) {
     this.itemStack = itemStack;
     this.weight = 1;
     this.condition = condition;
