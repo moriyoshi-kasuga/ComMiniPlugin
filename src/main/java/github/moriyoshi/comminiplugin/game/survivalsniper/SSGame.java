@@ -3,7 +3,6 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 import java.util.HashMap;
 import java.util.UUID;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
@@ -28,6 +27,7 @@ import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.util.tuple.Pair;
 import lombok.Getter;
 import lombok.val;
 import net.kyori.adventure.bossbar.BossBar;
@@ -68,7 +68,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     val uuid = player.getUniqueId();
     player.getInventory().removeItem(new ItemStack(Material.SPYGLASS));
     if (players.containsKey(uuid)) {
-      if (players.get(uuid).getLeft() == isPlayer) {
+      if (players.get(uuid).getFirst() == isPlayer) {
         players.remove(uuid);
         GameSystem.initializePlayer(player);
         prefix.cast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
@@ -119,7 +119,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
 
   @Override
   public boolean innerStartGame(final Player player) {
-    if (2 > players.values().stream().filter(Pair::getLeft).toList().size()) {
+    if (2 > players.values().stream().filter(Pair::getFirst).toList().size()) {
       prefix.send(player, "<red>二人以上でしかプレイできません");
       return false;
     }
@@ -159,14 +159,14 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
           second--;
         }
         players.forEach((t, u) -> {
-          if (!u.getLeft()) {
+          if (!u.getFirst()) {
             return;
           }
           final Player p = Bukkit.getPlayer(t);
           if (p == null) {
             return;
           }
-          int num = u.getRight();
+          int num = u.getSecond();
           p.sendActionBar(Util.mm("酸素: " + num + " /" + AIR_LIMIT));
           final boolean inCave = 7 > p.getLocation().getBlock().getLightFromSky();
           if (!inCave && num == AIR_LIMIT) {
@@ -199,7 +199,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
       Util.title(p, "<blue>サバイバルスナイパー", "<red>スタート");
       val inv = p.getInventory();
       inv.clear();
-      if (!players.get(uuid).getLeft()) {
+      if (!players.get(uuid).getFirst()) {
         p.setGameMode(GameMode.SPECTATOR);
         p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
         teleportLobby(p);

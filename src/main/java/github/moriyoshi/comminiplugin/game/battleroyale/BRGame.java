@@ -25,7 +25,7 @@ import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
-import github.moriyoshi.comminiplugin.util.Sequence;
+import github.moriyoshi.comminiplugin.util.tuple.Sequence;
 import github.moriyoshi.comminiplugin.util.Util;
 import lombok.Getter;
 import lombok.val;

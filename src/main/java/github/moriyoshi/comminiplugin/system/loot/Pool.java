@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.IntSupplier;
 
 import org.bukkit.inventory.ItemStack;
 
+import github.moriyoshi.comminiplugin.util.RandomCollection;
 import lombok.val;
 
 public class Pool {
@@ -57,18 +57,13 @@ public class Pool {
   }
 
   public List<ItemStack> random() {
-    val target = new Random().nextDouble(entries.stream().mapToDouble(e -> e.weight).sum());
+    final RandomCollection<Entry> random = new RandomCollection<>();
     val list = new ArrayList<ItemStack>();
+    entries.forEach(entry -> random.add(entry.weight, entry));
     for (int i = 0; i < (rolls + bonusRolls.getAsInt()); i++) {
-      var temp = target;
-      for (val entry : entries) {
-        temp -= entry.weight;
-        if (0 >= temp) {
-          if (!entry.itemStack.isEmpty() && entry.condition.getAsBoolean()) {
-            list.add(entry.itemStack);
-          }
-          break;
-        }
+      val entry = random.next();
+      if (!entry.itemStack.isEmpty() && entry.condition.getAsBoolean()) {
+        list.add(entry.itemStack);
       }
     }
 

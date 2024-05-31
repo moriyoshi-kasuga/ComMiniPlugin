@@ -10,7 +10,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -33,6 +32,7 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.ItemInputMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ListMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.tuple.Pair;
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
 import lombok.val;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -184,7 +184,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
         .map(i -> Pair.of(Math.round(Math.cos(i * Math.PI / 2)),
             Math.round(Math.sin(i * Math.PI / 2))))
         .forEach(pair -> {
-          val b = loc.clone().add(pair.getLeft(), 0, pair.getRight());
+          val b = loc.clone().add(pair.getFirst(), 0, pair.getSecond());
           if (set.contains(b)) {
             return;
           }

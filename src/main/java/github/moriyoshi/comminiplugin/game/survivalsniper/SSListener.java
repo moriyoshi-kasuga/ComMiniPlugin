@@ -2,7 +2,6 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import lombok.val;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -21,13 +20,14 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import github.moriyoshi.comminiplugin.system.AbstractGameListener;
 import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.util.tuple.Pair;
 
 public class SSListener implements AbstractGameListener<SSGame> {
 
   @Override
   public void quit(final PlayerQuitEvent e) {
     val p = e.getPlayer();
-    val flag = getGame().players.remove(p.getUniqueId()).getLeft();
+    val flag = getGame().players.remove(p.getUniqueId()).getFirst();
     if (!flag) {
       return;
     }
@@ -55,7 +55,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
     final SSGame game = getGame();
     val p = e.getPlayer();
     val uuid = p.getUniqueId();
-    if (game.players.get(uuid).getRight() == 0) {
+    if (game.players.get(uuid).getSecond() == 0) {
       e.deathMessage(Util.mm(p.getName() + "は洞窟で酸素がなくなった..."));
     }
     p.setGameMode(GameMode.SPECTATOR);
@@ -129,7 +129,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
       world.dropItemNaturally(loc, i);
     });
     inv.clear();
-    val alives = game.players.entrySet().stream().filter(entry -> entry.getValue().getLeft())
+    val alives = game.players.entrySet().stream().filter(entry -> entry.getValue().getFirst())
         .toList();
     if (alives.size() != 1) {
       if (alives.size() == 2) {
