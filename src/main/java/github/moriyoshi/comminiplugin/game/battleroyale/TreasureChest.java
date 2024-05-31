@@ -1,23 +1,25 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
+import java.util.Optional;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import github.moriyoshi.comminiplugin.block.CustomModelBlock;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import lombok.val;
 
 public class TreasureChest extends CustomModelBlock {
 
   // 鉄Lv.1 エメラルドLv.2 ラピスラズリLv.3 ダイアlv.4 アメジストLv.5
-  private int level = 1;
+  private final int level;
 
   @Override
   public void interact(PlayerInteractEvent e) {
@@ -31,30 +33,32 @@ public class TreasureChest extends CustomModelBlock {
 
   public TreasureChest(Block block) {
     super(block);
-    updateDisplayItem();
+    this.level = 1;
+    spawn();
   }
 
   public TreasureChest(Block block, int level) {
     super(block);
     this.level = level;
-    updateDisplayItem();
+    spawn();
   }
 
-  public TreasureChest(Block block, JsonObject data) {
-    super(block, data);
-    this.level = data.get("level").getAsInt();
+  private void spawn() {
     updateDisplayItem();
-  }
-
-  public TreasureChest(Block block, Player player) {
-    super(block, player);
-    updateDisplayItem();
-  }
-
-  public TreasureChest(Block block, Player player, int level) {
-    super(block, player);
-    this.level = level;
-    updateDisplayItem();
+    if (!GameSystem.isIn(BRGame.class)) {
+      return;
+    }
+    Optional.ofNullable(GameSystem.getGame(BRGame.class).getField()).ifPresent(field -> {
+      val loottable = switch (this.level) {
+        case 1 -> field.getLevel1();
+        case 2 -> field.getLevel2();
+        case 3 -> field.getLevel3();
+        case 4 -> field.getLevel4();
+        default -> field.getLevel5();
+      };
+      loottable.setChest(getBlock().getLocation());
+    });
+    ;
   }
 
   @Override

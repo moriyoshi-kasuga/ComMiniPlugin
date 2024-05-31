@@ -113,9 +113,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
       return false;
     }
     field.initialize();
-    field.start(field.getLobby(), 60, 30, flag -> {
-
-    });
 
     bossBar = BossBar.bossBar(Util.mm("<red>投下まで<u>10</u>秒"), 1f,
         BossBar.Color.RED,
@@ -139,6 +136,8 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
       teleportLobby(p);
     });
 
+    field.getTreasure().setTreasures();
+
     new BukkitRunnable() {
 
       private int time = 11;
@@ -148,7 +147,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         if (--time == 0) {
           runPlayers(p -> {
             p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1);
-            p.hideBossBar(bossBar);
           });
           final List<Sequence<Integer, Integer, Material, BlockData>> blocks = new ArrayList<>();
 
@@ -161,6 +159,11 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
             }
           }
           runPlayers(p -> WingItem.setWing(p));
+
+          field.startContraction(bossBar, field.getLobby(), 60, 30, signal -> {
+            // TODO: ここでボーダー関係の実装
+          });
+
           new BukkitRunnable() {
 
             @Override

@@ -184,7 +184,7 @@ public abstract class CustomBlock {
    * {@link #remove(Location)} をinstance methodから呼び出せるように
    */
   public final void remove() {
-    getCustomBlock(block).clearData();
+    this.clearData();
     block.setType(Material.AIR);
     blocks.remove(block.getLocation());
   }

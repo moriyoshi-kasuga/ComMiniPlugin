@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -76,6 +77,17 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
       location.setYaw(yaw);
       if (locations.containsKey(location)) {
         return locations.get(location);
+      }
+    }
+    return null;
+  }
+
+  public final BlockFace getLocationBlockFace(Location loc) {
+    val location = loc.toBlockLocation();
+    for (val yaw : List.of(180, 90, -90, 0)) {
+      location.setYaw(yaw);
+      if (locations.containsKey(location)) {
+        return BukkitUtil.convertYawToBlockFace(yaw);
       }
     }
     return null;

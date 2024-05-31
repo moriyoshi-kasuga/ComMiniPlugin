@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.game.battleroyale;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +15,7 @@ import com.google.gson.JsonElement;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.api.BlockInputsAPI;
+import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import lombok.Getter;
@@ -94,6 +96,22 @@ public class TreasureLocation extends BlockInputsAPI<List<Integer>> {
       default -> ChatColor.WHITE;
     };
 
+  }
+
+  public void setTreasures() {
+    val random = new Random();
+    getLocations().forEach((loc, list) -> {
+      new TreasureChest(loc.getBlock(), list.get(random.nextInt(list.size())));
+    });
+  }
+
+  public void clearTreasures() {
+    getLocations().forEach((loc, list) -> {
+      val block = loc.getBlock();
+      if (CustomBlock.isCustomBlock(block, TreasureChest.class)) {
+        CustomBlock.getCustomBlock(block).remove();
+      }
+    });
   }
 
 }

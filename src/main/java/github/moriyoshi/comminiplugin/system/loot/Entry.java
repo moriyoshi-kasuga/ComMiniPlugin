@@ -13,6 +13,12 @@ public class Entry {
   public final double weight;
   public final BooleanSupplier condition;
 
+  public Entry(double weight) {
+    this.supplier = () -> null;
+    this.weight = weight;
+    this.condition = () -> true;
+  }
+
   public Entry(@NonNull Supplier<ItemStack> supplier) {
     this.supplier = supplier;
     this.weight = 1;
