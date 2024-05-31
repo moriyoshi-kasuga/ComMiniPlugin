@@ -9,8 +9,8 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
-
 import java.util.stream.Stream;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -85,18 +85,17 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
             block.setMaterial(material);
             block.getBlock().setType(material);
           }, isIncludeLinked);
-        }, (item, e) -> e.getWhoClicked().openInventory(JumpPadSettingsMenu.this.getInventory())).getInventory()
-    ));
+        }, (item, e) -> e.getWhoClicked().openInventory(JumpPadSettingsMenu.this.getInventory())).getInventory()));
 
     setButton(12,
         new ItemButton<>(new ItemBuilder(Material.TNT).name("<red>power: " + jumpPadBlock.getPower()).build()) {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
             AnvilInputs.postClose(AnvilInputs
-                .getInput(ComMiniPlugin.getPlugin(), "<red>60 >= power >= 10",
+                .getInput(ComMiniPlugin.getPlugin(), "<red>200 >= power >= 10",
                     (str, state) -> {
                       try {
-                        return Optional.of(Float.parseFloat(str)).filter(f -> 60 >= f && f >= 10);
+                        return Optional.of(Float.parseFloat(str)).filter(f -> 200 >= f && f >= 10);
                       } catch (NumberFormatException e) {
                         return Optional.empty();
                       }
@@ -105,8 +104,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                       return List.of(
                           AnvilGUI.ResponseAction.openInventory(new JumpPadSettingsMenu(jumpPadBlock).getInventory()));
                     }),
-                getPlugin(), state -> state.getPlayer().openInventory(JumpPadSettingsMenu.this.getInventory())
-                )
+                getPlugin(), state -> state.getPlayer().openInventory(JumpPadSettingsMenu.this.getInventory()))
                 .open((Player) event.getWhoClicked());
           }
         });
@@ -185,11 +183,10 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
 
   public static void setConsumer(JumpPadBlock jumpPadBlock, Consumer<JumpPadBlock> jumppadConsumer,
       boolean isIncludeLinked) {
-    if (!isIncludeLinked) {
-      jumppadConsumer.accept(jumpPadBlock);
-      return;
+    jumppadConsumer.accept(jumpPadBlock);
+    if (isIncludeLinked) {
+      linkedConsumer(jumpPadBlock.getBlock().getLocation(), jumppadConsumer, new HashSet<>());
     }
-    linkedConsumer(jumpPadBlock.getBlock().getLocation(), jumppadConsumer, new HashSet<>());
   }
 
   public void setConsumer(Consumer<JumpPadBlock> jumppadConsumer, boolean isIncludeLinked) {
