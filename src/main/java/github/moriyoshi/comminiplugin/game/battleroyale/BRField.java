@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
+import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.loot.Entry;
 import github.moriyoshi.comminiplugin.system.loot.LootTable;
 import github.moriyoshi.comminiplugin.system.loot.Pool;
@@ -61,6 +62,10 @@ public class BRField {
 
       @Override
       public void run() {
+        if (!GameSystem.isIn()) {
+          this.cancel();
+          return;
+        }
         if (0 >= --temp) {
           bossBar.name(Util.mm("<aqua>ボーダー停止中")).progress(0f);
           border.setSize(border.getSize());

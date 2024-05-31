@@ -66,10 +66,9 @@ public class BRListener implements AbstractGameListener<BRGame> {
 
   @Override
   public void damageByEntity(EntityDamageByEntityEvent e) {
-    val player = (Player) e.getDamager();
-    val item = player.getInventory().getItemInMainHand();
-    if (item.isEmpty()) {
-      getGame().prefix.send(player, "<red>素手での殴りは禁止されています!");
+    if (!getGame().isCanPvP() && e.getEntity() instanceof Player
+        && e.getDamager() instanceof final Player attacker && getGame().isGamePlayer(attacker)) {
+      getGame().prefix.send(attacker, "<red>まだPvPはできません");
       e.setCancelled(true);
     }
   }

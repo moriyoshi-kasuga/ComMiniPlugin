@@ -201,7 +201,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
       inv.clear();
       if (!players.get(uuid).getFirst()) {
         p.setGameMode(GameMode.SPECTATOR);
-        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
         teleportLobby(p);
         return;
       }
@@ -253,7 +253,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     players.put(uuid, Pair.of(false, -1));
     player.setGameMode(GameMode.SPECTATOR);
     player.getInventory().clear();
-    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
+    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
     teleportLobby(player);
     return true;
   }

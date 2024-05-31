@@ -23,6 +23,7 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
+import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
@@ -35,7 +36,14 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
   public final HashMap<UUID, Boolean> players = new HashMap<>();
 
+  private final int BORDERE_INTERVAL = 60;
+
+  private final List<Sequence<Integer, Integer, Material, BlockData>> lobbyBlows = new ArrayList<>();
+
   private BossBar bossBar;
+
+  @Getter
+  private boolean isCanPvP;
 
   @Getter
   private BRField field;
@@ -87,7 +95,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     players.put(uuid, false);
     player.setGameMode(GameMode.SPECTATOR);
     player.getInventory().clear();
-    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
+    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
     teleportLobby(player);
     return true;
   }
@@ -114,7 +122,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     }
     field.initialize();
 
-    bossBar = BossBar.bossBar(Util.mm("<red>投下まで<u>10</u>秒"), 1f,
+    bossBar = BossBar.bossBar(Util.mm("<red>投下まで<u>20</u>秒"), 1f,
         BossBar.Color.RED,
         BossBar.Overlay.NOTCHED_10);
 
@@ -130,8 +138,9 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         p.setGameMode(GameMode.SURVIVAL);
       } else {
         p.setGameMode(GameMode.SPECTATOR);
-        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
       }
+      p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, -1, 0, true, false));
       p.showBossBar(bossBar);
       teleportLobby(p);
     });
@@ -140,48 +149,55 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
     new BukkitRunnable() {
 
-      private int time = 11;
+      private int time = 21;
 
       @Override
       public void run() {
+        if (!GameSystem.isIn()) {
+          this.cancel();
+          return;
+        }
         if (--time == 0) {
           runPlayers(p -> p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1));
-          final List<Sequence<Integer, Integer, Material, BlockData>> blocks = new ArrayList<>();
 
           val loc = getLobby().clone().subtract(0, 1, 0);
           for (int x = -10; x <= 10; x++) {
             for (int z = -10; z <= 10; z++) {
               val temp = loc.clone().add(x, 0, z).getBlock();
-              blocks.add(Sequence.of(x, z, temp.getType(), temp.getBlockData()));
+              lobbyBlows.add(Sequence.of(x, z, temp.getType(), temp.getBlockData()));
               temp.setType(Material.AIR);
             }
           }
           runPlayers(WingItem::setWing);
 
-          field.startContraction(bossBar, field.getLobby(), 60, 10, signal -> {
-            switch (signal) {
-              case NONE -> {
-              }
-              case MIN -> {
-              }
-              case END -> {
-              }
-            }
-            // TODO: ここでボーダー関係の実装
-          });
+          startContraction();
 
           new BukkitRunnable() {
 
             @Override
             public void run() {
-              blocks.forEach(s -> {
-                val b = loc.clone().add(s.getFirst(), 0, s.getSecond()).getBlock();
-                b.setType(s.getThird());
-                b.setBlockData(s.getFourth());
-              });
+              if (GameSystem.isIn()) {
+                lobbyBlows.forEach(s -> {
+                  val b = loc.clone().add(s.getFirst(), 0, s.getSecond()).getBlock();
+                  b.setType(s.getThird());
+                  b.setBlockData(s.getFourth());
+                });
+                lobbyBlows.clear();
+              }
             }
 
           }.runTaskLater(ComMiniPlugin.getPlugin(), 20 * 10);
+
+          new BukkitRunnable() {
+
+            @Override
+            public void run() {
+              if (GameSystem.isIn()) {
+                isCanPvP = true;
+              }
+            }
+
+          }.runTaskLater(ComMiniPlugin.getPlugin(), 20 * 3);
           this.cancel();
           return;
         }
@@ -197,14 +213,46 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     return true;
   }
 
+  public void startContraction() {
+    field.startContraction(bossBar, field.getLobby(), BORDERE_INTERVAL, 10, signal -> {
+      switch (signal) {
+        case MIN -> {
+        }
+        case END -> {
+          new BukkitRunnable() {
+
+            @Override
+            public void run() {
+              // TODO Auto-generated method stub
+              throw new UnsupportedOperationException("Unimplemented method 'run'");
+            }
+
+          }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
+        }
+        default -> {
+        }
+      }
+      // TODO: ここでボーダー関係の実装
+    });
+
+  }
+
   @Override
   protected void innerFinishGame() {
     if (field != null) {
+      val loc = field.getLobby();
+      lobbyBlows.forEach(s -> {
+        val b = loc.clone().add(s.getFirst(), 0, s.getSecond()).getBlock();
+        b.setType(s.getThird());
+        b.setBlockData(s.getFourth());
+      });
       field.stop();
     }
     if (bossBar != null) {
       runPlayers(p -> p.hideBossBar(bossBar));
     }
+    lobbyBlows.clear();
+    isCanPvP = false;
     players.clear();
     showPlayer();
   }

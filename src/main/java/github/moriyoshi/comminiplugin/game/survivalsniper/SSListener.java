@@ -102,7 +102,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
   @Override
   public void damageByEntity(final EntityDamageByEntityEvent e) {
     if (!getGame().isCanPvP() && e.getEntity() instanceof Player
-        && e.getDamager() instanceof final Player attacker) {
+        && e.getDamager() instanceof final Player attacker && getGame().isGamePlayer(attacker)) {
       getGame().prefix.send(attacker, "<red>まだPvPはできません");
       e.setCancelled(true);
     }

@@ -107,4 +107,6 @@ public abstract class AbstractGame implements InterfaceGame {
 
   protected abstract void innerFinishGame();
 
+  // TODO: createHelpMenu も作ったほうがいい
+
 }

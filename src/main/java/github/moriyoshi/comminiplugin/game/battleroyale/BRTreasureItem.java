@@ -20,10 +20,12 @@ public class BRTreasureItem extends CustomItem {
             "<gray>if look block is already treasure,",
             "<gray> open treasure settings menu",
             "<gray>Left Click to remove!",
-            "<gray>how to choose (number range 1~5)",
+            "<gray>how to choose (number range 0~5)",
+            "<gray> (0 does not place a treasure)",
             "<gray> first: 1 (single select)",
             "<gray> second: 1,2,3,4 (multiple select)",
-            "<gray> third: 2~3 (range select, equals 2,3)")
+            "<gray> third: 2~3 (range select, equals 2,3)",
+            "<gray> fourth: 40%5,10%0 (random select,Can be changed percent at will.)")
         .build());
   }
 
@@ -66,12 +68,20 @@ public class BRTreasureItem extends CustomItem {
       ComMiniPrefix.SYSTEM.send(player, "<green>successfully removed treasure block");
     } else {
       if (treasure.containsLocation(block.getLocation())) {
+        val values = treasure.getLocationData(block.getLocation());
+        if (values.stream().allMatch(p -> p.getSecond() == 1)) {
+          ComMiniPrefix.SYSTEM.send(player, "<red>treasure values: "
+              + values.stream().map(p -> String.valueOf(p.getFirst()))
+                  .collect(Collectors.joining(",")));
+          return;
+        }
         ComMiniPrefix.SYSTEM.send(player, "<red>treasure values: "
-            + treasure.getLocationData(block.getLocation()).stream().map(String::valueOf)
+            + values.stream().map(p -> String.format("%d%%%d", p.getSecond(), p.getFirst()))
                 .collect(Collectors.joining(",")));
         return;
       }
       treasure.addLocation(block.getLocation(), player);
+      block.setType(Material.BEDROCK);
     }
   }
 
