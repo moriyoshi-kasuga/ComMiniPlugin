@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.JsonElement;
 
@@ -16,18 +16,11 @@ import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
-import org.jetbrains.annotations.NotNull;
 
 public class TreasureChest extends CustomModelBlock {
 
   // 鉄Lv.1 エメラルドLv.2 ラピスラズリLv.3 ダイアlv.4 アメジストLv.5
   private final int level;
-
-  public TreasureChest(Block block, Player player) {
-    super(block, player);
-    this.level = 1;
-    spawn();
-  }
 
   public TreasureChest(Block block) {
     super(block);

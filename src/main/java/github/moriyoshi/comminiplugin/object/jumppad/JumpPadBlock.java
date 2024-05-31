@@ -1,9 +1,8 @@
 package github.moriyoshi.comminiplugin.object.jumppad;
 
-import java.util.List;
 import java.util.Random;
-
 import java.util.stream.Stream;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;

@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.system;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -42,7 +43,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
   /**
    * @param e event
    */
-  default void damage(final EntityDamageEvent e) {
+  default void damage(final EntityDamageEvent e,final Player player) {
   }
 
   /**

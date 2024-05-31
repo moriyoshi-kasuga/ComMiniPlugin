@@ -22,7 +22,7 @@ public class SSSlot extends HotbarSlot {
 
   @Override
   protected List<Supplier<ItemStack>> getDefaults() {
-    return List.of(
+    return generate(
         () -> new Sniper().getItem(),
         () -> new Jump().getItem(),
         () -> new ItemStack(Material.IRON_AXE),

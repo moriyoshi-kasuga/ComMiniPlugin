@@ -68,8 +68,8 @@ public abstract class AbstractGame implements InterfaceGame {
   public final void finishGame() {
     isStarted = false;
     HandlerList.unregisterAll(listener);
-    innerFinishGame();
     runPlayers(GameSystem::initializePlayer);
+    innerFinishGame();
     fieldInitialize(false);
   }
 

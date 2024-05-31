@@ -161,13 +161,10 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
           field.startContraction(bossBar, field.getLobby(), 60, 10, signal -> {
             switch (signal) {
               case NONE -> {
-                prefix.cast("none");
               }
               case MIN -> {
-                prefix.cast("min");
               }
               case END -> {
-                prefix.cast("end");
               }
             }
             // TODO: ここでボーダー関係の実装
@@ -188,7 +185,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
           this.cancel();
           return;
         }
-        if (time >= 3) {
+        if (3 >= time) {
           runPlayers(p -> p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.MASTER, 1, 1));
         }
         bossBar.name(Util.mm("<red>投下まで<u>" + time + "</u>秒")).progress((float) time / (float) 10);
@@ -205,10 +202,10 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     if (field != null) {
       field.stop();
     }
-    players.clear();
     if (bossBar != null) {
       runPlayers(p -> p.hideBossBar(bossBar));
     }
+    players.clear();
     showPlayer();
   }
 

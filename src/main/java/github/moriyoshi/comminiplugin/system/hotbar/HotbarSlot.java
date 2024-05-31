@@ -36,4 +36,16 @@ public abstract class HotbarSlot extends ArrayList<Integer> {
   }
 
   protected abstract List<Supplier<ItemStack>> getDefaults();
+
+  public List<Supplier<ItemStack>> generate(Supplier<ItemStack> e1,
+      Supplier<ItemStack> e2,
+      Supplier<ItemStack> e3,
+      Supplier<ItemStack> e4,
+      Supplier<ItemStack> e5,
+      Supplier<ItemStack> e6,
+      Supplier<ItemStack> e7,
+      Supplier<ItemStack> e8,
+      Supplier<ItemStack> e9) {
+    return List.of(e1, e2, e3, e4, e5, e6, e7, e8, e9);
+  }
 }

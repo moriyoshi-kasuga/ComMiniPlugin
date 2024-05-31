@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -23,6 +25,13 @@ import github.moriyoshi.comminiplugin.util.Util;
 import github.moriyoshi.comminiplugin.util.tuple.Pair;
 
 public class SSListener implements AbstractGameListener<SSGame> {
+
+  @Override
+  public void damage(EntityDamageEvent e, Player player) {
+    if (e.getCause().equals(DamageCause.FALL)) {
+      e.setCancelled(false);
+    }
+  }
 
   @Override
   public void quit(final PlayerQuitEvent e) {

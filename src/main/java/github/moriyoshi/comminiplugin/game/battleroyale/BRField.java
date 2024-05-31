@@ -42,6 +42,7 @@ public class BRField {
 
   public void initialize() {
     treasure.clearPlayer();
+    world.getWorldBorder().setCenter(lobby);
     world.getWorldBorder().setSize(max_radius_range);
   }
 
@@ -61,18 +62,20 @@ public class BRField {
       @Override
       public void run() {
         if (0 >= --temp) {
-          bossBar.name(Util.mm("<aqua>ボーダー停止中"));
+          bossBar.name(Util.mm("<aqua>ボーダー停止中")).progress(0f);
+          border.setSize(border.getSize());
           task.accept(SIGNAL.END);
           this.cancel();
           return;
         }
         if (min_border_range >= border.getSize()) {
-          bossBar.name(Util.mm("<yellow>最小サイズになりました"));
+          bossBar.name(Util.mm("<yellow>最小サイズになりました")).progress(0f);
+          border.setSize(border.getSize());
           task.accept(SIGNAL.MIN);
           this.cancel();
           return;
         }
-        bossBar.name(Util.mm("<red>ボーダー収縮残り: " + time + "</u>秒")).progress((float) temp / (float) time);
+        bossBar.name(Util.mm("<red>ボーダー収縮残り: <u>" + time + "</u>秒")).progress((float) temp / (float) time);
         task.accept(SIGNAL.NONE);
       }
 

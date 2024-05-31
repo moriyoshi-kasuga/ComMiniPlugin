@@ -22,10 +22,10 @@ public class BRSlot extends HotbarSlot {
 
   @Override
   protected List<Supplier<ItemStack>> getDefaults() {
-    return List.of(
+    return generate(
         () -> new ItemBuilder(Material.BOW).unbreakable(true).build(),
+        () -> new ItemBuilder(Material.CROSSBOW).unbreakable(true).build(),
         () -> new ItemBuilder(Material.ARROW).amount(20).build(),
-        () -> null,
         () -> null,
         () -> null,
         () -> null,

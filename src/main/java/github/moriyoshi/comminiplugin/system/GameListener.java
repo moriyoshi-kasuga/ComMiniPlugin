@@ -82,14 +82,13 @@ public class GameListener implements Listener {
 
   @EventHandler
   public void damage(EntityDamageEvent e) {
-    if (e.getEntity() instanceof Player attacker
-        && !isGamePlayer(attacker, EntityDamageEvent.class)
-        && e.getCause().equals(DamageCause.FALL)) {
-      e.setCancelled(true);
-      return;
-    }
-    if (GameSystem.isStarted()) {
-      GameSystem.getGame().listener.damage(e);
+    if (e.getEntity() instanceof Player player) {
+      if (e.getCause().equals(DamageCause.FALL)) {
+        e.setCancelled(true);
+      }
+      if (GameSystem.isStarted() && isGamePlayer(player, EntityDamageEvent.class)) {
+        GameSystem.getGame().listener.damage(e, player);
+      }
     }
   }
 

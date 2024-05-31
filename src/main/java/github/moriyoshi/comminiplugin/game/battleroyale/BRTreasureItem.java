@@ -52,6 +52,10 @@ public class BRTreasureItem extends CustomItem {
       ComMiniPrefix.SYSTEM.send(player, "<red>please look at a target block");
       return;
     }
+    if (!block.isSolid()) {
+      ComMiniPrefix.SYSTEM.send(player, "<red>please look at a solid block");
+      return;
+    }
     val treasure = game.getField().getTreasure();
     if (e.getAction().isLeftClick()) {
       if (!treasure.containsLocation(block.getLocation())) {
