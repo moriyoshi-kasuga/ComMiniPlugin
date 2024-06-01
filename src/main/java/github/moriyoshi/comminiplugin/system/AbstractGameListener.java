@@ -43,7 +43,7 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
   /**
    * @param e event
    */
-  default void damage(final EntityDamageEvent e,final Player player) {
+  default void damage(final EntityDamageEvent e, final Player player) {
   }
 
   /**

@@ -139,7 +139,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         val gamePlayer = ComMiniPlayer.getPlayer(uuid);
         gamePlayer.setHideNameTag(true);
         gamePlayer.getGamePlayerData(BRPlayer.class).getHotbar().setItems(inv);
-        p.setSaturation(6);
         p.setGameMode(GameMode.SURVIVAL);
       } else {
         p.setGameMode(GameMode.SPECTATOR);

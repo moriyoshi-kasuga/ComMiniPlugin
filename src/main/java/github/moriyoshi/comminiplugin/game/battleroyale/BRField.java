@@ -43,8 +43,10 @@ public class BRField {
 
   public void initialize() {
     treasure.clearPlayer();
-    world.getWorldBorder().setCenter(lobby);
-    world.getWorldBorder().setSize(max_radius_range);
+    val border = world.getWorldBorder();
+    border.setCenter(lobby);
+    border.setSize(max_radius_range);
+    border.setDamageBuffer(0);
   }
 
   public void startMove(double maxRadius, double minRadius, long time) {
