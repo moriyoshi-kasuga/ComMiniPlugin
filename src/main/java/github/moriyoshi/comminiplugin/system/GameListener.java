@@ -144,7 +144,6 @@ public class GameListener implements Listener {
     }
   }
 
-  //TODO: custom jumppad の source を見る
   @EventHandler
   public void move(PlayerMoveEvent e) {
     var p = e.getPlayer();

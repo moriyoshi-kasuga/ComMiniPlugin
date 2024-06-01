@@ -29,6 +29,7 @@ import github.moriyoshi.comminiplugin.dependencies.glowing.GlowingBlocks;
 import github.moriyoshi.comminiplugin.dependencies.glowing.GlowingEntities;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
 import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.CustomListener;
 import github.moriyoshi.comminiplugin.system.GameListener;
@@ -117,6 +118,8 @@ public final class ComMiniPlugin extends JavaPlugin {
     CustomBlockData.getInstance().saveFile();
     CommandAPI.onDisable();
     LocationsCommands.getManager().saveFile();
+
+    JumpPadBlock.clear();
 
     glowingEntities.disable();
     glowingBlocks.disable();

@@ -28,6 +28,15 @@ public class JumpPadBlock extends CustomBlock {
 
   private static Set<FallingBlock> fallingBlocks = new HashSet<>();
 
+  public static void clear() {
+    fallingBlocks.forEach(falling -> {
+      if (!falling.isDead()) {
+        falling.remove();
+      }
+    });
+    fallingBlocks.clear();
+  }
+
   private BukkitRunnable task;
 
   @Getter
@@ -106,26 +115,37 @@ public class JumpPadBlock extends CustomBlock {
     if (direction != -1.0) {
       launchLocation.setYaw(direction);
     }
-    val velocity = launchLocation.getDirection().normalize().multiply(power / 10f);
-    // val falling = launchLocation.getWorld().spawn(launchLocation,
-    // FallingBlock.class, entity -> {
-    // entity.setInvisible(true);
-    // entity.setInvulnerable(true);
-    // entity.setSilent(true);
-    // entity.setDropItem(false);
-    // entity.setCancelDrop(true);
-    // entity.setVelocity();
-    // });
+    val falling = launchLocation.getWorld().spawn(launchLocation,
+        FallingBlock.class, entity -> {
+          entity.setBlockData(Material.MOVING_PISTON.createBlockData());
+          entity.setInvisible(true);
+          entity.setSilent(true);
+          entity.setGravity(true);
+          entity.setDropItem(false);
+          entity.setCancelDrop(true);
+          entity.setVelocity(launchLocation.getDirection().normalize().multiply(power / 15f));
+        });
 
-    player.setVelocity(velocity);
+    fallingBlocks.add(falling);
+
     new BukkitRunnable() {
 
       @Override
       public void run() {
-        player.setVelocity(velocity);
+        if (falling.isDead()) {
+          this.cancel();
+          return;
+        }
+        if (0 >= falling.getVelocity().getY() || 0 == falling.getVelocity().getX() || 0 == falling.getVelocity().getZ()
+            || falling.isOnGround()) {
+          falling.remove();
+          this.cancel();
+          return;
+        }
+        player.setVelocity(falling.getVelocity());
       }
 
-    }.runTask(ComMiniPlugin.getPlugin());
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
     val loc = getBlock().getLocation();
     loc.getWorld().playSound(loc, sound, SoundCategory.MASTER, 1, 1);
   }
