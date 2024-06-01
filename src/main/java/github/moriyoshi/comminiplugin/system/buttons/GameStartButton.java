@@ -16,18 +16,17 @@ import lombok.val;
 
 public class GameStartButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   private GameStartButton(ItemStack item) {
-    super();
+    super(item);
   }
 
   public static GameStartButton of() {
     if (!GameSystem.isIn()) {
-      return new GameStartButton(new ItemBuilder(Material.BEDROCK).name("<red>not initialize game").build());
+      return new GameStartButton(new ItemBuilder(Material.BEDROCK).name(Messages.GAME_NOT_FOUND.message).build());
     }
     if (GameSystem.isStarted()) {
-      return new GameStartButton(new ItemBuilder(Material.BEDROCK).name("<red>game is already started").build());
+      return new GameStartButton(new ItemBuilder(Material.BEDROCK).name(Messages.GAME_ALREADY_START.message).build());
     }
     return new GameStartButton(new ItemBuilder(GameSystem.getGame().material).name("<red>Start").build());
-
   }
 
   @Override

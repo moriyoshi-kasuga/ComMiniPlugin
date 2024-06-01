@@ -28,13 +28,13 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
 
   default boolean isClosed() {
     if (GameSystem.isIn() && !GameSystem.isStarted()) {
-      return true;
+      return false;
     }
     getInventory().getViewers().forEach(human -> {
       Messages.GAME_FINAL_OR_START.send(human);
       human.closeInventory();
     });
-    return false;
+    return true;
   }
 
 }

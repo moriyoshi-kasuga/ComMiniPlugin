@@ -1,6 +1,7 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -46,12 +47,18 @@ public class BRField {
     world.getWorldBorder().setSize(max_radius_range);
   }
 
-  public void startMove(int maxRadius, int minRadius, int time) {
+  public void startMove(double maxRadius, double minRadius, long time) {
     val random = new Random();
     val border = world.getWorldBorder();
+    val moveX = Optional.of(random.nextDouble(minRadius, maxRadius)).map(i -> random.nextBoolean() ? i : -i)
+        .orElse(0.0) / time / 20;
+    val moveZ = Optional.of(random.nextDouble(minRadius, maxRadius)).map(i -> random.nextBoolean() ? i : -i)
+        .orElse(0.0) / time / 20;
+
     new BukkitRunnable() {
 
-      private Location center = border.getCenter();
+      private final Location center = border.getCenter();
+      private long rest = time * 20;
 
       @Override
       public void run() {
@@ -59,6 +66,12 @@ public class BRField {
           this.cancel();
           return;
         }
+        if (--rest == 0) {
+          startMove(maxRadius, minRadius, time);
+          this.cancel();
+          return;
+        }
+        border.setCenter(center.add(moveX, 0, moveZ));
       }
 
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
@@ -68,10 +81,9 @@ public class BRField {
     val border = world.getWorldBorder();
     border.setCenter(center);
     border.setSize(min_border_range, (long) ((border.getSize() - (double) min_border_range) / size * (double) time));
-
     new BukkitRunnable() {
 
-      private int temp = time;
+      private int temp = time + 1;
 
       @Override
       public void run() {
@@ -94,7 +106,7 @@ public class BRField {
         task.accept(new SIGNAL.NONE(temp));
       }
 
-    }.runTaskTimer(ComMiniPlugin.getPlugin(), 20, 20);
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
   }
 
   public void stop() {

@@ -8,7 +8,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -62,6 +64,13 @@ public class BRListener implements AbstractGameListener<BRGame> {
     game.runPlayers(pl -> Util.send(pl, e.deathMessage()));
     game.players.put(p.getUniqueId(), false);
     reducePlayer(p);
+  }
+
+  @Override
+  public void damage(EntityDamageEvent e, Player player) {
+    if (e.getCause().equals(DamageCause.FLY_INTO_WALL)) {
+      e.setCancelled(true);
+    }
   }
 
   @Override

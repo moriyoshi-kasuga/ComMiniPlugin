@@ -38,6 +38,10 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   public final HashMap<UUID, Boolean> players = new HashMap<>();
 
   private final int BORDERE_INTERVAL = 60;
+  private final int START_DROP = 15;
+  private final int BORDERE_CONTRACTION_TIME = 50;
+  private final int BORDERE_CONTRACTION_SIZE = 70;
+  private final int BORDERE_BEFORE_MOVE_TIME = 10;
 
   private final List<Sequence<Integer, Integer, Material, BlockData>> lobbyBlows = new ArrayList<>();
 
@@ -150,7 +154,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
     new BukkitRunnable() {
 
-      private int time = 21;
+      private int time = START_DROP + 1;
 
       @Override
       public void run() {
@@ -171,7 +175,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
           }
           runPlayers(WingItem::setWing);
 
-          startContraction();
+          startContractionBorder();
 
           new BukkitRunnable() {
 
@@ -205,7 +209,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         if (3 >= time) {
           runPlayers(p -> p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.MASTER, 1, 1));
         }
-        bossBar.name(Util.mm("<red>投下まで<u>" + time + "</u>秒")).progress((float) time / (float) 10);
+        bossBar.name(Util.mm("<red>投下まで<u>" + time + "</u>秒")).progress((float) time / (float) START_DROP);
       }
 
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
@@ -214,13 +218,13 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     return true;
   }
 
-  public void startContraction() {
-    field.startContraction(field.getLobby(), BORDERE_INTERVAL, 10, signal -> {
+  public void startContractionBorder() {
+    field.startContraction(field.getLobby(), BORDERE_CONTRACTION_SIZE, BORDERE_CONTRACTION_TIME, signal -> {
       switch (signal) {
         case SIGNAL.MIN min -> {
           new BukkitRunnable() {
 
-            private int temp = 20 + 1;
+            private int temp = BORDERE_BEFORE_MOVE_TIME + 1;
 
             @Override
             public void run() {
@@ -230,12 +234,12 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
               }
               if (0 >= --temp) {
                 bossBar.name(Util.mm("<red>動きまくります!")).progress(0f);
-                field.startMove(100, 70, 30);
+                field.startMove(20, 15, 10);
                 this.cancel();
                 return;
               }
               bossBar.name(Util.mm("<yellow>ボーダー最小サイズ: 動くまで<u>" + temp + "</u>秒"))
-                  .progress((float) temp / (float) 20);
+                  .progress((float) temp / (float) BORDERE_BEFORE_MOVE_TIME);
             }
 
           }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
@@ -252,7 +256,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
                 return;
               }
               if (0 >= --temp) {
-                startContraction();
+                startContractionBorder();
                 this.cancel();
                 return;
               }
@@ -264,7 +268,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         }
         case SIGNAL.NONE none -> {
           bossBar.name(Util.mm("<red>ボーダー収縮残り: <u>" + none.restTime() + "</u>秒"))
-              .progress((float) none.restTime() / (float) BORDERE_INTERVAL);
+              .progress((float) none.restTime() / (float) BORDERE_CONTRACTION_TIME);
         }
       }
     });

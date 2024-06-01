@@ -90,6 +90,7 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
       }
     }, (str, state) -> Collections.emptyList(), (list, state) -> {
       finalAddLocation(location, list);
+      location.getBlock().setType(Material.BEDROCK);
       return List.of(ResponseAction.close());
     }).open(player);
   }

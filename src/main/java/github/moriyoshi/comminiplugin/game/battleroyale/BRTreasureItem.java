@@ -25,7 +25,8 @@ public class BRTreasureItem extends CustomItem {
             "<gray> first: 1 (single select)",
             "<gray> second: 1,2,3,4 (multiple select)",
             "<gray> third: 2~3 (range select, equals 2,3)",
-            "<gray> fourth: 40%5,10%0 (random select,Can be changed percent at will.)")
+            "<gray> fourth: 40%5,10%0 (random select)",
+            "<gray>  (Can be changed percent at will.)")
         .build());
   }
 
@@ -71,17 +72,16 @@ public class BRTreasureItem extends CustomItem {
         val values = treasure.getLocationData(block.getLocation());
         if (values.stream().allMatch(p -> p.getSecond() == 1)) {
           ComMiniPrefix.SYSTEM.send(player, "<red>treasure values: "
-              + values.stream().map(p -> String.valueOf(p.getFirst()))
+              + values.stream().map(p -> String.valueOf(p.getFirst()) + "lv")
                   .collect(Collectors.joining(",")));
           return;
         }
         ComMiniPrefix.SYSTEM.send(player, "<red>treasure values: "
-            + values.stream().map(p -> String.format("%d%%%d", p.getSecond(), p.getFirst()))
+            + values.stream().map(p -> String.format("%d%%%dlv", p.getSecond(), p.getFirst()))
                 .collect(Collectors.joining(",")));
         return;
       }
       treasure.addLocation(block.getLocation(), player);
-      block.setType(Material.BEDROCK);
     }
   }
 
