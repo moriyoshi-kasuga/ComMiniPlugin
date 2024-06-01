@@ -1,7 +1,9 @@
 package github.moriyoshi.comminiplugin.system.buttons;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
@@ -12,12 +14,20 @@ import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
 
-/**
- * getGame()をよんでいるのでゲームがinitializeされる前に呼ばれるとエラーがでます
- **/
 public class GameStartButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
-  public GameStartButton() {
-    super(new ItemBuilder(GameSystem.getGame().material).name("<red>Start").build());
+  private GameStartButton(ItemStack item) {
+    super();
+  }
+
+  public static GameStartButton of() {
+    if (!GameSystem.isIn()) {
+      return new GameStartButton(new ItemBuilder(Material.BEDROCK).name("<red>not initialize game").build());
+    }
+    if (GameSystem.isStarted()) {
+      return new GameStartButton(new ItemBuilder(Material.BEDROCK).name("<red>game is already started").build());
+    }
+    return new GameStartButton(new ItemBuilder(GameSystem.getGame().material).name("<red>Start").build());
+
   }
 
   @Override

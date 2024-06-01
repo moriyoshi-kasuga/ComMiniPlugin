@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.game.battleroyale.BRField.SIGNAL;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
@@ -214,25 +215,58 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   }
 
   public void startContraction() {
-    field.startContraction(bossBar, field.getLobby(), BORDERE_INTERVAL, 10, signal -> {
+    field.startContraction(field.getLobby(), BORDERE_INTERVAL, 10, signal -> {
       switch (signal) {
-        case MIN -> {
-        }
-        case END -> {
+        case SIGNAL.MIN min -> {
           new BukkitRunnable() {
+
+            private int temp = 20 + 1;
 
             @Override
             public void run() {
-              // TODO Auto-generated method stub
-              throw new UnsupportedOperationException("Unimplemented method 'run'");
+              if (!GameSystem.isIn()) {
+                this.cancel();
+                return;
+              }
+              if (0 >= --temp) {
+                bossBar.name(Util.mm("<red>動きまくります!")).progress(0f);
+                field.startMove(100, 70, 30);
+                this.cancel();
+                return;
+              }
+              bossBar.name(Util.mm("<yellow>ボーダー最小サイズ: 動くまで<u>" + temp + "</u>秒"))
+                  .progress((float) temp / (float) 20);
             }
 
           }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
         }
-        default -> {
+        case SIGNAL.END end -> {
+          new BukkitRunnable() {
+
+            private int temp = BORDERE_INTERVAL + 1;
+
+            @Override
+            public void run() {
+              if (!GameSystem.isIn()) {
+                this.cancel();
+                return;
+              }
+              if (0 >= --temp) {
+                startContraction();
+                this.cancel();
+                return;
+              }
+              bossBar.name(Util.mm("<aqua>ボーダー停止中: 起動まで<u>" + temp + "</u>秒"))
+                  .progress((float) temp / (float) BORDERE_INTERVAL);
+            }
+
+          }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
+        }
+        case SIGNAL.NONE none -> {
+          bossBar.name(Util.mm("<red>ボーダー収縮残り: <u>" + none.restTime() + "</u>秒"))
+              .progress((float) none.restTime() / (float) BORDERE_INTERVAL);
         }
       }
-      // TODO: ここでボーダー関係の実装
     });
 
   }

@@ -17,10 +17,11 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.IGetGame;
 import github.moriyoshi.comminiplugin.system.buttons.GameStartButton;
+import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
 
-public class BRAdminMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<BRGame> {
+public class BRAdminMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<BRGame>, OnlyBeforeStartGameMenu {
   private static class FieldButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
     private final Supplier<BRField> fieldSupplier;
     private final String name;
@@ -42,7 +43,7 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<B
 
   public BRAdminMenu() {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>OP:バトルロワイヤル");
-    setButton(16, new GameStartButton());
+    setButton(16, GameStartButton.of());
     setButton(13, new FieldButton(Material.DIRT, "<green>バイオームフィールド",
         () -> new BRField("biome", new Location(ComMiniWorld.GAME_WORLD, 1000.5, 60, 1000.5), 400, 50)));
     setButton(3, new ItemButton<>(new ItemBuilder(Material.GREEN_CONCRETE).name("<green>宝箱の設置開始").build()) {
@@ -64,5 +65,13 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<B
         }, () -> ComMiniPrefix.SYSTEM.send(event.getWhoClicked(), "<red>宝箱を配置するフィールドを設定してから実行してください"));
       }
     });
+  }
+
+  @Override
+  public void onClick(InventoryClickEvent event) {
+    if (isClosed()) {
+      return;
+    }
+    super.onClick(event);
   }
 }

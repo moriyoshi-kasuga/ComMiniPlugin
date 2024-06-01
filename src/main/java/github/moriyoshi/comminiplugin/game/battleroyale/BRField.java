@@ -1,6 +1,7 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.function.Consumer;
 
 import org.bukkit.Location;
@@ -13,10 +14,8 @@ import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.loot.Entry;
 import github.moriyoshi.comminiplugin.system.loot.LootTable;
 import github.moriyoshi.comminiplugin.system.loot.Pool;
-import github.moriyoshi.comminiplugin.util.Util;
 import lombok.Getter;
 import lombok.val;
-import net.kyori.adventure.bossbar.BossBar;
 
 public class BRField {
 
@@ -47,11 +46,25 @@ public class BRField {
     world.getWorldBorder().setSize(max_radius_range);
   }
 
-  public void startMove(BossBar bossBar) {
-    // TODO: ここにサイズは変えずにボーダーを動かしまくる
+  public void startMove(int maxRadius, int minRadius, int time) {
+    val random = new Random();
+    val border = world.getWorldBorder();
+    new BukkitRunnable() {
+
+      private Location center = border.getCenter();
+
+      @Override
+      public void run() {
+        if (!GameSystem.isIn()) {
+          this.cancel();
+          return;
+        }
+      }
+
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
   }
 
-  public void startContraction(BossBar bossBar, Location center, double size, int time, Consumer<SIGNAL> task) {
+  public void startContraction(Location center, double size, int time, Consumer<SIGNAL> task) {
     val border = world.getWorldBorder();
     border.setCenter(center);
     border.setSize(min_border_range, (long) ((border.getSize() - (double) min_border_range) / size * (double) time));
@@ -67,21 +80,18 @@ public class BRField {
           return;
         }
         if (0 >= --temp) {
-          bossBar.name(Util.mm("<aqua>ボーダー停止中")).progress(0f);
           border.setSize(border.getSize());
-          task.accept(SIGNAL.END);
+          task.accept(new SIGNAL.END());
           this.cancel();
           return;
         }
         if (min_border_range >= border.getSize()) {
-          bossBar.name(Util.mm("<yellow>最小サイズになりました")).progress(0f);
           border.setSize(border.getSize());
-          task.accept(SIGNAL.MIN);
+          task.accept(new SIGNAL.MIN());
           this.cancel();
           return;
         }
-        bossBar.name(Util.mm("<red>ボーダー収縮残り: <u>" + time + "</u>秒")).progress((float) temp / (float) time);
-        task.accept(SIGNAL.NONE);
+        task.accept(new SIGNAL.NONE(temp));
       }
 
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 20, 20);
@@ -140,9 +150,14 @@ public class BRField {
     });
   }
 
-  public enum SIGNAL {
-    END,
-    MIN,
-    NONE
+  public sealed interface SIGNAL {
+    public record END() implements SIGNAL {
+    }
+
+    public record MIN() implements SIGNAL {
+    }
+
+    public record NONE(int restTime) implements SIGNAL {
+    }
   }
 }

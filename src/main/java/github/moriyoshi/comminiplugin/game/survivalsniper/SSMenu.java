@@ -24,7 +24,7 @@ public class SSMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<SSGame
   private final ItemStack SPEC = new ItemBuilder(Material.GRAY_CONCRETE).name("<gray>観戦する")
       .lore("<white>もう一度クリックで観戦を取りやめ").build();
 
-  private final BukkitRunnable task = createTask();
+  private final BukkitRunnable task = createAutoCloseTask();
 
   public SSMenu() {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>サバイバルスナイパー");
@@ -46,6 +46,14 @@ public class SSMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<SSGame
   @Override
   public void onClose(InventoryCloseEvent event) {
     this.task.cancel();
+  }
+
+  @Override
+  public void onClick(InventoryClickEvent event) {
+    if (isClosed()) {
+      return;
+    }
+    super.onClick(event);
   }
 
   @Override

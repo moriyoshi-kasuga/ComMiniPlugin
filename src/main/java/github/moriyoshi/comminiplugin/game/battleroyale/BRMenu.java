@@ -19,7 +19,7 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
 public class BRMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<BRGame>, OnlyBeforeStartGameMenu {
 
-  private final BukkitRunnable task = createTask();
+  private final BukkitRunnable task = createAutoCloseTask();
 
   private final ItemStack JOIN = new ItemBuilder(Material.BLUE_CONCRETE).name("<blue>参加する")
       .lore("<white>もう一度クリックで参加を取りやめ").build();
@@ -46,6 +46,14 @@ public class BRMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<BRGame
   @Override
   public void onClose(InventoryCloseEvent event) {
     this.task.cancel();
+  }
+
+  @Override
+  public void onClick(InventoryClickEvent event) {
+    if (isClosed()) {
+      return;
+    }
+    super.onClick(event);
   }
 
   @Override

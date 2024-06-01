@@ -8,6 +8,6 @@ public class SSAdminMenu extends MenuHolder<ComMiniPlugin> {
 
   public SSAdminMenu() {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>OP:サバイバルスナイパー");
-    setButton(13, new GameStartButton());
+    setButton(13, GameStartButton.of());
   }
 }
