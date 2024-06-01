@@ -4,13 +4,16 @@ import java.util.Optional;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.JsonElement;
 
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomModelBlock;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.system.GameSystem;
@@ -59,6 +62,16 @@ public class TreasureChest extends CustomModelBlock {
     return Material.CHEST;
   }
 
+  @Override
+  public void clearData() {
+    super.clearData();
+    if (this.task != null) {
+      this.task.cancel();
+    }
+  }
+
+  private BukkitRunnable task;
+
   private void spawn() {
     updateDisplayItem();
     if (!GameSystem.isIn(BRGame.class)) {
@@ -73,6 +86,19 @@ public class TreasureChest extends CustomModelBlock {
         default -> field.getLevel5();
       };
       loottable.setChest(getBlock().getLocation());
+      this.task = new BukkitRunnable() {
+
+        @Override
+        public void run() {
+          if (getBlock().getState() instanceof Chest chest) {
+            if (chest.getInventory().isEmpty()) {
+              getBlock().setType(Material.AIR);
+            }
+          }
+        }
+
+      };
+      this.task.runTaskTimer(ComMiniPlugin.getPlugin(), 5L, 5L);
     });
   }
 

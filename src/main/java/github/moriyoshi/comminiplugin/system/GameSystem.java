@@ -125,6 +125,7 @@ public class GameSystem {
     p.teleport(ComMiniWorld.LOBBY);
     p.setGameMode(GameMode.SURVIVAL);
     p.clearActivePotionEffects();
+    p.setHealth(20);
   }
 
 }
