@@ -1,6 +1,8 @@
 package github.moriyoshi.comminiplugin.object.jumppad;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,6 +10,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +25,8 @@ import lombok.Setter;
 import lombok.val;
 
 public class JumpPadBlock extends CustomBlock {
+
+  private static Set<FallingBlock> fallingBlocks = new HashSet<>();
 
   private BukkitRunnable task;
 
@@ -101,7 +106,26 @@ public class JumpPadBlock extends CustomBlock {
     if (direction != -1.0) {
       launchLocation.setYaw(direction);
     }
-    player.setVelocity(launchLocation.getDirection().normalize().multiply(power / 10f));
+    val velocity = launchLocation.getDirection().normalize().multiply(power / 10f);
+    // val falling = launchLocation.getWorld().spawn(launchLocation,
+    // FallingBlock.class, entity -> {
+    // entity.setInvisible(true);
+    // entity.setInvulnerable(true);
+    // entity.setSilent(true);
+    // entity.setDropItem(false);
+    // entity.setCancelDrop(true);
+    // entity.setVelocity();
+    // });
+
+    player.setVelocity(velocity);
+    new BukkitRunnable() {
+
+      @Override
+      public void run() {
+        player.setVelocity(velocity);
+      }
+
+    }.runTask(ComMiniPlugin.getPlugin());
     val loc = getBlock().getLocation();
     loc.getWorld().playSound(loc, sound, SoundCategory.MASTER, 1, 1);
   }
