@@ -66,12 +66,11 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
             @Override
             public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
               AnvilInputs.postClose(
-                  AnvilInputs.getInput(getPlugin(), "<aqua>文字で検索", (t, u) -> t,
+                  AnvilInputs.getString(getPlugin(), "<aqua>文字で検索",
                       (s, completion) -> List.of(ResponseAction.openInventory(
                           getNewRewadsMenu(rewards.stream().filter(key -> method.test(s, key)).toList())
                               .getInventory()))),
-                  ComMiniPlugin.getPlugin(), state -> state.getPlayer().openInventory(getInventory())
-                  )
+                  ComMiniPlugin.getPlugin(), state -> state.getPlayer().openInventory(getInventory()))
                   .open((Player) event.getWhoClicked());
             }
           }));

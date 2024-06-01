@@ -22,10 +22,16 @@ public class AnvilInputs {
   private AnvilInputs() {
   }
 
+  public static AnvilGUI.Builder getString(@NotNull Plugin plugin, @NotNull Object title,
+      @NotNull BiFunction<String, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
+    return getInput(plugin, title, (s, state) -> Optional.of(s),
+        (s, state) -> Collections.emptyList(), func);
+  }
+
   public static <T> AnvilGUI.Builder getInput(@NotNull Plugin plugin, @NotNull Object title,
-      @NotNull BiFunction<String, StateSnapshot, T> toClazz,
+      @NotNull BiFunction<String, StateSnapshot, Optional<T>> toClazz,
       @NotNull BiFunction<T, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
-    return getInput(plugin, title, (s, state) -> Optional.of(toClazz.apply(s, state)),
+    return getInput(plugin, title, (s, state) -> toClazz.apply(s, state),
         (s, state) -> Collections.emptyList(), func);
   }
 
