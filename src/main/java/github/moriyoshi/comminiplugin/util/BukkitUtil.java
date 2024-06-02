@@ -70,21 +70,21 @@ public final class BukkitUtil {
     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, tick, 138, true, false));
   }
 
-  public static int convertBlockFaceToYaw(BlockFace face) {
-    return switch (face) {
-      case NORTH -> 180;
-      case WEST -> 90;
-      case EAST -> -90;
-      default -> 0;
-    };
+  private static final BlockFace[] axis = {
+    BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
+  };
+
+  public static BlockFace convertYawToBlockFace(float yaw) {
+    return axis[Math.round(yaw / 90f) & 0x3];
   }
 
-  public static BlockFace convertYawToBlockFace(int yaw) {
-    return switch (yaw) {
-      case 180 -> BlockFace.NORTH;
-      case 90 -> BlockFace.WEST;
-      case -90 -> BlockFace.EAST;
-      default -> BlockFace.SOUTH;
+  public static float convertBlockFaceToYaw(BlockFace face) {
+    val first = face.name().split("_")[0];
+    return switch (first) {
+      case "NORTH" -> 180;
+      case "WEST" -> 90;
+      case "EAST" -> -90;
+      default -> 0;
     };
   }
 }
