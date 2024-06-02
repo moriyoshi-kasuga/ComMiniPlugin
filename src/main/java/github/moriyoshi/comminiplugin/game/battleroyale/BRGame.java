@@ -5,10 +5,12 @@ import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRField.SIGNAL;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
+import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
 import github.moriyoshi.comminiplugin.util.tuple.Sequence;
@@ -128,6 +130,11 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         BossBar.bossBar(
             Util.mm("<red>投下まで<u>20</u>秒"), 1f, BossBar.Color.RED, BossBar.Overlay.NOTCHED_10);
 
+    val barrier =
+        new ItemBuilder(Material.BARRIER)
+            .name("<red>Barrier")
+            .customItemFlag(CustomItemFlag.MOVE_INV, false)
+            .build();
     runPlayers(
         p -> {
           val uuid = p.getUniqueId();
@@ -138,6 +145,9 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
             gamePlayer.setHideNameTag(true);
             gamePlayer.setCanFoodRegain(false);
             gamePlayer.getGamePlayerData(BRPlayer.class).getHotbar().setItems(inv);
+            for (int i = 9; i < 36; i++) {
+              inv.setItem(i, barrier);
+            }
             p.setGameMode(GameMode.SURVIVAL);
             p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, -1, 0, true, false));
           } else {

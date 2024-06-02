@@ -1,14 +1,13 @@
 package github.moriyoshi.comminiplugin.system;
 
-import de.tr7zw.changeme.nbtapi.NBT;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.item.PlayerCooldownItem;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -25,8 +24,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class CustomListener implements Listener {
@@ -44,8 +42,7 @@ public class CustomListener implements Listener {
                         .forEach(
                             i -> {
                               if (CustomItem.isCustomItem(i)) {
-                                val custom = CustomItem.getCustomItem(i);
-                                custom.runTick(p);
+                                CustomItem.getCustomItem(i).runTick(p);
                               }
                             }));
 
@@ -67,53 +64,50 @@ public class CustomListener implements Listener {
     return INSTANCE;
   }
 
-  public static Optional<Boolean> getCustomItemFlag(ItemStack item, CustomItemFlag flag) {
-    return getCustomItemFlag(item, flag.id);
-  }
-
-  public static Optional<Boolean> getCustomItemFlag(ItemStack item, String flag) {
-    if (item == null || item.isEmpty()) {
-      return Optional.empty();
-    }
-    return NBT.get(
-        item,
-        nbt -> {
-          if (!nbt.hasTag("customitemflag")) {
-            return Optional.empty();
-          }
-          return Optional.of(nbt.getCompound("customitemflag").getBoolean(flag));
-        });
-  }
-
   @EventHandler(priority = EventPriority.HIGHEST)
   public void dropItem(final PlayerDropItemEvent e) {
-    final ItemStack item = e.getItemDrop().getItemStack();
-    if (!getCustomItemFlag(item, CustomItemFlag.DROP).orElse(true)) {
+    val item = e.getItemDrop().getItemStack();
+    if (!ItemBuilder.getCustomItemFlag(item, CustomItemFlag.DROP).orElse(true)) {
       e.setCancelled(true);
       return;
     }
     if (!CustomItem.isCustomItem(item)) {
       return;
     }
-    final CustomItem customItem = CustomItem.getCustomItem(item);
+    val customItem = CustomItem.getCustomItem(item);
     customItem.dropItem(e);
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void shiftItem(final PlayerToggleSneakEvent e) {
-    final Player player = e.getPlayer();
-    final ItemStack item = player.getInventory().getItemInMainHand();
-    if (!CustomItem.isCustomItem(item)) {
-      return;
+    val player = e.getPlayer();
+    val inv = player.getInventory();
+    val heldSlot = inv.getHeldItemSlot();
+    CustomItem.getCustomItemOptional(inv.getItemInMainHand())
+        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.HAND));
+    CustomItem.getCustomItemOptional(inv.getItemInOffHand())
+        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.OFF_HAND));
+    CustomItem.getCustomItemOptional(inv.getHelmet())
+        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.HEAD));
+    CustomItem.getCustomItemOptional(inv.getChestplate())
+        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.CHEST));
+    CustomItem.getCustomItemOptional(inv.getLeggings())
+        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.LEGS));
+    CustomItem.getCustomItemOptional(inv.getBoots())
+        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.FEET));
+    for (int i = 0; i < 36; i++) {
+      if (heldSlot == i) {
+        continue;
+      }
+      val item = inv.getItem(i);
+      CustomItem.getCustomItemOptional(item).ifPresent(custom -> custom.shiftItem(e, null));
     }
-    final CustomItem customItem = CustomItem.getCustomItem(item);
-    customItem.shiftItem(e);
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void interact(final PlayerInteractEvent e) {
-    final ItemStack item = e.getItem();
-    if (!getCustomItemFlag(item, CustomItemFlag.CLICK_INTERACT).orElse(true)) {
+    val item = e.getItem();
+    if (!ItemBuilder.getCustomItemFlag(item, CustomItemFlag.CLICK_INTERACT).orElse(true)) {
       e.setCancelled(true);
       return;
     }
@@ -160,10 +154,10 @@ public class CustomListener implements Listener {
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void swapItem(final PlayerItemHeldEvent e) {
-    final Player player = e.getPlayer();
-    final PlayerInventory inventory = player.getInventory();
-    final ItemStack previousItem = inventory.getItem(e.getPreviousSlot());
-    final ItemStack newItem = inventory.getItem(e.getNewSlot());
+    val player = e.getPlayer();
+    val inventory = player.getInventory();
+    val previousItem = inventory.getItem(e.getPreviousSlot());
+    val newItem = inventory.getItem(e.getNewSlot());
     if (CustomItem.isCustomItem(previousItem)) {
       CustomItem.getCustomItem(previousItem).heldOfOther(e);
     }
@@ -191,11 +185,11 @@ public class CustomListener implements Listener {
   public void inventoryClick(final InventoryClickEvent e) {
     val item = e.getCursor();
     val click = e.getCurrentItem();
-    if (!getCustomItemFlag(item, CustomItemFlag.MOVE_INV).orElse(true)) {
+    if (!ItemBuilder.getCustomItemFlag(item, CustomItemFlag.MOVE_INV).orElse(true)) {
       e.setCancelled(true);
       return;
     }
-    if (!getCustomItemFlag(click, CustomItemFlag.MOVE_INV).orElse(true)) {
+    if (!ItemBuilder.getCustomItemFlag(click, CustomItemFlag.MOVE_INV).orElse(true)) {
       e.setCancelled(true);
       return;
     }
@@ -231,7 +225,7 @@ public class CustomListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void itemSpawn(final ItemSpawnEvent e) {
     val item = e.getEntity().getItemStack();
-    if (!getCustomItemFlag(item, CustomItemFlag.ITEM_SPAWN).orElse(true)) {
+    if (!ItemBuilder.getCustomItemFlag(item, CustomItemFlag.ITEM_SPAWN).orElse(true)) {
       e.setCancelled(true);
       return;
     }

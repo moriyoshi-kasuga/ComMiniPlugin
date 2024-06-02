@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import lombok.val;
@@ -399,5 +400,23 @@ public class ItemBuilder {
 
   public ItemStack build() {
     return itemStack;
+  }
+
+  public static Optional<Boolean> getCustomItemFlag(ItemStack item, CustomItemFlag flag) {
+    return getCustomItemFlag(item, flag.id);
+  }
+
+  public static Optional<Boolean> getCustomItemFlag(ItemStack item, String flag) {
+    if (item == null || item.isEmpty()) {
+      return Optional.empty();
+    }
+    return NBT.get(
+        item,
+        nbt -> {
+          if (!nbt.hasTag("customitemflag")) {
+            return Optional.empty();
+          }
+          return Optional.of(nbt.getCompound("customitemflag").getBoolean(flag));
+        });
   }
 }

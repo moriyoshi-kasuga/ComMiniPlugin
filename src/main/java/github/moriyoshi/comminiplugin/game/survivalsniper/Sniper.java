@@ -75,7 +75,7 @@ public class Sniper extends CustomItem implements CooldownItem {
       loc.getNearbyEntities(1, 1, 1)
           .forEach(
               entity -> {
-                if (entity != p
+                if (!p.equals(entity)
                     && entity
                         .getBoundingBox()
                         .overlaps(v.clone().add(BULLET_SIZE), v.clone().subtract(BULLET_SIZE))) {

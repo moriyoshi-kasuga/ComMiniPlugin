@@ -26,7 +26,10 @@ public class VampireBowItem extends CustomItem implements CooldownItem {
     this(
         new ItemBuilder(Material.BOW)
             .name("<red>弓血鬼")
-            .lore("<gray>使う者の攻撃力を飛躍的に向上させるが、", "<gray>その<u>代償</u>として体力を徐々に削り取る。")
+            .lore(
+                "<gray>使う者の攻撃力を飛躍的に向上させるが、",
+                "<gray>その<u>代償</u>として体力を徐々に削り取る。",
+                "<gray>削り取ったHPの量ダメージを増やす")
             .customModelData(1)
             .build());
   }

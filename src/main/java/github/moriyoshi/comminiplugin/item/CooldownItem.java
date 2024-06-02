@@ -37,13 +37,13 @@ public interface CooldownItem extends InterfaceItem {
    * @return true の場合はまだクールダウンがあります
    */
   default boolean countDown() {
-    final int cooldown = getCooldown();
-    if (1 >= cooldown) {
-      COOLDOWN.remove(getItemKey());
-      return false;
+    int cooldown = getCooldown();
+    if (--cooldown > 0) {
+      COOLDOWN.put(getItemKey(), cooldown);
+      return true;
     }
-    COOLDOWN.put(getItemKey(), cooldown - 1);
-    return true;
+    COOLDOWN.remove(getItemKey());
+    return false;
   }
 
   @Override
@@ -55,9 +55,15 @@ public interface CooldownItem extends InterfaceItem {
         });
   }
 
+  /**
+   * default action bar message (cooldown / 20)
+   *
+   * @param cooldown rest time
+   * @return message
+   */
   @NotNull
   default String getHasCooldownMessage(int cooldown) {
-    return "<red>Now on " + cooldown + " cooldown";
+    return "<red>Now on " + cooldown / 20 + " cooldown";
   }
 
   @NotNull

@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -80,6 +81,13 @@ public abstract class CustomItem implements InterfaceItem {
       }
     }
     throw new IllegalArgumentException(identifier + " のIDはカスタムアイテムに登録されていません");
+  }
+
+  public static Optional<CustomItem> getCustomItemOptional(final ItemStack item) {
+    if (CustomItem.isCustomItem(item)) {
+      return Optional.of(getCustomItem(item));
+    }
+    return Optional.empty();
   }
 
   public static CustomItem getCustomItem(final ItemStack item) {
@@ -243,7 +251,7 @@ public abstract class CustomItem implements InterfaceItem {
   public void heldOfOther(PlayerItemHeldEvent e) {}
 
   @Override
-  public void shiftItem(PlayerToggleSneakEvent e) {}
+  public void shiftItem(PlayerToggleSneakEvent e, @Nullable EquipmentSlot equipmentSlot) {}
 
   @Override
   public void dropItem(PlayerDropItemEvent e) {}

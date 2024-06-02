@@ -25,7 +25,7 @@ public class TinglyBallItem extends CustomItem {
     this(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
             .name("<yellow>ビリビリ玉")
-            .lore("<gray>あたった敵が少しの間動けなくなる", "<red>自分に当たらないように注意!")
+            .lore("<gray>あたった敵が2秒間動けなくなる", "<red>自分に当たらないように注意!")
             .customModelData(12)
             .build());
   }
@@ -42,7 +42,13 @@ public class TinglyBallItem extends CustomItem {
     itemUse();
     val player = e.getPlayer();
     val projectile =
-        player.launchProjectile(Snowball.class, player.getLocation().getDirection().multiply(3));
+        player.launchProjectile(
+            Snowball.class,
+            player.getLocation().getDirection().multiply(3),
+            snowball -> {
+              snowball.setItem(
+                  new ItemBuilder(Material.PHANTOM_MEMBRANE).customModelData(12).build());
+            });
     GameListener.addProjectileHitListener(
         projectile.getUniqueId(),
         (entity, event) -> {

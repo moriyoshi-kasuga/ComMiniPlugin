@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -136,8 +137,9 @@ public interface InterfaceItem {
    * このアイテムをもちsneakをするときの処理
    *
    * @param e event
+   * @parmam equipmentSlot 要求される装備スロット (null なら inventory です)
    */
-  void shiftItem(final PlayerToggleSneakEvent e);
+  void shiftItem(final PlayerToggleSneakEvent e, final @Nullable EquipmentSlot equipmentSlot);
 
   /**
    * このアイテムを捨てたさいの処理
@@ -213,7 +215,7 @@ public interface InterfaceItem {
   /**
    * このアイテムで projectile を launch したときに呼ばれます
    *
-   * @param e 
+   * @param e
    */
-  void projectileLaunch(ProjectileLaunchEvent e,Player player);
+  void projectileLaunch(ProjectileLaunchEvent e, Player player);
 }
