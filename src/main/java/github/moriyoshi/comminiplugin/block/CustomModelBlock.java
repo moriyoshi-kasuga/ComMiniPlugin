@@ -29,7 +29,7 @@ public abstract class CustomModelBlock extends CustomBlock {
         block
             .getWorld()
             .spawn(
-                block.getLocation().add(0.5f, 0.5f, 0.5f),
+                block.getLocation().toCenterLocation(),
                 ItemDisplay.class,
                 display -> {
                   display.setItemStack(getItem());

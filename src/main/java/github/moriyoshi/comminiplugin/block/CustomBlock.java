@@ -17,6 +17,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
@@ -206,6 +207,8 @@ public abstract class CustomBlock {
    * @param e event
    */
   public void blockBreak(BlockBreakEvent e) {}
+
+  public void walk(PlayerMoveEvent e) {}
 
   /**
    * ブロックの識別子を取得します

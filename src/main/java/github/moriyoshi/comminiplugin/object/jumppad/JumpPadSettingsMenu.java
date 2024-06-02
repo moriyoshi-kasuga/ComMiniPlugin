@@ -94,7 +94,6 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                           setConsumer(
                               block -> {
                                 block.setMaterial(material);
-                                block.getBlock().setType(material);
                               },
                               isIncludeLinked);
                         },
@@ -217,37 +216,29 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
         });
 
     setButton(
-        16,
+        9,
         new ItemButton<>(
-            new ItemBuilder(Material.ENDER_EYE)
-                .name("<dark_purple>direction: " + jumpPadBlock.getDirection())
-                .lore(
-                    "<gray>-1でプレイヤーの方向に飛びます",
-                    "<gray>0 or 360 represents the +z",
-                    "<gray>180 represents the -z",
-                    "<gray>90 represents the -x",
-                    "<gray>270 represents the +x")
+            new ItemBuilder(Material.FIREWORK_ROCKET)
+                .name("<white>state: " + jumpPadBlock.getState().name())
+                .lore("<gray>FREE: 自由に動けます", "<gray>DOWN: 下方向の時から動けます", "<gray>FIXED: 完全に動けません")
                 .build()) {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
             AnvilInputs.postClose(
-                    AnvilInputs.getInput(
+                    AnvilInputs.getString(
                         ComMiniPlugin.getPlugin(),
-                        "<dark_purple>360 >= direction >= -1",
-                        (str, state) -> {
-                          try {
-                            return Optional.of(Float.parseFloat(str))
-                                .filter(f -> 360 >= f && f >= -1);
-                          } catch (NumberFormatException e) {
-                            return Optional.empty();
-                          }
-                        },
-                        (str, state) -> Collections.emptyList(),
+                        "<white>FREE or DOWN or FIXED",
                         (value, state) -> {
-                          setConsumer(block -> block.setDirection(value), isIncludeLinked);
-                          return List.of(
-                              AnvilGUI.ResponseAction.openInventory(
-                                  new JumpPadSettingsMenu(jumpPadBlock).getInventory()));
+                          try {
+                            setConsumer(
+                                block -> block.setState(JumpPadBlock.JUMP_STATE.valueOf(value)),
+                                isIncludeLinked);
+                            return List.of(
+                                AnvilGUI.ResponseAction.openInventory(
+                                    new JumpPadSettingsMenu(jumpPadBlock).getInventory()));
+                          } catch (IllegalArgumentException e) {
+                            return Collections.emptyList();
+                          }
                         }),
                     getPlugin(),
                     state ->
