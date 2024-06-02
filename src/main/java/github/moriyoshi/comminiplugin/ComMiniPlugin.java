@@ -44,11 +44,9 @@ public final class ComMiniPlugin extends JavaPlugin {
           .registerTypeAdapter(Location.class, new LocationAdapter())
           .create();
 
-  @Getter private static GuiListener guiListener;
+  @Getter private static ComMiniPlugin plugin;
 
-  public static ComMiniPlugin getPlugin() {
-    return getPlugin(ComMiniPlugin.class);
-  }
+  @Getter private static GuiListener guiListener;
 
   @Getter private static GlowingEntities glowingEntities;
   @Getter private static GlowingBlocks glowingBlocks;
@@ -71,7 +69,8 @@ public final class ComMiniPlugin extends JavaPlugin {
 
   @Override
   public void onEnable() {
-    // WARN: required first
+    ComMiniPlugin.plugin = this;
+
     loadWorlds();
 
     CommandAPI.onEnable();

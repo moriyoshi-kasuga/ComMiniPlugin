@@ -14,7 +14,6 @@ import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 @Getter
@@ -126,11 +125,6 @@ public class Bullet extends CustomItem {
     this.damage = damage;
     this.headShot = headShot;
     this.sound = sound;
-  }
-
-  @Override
-  public void interact(final PlayerInteractEvent e) {
-    e.setCancelled(false);
   }
 
   @Override

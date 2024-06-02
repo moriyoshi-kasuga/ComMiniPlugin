@@ -4,15 +4,16 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Supplier;
 import lombok.val;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -20,7 +21,6 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reflections.Reflections;
@@ -31,31 +31,6 @@ public abstract class CustomItem implements InterfaceItem {
 
   public static final BiMap<String, Class<? extends CustomItem>> canShowingRegisters =
       HashBiMap.create();
-  @NotNull private final ItemStack item;
-  private UUID uuid;
-
-  public CustomItem(@NotNull final ItemStack item) {
-    NBT.modify(
-        item,
-        nbt -> {
-          final var compound = nbt.getOrCreateCompound(nbtKey);
-          if (!compound.hasTag("identifier")) {
-            compound.setString("identifier", getIdentifier());
-          }
-          generateUUID()
-              .ifPresent(
-                  supplier -> {
-                    if (compound.hasTag("uuid")) {
-                      this.uuid = compound.getUUID("uuid");
-                    } else {
-                      val uuid = supplier.get();
-                      compound.setUUID("uuid", uuid);
-                      this.uuid = uuid;
-                    }
-                  });
-        });
-    this.item = item;
-  }
 
   public static void registers(final Reflections reflections) {
     github.moriyoshi.comminiplugin.util.ReflectionUtil.forEachAllClass(
@@ -201,8 +176,31 @@ public abstract class CustomItem implements InterfaceItem {
         });
   }
 
-  public Optional<Supplier<UUID>> generateUUID() {
-    return Optional.of(() -> UUID.randomUUID());
+  @NotNull private final ItemStack item;
+
+  private UUID uuid;
+
+  public CustomItem(@NotNull final ItemStack item) {
+    NBT.modify(
+        item,
+        nbt -> {
+          final var compound = nbt.getOrCreateCompound(nbtKey);
+          if (!compound.hasTag("identifier")) {
+            compound.setString("identifier", getIdentifier());
+          }
+          generateUUID()
+              .ifPresent(
+                  supplier -> {
+                    if (compound.hasTag("uuid")) {
+                      this.uuid = compound.getUUID("uuid");
+                    } else {
+                      val uuid = supplier.get();
+                      compound.setUUID("uuid", uuid);
+                      this.uuid = uuid;
+                    }
+                  });
+        });
+    this.item = item;
   }
 
   @Override
@@ -219,119 +217,46 @@ public abstract class CustomItem implements InterfaceItem {
   public boolean equals(final Object obj) {
     if (obj instanceof final CustomItem item) {
       return item.getIdentifier().equals(getIdentifier())
-          && item.getUniqueId().equals(getUniqueId());
+          && Objects.equals(item.getUniqueId(), getUniqueId());
     }
     return false;
   }
-
-  /**
-   * デフォルトではeventはキャンセルされますが {@code e.setCancelled(false)} をすることでキャンセルするのを防げます
-   *
-   * @param e event
-   */
-  public void interact(final PlayerInteractEvent e) {}
-
-  /**
-   * ほかのアイテムからこのカスタムアイテムにswapした時の処理
-   *
-   * @param e event
-   */
-  public void heldOfThis(final PlayerItemHeldEvent e) {
-    val player = e.getPlayer();
-    val v = this;
-    val opt = heldItem(getItem());
-    if (opt.isPresent()) {
-      val consumer = opt.get();
-      new BukkitRunnable() {
-
-        @Override
-        public void run() {
-          val item = player.getInventory().getItemInMainHand();
-          if (CustomItem.isCustomItem(item) && v.equals(CustomItem.getCustomItem(item))) {
-            consumer.accept(player);
-            return;
-          }
-          this.cancel();
-        }
-      }.runTaskTimer(ComMiniPlugin.getPlugin(), 0L, 1L);
-    }
-  }
-
-  /**
-   * このアイテムからほかのにswapした時の処理
-   *
-   * @param e event
-   */
-  public void heldOfOther(final PlayerItemHeldEvent e) {}
-
-  /**
-   * このアイテムをもちsneakをするときの処理
-   *
-   * @param e event
-   */
-  public void shiftItem(final PlayerToggleSneakEvent e) {}
-
-  /**
-   * このアイテムを捨てたさいの処理
-   *
-   * @param e event
-   */
-  public void dropItem(final PlayerDropItemEvent e) {}
-
-  /**
-   * マインハンドにアイテムを切り替えたら発動 先にオフハンドが呼び出されます、キャンセルされたらこれは呼び出されません
-   *
-   * @param e event
-   */
-  public void swapToMainHand(final PlayerSwapHandItemsEvent e) {}
-
-  /**
-   * オフハンドに切り替えたら発動 先にこれが呼び出されキャンセルたらメインハンドは呼び出されません
-   *
-   * @param e event
-   */
-  public void swapToOffHand(final PlayerSwapHandItemsEvent e) {}
-
-  public boolean canMoveOtherInv(final InventoryClickEvent e) {
-    return true;
-  }
-
-  /**
-   * インベントリー上でアイテムをクリックしました
-   *
-   * @param e event
-   */
-  public void clickItem(final InventoryClickEvent e) {}
-
-  /**
-   * このアイテムがスポーンした際に呼ばれます
-   *
-   * @param e event
-   */
-  public void itemSpawn(final ItemSpawnEvent e) {}
-
-  /**
-   * このアイテムをメインハンドに持ってブロックを破壊したさいに呼ばれます
-   *
-   * @param e event
-   */
-  public void blockBreak(final BlockBreakEvent e) {}
 
   @Override
   public @NotNull String getIdentifier() {
     return getClass().getSimpleName();
   }
 
-  public void itemUse() {
-    getItem().setAmount(getItem().getAmount() - 1);
-  }
+  @Override
+  public void runTick(Player player) {}
 
-  /**
-   * {@code CustomItemsCommand } に載せるかどうか?
-   *
-   * @return true なら載せる
-   */
-  public boolean canShowing() {
-    return true;
-  }
+  @Override
+  public void clickItem(InventoryClickEvent e) {}
+
+  @Override
+  public void itemSpawn(ItemSpawnEvent e) {}
+
+  @Override
+  public void blockBreak(BlockBreakEvent e) {}
+
+  @Override
+  public void heldOfOther(PlayerItemHeldEvent e) {}
+
+  @Override
+  public void shiftItem(PlayerToggleSneakEvent e) {}
+
+  @Override
+  public void dropItem(PlayerDropItemEvent e) {}
+
+  @Override
+  public void swapToMainHand(PlayerSwapHandItemsEvent e) {}
+
+  @Override
+  public void swapToOffHand(PlayerSwapHandItemsEvent e) {}
+
+  @Override
+  public void interact(PlayerInteractEvent e) {}
+
+  @Override
+  public void projectileLaunch(ProjectileLaunchEvent e, Player player) {}
 }

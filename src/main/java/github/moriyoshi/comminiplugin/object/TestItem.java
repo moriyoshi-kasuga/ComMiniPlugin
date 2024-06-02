@@ -28,6 +28,7 @@ public class TestItem extends CustomItem {
 
   @Override
   public void interact(PlayerInteractEvent e) {
+    e.setCancelled(true);
     val player = e.getPlayer();
     val block = player.getTargetBlockExact(10);
     if (block == null || block.isEmpty()) {

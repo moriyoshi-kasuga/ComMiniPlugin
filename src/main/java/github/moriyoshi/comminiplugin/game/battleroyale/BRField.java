@@ -1,6 +1,7 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.TinglyBallItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.loot.Entry;
@@ -39,6 +40,7 @@ public class BRField {
     this.treasure = new TreasureLocation(name);
     this.arrows =
         new RandomCollection<ItemStack>()
+            .add(100, null)
             .add(50, new ItemBuilder(Material.ARROW).amount(3).build())
             .add(30, new ItemBuilder(Material.ARROW).amount(5).build())
             .add(10, new ItemBuilder(Material.ARROW).amount(7).build())
@@ -137,10 +139,8 @@ public class BRField {
     return new LootTable(
         new ArrayList<>() {
           {
-            add(
-                new Pool()
-                    .add(new Entry(() -> new WingItem().getItem()))
-                    .add(new Entry(arrows::next)));
+            add(new Pool().add(new Entry(() -> new WingItem().getItem())));
+            add(new Pool().add(new Entry(arrows::next)));
           }
         });
   }
@@ -149,7 +149,11 @@ public class BRField {
     return new LootTable(
         new ArrayList<>() {
           {
-            add(new Pool().add(new Entry(() -> new WingItem().getItem())));
+            add(
+                new Pool()
+                    .add(new Entry(60, () -> new WingItem().getItem()))
+                    .add(new Entry(40, () -> new TinglyBallItem().getItem())));
+            add(new Pool().add(new Entry(arrows::next)));
           }
         });
   }
@@ -159,6 +163,7 @@ public class BRField {
         new ArrayList<>() {
           {
             add(new Pool().add(new Entry(() -> new WingItem().getItem())));
+            add(new Pool().add(new Entry(arrows::next)));
           }
         });
   }

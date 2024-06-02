@@ -22,6 +22,7 @@ public class MenuItem extends CustomItem {
 
   @Override
   public void interact(final PlayerInteractEvent e) {
+    e.setCancelled(true);
     MenuCommand.open(e.getPlayer());
   }
 

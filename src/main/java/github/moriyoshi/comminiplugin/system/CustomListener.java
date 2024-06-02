@@ -5,6 +5,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
+import github.moriyoshi.comminiplugin.item.PlayerCooldownItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -33,11 +35,8 @@ public class CustomListener implements Listener {
 
   private CustomListener() {
     new BukkitRunnable() {
-      private int tick = 0;
-
       @Override
       public void run() {
-        val flag = tick <= 0;
         Bukkit.getOnlinePlayers()
             .forEach(
                 p ->
@@ -47,16 +46,19 @@ public class CustomListener implements Listener {
                               if (CustomItem.isCustomItem(i)) {
                                 val custom = CustomItem.getCustomItem(i);
                                 custom.runTick(p);
-                                if (flag) {
-                                  custom.runSecond(p);
-                                }
                               }
                             }));
-        if (flag) {
-          tick = 20;
-          return;
+
+        val it = PlayerCooldownItem.COOLDOWN.entrySet().iterator();
+        while (it.hasNext()) {
+          val entry = it.next();
+          var num = entry.getValue();
+          if (0 >= --num) {
+            PlayerCooldownItem.COOLDOWN.remove(entry.getKey());
+            return;
+          }
+          PlayerCooldownItem.COOLDOWN.put(entry.getKey(), num);
         }
-        tick--;
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
   }
@@ -119,7 +121,6 @@ public class CustomListener implements Listener {
       customBlockInteract(e);
       return;
     }
-    e.setCancelled(true);
     CustomItem.getCustomItem(item).interact(e);
     if (e.useInteractedBlock() != Result.DENY) {
       customBlockInteract(e);
@@ -236,6 +237,17 @@ public class CustomListener implements Listener {
     }
     if (CustomItem.isCustomItem(item)) {
       CustomItem.getCustomItem(item).itemSpawn(e);
+    }
+  }
+
+  @EventHandler(priority = EventPriority.HIGHEST)
+  public void projectileLaunch(ProjectileLaunchEvent e) {
+    val shooter = e.getEntity().getShooter();
+    if (shooter != null && shooter instanceof Player player) {
+      val item = player.getInventory().getItemInMainHand();
+      if (CustomItem.isCustomItem(item)) {
+        CustomItem.getCustomItem(item).projectileLaunch(e, player);
+      }
     }
   }
 }

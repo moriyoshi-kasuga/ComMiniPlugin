@@ -7,7 +7,7 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.Util;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
@@ -120,14 +119,9 @@ public class Sniper extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void interact(final PlayerInteractEvent e) {
-    e.setCancelled(false);
-  }
-
-  @Override
-  public Optional<Consumer<Player>> heldItem(final ItemStack item) {
+  public Optional<BiConsumer<Player, ItemStack>> heldItem() {
     return Optional.of(
-        player -> {
+        (player, item) -> {
           final String bullet = Bullet.getFirstBullet(player).map(Bullet::getName).orElse(null);
           final boolean flag =
               NBT.modify(
@@ -157,6 +151,9 @@ public class Sniper extends CustomItem implements CooldownItem {
 
   @Override
   public void runTick(final Player player) {
+    if (!inCooldown()) {
+      return;
+    }
     if (!countDown()) {
       new ItemBuilder(getItem()).type(Material.SPYGLASS);
     }

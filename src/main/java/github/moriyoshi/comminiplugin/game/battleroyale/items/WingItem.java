@@ -6,6 +6,7 @@ import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,15 +31,15 @@ public class WingItem extends CustomItem {
   }
 
   public static void setWing(Player player) {
-    player
-        .getEquipment()
-        .setItem(
-            EquipmentSlot.CHEST,
-            new ItemBuilder(Material.ELYTRA)
-                .name("<yellow>Wing")
-                .customItemFlag(CustomItemFlag.MOVE_INV, false)
-                .build(),
-            false);
+    val equiments = player.getEquipment();
+    val temp = equiments.getItem(EquipmentSlot.CHEST);
+    equiments.setItem(
+        EquipmentSlot.CHEST,
+        new ItemBuilder(Material.ELYTRA)
+            .name("<yellow>Wing")
+            .customItemFlag(CustomItemFlag.MOVE_INV, false)
+            .build(),
+        false);
     new BukkitRunnable() {
 
       @SuppressWarnings("deprecation")
@@ -47,7 +48,7 @@ public class WingItem extends CustomItem {
         if (!player.isOnGround()) {
           return;
         }
-        player.getEquipment().setItem(EquipmentSlot.CHEST, null);
+        equiments.setItem(EquipmentSlot.CHEST, temp);
         this.cancel();
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 10, 1);
@@ -65,7 +66,7 @@ public class WingItem extends CustomItem {
   }
 
   @Override
-  public Optional<UUID> generateUUID() {
+  public Optional<Supplier<UUID>> generateUUID() {
     return Optional.empty();
   }
 }

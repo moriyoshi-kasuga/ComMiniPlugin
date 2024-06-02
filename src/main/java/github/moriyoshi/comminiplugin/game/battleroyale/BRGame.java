@@ -136,13 +136,14 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
           if (players.get(uuid)) {
             val gamePlayer = ComMiniPlayer.getPlayer(uuid);
             gamePlayer.setHideNameTag(true);
+            gamePlayer.setCanFoodRegain(false);
             gamePlayer.getGamePlayerData(BRPlayer.class).getHotbar().setItems(inv);
             p.setGameMode(GameMode.SURVIVAL);
+            p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, -1, 0, true, false));
           } else {
             p.setGameMode(GameMode.SPECTATOR);
             p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
           }
-          p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, -1, 0, true, false));
           p.showBossBar(bossBar);
           teleportLobby(p);
         });
@@ -161,9 +162,11 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         }
         if (--time == 0) {
           runPlayers(
-              p ->
-                  p.playSound(
-                      p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1));
+              p -> {
+                WingItem.setWing(p);
+                p.playSound(
+                    p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1);
+              });
 
           val loc = getLobby().clone().subtract(0, 1, 0);
           for (int x = -10; x <= 10; x++) {
@@ -173,7 +176,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
               temp.setType(Material.AIR);
             }
           }
-          runPlayers(WingItem::setWing);
 
           startContractionBorder();
 

@@ -6,6 +6,7 @@ import github.moriyoshi.comminiplugin.block.CustomBlock;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import lombok.val;
@@ -91,7 +92,13 @@ public class GameListener implements Listener {
       GameSystem.getGame().listener.death(e);
       return;
     }
-    GameSystem.initializePlayer(e.getPlayer());
+    new BukkitRunnable() {
+
+      @Override
+      public void run() {
+        GameSystem.initializePlayer(e.getPlayer());
+      }
+    }.runTask(ComMiniPlugin.getPlugin());
   }
 
   @EventHandler
@@ -108,20 +115,35 @@ public class GameListener implements Listener {
 
   @EventHandler
   public void damageByEntity(EntityDamageByEntityEvent e) {
-    if (GameSystem.isStarted()) {
+    if (e.getDamager() instanceof Projectile projectile) {
+      Optional.ofNullable(projectileDamageMap.remove(projectile.getUniqueId()))
+          .ifPresent(consumer -> consumer.accept(projectile, e));
+    }
+
+    if (GameSystem.isStarted()
+        && (e.getDamager() instanceof Player player
+            ? isGamePlayer(player, EntityDamageByEntityEvent.class)
+            : true)) {
       GameSystem.getGame().listener.damageByEntity(e);
       return;
     }
 
-    if (!(e.getDamager() instanceof Player attacker)) {
-      return;
+    if (e.getDamager() instanceof Player attacker) {
+      if (isDebugPlayer(attacker)) {
+        return;
+      }
+      if (attacker.getGameMode() != GameMode.CREATIVE) {
+        e.setCancelled(true);
+      }
     }
-
-    if (isDebugPlayer(attacker)) {
-      return;
-    }
-    if (attacker.getGameMode() != GameMode.CREATIVE) {
-      e.setCancelled(true);
+    if (e.getDamager() instanceof Projectile projectile
+        && projectile.getShooter() instanceof Player attacker) {
+      if (isDebugPlayer(attacker)) {
+        return;
+      }
+      if (attacker.getGameMode() != GameMode.CREATIVE) {
+        e.setCancelled(true);
+      }
     }
   }
 
@@ -214,11 +236,18 @@ public class GameListener implements Listener {
     projectileHitMap.put(id, l);
   }
 
+  private static final Map<UUID, BiConsumer<Projectile, EntityDamageByEntityEvent>>
+      projectileDamageMap = new HashMap<>();
+
+  public static void addProjectileDamageListener(
+      UUID id, BiConsumer<Projectile, EntityDamageByEntityEvent> l) {
+    projectileDamageMap.put(id, l);
+  }
+
   @EventHandler
   public void projectileHit(ProjectileHitEvent e) {
     val entity = e.getEntity();
-    if (projectileHitMap.containsKey(entity.getUniqueId())) {
-      projectileHitMap.get(entity.getUniqueId()).accept(entity, e);
-    }
+    Optional.ofNullable(projectileHitMap.remove(entity.getUniqueId()))
+        .ifPresent(consumer -> consumer.accept(entity, e));
   }
 }

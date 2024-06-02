@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.item.CooldownItem;
 import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.Util;
@@ -13,7 +14,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -27,7 +27,12 @@ public class Jump extends CustomItem implements CooldownItem {
   private static final Vector MULTIPLY = new Vector(3, 2.4, 3);
 
   public Jump() {
-    this(new ItemBuilder(Material.PHANTOM_MEMBRANE).name(DEFAULT_NAME).lore(DESCRIPTION).build());
+    this(
+        new ItemBuilder(Material.PHANTOM_MEMBRANE)
+            .name(DEFAULT_NAME)
+            .lore(DESCRIPTION)
+            .customItemFlag(CustomItemFlag.DROP, false)
+            .build());
   }
 
   public Jump(final ItemStack item) {
@@ -86,11 +91,6 @@ public class Jump extends CustomItem implements CooldownItem {
   @Override
   public boolean canMoveOtherInv(final InventoryClickEvent e) {
     return false;
-  }
-
-  @Override
-  public void dropItem(final PlayerDropItemEvent e) {
-    e.setCancelled(true);
   }
 
   @Override
