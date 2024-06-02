@@ -1,14 +1,12 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
+import github.moriyoshi.comminiplugin.system.hotbar.HotbarSlot;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import github.moriyoshi.comminiplugin.system.hotbar.HotbarSlot;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
 public class BRSlot extends HotbarSlot {
 
@@ -33,5 +31,4 @@ public class BRSlot extends HotbarSlot {
         () -> null,
         () -> null);
   }
-
 }

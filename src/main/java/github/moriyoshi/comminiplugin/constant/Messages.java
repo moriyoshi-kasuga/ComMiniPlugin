@@ -1,12 +1,10 @@
 package github.moriyoshi.comminiplugin.constant;
 
+import github.moriyoshi.comminiplugin.util.Util;
 import java.util.Collection;
 import java.util.List;
-
-import org.bukkit.command.CommandSender;
-
-import github.moriyoshi.comminiplugin.util.Util;
 import net.kyori.adventure.text.Component;
+import org.bukkit.command.CommandSender;
 
 public enum Messages {
   GAME_FINAL_OR_START("<red>ゲームが開始されたか閉幕しました!"),

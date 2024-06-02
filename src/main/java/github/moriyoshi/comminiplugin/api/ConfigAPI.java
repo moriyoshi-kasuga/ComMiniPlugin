@@ -12,12 +12,9 @@ public abstract class ConfigAPI extends YmlAPI {
     super(plugin, path, name);
   }
 
-  /**
-   * ファイルの作成
-   */
+  /** ファイルの作成 */
   @Override
   public void createFile() {
     plugin.saveResource(paths, false);
   }
-
 }

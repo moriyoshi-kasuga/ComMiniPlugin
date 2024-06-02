@@ -3,9 +3,7 @@ package github.moriyoshi.comminiplugin.item;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * CooldownItem
- */
+/** CooldownItem */
 public interface CooldownItem extends InterfaceItem {
 
   Map<CustomItemKey, Integer> COOLDOWN = new HashMap<>();
@@ -41,5 +39,4 @@ public interface CooldownItem extends InterfaceItem {
     COOLDOWN.put(getItemKey(), cooldown - 1);
     return true;
   }
-
 }

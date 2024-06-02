@@ -1,10 +1,9 @@
 package github.moriyoshi.comminiplugin.system.gametype;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.bukkit.Location;
+import org.bukkit.World;
 
 @RequiredArgsConstructor
 public class StageTypeGame {

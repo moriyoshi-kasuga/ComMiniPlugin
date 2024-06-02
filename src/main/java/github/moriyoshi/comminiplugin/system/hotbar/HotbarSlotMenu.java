@@ -1,15 +1,14 @@
 package github.moriyoshi.comminiplugin.system.hotbar;
 
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.jetbrains.annotations.NotNull;
-
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 import lombok.val;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.NotNull;
 
 public final class HotbarSlotMenu extends MenuHolder<ComMiniPlugin> {
 
@@ -42,18 +41,19 @@ public final class HotbarSlotMenu extends MenuHolder<ComMiniPlugin> {
   private void set() {
     var i = 0;
     for (val item : slots.toItemStacks()) {
-      setButton(i, new ItemButton<>(item) {
+      setButton(
+          i,
+          new ItemButton<>(item) {
 
-        @Override
-        public void onClick(@NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-          if (holder.getInventory().equals(event.getClickedInventory())) {
-            update(((Player) event.getWhoClicked()), event.getSlot());
-          }
-        }
-
-      });
+            @Override
+            public void onClick(
+                @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
+              if (holder.getInventory().equals(event.getClickedInventory())) {
+                update(((Player) event.getWhoClicked()), event.getSlot());
+              }
+            }
+          });
       i++;
     }
   }
-
 }

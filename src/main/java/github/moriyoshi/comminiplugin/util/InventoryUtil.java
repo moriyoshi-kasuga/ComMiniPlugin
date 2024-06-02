@@ -8,9 +8,9 @@ public class InventoryUtil {
   /**
    * プレイヤーから特定のアイテムを個数文消します
    *
-   * @param player    消すプレイヤー
+   * @param player 消すプレイヤー
    * @param itemStack 消すアイテム
-   * @param amount    消す数
+   * @param amount 消す数
    */
   public static void removeItemStack(final Player player, final ItemStack itemStack, int amount) {
     final ItemStack[] inventory = player.getInventory().getContents();
@@ -31,7 +31,7 @@ public class InventoryUtil {
   /**
    * プレイヤーの持っているアイテムの個数を数えます
    *
-   * @param player    数えるプレイヤー
+   * @param player 数えるプレイヤー
    * @param itemStack 数えるアイテム
    * @return 合計
    */
@@ -49,12 +49,13 @@ public class InventoryUtil {
   /**
    * プレイヤーがアイテムを個数以上持っているか
    *
-   * @param player    player
+   * @param player player
    * @param itemStack item
-   * @param amount    amount
+   * @param amount amount
    * @return 持っているならtrue
    */
-  public static boolean hasItemStack(final Player player, final ItemStack itemStack, final int amount) {
+  public static boolean hasItemStack(
+      final Player player, final ItemStack itemStack, final int amount) {
     return player.getInventory().containsAtLeast(itemStack, amount);
   }
 }

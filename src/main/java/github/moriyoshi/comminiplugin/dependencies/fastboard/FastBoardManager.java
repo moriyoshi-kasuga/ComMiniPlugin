@@ -1,14 +1,12 @@
 package github.moriyoshi.comminiplugin.dependencies.fastboard;
 
+import fr.mrmicky.fastboard.adventure.FastBoard;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.Consumer;
-
-import org.bukkit.entity.Player;
-
-import fr.mrmicky.fastboard.adventure.FastBoard;
 import lombok.val;
+import org.bukkit.entity.Player;
 
 public class FastBoardManager {
 
@@ -51,5 +49,4 @@ public class FastBoardManager {
     this.fastBoards.values().forEach(FastBoard::delete);
     this.fastBoards.clear();
   }
-
 }

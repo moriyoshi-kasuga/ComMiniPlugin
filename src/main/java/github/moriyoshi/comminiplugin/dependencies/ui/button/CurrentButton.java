@@ -16,7 +16,8 @@ public class CurrentButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   private final BiConsumer<ItemStack, InventoryClickEvent> itemStackConsumer;
   private final BiConsumer<MH, InventoryClickEvent> nullConsumer;
 
-  public CurrentButton(ItemStack stack,
+  public CurrentButton(
+      ItemStack stack,
       BiConsumer<ItemStack, InventoryClickEvent> itemStackConsumer,
       BiConsumer<MH, InventoryClickEvent> nullConsumer) {
     super(stack);
@@ -35,5 +36,4 @@ public class CurrentButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
     itemStackConsumer.accept(cursor, event);
     event.setCurrentItem(cursor);
   }
-
 }

@@ -16,18 +16,16 @@ import org.bukkit.event.inventory.InventoryClickEvent;
  */
 public class PermissionButton<MH extends MenuHolder<?>> extends PredicateButton<MH> {
 
-  /**
-   * -- GETTER -- このボタンの使用許可を取得します
-   */
-  @Getter
-  private final String permission;
+  /** -- GETTER -- このボタンの使用許可を取得します */
+  @Getter private final String permission;
+
   private final Consumer<? super HumanEntity> noPermissionCallback;
 
   /**
    * パーミッションボタンを作成します
    *
    * @param permission このボタンを使用するために必要なパーミッション
-   * @param proxy      プレーヤーがパーミッションを持つ場合にクリックを委譲するプロキシを指定します。
+   * @param proxy プレーヤーがパーミッションを持つ場合にクリックを委譲するプロキシを指定します。
    */
   public PermissionButton(String permission, MenuButton<MH> proxy) {
     this(permission, proxy, null);
@@ -36,12 +34,12 @@ public class PermissionButton<MH extends MenuHolder<?>> extends PredicateButton<
   /**
    * パーミッションボタンを作成します
    *
-   * @param permission           このボタンを使うために必要なパーミッション
-   * @param proxy                プレイヤーがパーミッションを持つときにクリックを委譲するプロキシ
+   * @param permission このボタンを使うために必要なパーミッション
+   * @param proxy プレイヤーがパーミッションを持つときにクリックを委譲するプロキシ
    * @param noPermissionCallback プレイヤーがボタンをクリックしたがパーミッションを持たないときに実行するコールバック
    */
-  public PermissionButton(String permission, MenuButton<MH> proxy,
-      Consumer<? super HumanEntity> noPermissionCallback) {
+  public PermissionButton(
+      String permission, MenuButton<MH> proxy, Consumer<? super HumanEntity> noPermissionCallback) {
     super(proxy, (menuHolder, event) -> event.getWhoClicked().hasPermission(permission));
     this.permission = Objects.requireNonNull(permission, "Permission cannot be null");
     this.noPermissionCallback = noPermissionCallback;
@@ -54,8 +52,8 @@ public class PermissionButton<MH extends MenuHolder<?>> extends PredicateButton<
    */
   @Override
   protected Optional<BiConsumer<MH, InventoryClickEvent>> getPredicateFailedCallback() {
-    return getNoPermissionCallback().map(
-        consumer -> (menuHolder, event) -> consumer.accept(event.getWhoClicked()));
+    return getNoPermissionCallback()
+        .map(consumer -> (menuHolder, event) -> consumer.accept(event.getWhoClicked()));
   }
 
   /**
@@ -66,5 +64,4 @@ public class PermissionButton<MH extends MenuHolder<?>> extends PredicateButton<
   public Optional<Consumer<? super HumanEntity>> getNoPermissionCallback() {
     return Optional.ofNullable(noPermissionCallback);
   }
-
 }

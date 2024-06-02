@@ -58,15 +58,12 @@ public interface InterfaceItem {
    *
    * @param player player
    */
-  default void runTick(final Player player) {
-  }
+  default void runTick(final Player player) {}
 
   /**
    * プレイヤーのインベントリーにあるさいに一秒ごとに更新されます
    *
    * @param player player
    */
-  default void runSecond(final Player player) {
-  }
-
+  default void runSecond(final Player player) {}
 }

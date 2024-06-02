@@ -1,11 +1,8 @@
 package github.moriyoshi.comminiplugin.util;
 
 import com.google.common.collect.Multimap;
-
 import de.tr7zw.changeme.nbtapi.NBT;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
-import lombok.val;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -25,9 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * アイテムを作成やmodifyするクラス
- */
+/** アイテムを作成やmodifyするクラス */
 public class ItemBuilder {
 
   /**
@@ -38,8 +34,8 @@ public class ItemBuilder {
    */
   @SuppressWarnings("deprecation")
   public static ItemBuilder createSkull(final String skullOwner) {
-    return new ItemBuilder(Material.PLAYER_HEAD).changeMeta(
-        (Consumer<SkullMeta>) skullMeta -> skullMeta.setOwner(skullOwner));
+    return new ItemBuilder(Material.PLAYER_HEAD)
+        .changeMeta((Consumer<SkullMeta>) skullMeta -> skullMeta.setOwner(skullOwner));
   }
 
   private final ItemStack itemStack;
@@ -55,6 +51,8 @@ public class ItemBuilder {
 
   /**
    * 渡されたアイテムに対して直接変更を適用します
+   *
+   * <p>(変更を適用せずに新しく作りたい場合は {@code ItemStack#clone()} を使ってください)
    *
    * @param itemStack 変更を適用するアイテム
    */
@@ -77,7 +75,7 @@ public class ItemBuilder {
    * エンチャントを設定
    *
    * @param enchantment 追加するエンチャント
-   * @param level       エンチャントのレベル (6とか100とかでもok)
+   * @param level エンチャントのレベル (6とか100とかでもok)
    * @return new instance (use {@link #build()} to create)
    */
   public ItemBuilder enchant(final Enchantment enchantment, final int level) {
@@ -112,8 +110,9 @@ public class ItemBuilder {
    */
   public ItemBuilder durability(final int damage) {
     return changeItemMeta(
-        meta -> ((Damageable) meta).setDamage(
-            Math.abs(itemStack.getType().getMaxDurability() - damage)));
+        meta ->
+            ((Damageable) meta)
+                .setDamage(Math.abs(itemStack.getType().getMaxDurability() - damage)));
   }
 
   /**
@@ -173,7 +172,7 @@ public class ItemBuilder {
    * loreの {@code line} 行目に {@code str} を挿入します
    *
    * @param line loreの行 (0の場合は一番最初に入ります)
-   * @param str  挿入するloreの文
+   * @param str 挿入するloreの文
    * @return new instance (use {@link #build()} to create)
    */
   public ItemBuilder insertLore(final int line, final Object str) {
@@ -186,7 +185,7 @@ public class ItemBuilder {
    * loreの {@code line} 行目に {@code str} を上書きします
    *
    * @param line 上書きする行
-   * @param str  上書きする文
+   * @param str 上書きする文
    * @return new instance (use {@link #build()} to create)
    */
   public ItemBuilder setLore(final int line, final Object str) {
@@ -286,11 +285,12 @@ public class ItemBuilder {
   /**
    * {@link Attribute} を追加します
    *
-   * @param attribute         追加する対象
+   * @param attribute 追加する対象
    * @param attributeModifier 詳細設定
    * @return new instance (use {@link #build()} to create)
    */
-  public ItemBuilder addAttribute(final Attribute attribute, final AttributeModifier attributeModifier) {
+  public ItemBuilder addAttribute(
+      final Attribute attribute, final AttributeModifier attributeModifier) {
     return changeItemMeta(meta -> meta.addAttributeModifier(attribute, attributeModifier));
   }
 
@@ -300,10 +300,13 @@ public class ItemBuilder {
    * @param attributeModifiers arg
    * @return new instance (use {@link #build()} to create)
    */
-  public ItemBuilder addAttributes(final Multimap<Attribute, AttributeModifier> attributeModifiers) {
-    return attributeModifiers.entries().stream().reduce(this,
-        (itemBuilder, entry) -> itemBuilder.addAttribute(entry.getKey(), entry.getValue()),
-        (first, second) -> second);
+  public ItemBuilder addAttributes(
+      final Multimap<Attribute, AttributeModifier> attributeModifiers) {
+    return attributeModifiers.entries().stream()
+        .reduce(
+            this,
+            (itemBuilder, entry) -> itemBuilder.addAttribute(entry.getKey(), entry.getValue()),
+            (first, second) -> second);
   }
 
   /**
@@ -336,7 +339,7 @@ public class ItemBuilder {
    * {@link #createSkull(String)} のように先にItemMetaのキャストをしたいときに使用してください
    *
    * @param consumer 実行する処理
-   * @param <IM>     ItemMeta の サブクラス
+   * @param <IM> ItemMeta の サブクラス
    * @return new instance (use {@link #build()} to create)
    */
   @SuppressWarnings("unchecked")
@@ -351,17 +354,22 @@ public class ItemBuilder {
    * @return new instance (use {@link #build()} to create)
    */
   public ItemBuilder changeItemMeta(final Consumer<? super ItemMeta> consumer) {
-    return change(i -> {
-      final ItemMeta meta = i.getItemMeta();
-      consumer.accept(meta);
-      i.setItemMeta(meta);
-    });
+    return change(
+        i -> {
+          final ItemMeta meta = i.getItemMeta();
+          consumer.accept(meta);
+          i.setItemMeta(meta);
+        });
   }
 
   public ItemBuilder customItemFlag(final String flag, boolean isEnable) {
-    return change(i -> NBT.modify(i, nbt -> {
-      nbt.getOrCreateCompound("customitemflag").setBoolean(flag, isEnable);
-    }));
+    return change(
+        i ->
+            NBT.modify(
+                i,
+                nbt -> {
+                  nbt.getOrCreateCompound("customitemflag").setBoolean(flag, isEnable);
+                }));
   }
 
   public ItemBuilder customItemFlag(final CustomItemFlag flag, boolean isEnable) {
@@ -392,5 +400,4 @@ public class ItemBuilder {
   public ItemStack build() {
     return itemStack;
   }
-
 }

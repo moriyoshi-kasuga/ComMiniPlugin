@@ -1,15 +1,7 @@
 package github.moriyoshi.comminiplugin.command;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
-
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
@@ -18,8 +10,13 @@ import dev.jorel.commandapi.arguments.StringArgument;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.api.JsonAPI;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import lombok.Getter;
 import lombok.val;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 public class LocationsCommands extends JsonAPI {
 
@@ -27,10 +24,17 @@ public class LocationsCommands extends JsonAPI {
     public PutLocCommand() {
       super("putloc");
       withPermission(CommandPermission.OP);
-      withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> CompletableFuture.supplyAsync(() -> getManager().locations.keySet().toArray(String[]::new)))));
-      executesPlayer((p, args) -> {
-        getManager().locations.put((String) args.get("name"), p.getLocation());
-      });
+      withArguments(
+          new StringArgument("name")
+              .replaceSuggestions(
+                  ArgumentSuggestions.stringsAsync(
+                      info ->
+                          CompletableFuture.supplyAsync(
+                              () -> getManager().locations.keySet().toArray(String[]::new)))));
+      executesPlayer(
+          (p, args) -> {
+            getManager().locations.put((String) args.get("name"), p.getLocation());
+          });
     }
   }
 
@@ -39,16 +43,27 @@ public class LocationsCommands extends JsonAPI {
     public MvLocCommand() {
       super("mvloc");
       withPermission(CommandPermission.OP);
-      withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> CompletableFuture.supplyAsync(() -> getManager().locations.keySet().toArray(String[]::new)))));
+      withArguments(
+          new StringArgument("name")
+              .replaceSuggestions(
+                  ArgumentSuggestions.stringsAsync(
+                      info ->
+                          CompletableFuture.supplyAsync(
+                              () -> getManager().locations.keySet().toArray(String[]::new)))));
       withOptionalArguments(new EntitySelectorArgument.ManyPlayers("players"));
-      executesPlayer((p, args) -> {
-        if (!getManager().locations.containsKey((String) args.get("name"))) {
-          ComMiniPrefix.SYSTEM.send(p, "<red>その名前のlocはありません");
-          return;
-        }
-        val loc = getManager().locations.get((String) args.get("name"));
-        args.getOptional("players").ifPresentOrElse((players) -> ((Collection<Player>) players).forEach(player -> player.teleport(loc)), () -> p.teleport(loc));
-      });
+      executesPlayer(
+          (p, args) -> {
+            if (!getManager().locations.containsKey((String) args.get("name"))) {
+              ComMiniPrefix.SYSTEM.send(p, "<red>その名前のlocはありません");
+              return;
+            }
+            val loc = getManager().locations.get((String) args.get("name"));
+            args.getOptional("players")
+                .ifPresentOrElse(
+                    (players) ->
+                        ((Collection<Player>) players).forEach(player -> player.teleport(loc)),
+                    () -> p.teleport(loc));
+          });
     }
   }
 
@@ -56,15 +71,22 @@ public class LocationsCommands extends JsonAPI {
     public DelLocCommand() {
       super("delloc");
       withPermission(CommandPermission.OP);
-      withArguments(new StringArgument("name").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> CompletableFuture.supplyAsync(() -> getManager().locations.keySet().toArray(String[]::new)))));
-      executesPlayer((p, args) -> {
-        val name = (String) args.get("name");
-        if (!getManager().locations.containsKey(name)) {
-          ComMiniPrefix.SYSTEM.send(p, "<red>その名前のlocはありません");
-          return;
-        }
-        getManager().locations.remove(name);
-      });
+      withArguments(
+          new StringArgument("name")
+              .replaceSuggestions(
+                  ArgumentSuggestions.stringsAsync(
+                      info ->
+                          CompletableFuture.supplyAsync(
+                              () -> getManager().locations.keySet().toArray(String[]::new)))));
+      executesPlayer(
+          (p, args) -> {
+            val name = (String) args.get("name");
+            if (!getManager().locations.containsKey(name)) {
+              ComMiniPrefix.SYSTEM.send(p, "<red>その名前のlocはありません");
+              return;
+            }
+            getManager().locations.remove(name);
+          });
     }
   }
 
@@ -72,11 +94,25 @@ public class LocationsCommands extends JsonAPI {
     public ListLocCommand() {
       super("listloc");
       withPermission(CommandPermission.OP);
-      executesPlayer((p, args) -> {
-        getManager().locations.forEach((name, location) -> ComMiniPrefix.SYSTEM.send(p,
-            "<gray>" + name + " : " + location.getWorld().getName() + " " + location.getX() + " " + location.getY()
-                + " " + location.getZ()));
-      });
+      executesPlayer(
+          (p, args) -> {
+            getManager()
+                .locations
+                .forEach(
+                    (name, location) ->
+                        ComMiniPrefix.SYSTEM.send(
+                            p,
+                            "<gray>"
+                                + name
+                                + " : "
+                                + location.getWorld().getName()
+                                + " "
+                                + location.getX()
+                                + " "
+                                + location.getY()
+                                + " "
+                                + location.getZ()));
+          });
     }
   }
 
@@ -92,13 +128,12 @@ public class LocationsCommands extends JsonAPI {
   @Override
   protected JsonElement generateSaveData() {
     return ComMiniPlugin.gson.toJsonTree(locations);
-
   }
 
   @Override
   protected void generateLoadData(JsonElement dataElement) {
-    locations = ComMiniPlugin.gson.fromJson(dataElement, new TypeToken<Map<String, Location>>() {
-    }.getType());
+    locations =
+        ComMiniPlugin.gson.fromJson(
+            dataElement, new TypeToken<Map<String, Location>>() {}.getType());
   }
-
 }

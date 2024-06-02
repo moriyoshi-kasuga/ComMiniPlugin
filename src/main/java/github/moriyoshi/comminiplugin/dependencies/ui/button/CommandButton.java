@@ -18,26 +18,18 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
-  /**
-   * -- GETTER -- Get the command.
-   */
-  @Getter
-  private Command command;
-  /**
-   * -- GETTER -- Get the arguments.
-   */
-  @Getter
-  private String[] arguments;
-  /**
-   * -- SETTER -- 結果ハンドラーを設定する。
-   */
-  @Setter
-  private CommandResultHandler<MH> resultHandler;
+  /** -- GETTER -- Get the command. */
+  @Getter private Command command;
+
+  /** -- GETTER -- Get the arguments. */
+  @Getter private String[] arguments;
+
+  /** -- SETTER -- 結果ハンドラーを設定する。 */
+  @Setter private CommandResultHandler<MH> resultHandler;
 
   /**
-   * 定数でないコマンドや引数を使用したいコマンドボタンのためのプロテクテッドコンストラクタです。
-   * このスーパーコンストラクタを使用するサブクラスは、{@link #getArguments()}または{@link
-   * #getCommand}またはそのオーバーロードをオーバーライドする必要があります。
+   * 定数でないコマンドや引数を使用したいコマンドボタンのためのプロテクテッドコンストラクタです。 このスーパーコンストラクタを使用するサブクラスは、{@link
+   * #getArguments()}または{@link #getCommand}またはそのオーバーロードをオーバーライドする必要があります。
    *
    * @param icon the icon
    */
@@ -48,8 +40,8 @@ public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * CommandButtonを作成します。
    *
-   * @param icon      the icon of the button
-   * @param command   実行されるコマンド
+   * @param icon the icon of the button
+   * @param command 実行されるコマンド
    * @param arguments コマンドの実行に使用される引数
    */
   public CommandButton(ItemStack icon, Command command, String... arguments) {
@@ -61,24 +53,27 @@ public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * CommandButtonを作成します。
    *
-   * @param icon          the icon of the button
-   * @param command       実行されるコマンド
-   * @param arguments     コマンドの実行に使用される引数
+   * @param icon the icon of the button
+   * @param command 実行されるコマンド
+   * @param arguments コマンドの実行に使用される引数
    * @param resultHandler コマンドが実行された後に実行されるハンドラ
    */
-  public CommandButton(ItemStack icon, Command command, CommandResultHandler<MH> resultHandler,
+  public CommandButton(
+      ItemStack icon,
+      Command command,
+      CommandResultHandler<MH> resultHandler,
       String... arguments) {
     this(icon, command, arguments);
     setResultHandler(resultHandler);
   }
 
   /**
-   * getCommand()} で取得したコマンドを、{@link #getArguments()} で指定した引数で実行します。
-   * もし{@link CommandResultHandler}があれば、その{@link CommandResultHandler#afterCommand(HumanEntity,
-   * Command, String[], boolean, MenuHolder, InventoryClickEvent)}も実行します。
+   * getCommand()} で取得したコマンドを、{@link #getArguments()} で指定した引数で実行します。 もし{@link
+   * CommandResultHandler}があれば、その{@link CommandResultHandler#afterCommand(HumanEntity, Command,
+   * String[], boolean, MenuHolder, InventoryClickEvent)}も実行します。
    *
    * @param menuHolder the menu holder
-   * @param event      the InventoryClickEvent
+   * @param event the InventoryClickEvent
    */
   @Override
   public void onClick(@NotNull MH menuHolder, @NotNull InventoryClickEvent event) {
@@ -88,19 +83,18 @@ public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
     HumanEntity player = event.getWhoClicked();
     boolean success = command.execute(player, command.getLabel(), arguments);
 
-    getResultHandler().ifPresent(
-        resultHandler -> resultHandler.afterCommand(player, command, arguments, success, menuHolder,
-            event
-        ));
+    getResultHandler()
+        .ifPresent(
+            resultHandler ->
+                resultHandler.afterCommand(player, command, arguments, success, menuHolder, event));
   }
 
   /**
-   * MenuHolderとInventoryClickEventから使用するコマンドを算出する。
-   * このメソッドは{@link #onClick(MenuHolder, InventoryClickEvent)}によって呼び出されます。
-   * デフォルトの実装では、{@link #getCommand()}に委譲されます。
+   * MenuHolderとInventoryClickEventから使用するコマンドを算出する。 このメソッドは{@link #onClick(MenuHolder,
+   * InventoryClickEvent)}によって呼び出されます。 デフォルトの実装では、{@link #getCommand()}に委譲されます。
    *
    * @param menuHolder the menu holder
-   * @param event      the InventoryClickEvent
+   * @param event the InventoryClickEvent
    * @return the command to be executed
    */
   protected Command getCommand(MH menuHolder, InventoryClickEvent event) {
@@ -108,12 +102,11 @@ public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   }
 
   /**
-   * MenuHolderとInventoryClickEventから使用する引数を計算する。
-   * このメソッドは{@link #onClick(MenuHolder, InventoryClickEvent)}によって呼び出されます。
-   * デフォルトの実装では、{@link #getArguments()}に委ねられます。
+   * MenuHolderとInventoryClickEventから使用する引数を計算する。 このメソッドは{@link #onClick(MenuHolder,
+   * InventoryClickEvent)}によって呼び出されます。 デフォルトの実装では、{@link #getArguments()}に委ねられます。
    *
    * @param menuHolder the menu holder
-   * @param event      the InventoryClickEvent
+   * @param event the InventoryClickEvent
    * @return コマンドを実行するための引数
    */
   protected String[] getArguments(MH menuHolder, InventoryClickEvent event) {
@@ -158,16 +151,19 @@ public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
     /**
      * The callback method.
      *
-     * @param player                  コマンドを実行したプレイヤー
-     * @param command                 実行されたコマンド
-     * @param arguments               コマンドが実行されたときの引数
+     * @param player コマンドを実行したプレイヤー
+     * @param command 実行されたコマンド
+     * @param arguments コマンドが実行されたときの引数
      * @param wasExecutedSuccessFully コマンドが正常に実行されたかどうか
-     * @param menuHolder              the menu holder
-     * @param event                   コマンドを実行する原因となったイベント
+     * @param menuHolder the menu holder
+     * @param event コマンドを実行する原因となったイベント
      */
-    void afterCommand(HumanEntity player, Command command, String[] arguments,
-        boolean wasExecutedSuccessFully, MH menuHolder, InventoryClickEvent event);
-
+    void afterCommand(
+        HumanEntity player,
+        Command command,
+        String[] arguments,
+        boolean wasExecutedSuccessFully,
+        MH menuHolder,
+        InventoryClickEvent event);
   }
-
 }

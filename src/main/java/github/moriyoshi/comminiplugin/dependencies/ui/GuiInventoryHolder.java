@@ -20,22 +20,22 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * GUI用のInventoryHolderです。
- * <p>
- * このクラスは、独自のプラグインで拡張することを想定しています。 ただ、{@link #onClick(InventoryClickEvent)},
- * {@link #onDrag(InventoryDragEvent)} をオーバーライドします。 {@link #onOpen(InventoryOpenEvent)} または
- * {@link #onClose(InventoryCloseEvent)} メソッド。
- * InventoryClickEventとInventoryDragEventは、デフォルトでキャンセルされるように設定されています。
- * しかし、サブクラスで{@code event.setCancelled(false)}を使用すれば、問題なくキャンセル解除が可能です。
- * <p>
- * ボタン付きのメニューが必要なだけなら、{@link MenuHolder} です。 を、お客様のニーズに合わせて適材適所でご提案します。
+ *
+ * <p>このクラスは、独自のプラグインで拡張することを想定しています。 ただ、{@link #onClick(InventoryClickEvent)}, {@link
+ * #onDrag(InventoryDragEvent)} をオーバーライドします。 {@link #onOpen(InventoryOpenEvent)} または {@link
+ * #onClose(InventoryCloseEvent)} メソッド。
+ * InventoryClickEventとInventoryDragEventは、デフォルトでキャンセルされるように設定されています。 しかし、サブクラスで{@code
+ * event.setCancelled(false)}を使用すれば、問題なくキャンセル解除が可能です。
+ *
+ * <p>ボタン付きのメニューが必要なだけなら、{@link MenuHolder} です。 を、お客様のニーズに合わせて適材適所でご提案します。
  *
  * @param <P> your Plugin type
  * @see MenuHolder
  */
 public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryHolder {
 
-  public static final ItemButton<?> empty = new ItemButton<>(
-      new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name("").build());
+  public static final ItemButton<?> empty =
+      new ItemButton<>(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name("").build());
 
   protected final GuiListener guiListener;
   private final Inventory inventory;
@@ -45,9 +45,9 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * 与えられたインベントリタイプとタイトルを持つプラグイン用の新しいGuiInventoryHolderを構築します。
    *
    * @param plugin your plugin
-   * @param type   the inventory type
-   * @param title  the title {@link #onClick(InventoryClickEvent)} and
-   *               {@link #onClose(InventoryCloseEvent)} methods
+   * @param type the inventory type
+   * @param title the title {@link #onClick(InventoryClickEvent)} and {@link
+   *     #onClose(InventoryCloseEvent)} methods
    */
   public GuiInventoryHolder(P plugin, InventoryType type, String title) {
     this(GuiListener.getInstance(), plugin, type, title);
@@ -56,18 +56,17 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
   /**
    * 与えられたインベントリタイプとタイトルを持つプラグイン用の新しいGuiInventoryHolderを構築します。
    *
-   * @param plugin      your plugin
-   * @param type        the inventory type
-   * @param title       the title
-   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
-   *                    {@link #onClick(InventoryClickEvent)} and
-   *                    {@link #onClose(InventoryCloseEvent)} methods
+   * @param plugin your plugin
+   * @param type the inventory type
+   * @param title the title
+   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)}, {@link
+   *     #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
    */
   public GuiInventoryHolder(GuiListener guiListener, P plugin, InventoryType type, String title) {
     this.guiListener = guiListener;
     this.plugin = plugin;
-    this.inventory = plugin.getServer()
-        .createInventory(this, type, Util.mm(title)); // implicit null check
+    this.inventory =
+        plugin.getServer().createInventory(this, type, Util.mm(title)); // implicit null check
 
     guiListener.registerGui(this, inventory); // implicit null check
   }
@@ -76,10 +75,9 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * 与えられたサイズとタイトルで、プラグイン用の新しいGuiInventoryHolderを構築します。
    *
    * @param plugin your plugin
-   * @param title  the title
-   * @param size   the chest size (should be a multiple of 9 and ranging from 9 to 54)
-   *               {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)}
-   *               methods
+   * @param title the title
+   * @param size the chest size (should be a multiple of 9 and ranging from 9 to 54) {@link
+   *     #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
    */
   public GuiInventoryHolder(P plugin, int size, String title) {
     this(GuiListener.getInstance(), plugin, size, title);
@@ -88,18 +86,17 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
   /**
    * 指定されたサイズとタイトルで、プラグイン用の新しい chest-GuiInventoryHolder を構築します。
    *
-   * @param plugin      your plugin
-   * @param size        the chest size (should be a multiple of 9 and ranging from 9 to 54)
-   * @param title       the title
-   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
-   *                    {@link #onClick(InventoryClickEvent)} and
-   *                    {@link #onClose(InventoryCloseEvent)} methods
+   * @param plugin your plugin
+   * @param size the chest size (should be a multiple of 9 and ranging from 9 to 54)
+   * @param title the title
+   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)}, {@link
+   *     #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
    */
   public GuiInventoryHolder(GuiListener guiListener, P plugin, int size, String title) {
     this.guiListener = guiListener;
     this.plugin = plugin;
-    this.inventory = plugin.getServer()
-        .createInventory(this, size, Util.mm(title)); // implicit null check
+    this.inventory =
+        plugin.getServer().createInventory(this, size, Util.mm(title)); // implicit null check
 
     guiListener.registerGui(this, inventory); // implicit null check
   }
@@ -108,8 +105,8 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * 与えられたインベントリタイプでプラグイン用の新しいGuiInventoryHolderを構築します。
    *
    * @param plugin your plugin
-   * @param type   the inventory type {@link #onClick(InventoryClickEvent)} and
-   *               {@link #onClose(InventoryCloseEvent)} methods
+   * @param type the inventory type {@link #onClick(InventoryClickEvent)} and {@link
+   *     #onClose(InventoryCloseEvent)} methods
    */
   public GuiInventoryHolder(P plugin, InventoryType type) {
     this(GuiListener.getInstance(), plugin, type);
@@ -118,11 +115,10 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
   /**
    * 与えられたインベントリタイプでプラグイン用の新しいGuiInventoryHolderを構築します。
    *
-   * @param plugin      your plugin
-   * @param type        the inventory type
-   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
-   *                    {@link #onClick(InventoryClickEvent)} and
-   *                    {@link #onClose(InventoryCloseEvent)} methods
+   * @param plugin your plugin
+   * @param type the inventory type
+   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)}, {@link
+   *     #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
    */
   public GuiInventoryHolder(GuiListener guiListener, P plugin, InventoryType type) {
     this.guiListener = guiListener;
@@ -136,9 +132,8 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * 指定されたサイズのプラグイン用の新しいchest-GuiInventoryHolderを構築します。
    *
    * @param plugin your plugin
-   * @param size   the chest size (should be a multiple of 9 and ranging from 9 to 54)
-   *               {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)}
-   *               methods
+   * @param size the chest size (should be a multiple of 9 and ranging from 9 to 54) {@link
+   *     #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
    */
   public GuiInventoryHolder(P plugin, int size) {
     this(GuiListener.getInstance(), plugin, size);
@@ -147,11 +142,10 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
   /**
    * 指定されたサイズのプラグイン用の新しいchest-GuiInventoryHolderを構築します。
    *
-   * @param plugin      your plugin
-   * @param size        the chest size (should be a multiple of 9 and ranging from 9 to 54)
-   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
-   *                    {@link #onClick(InventoryClickEvent)} and
-   *                    {@link #onClose(InventoryCloseEvent)} methods
+   * @param plugin your plugin
+   * @param size the chest size (should be a multiple of 9 and ranging from 9 to 54)
+   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)}, {@link
+   *     #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
    */
   public GuiInventoryHolder(GuiListener guiListener, P plugin, int size) {
     this.guiListener = guiListener;
@@ -163,12 +157,12 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
 
   /**
    * 与えられたインベントリーを使用して、プラグインのGuiInventoryHolderを構築します。
-   * これは、プラグインでOBCやNMSクラスを使用していて、インベントリが作成できない場合に特に便利です。
-   * {@link org.bukkit.Server#createInventory(InventoryHolder, InventoryType,
+   * これは、プラグインでOBCやNMSクラスを使用していて、インベントリが作成できない場合に特に便利です。 {@link
+   * org.bukkit.Server#createInventory(InventoryHolder, InventoryType,
    * net.kyori.adventure.text.Component)}やそのオーバーロードによるものです。
    * これを行いたい理由の1つは、独自のContainer実装でカスタムシフトクリックの動作を実装するためです。
-   * <p>
-   * 引数として与えられたインベントリのInventoryHolderは、この新しいGuiInventoryHolderでなければなりません。 A code example:
+   *
+   * <p>引数として与えられたインベントリのInventoryHolderは、この新しいGuiInventoryHolderでなければなりません。 A code example:
    *
    * <pre><code>
    * public class MyNMSInventory extends InventorySubContainer implements ITileEntityContainer {
@@ -194,9 +188,9 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * }
    * </code></pre>
    *
-   * @param plugin    your plugin
-   * @param inventory the custom inventory {@link #onClick(InventoryClickEvent)} and
-   *                  {@link #onClose(InventoryCloseEvent)} methods
+   * @param plugin your plugin
+   * @param inventory the custom inventory {@link #onClick(InventoryClickEvent)} and {@link
+   *     #onClose(InventoryCloseEvent)} methods
    */
   public GuiInventoryHolder(P plugin, Inventory inventory) {
     this(GuiListener.getInstance(), plugin, inventory);
@@ -204,12 +198,12 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
 
   /**
    * 与えられたインベントリーを使用して、プラグインのGuiInventoryHolderを構築します。
-   * これは、プラグインでOBCやNMSクラスを使用していて、インベントリが作成できない場合に特に便利です。
-   * {@link org.bukkit.Server#createInventory(InventoryHolder, InventoryType,
+   * これは、プラグインでOBCやNMSクラスを使用していて、インベントリが作成できない場合に特に便利です。 {@link
+   * org.bukkit.Server#createInventory(InventoryHolder, InventoryType,
    * net.kyori.adventure.text.Component)}やそのオーバーロードによるものです。
    * これを行いたい理由の1つは、独自のContainer実装でカスタムシフトクリックの動作を実装するためです。
-   * <p>
-   * 引数として与えられたインベントリのInventoryHolderは、この新しいGuiInventoryHolderでなければなりません。 A code example:
+   *
+   * <p>引数として与えられたインベントリのInventoryHolderは、この新しいGuiInventoryHolderでなければなりません。 A code example:
    *
    * <pre><code>
    * public class MyNMSInventory extends InventorySubContainer implements ITileEntityContainer {
@@ -235,11 +229,10 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * }
    * </code></pre>
    *
-   * @param plugin      your plugin
-   * @param inventory   the custom inventory
-   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
-   *                    {@link #onClick(InventoryClickEvent)} and
-   *                    {@link #onClose(InventoryCloseEvent)} methods
+   * @param plugin your plugin
+   * @param inventory the custom inventory
+   * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)}, {@link
+   *     #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
    */
   public GuiInventoryHolder(GuiListener guiListener, P plugin, Inventory inventory) {
     this.guiListener = guiListener;
@@ -263,7 +256,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
    * InventoryClickEvent を必要としない {@link #getClickedInventory(InventoryClickEvent)} のオーバーロードです。
    *
    * @param rawSlot the slot that was clicked
-   * @param view    the view in which there was a click
+   * @param view the view in which there was a click
    * @return クリックされたインベントリ、またはプレイヤーが両方のインベントリの外側をクリックした場合はnull
    */
   protected static Inventory getClickedInventory(int rawSlot, InventoryView view) {
@@ -285,8 +278,8 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
   }
 
   /**
-   * このGUIホルダーに関連するインベントリーを取得します。 このメソッドをオーバーライドするサブクラスは、常に次のメソッドを返す必要があります。
-   * {@code super.getInventory();}をカスタムインベントリタイプにキャストしています。
+   * このGUIホルダーに関連するインベントリーを取得します。 このメソッドをオーバーライドするサブクラスは、常に次のメソッドを返す必要があります。 {@code
+   * super.getInventory();}をカスタムインベントリタイプにキャストしています。
    *
    * @return the inventory
    */
@@ -306,44 +299,40 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
 
   /**
    * 対応するInventoryViewが閉じるときに呼び出されます。
-   * <p>
-   * このメソッドは、サブクラスによってオーバーライドされることを意図しています。
+   *
+   * <p>このメソッドは、サブクラスによってオーバーライドされることを意図しています。
    *
    * @param event the inventory close event
    */
-  public void onClose(InventoryCloseEvent event) {
-  }
+  public void onClose(InventoryCloseEvent event) {}
 
   /**
    * 対応するInventoryViewがクリックされたときに呼び出されます。 この方法は、どのインベントリがクリックされたかを保証するものではありません。
    * またはインベントリが全くクリックされなかったかどうか。
-   * <p>
-   * デフォルトでは、イベントはキャンセルされます。
-   * <p>
-   * このメソッドは、サブクラスによってオーバーライドされることを意図しています。
+   *
+   * <p>デフォルトでは、イベントはキャンセルされます。
+   *
+   * <p>このメソッドは、サブクラスによってオーバーライドされることを意図しています。
    *
    * @param event the inventory click event
    */
-  public void onClick(InventoryClickEvent event) {
-  }
+  public void onClick(InventoryClickEvent event) {}
 
   /**
    * 対応するInventoryViewが開くときに呼び出される。
-   * <p>
-   * このメソッドは、サブクラスによってオーバーライドされることを意図しています。
+   *
+   * <p>このメソッドは、サブクラスによってオーバーライドされることを意図しています。
    *
    * @param event the inventory open event
    */
-  public void onOpen(InventoryOpenEvent event) {
-  }
+  public void onOpen(InventoryOpenEvent event) {}
 
   /**
    * 対応するInventoryViewでアイテムがドラッグされたときに呼び出される。 この方法は、どのインベントリにドラッグされたかを保証するものではありません。
    *
    * @param event the inventory drag event
    */
-  public void onDrag(InventoryDragEvent event) {
-  }
+  public void onDrag(InventoryDragEvent event) {}
 
   /**
    * このinventoryを開く

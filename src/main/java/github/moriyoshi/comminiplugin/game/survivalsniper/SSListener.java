@@ -1,7 +1,9 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import github.moriyoshi.comminiplugin.system.AbstractGameListener;
+import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.util.tuple.Pair;
 import lombok.val;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -19,10 +21,6 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-
-import github.moriyoshi.comminiplugin.system.AbstractGameListener;
-import github.moriyoshi.comminiplugin.util.Util;
-import github.moriyoshi.comminiplugin.util.tuple.Pair;
 
 public class SSListener implements AbstractGameListener<SSGame> {
 
@@ -94,15 +92,16 @@ public class SSListener implements AbstractGameListener<SSGame> {
         default:
           e.setCancelled(false);
           break;
-
       }
     }
   }
 
   @Override
   public void damageByEntity(final EntityDamageByEntityEvent e) {
-    if (!getGame().isCanPvP() && e.getEntity() instanceof Player
-        && e.getDamager() instanceof final Player attacker && getGame().isGamePlayer(attacker)) {
+    if (!getGame().isCanPvP()
+        && e.getEntity() instanceof Player
+        && e.getDamager() instanceof final Player attacker
+        && getGame().isGamePlayer(attacker)) {
       getGame().prefix.send(attacker, "<red>まだPvPはできません");
       e.setCancelled(true);
     }
@@ -131,15 +130,16 @@ public class SSListener implements AbstractGameListener<SSGame> {
     val loc = p.getLocation();
     val world = p.getWorld();
     val inv = p.getInventory();
-    inv.forEach(i -> {
-      if (i == null || i.isEmpty()) {
-        return;
-      }
-      world.dropItemNaturally(loc, i);
-    });
+    inv.forEach(
+        i -> {
+          if (i == null || i.isEmpty()) {
+            return;
+          }
+          world.dropItemNaturally(loc, i);
+        });
     inv.clear();
-    val alives = game.players.entrySet().stream().filter(entry -> entry.getValue().getFirst())
-        .toList();
+    val alives =
+        game.players.entrySet().stream().filter(entry -> entry.getValue().getFirst()).toList();
     if (alives.size() != 1) {
       if (alives.size() == 2) {
         game.speedUpBorder();
@@ -149,5 +149,4 @@ public class SSListener implements AbstractGameListener<SSGame> {
     }
     game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()));
   }
-
 }

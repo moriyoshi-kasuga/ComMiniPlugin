@@ -10,12 +10,13 @@ public class AdminGameMenuCommand extends CommandAPICommand {
   public AdminGameMenuCommand() {
     super("adminmenu");
     withPermission(CommandPermission.OP);
-    executesPlayer((player, args) -> {
-      if (GameSystem.isIn()) {
-        GameSystem.getGame().createAdminMenu().openInv(player);
-      } else {
-        new AdminGameMenu().openInv(player);
-      }
-    });
+    executesPlayer(
+        (player, args) -> {
+          if (GameSystem.isIn()) {
+            GameSystem.getGame().createAdminMenu().openInv(player);
+          } else {
+            new AdminGameMenu().openInv(player);
+          }
+        });
   }
 }

@@ -19,9 +19,9 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
   }
 
   @Override
-  public ItemStack deserialize(JsonElement jsonElement, Type type,
-      JsonDeserializationContext context) throws JsonParseException {
+  public ItemStack deserialize(
+      JsonElement jsonElement, Type type, JsonDeserializationContext context)
+      throws JsonParseException {
     return ItemStack.deserializeBytes(Base64.getDecoder().decode(jsonElement.getAsString()));
   }
-
 }

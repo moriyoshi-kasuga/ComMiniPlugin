@@ -1,5 +1,12 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.system.IGetGame;
+import github.moriyoshi.comminiplugin.system.buttons.HotbarSlotButton;
+import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -9,37 +16,42 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.IGetGame;
-import github.moriyoshi.comminiplugin.system.buttons.HotbarSlotButton;
-import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+public class SSMenu extends MenuHolder<ComMiniPlugin>
+    implements IGetGame<SSGame>, OnlyBeforeStartGameMenu {
 
-public class SSMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<SSGame>, OnlyBeforeStartGameMenu {
-
-  private final ItemStack JOIN = new ItemBuilder(Material.BLUE_CONCRETE).name("<blue>参加する")
-      .lore("<white>もう一度クリックで参加を取りやめ").build();
-  private final ItemStack SPEC = new ItemBuilder(Material.GRAY_CONCRETE).name("<gray>観戦する")
-      .lore("<white>もう一度クリックで観戦を取りやめ").build();
+  private final ItemStack JOIN =
+      new ItemBuilder(Material.BLUE_CONCRETE)
+          .name("<blue>参加する")
+          .lore("<white>もう一度クリックで参加を取りやめ")
+          .build();
+  private final ItemStack SPEC =
+      new ItemBuilder(Material.GRAY_CONCRETE)
+          .name("<gray>観戦する")
+          .lore("<white>もう一度クリックで観戦を取りやめ")
+          .build();
 
   private final BukkitRunnable task = createAutoCloseTask();
 
   public SSMenu() {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>サバイバルスナイパー");
-    setButton(12, new ItemButton<>(JOIN) {
-      @Override
-      public void onClick(@NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-        getGame().joinPlayer(((Player) event.getWhoClicked()), true);
-      }
-    });
-    setButton(14, new ItemButton<>(SPEC) {
-      @Override
-      public void onClick(@NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-        getGame().joinPlayer(((Player) event.getWhoClicked()), false);
-      }
-    });
+    setButton(
+        12,
+        new ItemButton<>(JOIN) {
+          @Override
+          public void onClick(
+              @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
+            getGame().joinPlayer(((Player) event.getWhoClicked()), true);
+          }
+        });
+    setButton(
+        14,
+        new ItemButton<>(SPEC) {
+          @Override
+          public void onClick(
+              @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
+            getGame().joinPlayer(((Player) event.getWhoClicked()), false);
+          }
+        });
     setButton(4, new HotbarSlotButton(SSPlayer.class));
   }
 
@@ -60,5 +72,4 @@ public class SSMenu extends MenuHolder<ComMiniPlugin> implements IGetGame<SSGame
   public void onOpen(InventoryOpenEvent event) {
     this.task.runTaskTimer(getPlugin(), 1, 1);
   }
-
 }

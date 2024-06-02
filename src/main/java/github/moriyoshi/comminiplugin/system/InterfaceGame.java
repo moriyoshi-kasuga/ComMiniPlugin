@@ -1,13 +1,11 @@
 package github.moriyoshi.comminiplugin.system;
 
+import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import java.util.function.Consumer;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-
-import github.moriyoshi.comminiplugin.util.PrefixUtil;
 
 public interface InterfaceGame {
 

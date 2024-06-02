@@ -5,9 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
-/**
- * .yml ファイルを読み込む {@link FileAPI}
- */
+/** .yml ファイルを読み込む {@link FileAPI} */
 public abstract class YmlAPI extends FileAPI<FileConfiguration> {
 
   public YmlAPI(Plugin plugin, String name) {
@@ -26,17 +24,13 @@ public abstract class YmlAPI extends FileAPI<FileConfiguration> {
     return ".yml";
   }
 
-  /**
-   * ファイルからデータの読み込み
-   */
+  /** ファイルからデータの読み込み */
   @Override
   public void loadData() {
     generateLoadData(YamlConfiguration.loadConfiguration(file));
   }
 
-  /**
-   * データをファイルに保存
-   */
+  /** データをファイルに保存 */
   @Override
   public void saveFile() {
     try {
@@ -45,5 +39,4 @@ public abstract class YmlAPI extends FileAPI<FileConfiguration> {
       throw new RuntimeException(e);
     }
   }
-
 }

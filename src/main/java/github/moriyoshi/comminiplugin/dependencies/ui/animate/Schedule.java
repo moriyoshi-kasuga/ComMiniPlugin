@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.OptionalLong;
 
-/**
- * アニメーションを再生するためのスケジュールです。
- */
+/** アニメーションを再生するためのスケジュールです。 */
 public interface Schedule {
 
   /**
@@ -66,9 +64,7 @@ public interface Schedule {
     return new FixedRateSchedule(period);
   }
 
-  /**
-   * スケジュールを初期状態に戻す。
-   */
+  /** スケジュールを初期状態に戻す。 */
   void reset();
 
   /**
@@ -131,7 +127,6 @@ public interface Schedule {
   default Schedule repeat() {
     return new RepeatingSchedule(this);
   }
-
 }
 
 class RepeatingSchedule implements Schedule {
@@ -193,7 +188,6 @@ class RepeatingSchedule implements Schedule {
   public String toString() {
     return "RepeatingSchedule(source=" + source + ")";
   }
-
 }
 
 class ArraySchedule implements Schedule {
@@ -264,8 +258,7 @@ class ArraySchedule implements Schedule {
       return false;
     }
 
-    return this.currentIndex == that.currentIndex
-        && Arrays.equals(this.delays, that.delays);
+    return this.currentIndex == that.currentIndex && Arrays.equals(this.delays, that.delays);
   }
 
   @Override
@@ -275,10 +268,12 @@ class ArraySchedule implements Schedule {
 
   @Override
   public String toString() {
-    return "ArraySchedule(delays=" + Arrays.toString(delays) + ",currentIndex=" + currentIndex
+    return "ArraySchedule(delays="
+        + Arrays.toString(delays)
+        + ",currentIndex="
+        + currentIndex
         + ")";
   }
-
 }
 
 record ConcatSchedule(Schedule one, Schedule two) implements Schedule {
@@ -309,8 +304,7 @@ record ConcatSchedule(Schedule one, Schedule two) implements Schedule {
       return false;
     }
 
-    return Objects.equals(this.one, that.one)
-        && Objects.equals(this.two, that.two);
+    return Objects.equals(this.one, that.one) && Objects.equals(this.two, that.two);
   }
 
   @Override
@@ -322,7 +316,6 @@ record ConcatSchedule(Schedule one, Schedule two) implements Schedule {
   public String toString() {
     return "ConcatSchedule(one=" + one + ",two=" + two + ")";
   }
-
 }
 
 class OneTimeSchedule implements Schedule {
@@ -373,8 +366,7 @@ class OneTimeSchedule implements Schedule {
       return false;
     }
 
-    return this.done == that.done
-        && this.when == that.when;
+    return this.done == that.done && this.when == that.when;
   }
 
   @Override
@@ -386,7 +378,6 @@ class OneTimeSchedule implements Schedule {
   public String toString() {
     return "OneTimeSchedule(done=" + done + ",when=" + when + ")";
   }
-
 }
 
 class StepLimitedSchedule implements Schedule {
@@ -456,10 +447,14 @@ class StepLimitedSchedule implements Schedule {
 
   @Override
   public String toString() {
-    return "StepLimitedSchedule(source=" + source + ",stepLimit=" + stepLimit + ",stepsPassed="
-        + stepsPassed + ")";
+    return "StepLimitedSchedule(source="
+        + source
+        + ",stepLimit="
+        + stepLimit
+        + ",stepsPassed="
+        + stepsPassed
+        + ")";
   }
-
 }
 
 class TimeLimitedSchedule implements Schedule {
@@ -536,17 +531,20 @@ class TimeLimitedSchedule implements Schedule {
 
   @Override
   public String toString() {
-    return "TimeLimitedSchedule(source=" + source + ",timeLimit=" + timeLimit + ",timePassed="
-        + timePassed + ")";
+    return "TimeLimitedSchedule(source="
+        + source
+        + ",timeLimit="
+        + timeLimit
+        + ",timePassed="
+        + timePassed
+        + ")";
   }
-
 }
 
 record FixedRateSchedule(long period) implements Schedule {
 
   @Override
-  public void reset() {
-  }
+  public void reset() {}
 
   @Override
   public OptionalLong next() {
@@ -593,5 +591,4 @@ record FixedRateSchedule(long period) implements Schedule {
   public String toString() {
     return "FixedRateSchedule(period=" + period + ")";
   }
-
 }

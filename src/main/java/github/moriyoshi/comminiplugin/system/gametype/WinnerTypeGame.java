@@ -1,11 +1,10 @@
 package github.moriyoshi.comminiplugin.system.gametype;
 
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public interface WinnerTypeGame extends InterfaceGame {
 
@@ -17,7 +16,6 @@ public interface WinnerTypeGame extends InterfaceGame {
       public void run() {
         GameSystem.finalGame();
       }
-
     }.runTaskLater(ComMiniPlugin.getPlugin(), 100);
   }
 }

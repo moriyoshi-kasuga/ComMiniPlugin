@@ -13,8 +13,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public interface AbstractGameListener<T extends AbstractGame> extends Listener, IGetGame<T> {
 
   /**
-   * プレイヤーがサーバーに入ったら呼び出されます (すべてゲームのプレイヤーだけです)
-   * (このメゾットはゲーム開始前でも呼ばれます,initialize時からです)
+   * プレイヤーがサーバーに入ったら呼び出されます (すべてゲームのプレイヤーだけです) (このメゾットはゲーム開始前でも呼ばれます,initialize時からです)
    *
    * @param e event
    * @return false で そのプレイヤーを初期化します(とくに処理がない場合にfalseを返してロビーにテレポなどをします)
@@ -24,49 +23,42 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
   }
 
   /**
-   * プレイヤーがサーバーから抜けたら呼び出されます (すべてゲームのプレイヤーだけです)
-   * (このメゾットはゲーム開始前でも呼ばれます,initialize時からです)
+   * プレイヤーがサーバーから抜けたら呼び出されます (すべてゲームのプレイヤーだけです) (このメゾットはゲーム開始前でも呼ばれます,initialize時からです)
    *
    * @param e event
    */
-  default void quit(final PlayerQuitEvent e) {
-  }
+  default void quit(final PlayerQuitEvent e) {}
 
   /**
    * プレイヤーが死んだら呼び出されます (すべてゲームのプレイヤーだけです)
    *
    * @param e event
    */
-  default void death(final PlayerDeathEvent e) {
-  }
+  default void death(final PlayerDeathEvent e) {}
 
   /**
    * @param e event
    */
-  default void damage(final EntityDamageEvent e, final Player player) {
-  }
+  default void damage(final EntityDamageEvent e, final Player player) {}
 
   /**
    * Entity 同士の攻撃です instanceof Player を忘れずに
    *
    * @param e event
    */
-  default void damageByEntity(final EntityDamageByEntityEvent e) {
-  }
+  default void damageByEntity(final EntityDamageByEntityEvent e) {}
 
   /**
    * ブロックを壊したらこのイベントに来ます (すべてゲームのプレイヤーだけです)
    *
    * @param e event
    */
-  default void blockBreak(final BlockBreakEvent e) {
-  }
+  default void blockBreak(final BlockBreakEvent e) {}
 
   /**
    * ブロックを置いたらこのイベントが呼ばれます (すべてのゲームのプレイヤーだけです)
    *
    * @param e event
    */
-  default void blockPlace(final BlockPlaceEvent e) {
-  }
+  default void blockPlace(final BlockPlaceEvent e) {}
 }

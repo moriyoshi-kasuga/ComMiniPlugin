@@ -9,9 +9,7 @@ import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
-/**
- * int 値のジェネレーターです。イテレータであることに加え、IntGeneratorは常に初期状態にリセットすることができます。
- */
+/** int 値のジェネレーターです。イテレータであることに加え、IntGeneratorは常に初期状態にリセットすることができます。 */
 public interface IntGenerator extends PrimitiveIterator.OfInt {
 
   /**
@@ -38,7 +36,7 @@ public interface IntGenerator extends PrimitiveIterator.OfInt {
    * 初期値から始まり、更新関数を使って更新するジェネレーターを構築する。
    *
    * @param startValue the seed value
-   * @param updater    the update function
+   * @param updater the update function
    * @return a new generator
    */
   static IntGenerator iterate(int startValue, IntUnaryOperator updater) {
@@ -48,18 +46,16 @@ public interface IntGenerator extends PrimitiveIterator.OfInt {
   /**
    * ある下限値と上限値の間にあるintを生成するジェネレータを構築する。
    *
-   * @param startValue   the lower bound (inclusive)
+   * @param startValue the lower bound (inclusive)
    * @param endExclusive the upper bound (exclusive)
-   * @param step         how much difference between each {@link IntGenerator#nextInt()} call.
+   * @param step how much difference between each {@link IntGenerator#nextInt()} call.
    * @return a new generator
    */
   static IntGenerator range(int startValue, int endExclusive, int step) {
     return new RangeIntGenerator(startValue, endExclusive, step);
   }
 
-  /**
-   * ジェネレーターを初期状態にリセットする。
-   */
+  /** ジェネレーターを初期状態にリセットする。 */
   void reset();
 
   /**
@@ -70,8 +66,7 @@ public interface IntGenerator extends PrimitiveIterator.OfInt {
   default IntStream toStream() {
     return StreamSupport.intStream(
         Spliterators.spliteratorUnknownSize(this, Spliterator.NONNULL | Spliterator.ORDERED),
-        false
-    );
+        false);
   }
 
   /**
@@ -113,7 +108,6 @@ public interface IntGenerator extends PrimitiveIterator.OfInt {
   default IntGenerator map(IntUnaryOperator mapper) {
     return new MapIntGenerator(this, mapper);
   }
-
 }
 
 class MapIntGenerator implements IntGenerator {
@@ -165,15 +159,13 @@ class MapIntGenerator implements IntGenerator {
       return false;
     }
 
-    return Objects.equals(this.source, that.source)
-        && Objects.equals(this.mapper, that.mapper);
+    return Objects.equals(this.source, that.source) && Objects.equals(this.mapper, that.mapper);
   }
 
   @Override
   public String toString() {
     return "MapIntGenerator(source=" + source + ",mapper=" + mapper + ")";
   }
-
 }
 
 class LimitIntGenerator implements IntGenerator {
@@ -251,7 +243,6 @@ class LimitIntGenerator implements IntGenerator {
   public String toString() {
     return "LimitIntGenerator(limit=" + limit + ",wrapped=" + wrapped + ",count=" + count + ")";
   }
-
 }
 
 class RangeIntGenerator implements IntGenerator {
@@ -311,16 +302,13 @@ class RangeIntGenerator implements IntGenerator {
       return false;
     }
 
-    return this.start == that.start
-        && this.end == that.end
-        && this.step == that.step;
+    return this.start == that.start && this.end == that.end && this.step == that.step;
   }
 
   @Override
   public String toString() {
     return "RangeIntGenerator(start=" + start + ",end=" + end + ",step=" + step + ")";
   }
-
 }
 
 class ConstantIntGenerator implements IntGenerator {
@@ -332,8 +320,7 @@ class ConstantIntGenerator implements IntGenerator {
   }
 
   @Override
-  public void reset() {
-  }
+  public void reset() {}
 
   @Override
   public IntStream toStream() {
@@ -386,7 +373,6 @@ class ConstantIntGenerator implements IntGenerator {
   public String toString() {
     return "ConstantIntGenerator(value=" + value + ")";
   }
-
 }
 
 class InfiniteIntGenerator implements IntGenerator {
@@ -455,10 +441,14 @@ class InfiniteIntGenerator implements IntGenerator {
 
   @Override
   public String toString() {
-    return "InfiniteIntGenerator(startValue=" + startValue + ",updater=" + updater + ",state="
-        + state + ")";
+    return "InfiniteIntGenerator(startValue="
+        + startValue
+        + ",updater="
+        + updater
+        + ",state="
+        + state
+        + ")";
   }
-
 }
 
 class CycleIntGenerator implements IntGenerator {
@@ -524,7 +514,6 @@ class CycleIntGenerator implements IntGenerator {
   public String toString() {
     return "CycleIntGenerator(wrapped=" + wrapped + ")";
   }
-
 }
 
 class ConcatIntGenerator implements IntGenerator {
@@ -579,15 +568,13 @@ class ConcatIntGenerator implements IntGenerator {
       return false;
     }
 
-    return Objects.equals(this.first, that.first)
-        && Objects.equals(this.second, that.second);
+    return Objects.equals(this.first, that.first) && Objects.equals(this.second, that.second);
   }
 
   @Override
   public String toString() {
     return "ConcatIntGenerator(first=" + first + ",second=" + second + ")";
   }
-
 }
 
 class ArrayIntGenerator implements IntGenerator {
@@ -683,5 +670,4 @@ class ArrayIntGenerator implements IntGenerator {
   public String toString() {
     return "ArrayIntGenerator(index=" + index + ",ints=" + Arrays.toString(ints) + ")";
   }
-
 }

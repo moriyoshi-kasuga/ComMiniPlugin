@@ -5,22 +5,19 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * {key}をその値によって文字列をフォーマットする
- */
+/** {key}をその値によって文字列をフォーマットする */
 public class FormatterUtil {
 
   // {\w+} → \w+
   private static final Pattern pattern = Pattern.compile("\\{(\\w+)}");
 
-  private FormatterUtil() {
-  }
+  private FormatterUtil() {}
 
   /**
    * 文字列をマップ名によってフォーマットします。
    *
    * @param format フォーマットする文字列
-   * @param map    map
+   * @param map map
    * @return mapの値によってフォーマットされた文字列
    */
   public static String format(final String format, final Map<Object, Object> map) {
@@ -44,10 +41,9 @@ public class FormatterUtil {
    * 文字列をプロパティ名によってフォーマットします。
    *
    * @param format フォーマットする文字列
-   * @param props  プロパティ
+   * @param props プロパティ
    * @return プロパティの値によってフォーマットされた文字列
    */
-
   public static String format(final String format, final Properties props) {
     final Matcher matcher = pattern.matcher(format);
     final StringBuilder sb = new StringBuilder();
@@ -61,5 +57,4 @@ public class FormatterUtil {
     matcher.appendTail(sb);
     return sb.toString();
   }
-
 }

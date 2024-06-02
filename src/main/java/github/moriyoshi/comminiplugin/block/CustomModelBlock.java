@@ -1,5 +1,10 @@
 package github.moriyoshi.comminiplugin.block;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
+import lombok.Getter;
+import lombok.val;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Display.Billboard;
@@ -12,13 +17,6 @@ import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import lombok.Getter;
-import lombok.val;
-
 @Getter
 public abstract class CustomModelBlock extends CustomBlock {
 
@@ -27,16 +25,26 @@ public abstract class CustomModelBlock extends CustomBlock {
   public CustomModelBlock(Block block) {
     super(block);
 
-    display = block.getWorld().spawn(block.getLocation().add(0.5f, 0.5f, 0.5f), ItemDisplay.class, display -> {
-      display.setItemStack(getItem());
-      display.setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(0, 0, 0, 1),
-          new Vector3f(1.001f), new AxisAngle4f(0, 0, 0, 1)));
-      display.setBillboard(Billboard.FIXED);
-      display.setBrightness(new Brightness(0, 15));
-      display.setItemDisplayTransform(ItemDisplayTransform.NONE);
-      display.setRotation(0, 0);
-      display.setPersistent(true);
-    });
+    display =
+        block
+            .getWorld()
+            .spawn(
+                block.getLocation().add(0.5f, 0.5f, 0.5f),
+                ItemDisplay.class,
+                display -> {
+                  display.setItemStack(getItem());
+                  display.setTransformation(
+                      new Transformation(
+                          new Vector3f(),
+                          new AxisAngle4f(0, 0, 0, 1),
+                          new Vector3f(1.001f),
+                          new AxisAngle4f(0, 0, 0, 1)));
+                  display.setBillboard(Billboard.FIXED);
+                  display.setBrightness(new Brightness(0, 15));
+                  display.setItemDisplayTransform(ItemDisplayTransform.NONE);
+                  display.setRotation(0, 0);
+                  display.setPersistent(true);
+                });
   }
 
   public CustomModelBlock(Block block, JsonElement dataElement) {
@@ -81,5 +89,4 @@ public abstract class CustomModelBlock extends CustomBlock {
   }
 
   public abstract ItemStack getItem();
-
 }

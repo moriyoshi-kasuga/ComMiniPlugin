@@ -2,10 +2,8 @@ package github.moriyoshi.comminiplugin.system.loot;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-
-import org.bukkit.inventory.ItemStack;
-
 import lombok.NonNull;
+import org.bukkit.inventory.ItemStack;
 
 public class Entry {
 
@@ -31,7 +29,8 @@ public class Entry {
     this.condition = () -> true;
   }
 
-  public Entry(@NonNull Supplier<ItemStack> supplier, double weight, @NonNull BooleanSupplier condition) {
+  public Entry(
+      @NonNull Supplier<ItemStack> supplier, double weight, @NonNull BooleanSupplier condition) {
     this.supplier = supplier;
     this.weight = weight;
     this.condition = condition;
@@ -42,5 +41,4 @@ public class Entry {
     this.weight = 1;
     this.condition = condition;
   }
-
 }

@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
-/**
- * アニメーションは、{@link Frame}のコンテナです。 アニメーションは、{@link AnimationRunner}を使って実行できます。
- */
+/** アニメーションは、{@link Frame}のコンテナです。 アニメーションは、{@link AnimationRunner}を使って実行できます。 */
 @SuppressWarnings("all")
 public interface Animation {
 
@@ -34,18 +32,16 @@ public interface Animation {
   /**
    * 無限のフレーム数をゆったりと生成するアニメーションを作成する。
    *
-   * @param seed      第1フレーム
+   * @param seed 第1フレーム
    * @param nextFrame 次のフレームを計算する方法を知っている関数です。
-   * @param <F>       フレームの種類
+   * @param <F> フレームの種類
    * @return 新アニメーション
    */
   static <F extends Frame<?, ?>> Animation infinite(F seed, UnaryOperator<F> nextFrame) {
     return new InfiniteAnimation<>(seed, nextFrame);
   }
 
-  /**
-   * アニメーションを初期状態に戻す。
-   */
+  /** アニメーションを初期状態に戻す。 */
   void reset();
 
   /**
@@ -55,10 +51,7 @@ public interface Animation {
    */
   Frame<?, ?> nextFrame();
 
-  /**
-   * このアニメーションに別のフレームがあるかどうかをテストします。
-   * このアニメーションに少なくとも1つのフレームがあればtrueを、そうでなければfalseを返す。
-   */
+  /** このアニメーションに別のフレームがあるかどうかをテストします。 このアニメーションに少なくとも1つのフレームがあればtrueを、そうでなければfalseを返す。 */
   boolean hasNextFrame();
 
   /**
@@ -89,7 +82,6 @@ public interface Animation {
   default Animation limit(int numberOfFrames) {
     return new LimitAnimation(numberOfFrames, this);
   }
-
 }
 
 class LimitAnimation implements Animation {
@@ -163,7 +155,6 @@ class LimitAnimation implements Animation {
   public String toString() {
     return "LimitAnimation(limit=" + limit + ",wrapped=" + wrapped + ",count=" + count + ")";
   }
-
 }
 
 class ConcatAnimation implements Animation {
@@ -208,15 +199,13 @@ class ConcatAnimation implements Animation {
       return false;
     }
 
-    return Objects.equals(this.one, that.one)
-        && Objects.equals(this.two, that.two);
+    return Objects.equals(this.one, that.one) && Objects.equals(this.two, that.two);
   }
 
   @Override
   public String toString() {
     return "ConcatAnimation(one=" + one + ",two=" + two + ")";
   }
-
 }
 
 class ContinuousAnimation implements Animation {
@@ -276,7 +265,6 @@ class ContinuousAnimation implements Animation {
   public String toString() {
     return "ContinuousAnimation(wrapped=" + wrapped + ")";
   }
-
 }
 
 @SuppressWarnings("all")
@@ -342,10 +330,14 @@ class InfiniteAnimation<F extends Frame<?, ?>> implements Animation {
 
   @Override
   public String toString() {
-    return "InfiniteAnimation(startingFrame=" + startingFrame + ",nextFrame=" + nextFrame
-        + ",state=" + state + ")";
+    return "InfiniteAnimation(startingFrame="
+        + startingFrame
+        + ",nextFrame="
+        + nextFrame
+        + ",state="
+        + state
+        + ")";
   }
-
 }
 
 class SimpleAnimation implements Animation {
@@ -398,8 +390,8 @@ class SimpleAnimation implements Animation {
   @Override
   public Animation limit(int numberOfFrames) {
     if (numberOfFrames < frames.size()) {
-      return new SimpleAnimation(currentIndex,
-          frames.subList(0, Math.min(frames.size(), numberOfFrames)));
+      return new SimpleAnimation(
+          currentIndex, frames.subList(0, Math.min(frames.size(), numberOfFrames)));
     } else {
       return this;
     }
@@ -419,13 +411,11 @@ class SimpleAnimation implements Animation {
       return false;
     }
 
-    return this.currentIndex == that.currentIndex
-        && Objects.equals(this.frames, that.frames);
+    return this.currentIndex == that.currentIndex && Objects.equals(this.frames, that.frames);
   }
 
   @Override
   public String toString() {
     return "SimpleAnimation(currentIndex=" + currentIndex + ",frames=" + frames + ")";
   }
-
 }

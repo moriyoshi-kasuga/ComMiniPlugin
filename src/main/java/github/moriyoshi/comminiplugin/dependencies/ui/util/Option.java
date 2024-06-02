@@ -3,16 +3,14 @@ package github.moriyoshi.comminiplugin.dependencies.ui.util;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-/**
- * {@link java.util.Optional} と同様ですが、NULL値を許容します。
- */
+/** {@link java.util.Optional} と同様ですが、NULL値を許容します。 */
 public interface Option<T> {
 
   /**
    * 値を持つOptionを構築する。nullも可。
    *
    * @param value the value
-   * @param <T>   the type of the value
+   * @param <T> the type of the value
    * @return a new Option
    */
   @SuppressWarnings({"rawtypes", "unchecked"})
@@ -45,7 +43,6 @@ public interface Option<T> {
    * @throws NoSuchElementException このオプションに値がない場合
    */
   T get() throws NoSuchElementException;
-
 }
 
 class Some<T> implements Option<T> {
@@ -87,7 +84,6 @@ class Some<T> implements Option<T> {
   public String toString() {
     return "Some(" + value + ")";
   }
-
 }
 
 @SuppressWarnings("rawtypes")
@@ -95,8 +91,7 @@ class None implements Option {
 
   static final None INSTANCE = new None();
 
-  private None() {
-  }
+  private None() {}
 
   @Override
   public boolean isPresent() {
@@ -112,5 +107,4 @@ class None implements Option {
   public String toString() {
     return "None";
   }
-
 }

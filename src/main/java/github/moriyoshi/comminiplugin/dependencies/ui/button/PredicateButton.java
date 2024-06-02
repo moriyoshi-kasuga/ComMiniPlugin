@@ -23,7 +23,7 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
   /**
    * PredicateButtonを作成する。
    *
-   * @param delegate  このボタンが委譲するボタン
+   * @param delegate このボタンが委譲するボタン
    * @param predicate デリゲートが呼び出されるために満たされる必要がある述語です。
    */
   public PredicateButton(MenuButton<MH> delegate, BiPredicate<MH, InventoryClickEvent> predicate) {
@@ -33,11 +33,13 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
   /**
    * PredicateButton を作成します
    *
-   * @param delegate                このボタンが委譲するボタン
-   * @param predicate               デリゲートが呼び出されるために満たす必要がある述語
+   * @param delegate このボタンが委譲するボタン
+   * @param predicate デリゲートが呼び出されるために満たす必要がある述語
    * @param predicateFailedCallback 述語が満たされなかったときに呼び出されるコールバック
    */
-  public PredicateButton(MenuButton<MH> delegate, BiPredicate<MH, InventoryClickEvent> predicate,
+  public PredicateButton(
+      MenuButton<MH> delegate,
+      BiPredicate<MH, InventoryClickEvent> predicate,
       BiConsumer<MH, InventoryClickEvent> predicateFailedCallback) {
     this.delegate = Objects.requireNonNull(delegate, "Delegate button cannot be null");
     this.predicate = Objects.requireNonNull(predicate, "Predicate cannot be null");
@@ -45,11 +47,11 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
   }
 
   /**
-   * {@link MenuHolder}によって呼び出される -
-   * 述語が満たされるかどうかをテストし、デリゲートボタンの{@link MenuButton#onClick(MenuHolder, InventoryClickEvent)}を呼び出します。
+   * {@link MenuHolder}によって呼び出される - 述語が満たされるかどうかをテストし、デリゲートボタンの{@link MenuButton#onClick(MenuHolder,
+   * InventoryClickEvent)}を呼び出します。
    *
    * @param menuHolder the MenuHolder
-   * @param event      the InventoryClickEvent
+   * @param event the InventoryClickEvent
    */
   @Override
   public void onClick(@NotNull MH menuHolder, @NotNull InventoryClickEvent event) {
@@ -74,7 +76,7 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
    * このボタンをメニューに追加できるかどうかを決定する。 デフォルトの実装では、デリゲートに委任します。
    *
    * @param menuHolder the menu
-   * @param slot       the position in the menu
+   * @param slot the position in the menu
    * @return true if the button can be added to the menu, otherwise false
    * @see MenuHolder#setButton(int, MenuButton)
    */
@@ -87,7 +89,7 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
    * このボタンをメニューから削除できるかどうかを決定する。 デフォルトの実装では、デリゲートに委任します。
    *
    * @param menuHolder the menu
-   * @param slot       the position in the menu
+   * @param slot the position in the menu
    * @return true if the button can be removed from the menu, otherwise false
    * @see MenuHolder#unsetButton(int)
    */
@@ -122,5 +124,4 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
   protected Optional<BiConsumer<MH, InventoryClickEvent>> getPredicateFailedCallback() {
     return Optional.ofNullable(predicateFailedCallback);
   }
-
 }

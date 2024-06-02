@@ -8,14 +8,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * クリックするとインベントリを閉じるMenuButtonです。
- */
+/** クリックするとインベントリを閉じるMenuButtonです。 */
 public class CloseButton<P extends Plugin> extends ItemButton<MenuHolder<P>> {
 
-  /**
-   * オークドアのアイコンと表示名 "Close "を持つクローズボタンを作成します。
-   */
+  /** オークドアのアイコンと表示名 "Close "を持つクローズボタンを作成します。 */
   public CloseButton() {
     this(Material.OAK_DOOR);
   }
@@ -41,7 +37,7 @@ public class CloseButton<P extends Plugin> extends ItemButton<MenuHolder<P>> {
   /**
    * カスタムマテリアルとカスタム表示名を持つクローズボタンを作成します。
    *
-   * @param material    the icon material
+   * @param material the icon material
    * @param displayName the display name
    */
   public CloseButton(Material material, String displayName) {
@@ -52,11 +48,10 @@ public class CloseButton<P extends Plugin> extends ItemButton<MenuHolder<P>> {
    * 1ティック後にインベントリを閉じます。
    *
    * @param holder the MenuHolder
-   * @param event  the InventoryClickEvent
+   * @param event the InventoryClickEvent
    */
   @Override
   public final void onClick(@NotNull MenuHolder<P> holder, @NotNull InventoryClickEvent event) {
     event.getView().close();
   }
-
 }

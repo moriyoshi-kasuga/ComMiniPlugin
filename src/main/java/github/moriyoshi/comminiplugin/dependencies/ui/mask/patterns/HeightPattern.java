@@ -6,14 +6,11 @@ import lombok.Getter;
 
 public class HeightPattern implements Pattern<Boolean> {
 
-  @Getter
-  private final int width;
+  @Getter private final int width;
 
-  @Getter
-  private final int start;
+  @Getter private final int start;
 
-  @Getter
-  private final int end;
+  @Getter private final int end;
 
   private final IntStream intStream;
 
@@ -44,5 +41,4 @@ public class HeightPattern implements Pattern<Boolean> {
     int inventoryRow = location / 9;
     return intStream.anyMatch(value -> value == inventoryRow);
   }
-
 }

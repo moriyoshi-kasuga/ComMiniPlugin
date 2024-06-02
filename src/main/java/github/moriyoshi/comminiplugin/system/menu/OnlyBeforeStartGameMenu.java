@@ -1,10 +1,9 @@
 package github.moriyoshi.comminiplugin.system.menu;
 
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import github.moriyoshi.comminiplugin.constant.Messages;
 import github.moriyoshi.comminiplugin.system.GameSystem;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public interface OnlyBeforeStartGameMenu extends InventoryHolder {
 
@@ -16,25 +15,28 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
         if (GameSystem.isIn() && !GameSystem.isStarted()) {
           return;
         }
-        getInventory().getViewers().forEach(human -> {
-          Messages.GAME_FINAL_OR_START.send(human);
-          human.closeInventory();
-        });
+        getInventory()
+            .getViewers()
+            .forEach(
+                human -> {
+                  Messages.GAME_FINAL_OR_START.send(human);
+                  human.closeInventory();
+                });
       }
-
     };
-
   }
 
   default boolean isClosed() {
     if (GameSystem.isIn() && !GameSystem.isStarted()) {
       return false;
     }
-    getInventory().getViewers().forEach(human -> {
-      Messages.GAME_FINAL_OR_START.send(human);
-      human.closeInventory();
-    });
+    getInventory()
+        .getViewers()
+        .forEach(
+            human -> {
+              Messages.GAME_FINAL_OR_START.send(human);
+              human.closeInventory();
+            });
     return true;
   }
-
 }

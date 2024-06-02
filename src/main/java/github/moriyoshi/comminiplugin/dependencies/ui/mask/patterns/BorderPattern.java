@@ -4,8 +4,8 @@ import github.moriyoshi.comminiplugin.dependencies.ui.mask.Pattern;
 import java.util.Objects;
 
 /**
- * このパターンは、インベントリグリッドのすべてのエッジを {@link Border#OUTER}としてハイライトします。 端にないスロットは
- * {@link Border#INNER}と表示されます。
+ * このパターンは、インベントリグリッドのすべてのエッジを {@link Border#OUTER}としてハイライトします。 端にないスロットは {@link
+ * Border#INNER}と表示されます。
  */
 public class BorderPattern implements Pattern<BorderPattern.Border> {
 
@@ -14,7 +14,7 @@ public class BorderPattern implements Pattern<BorderPattern.Border> {
   /**
    * BorderPatternを構築する
    *
-   * @param width  インベントリグリッドの幅
+   * @param width インベントリグリッドの幅
    * @param height インベントリグリッドの高さを指定します。
    */
   public BorderPattern(int width, int height) {
@@ -33,8 +33,8 @@ public class BorderPattern implements Pattern<BorderPattern.Border> {
    * シンボルを取得します。
    *
    * @param index インベントリスロット
-   * @return スロットがグリッドの端にある場合は {@link Border#OUTER}、インデックスが範囲外の場合は {@code null}、それ以外は
-   * {@link Border#INNER}となります。
+   * @return スロットがグリッドの端にある場合は {@link Border#OUTER}、インデックスが範囲外の場合は {@code null}、それ以外は {@link
+   *     Border#INNER}となります。
    */
   @Override
   public Border getSymbol(int index) {
@@ -101,5 +101,4 @@ public class BorderPattern implements Pattern<BorderPattern.Border> {
       return this == INNER;
     }
   }
-
 }

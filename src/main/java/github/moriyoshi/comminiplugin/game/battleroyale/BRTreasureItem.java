@@ -1,33 +1,34 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
+import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.stream.Collectors;
-
+import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import lombok.val;
-
 public class BRTreasureItem extends CustomItem {
   public BRTreasureItem() {
-    this(new ItemBuilder(Material.ENDER_CHEST).name("<red>Treasure Creater")
-        .lore("<gray>RightClick to create",
-            "<gray>if look block is already treasure,",
-            "<gray> open treasure settings menu",
-            "<gray>Left Click to remove!",
-            "<gray>how to choose (number range 0~5)",
-            "<gray> (0 does not place a treasure)",
-            "<gray> first: 1 (single select)",
-            "<gray> second: 1,2,3,4 (multiple select)",
-            "<gray> third: 2~3 (range select, equals 2,3)",
-            "<gray> fourth: 40%5,10%0 (random select)",
-            "<gray>  (Can be changed percent at will.)")
-        .build());
+    this(
+        new ItemBuilder(Material.ENDER_CHEST)
+            .name("<red>Treasure Creater")
+            .lore(
+                "<gray>RightClick to create",
+                "<gray>if look block is already treasure,",
+                "<gray> open treasure settings menu",
+                "<gray>Left Click to remove!",
+                "<gray>how to choose (number range 0~5)",
+                "<gray> (0 does not place a treasure)",
+                "<gray> first: 1 (single select)",
+                "<gray> second: 1,2,3,4 (multiple select)",
+                "<gray> third: 2~3 (range select, equals 2,3)",
+                "<gray> fourth: 40%5,10%0 (random select)",
+                "<gray>  (Can be changed percent at will.)")
+            .build());
   }
 
   public BRTreasureItem(@NotNull ItemStack item) {
@@ -71,14 +72,20 @@ public class BRTreasureItem extends CustomItem {
       if (treasure.containsLocation(block.getLocation())) {
         val values = treasure.getLocationData(block.getLocation());
         if (values.stream().allMatch(p -> p.getSecond() == 1)) {
-          ComMiniPrefix.SYSTEM.send(player, "<red>treasure values: "
-              + values.stream().map(p -> String.valueOf(p.getFirst()) + "lv")
-                  .collect(Collectors.joining(",")));
+          ComMiniPrefix.SYSTEM.send(
+              player,
+              "<red>treasure values: "
+                  + values.stream()
+                      .map(p -> String.valueOf(p.getFirst()) + "lv")
+                      .collect(Collectors.joining(",")));
           return;
         }
-        ComMiniPrefix.SYSTEM.send(player, "<red>treasure values: "
-            + values.stream().map(p -> String.format("%d%%%dlv", p.getSecond(), p.getFirst()))
-                .collect(Collectors.joining(",")));
+        ComMiniPrefix.SYSTEM.send(
+            player,
+            "<red>treasure values: "
+                + values.stream()
+                    .map(p -> String.format("%d%%%dlv", p.getSecond(), p.getFirst()))
+                    .collect(Collectors.joining(",")));
         return;
       }
       treasure.addLocation(block.getLocation(), player);

@@ -18,15 +18,12 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 public class ChatButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
-  /**
-   * -- GETTER -- Get the chat message.
-   */
+  /** -- GETTER -- Get the chat message. */
   private String message;
 
   /**
-   * 定数でないチャットメッセージを使用したい ChatButtons のためのプロテクテッドコンストラクタです。
-   * このコンストラクタを使用するサブクラスは、{@link #getMessage()}または{@link #getMessage(MenuHolder,
-   * InventoryClickEvent)}のいずれかをオーバーライドしなければならない。
+   * 定数でないチャットメッセージを使用したい ChatButtons のためのプロテクテッドコンストラクタです。 このコンストラクタを使用するサブクラスは、{@link
+   * #getMessage()}または{@link #getMessage(MenuHolder, InventoryClickEvent)}のいずれかをオーバーライドしなければならない。
    *
    * @param icon the icon
    */
@@ -37,7 +34,7 @@ public class ChatButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * ChatButtonを作成します。
    *
-   * @param icon    the icon
+   * @param icon the icon
    * @param message the chat message
    */
   public ChatButton(ItemStack icon, String message) {
@@ -49,7 +46,7 @@ public class ChatButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
    * ChatButtonを作成します。アイコンの表示名は、メッセージに設定されます。
    *
    * @param material the icon material
-   * @param message  the chat message
+   * @param message the chat message
    */
   public ChatButton(Material material, String message) {
     this(new ItemBuilder(material).name(message).build(), message);
@@ -59,7 +56,7 @@ public class ChatButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
    * ボタンをクリックしたプレイヤーに、チャットでメッセージを言わせる。
    *
    * @param menuHolder the menu holder
-   * @param event      the InventoryClickEvent
+   * @param event the InventoryClickEvent
    */
   @Override
   public void onClick(@NotNull MH menuHolder, @NotNull InventoryClickEvent event) {
@@ -73,7 +70,7 @@ public class ChatButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
    * サブクラスは、一定でないチャットメッセージのためにこのメソッドをオーバーライドできます。 デフォルトの実装では、{@link #getMessage()}に委譲されます。
    *
    * @param menuHolder the menu holder
-   * @param event      the InventoryClickEvent
+   * @param event the InventoryClickEvent
    * @return the customized message
    */
   protected String getMessage(MH menuHolder, InventoryClickEvent event) {
@@ -88,5 +85,4 @@ public class ChatButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   public void setMessage(String message) {
     this.message = Objects.requireNonNull(message, "Message cannot be null");
   }
-
 }

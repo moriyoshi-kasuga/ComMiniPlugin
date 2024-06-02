@@ -10,8 +10,8 @@ import org.bukkit.plugin.Plugin;
 
 /**
  * ファイルを読み込むabstract class
- * <p>
- * {@link JsonAPI} {@link YmlAPI} {@link ConfigAPI}
+ *
+ * <p>{@link JsonAPI} {@link YmlAPI} {@link ConfigAPI}
  *
  * @param <T> {@link JsonObject} や {@link FileConfiguration} などのファイルを読み込んだクラス
  */
@@ -27,7 +27,7 @@ public abstract class FileAPI<T> {
    * 引数のプラグインのフォルダーの第一階層からnameのファイルを読み込みます
    *
    * @param plugin 読み込みたいフォルダーのプラグイン
-   * @param name   読み込むファイルの名前
+   * @param name 読み込むファイルの名前
    */
   public FileAPI(Plugin plugin, String name) {
     this(plugin, "", name);
@@ -35,13 +35,12 @@ public abstract class FileAPI<T> {
 
   /**
    * 引数のプラグインのフォルダーの #path #name のファイルを読み込みます <br>
-   * 例 [plugin=TEST] [path=first/second]
-   * [name=fileName] <br>
+   * 例 [plugin=TEST] [path=first/second] [name=fileName] <br>
    * -> TEST/first/second/fileName のファイルを読み込みます
    *
    * @param plugin 読み込みたいフォルダーのプラグイン
-   * @param name   読み込むファイルの名前
-   * @param path   ファイル階層
+   * @param name 読み込むファイルの名前
+   * @param path ファイル階層
    */
   public FileAPI(Plugin plugin, String path, String name) {
     Objects.requireNonNull(name);
@@ -80,28 +79,20 @@ public abstract class FileAPI<T> {
    */
   protected abstract String getExtension();
 
-  /**
-   * ファイルからデータの読み込み
-   */
+  /** ファイルからデータの読み込み */
   public abstract void loadData();
 
-  /**
-   * データをファイルに保存
-   */
+  /** データをファイルに保存 */
   public abstract void saveFile();
 
-  /**
-   * ファイル削除
-   */
+  /** ファイル削除 */
   public final void removeFile() {
     if (file.delete()) {
       message.logInfo(paths + "を削除しました");
     }
   }
 
-  /**
-   * ファイルの作成
-   */
+  /** ファイルの作成 */
   public void createFile() {
     try {
       file.createNewFile();
@@ -110,9 +101,7 @@ public abstract class FileAPI<T> {
     }
   }
 
-  /**
-   * ファイルの読み込み
-   */
+  /** ファイルの読み込み */
   public final void loadFile() {
     File directory = new File(plugin.getDataFolder() + path);
     if (!directory.exists()) {
@@ -127,5 +116,4 @@ public abstract class FileAPI<T> {
   protected abstract T generateSaveData();
 
   protected abstract void generateLoadData(T data);
-
 }

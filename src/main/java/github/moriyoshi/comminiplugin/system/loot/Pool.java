@@ -1,16 +1,14 @@
 package github.moriyoshi.comminiplugin.system.loot;
 
+import github.moriyoshi.comminiplugin.util.RandomCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.IntSupplier;
-
-import org.bukkit.inventory.ItemStack;
-
-import github.moriyoshi.comminiplugin.util.RandomCollection;
 import lombok.val;
+import org.bukkit.inventory.ItemStack;
 
 public class Pool {
 

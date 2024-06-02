@@ -1,36 +1,34 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Random;
-import java.util.function.Consumer;
-
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.loot.Entry;
 import github.moriyoshi.comminiplugin.system.loot.LootTable;
 import github.moriyoshi.comminiplugin.system.loot.Pool;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.RandomCollection;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Random;
+import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.val;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class BRField {
 
-  @Getter
-  private final String name;
-
+  protected final RandomCollection<ItemStack> arrows;
+  @Getter private final String name;
   private final World world;
-  @Getter
-  private final Location lobby;
+  @Getter private final Location lobby;
   private final int max_radius_range;
   private final int min_border_range;
-
-  @Getter
-  private final TreasureLocation treasure;
+  @Getter private final TreasureLocation treasure;
 
   public BRField(String name, Location lobby, int max_radius_range, int min_border_range) {
     this.name = name;
@@ -39,6 +37,13 @@ public class BRField {
     this.max_radius_range = max_radius_range;
     this.min_border_range = min_border_range;
     this.treasure = new TreasureLocation(name);
+    this.arrows =
+        new RandomCollection<ItemStack>()
+            .add(50, new ItemBuilder(Material.ARROW).amount(3).build())
+            .add(30, new ItemBuilder(Material.ARROW).amount(5).build())
+            .add(10, new ItemBuilder(Material.ARROW).amount(7).build())
+            .add(7, new ItemBuilder(Material.ARROW).amount(10).build())
+            .add(3, new ItemBuilder(Material.ARROW).amount(15).build());
   }
 
   public void initialize() {
@@ -52,10 +57,19 @@ public class BRField {
   public void startMove(double maxRadius, double minRadius, long time) {
     val random = new Random();
     val border = world.getWorldBorder();
-    val moveX = Optional.of(random.nextDouble(minRadius, maxRadius)).map(i -> random.nextBoolean() ? i : -i)
-        .orElse(0.0) / time / 20;
-    val moveZ = Optional.of(random.nextDouble(minRadius, maxRadius)).map(i -> random.nextBoolean() ? i : -i)
-        .orElse(0.0) / time / 20;
+    val moveX =
+        Optional.of(random.nextDouble(minRadius, maxRadius))
+                .map(i -> random.nextBoolean() ? i : -i)
+                .orElse(0.0)
+            / time
+            / 20;
+
+    val moveZ =
+        Optional.of(random.nextDouble(minRadius, maxRadius))
+                .map(i -> random.nextBoolean() ? i : -i)
+                .orElse(0.0)
+            / time
+            / 20;
 
     new BukkitRunnable() {
 
@@ -75,14 +89,15 @@ public class BRField {
         }
         border.setCenter(center.add(moveX, 0, moveZ));
       }
-
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
   }
 
   public void startContraction(Location center, double size, int time, Consumer<SIGNAL> task) {
     val border = world.getWorldBorder();
     border.setCenter(center);
-    border.setSize(min_border_range, (long) ((border.getSize() - (double) min_border_range) / size * (double) time));
+    border.setSize(
+        min_border_range,
+        (long) ((border.getSize() - (double) min_border_range) / size * (double) time));
     new BukkitRunnable() {
 
       private int temp = time + 1;
@@ -107,7 +122,6 @@ public class BRField {
         }
         task.accept(new SIGNAL.NONE(temp));
       }
-
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
   }
 
@@ -120,58 +134,59 @@ public class BRField {
   }
 
   public LootTable getLevel1() {
-    return new LootTable(new ArrayList<>() {
-      {
-        add(new Pool()
-            .add(new Entry(() -> new WingItem().getItem())));
-      }
-    });
+    return new LootTable(
+        new ArrayList<>() {
+          {
+            add(
+                new Pool()
+                    .add(new Entry(() -> new WingItem().getItem()))
+                    .add(new Entry(arrows::next)));
+          }
+        });
   }
 
   public LootTable getLevel2() {
-    return new LootTable(new ArrayList<>() {
-      {
-        add(new Pool()
-            .add(new Entry(() -> new WingItem().getItem())));
-      }
-    });
+    return new LootTable(
+        new ArrayList<>() {
+          {
+            add(new Pool().add(new Entry(() -> new WingItem().getItem())));
+          }
+        });
   }
 
   public LootTable getLevel3() {
-    return new LootTable(new ArrayList<>() {
-      {
-        add(new Pool()
-            .add(new Entry(() -> new WingItem().getItem())));
-      }
-    });
+    return new LootTable(
+        new ArrayList<>() {
+          {
+            add(new Pool().add(new Entry(() -> new WingItem().getItem())));
+          }
+        });
   }
 
   public LootTable getLevel4() {
-    return new LootTable(new ArrayList<>() {
-      {
-        add(new Pool()
-            .add(new Entry(() -> new WingItem().getItem())));
-      }
-    });
+    return new LootTable(
+        new ArrayList<>() {
+          {
+            add(new Pool().add(new Entry(() -> new WingItem().getItem())));
+          }
+        });
   }
 
   public LootTable getLevel5() {
-    return new LootTable(new ArrayList<>() {
-      {
-        add(new Pool()
-            .add(new Entry(() -> new WingItem().getItem())));
-      }
-    });
+    return new LootTable(
+        new ArrayList<>() {
+          {
+            add(new Pool().add(new Entry(() -> new WingItem().getItem())));
+          }
+        });
   }
 
   public sealed interface SIGNAL {
-    public record END() implements SIGNAL {
-    }
 
-    public record MIN() implements SIGNAL {
-    }
+    record END() implements SIGNAL {}
 
-    public record NONE(int restTime) implements SIGNAL {
-    }
+    record MIN() implements SIGNAL {}
+
+    record NONE(int restTime) implements SIGNAL {}
   }
 }

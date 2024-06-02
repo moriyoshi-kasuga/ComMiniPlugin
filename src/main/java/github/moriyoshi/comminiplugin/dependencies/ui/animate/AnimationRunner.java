@@ -27,11 +27,10 @@ public final class AnimationRunner<Item> {
   /**
    * AnimationRunnerを作成する。
    *
-   * @param plugin    アニメーションタスクの実行に使用されるプラグイン
+   * @param plugin アニメーションタスクの実行に使用されるプラグイン
    * @param animation アニメ
-   * @param container コンテナを設定します。これは通常
-   *                  {@link org.bukkit.inventory.Inventory#setItem(int, ItemStack)} または
-   *                  {@link MenuHolder#setButton(int, MenuButton)} です。
+   * @param container コンテナを設定します。これは通常 {@link org.bukkit.inventory.Inventory#setItem(int,
+   *     ItemStack)} または {@link MenuHolder#setButton(int, MenuButton)} です。
    */
   public AnimationRunner(Plugin plugin, Animation animation, IntBiConsumer<Item> container) {
     this.plugin = Objects.requireNonNull(plugin, "plugin cannot be null");
@@ -79,9 +78,7 @@ public final class AnimationRunner<Item> {
     return runSchedule(schedule);
   }
 
-  /**
-   * アニメーションの再生を停止させる。 このメソッドは、アニメーションがすでに一時停止または終了している場合は何もしません。
-   */
+  /** アニメーションの再生を停止させる。 このメソッドは、アニメーションがすでに一時停止または終了している場合は何もしません。 */
   public void stop() {
     if (status != AnimationState.FINISHED) {
       status = AnimationState.PAUSED;
@@ -89,9 +86,7 @@ public final class AnimationRunner<Item> {
     cancelTask();
   }
 
-  /**
-   * アニメーションをリセットして、もう一度最初からやり直せる状態にします。
-   */
+  /** アニメーションをリセットして、もう一度最初からやり直せる状態にします。 */
   public void reset() {
     cancelTask();
     animation.reset();
@@ -137,9 +132,11 @@ public final class AnimationRunner<Item> {
     } else if (schedule instanceof ConcatSchedule concatSchedule) {
       if (concatSchedule.one() instanceof OneTimeSchedule
           && concatSchedule.two() instanceof RunFixedRate) {
-        task = sr.runTaskTimer(plugin, ((OneTimeSchedule) concatSchedule.one()).when,
-            ((RunFixedRate) concatSchedule.two()).period
-        );
+        task =
+            sr.runTaskTimer(
+                plugin,
+                ((OneTimeSchedule) concatSchedule.one()).when,
+                ((RunFixedRate) concatSchedule.two()).period);
         return true;
       }
     }
@@ -149,10 +146,12 @@ public final class AnimationRunner<Item> {
 
   private CommonRunnable tryComputeCommonRunnable(Schedule schedule) {
     if (schedule instanceof OneTimeSchedule s) {
-      return new RunOnce(s.when, () -> {
-        this.showFrame();
-        task = null;
-      });
+      return new RunOnce(
+          s.when,
+          () -> {
+            this.showFrame();
+            task = null;
+          });
     } else if (schedule instanceof FixedRateSchedule s) {
       return new RunFixedRate(s.period(), this::showFrame);
     } else if (schedule instanceof ConcatSchedule s) {
@@ -188,10 +187,15 @@ public final class AnimationRunner<Item> {
         showFrame();
         tryFallbackRun(schedule);
       } else {
-        task = getScheduler().runTaskLater(plugin, () -> {
-          showFrame();
-          tryFallbackRun(schedule);
-        }, delay);
+        task =
+            getScheduler()
+                .runTaskLater(
+                    plugin,
+                    () -> {
+                      showFrame();
+                      tryFallbackRun(schedule);
+                    },
+                    delay);
       }
     }
   }
@@ -217,5 +221,4 @@ public final class AnimationRunner<Item> {
   private BukkitScheduler getScheduler() {
     return plugin.getServer().getScheduler();
   }
-
 }

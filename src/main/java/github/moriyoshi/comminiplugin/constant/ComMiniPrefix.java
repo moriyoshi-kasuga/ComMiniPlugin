@@ -7,6 +7,5 @@ public final class ComMiniPrefix {
   public static final PrefixUtil MAIN = new PrefixUtil("<gold>[<aqua>ComMini<gold>] ");
   public static final PrefixUtil SYSTEM = new PrefixUtil("<gold>[<red>System<gold>] ");
 
-  private ComMiniPrefix() {
-  }
+  private ComMiniPrefix() {}
 }

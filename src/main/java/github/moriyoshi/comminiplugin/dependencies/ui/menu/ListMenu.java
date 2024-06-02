@@ -1,12 +1,18 @@
 package github.moriyoshi.comminiplugin.dependencies.ui.menu;
 
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectItemButton;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
+import net.wesjd.anvilgui.AnvilGUI.ResponseAction;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -15,28 +21,37 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectItemButton;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import net.wesjd.anvilgui.AnvilGUI.ResponseAction;
-
 public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
-  protected final ItemStack goToFirstPage = new ItemBuilder(Material.ENDER_PEARL).name("<green>最初のページにもどる").build();
+  protected final ItemStack goToFirstPage =
+      new ItemBuilder(Material.ENDER_PEARL).name("<green>最初のページにもどる").build();
   protected final String title;
   protected final List<T> rewards;
   protected final int rewardStartIndex, rewardEndIndex;
   protected final Function<T, MenuButton<MenuHolder<ComMiniPlugin>>> function;
 
-  public ListMenu(String title, int pageSize, List<T> rewards,
+  public ListMenu(
+      String title,
+      int pageSize,
+      List<T> rewards,
       Function<T, MenuButton<MenuHolder<ComMiniPlugin>>> function) {
-    this(ComMiniPlugin.getPlugin(), title, pageSize, rewards, 0, Math.min(rewards.size(), pageSize), function);
+    this(
+        ComMiniPlugin.getPlugin(),
+        title,
+        pageSize,
+        rewards,
+        0,
+        Math.min(rewards.size(), pageSize),
+        function);
   }
 
-  public ListMenu(ComMiniPlugin plugin, String title, int pageSize, List<T> rewards, int rewardStartIndex,
-      int rewardEndIndex, Function<T, MenuButton<MenuHolder<ComMiniPlugin>>> function) {
+  public ListMenu(
+      ComMiniPlugin plugin,
+      String title,
+      int pageSize,
+      List<T> rewards,
+      int rewardStartIndex,
+      int rewardEndIndex,
+      Function<T, MenuButton<MenuHolder<ComMiniPlugin>>> function) {
     super(plugin, new MenuHolder<>(plugin, pageSize), title, null, null);
     this.title = title;
     this.rewards = rewards;
@@ -59,22 +74,43 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
     for (int slot = 0; slot < getPageSize() && rewardStartIndex + slot < rewardEndIndex; slot++) {
       getPage().setButton(slot, function.apply(rewards.get(rewardStartIndex + slot)));
     }
-    getDefaultMenu().ifPresent(menu -> {
-      setButton(getPageSize(), new RedirectItemButton<>(goToFirstPage, () -> menu.get().getInventory()));
-      getSerachMethod().ifPresent(method -> setButton(getPageSize() + 8,
-          new ItemButton<>(new ItemBuilder(Material.BOOK).name("<aqua>クリックで文字検索").build()) {
-            @Override
-            public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-              AnvilInputs.postClose(
-                  AnvilInputs.getString(getPlugin(), "<aqua>文字で検索",
-                      (s, completion) -> List.of(ResponseAction.openInventory(
-                          getNewRewadsMenu(rewards.stream().filter(key -> method.test(s, key)).toList())
-                              .getInventory()))),
-                  ComMiniPlugin.getPlugin(), state -> state.getPlayer().openInventory(getInventory()))
-                  .open((Player) event.getWhoClicked());
-            }
-          }));
-    });
+    getDefaultMenu()
+        .ifPresent(
+            menu -> {
+              setButton(
+                  getPageSize(),
+                  new RedirectItemButton<>(goToFirstPage, () -> menu.get().getInventory()));
+              getSerachMethod()
+                  .ifPresent(
+                      method ->
+                          setButton(
+                              getPageSize() + 8,
+                              new ItemButton<>(
+                                  new ItemBuilder(Material.BOOK).name("<aqua>クリックで文字検索").build()) {
+                                @Override
+                                public void onClick(
+                                    @NotNull MenuHolder<?> holder,
+                                    @NotNull InventoryClickEvent event) {
+                                  AnvilInputs.postClose(
+                                          AnvilInputs.getString(
+                                              getPlugin(),
+                                              "<aqua>文字で検索",
+                                              (s, completion) ->
+                                                  List.of(
+                                                      ResponseAction.openInventory(
+                                                          getNewRewadsMenu(
+                                                                  rewards.stream()
+                                                                      .filter(
+                                                                          key ->
+                                                                              method.test(s, key))
+                                                                      .toList())
+                                                              .getInventory()))),
+                                          ComMiniPlugin.getPlugin(),
+                                          state -> state.getPlayer().openInventory(getInventory()))
+                                      .open((Player) event.getWhoClicked());
+                                }
+                              }));
+            });
 
     // required for the page to even work
     super.onOpen(event);
@@ -110,12 +146,24 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
   public ListMenu<T> getNewMenu(List<T> list, int rewardStartIndex, int rewardEndIndex) {
     try {
       return getClass()
-          .getDeclaredConstructor(ComMiniPlugin.class, String.class, int.class, List.class, int.class, int.class,
+          .getDeclaredConstructor(
+              ComMiniPlugin.class,
+              String.class,
+              int.class,
+              List.class,
+              int.class,
+              int.class,
               Function.class)
-          .newInstance(getPlugin(), title, getPageSize(), list, rewardStartIndex, rewardEndIndex, function);
-    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-        | NoSuchMethodException | SecurityException e) {
-      throw new RuntimeException("Failed to create new " + getClass().getSimpleName() + " of index", e);
+          .newInstance(
+              getPlugin(), title, getPageSize(), list, rewardStartIndex, rewardEndIndex, function);
+    } catch (InstantiationException
+        | IllegalAccessException
+        | IllegalArgumentException
+        | InvocationTargetException
+        | NoSuchMethodException
+        | SecurityException e) {
+      throw new RuntimeException(
+          "Failed to create new " + getClass().getSimpleName() + " of index", e);
     }
   }
 
@@ -124,8 +172,12 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
     // there is a next page if the current range upper bound is smaller than the end
     // of the list
     if (rewardEndIndex < rewards.size()) {
-      return Optional
-          .of(() -> getNewMenu(rewards, rewardEndIndex, Math.min(rewards.size(), rewardEndIndex + getPageSize())));
+      return Optional.of(
+          () ->
+              getNewMenu(
+                  rewards,
+                  rewardEndIndex,
+                  Math.min(rewards.size(), rewardEndIndex + getPageSize())));
     } else {
       return Optional.empty();
     }
@@ -135,8 +187,12 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
   public Optional<Supplier<ListMenu<T>>> getPreviousPageMenu() {
     // there is a previous page if we didn't start 0
     if (rewardStartIndex > 0) {
-      return Optional.of(() -> getNewMenu(rewards, Math.max(0, rewardStartIndex - getPageSize()),
-          Math.min(rewardStartIndex, rewards.size())));
+      return Optional.of(
+          () ->
+              getNewMenu(
+                  rewards,
+                  Math.max(0, rewardStartIndex - getPageSize()),
+                  Math.min(rewardStartIndex, rewards.size())));
     } else {
       return Optional.empty();
     }

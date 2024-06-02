@@ -16,7 +16,7 @@ import org.bukkit.plugin.Plugin;
  * これにより、同じ項目でレイアウトが異なるメニューを簡単に構築できます。 マスクとパターンのもう一つの使用例として、アニメーションがあります。
  *
  * @param <Symbol> マスクが使用するシンボルです。一般的には、Boolean、Integer、Character、またはenumです。
- * @param <Item>   コンテナ内のアイテムの種類を示す。
+ * @param <Item> コンテナ内のアイテムの種類を示す。
  * @see Inventory
  * @see MenuHolder
  */
@@ -25,9 +25,9 @@ public interface Mask<Symbol, Item> {
   /**
    * 地図からマスクを作成する。
    *
-   * @param map      Maskで使用されるマッピングです。
+   * @param map Maskで使用されるマッピングです。
    * @param <Symbol> symbol type
-   * @param <Item>   item type
+   * @param <Item> item type
    * @return 新マスク
    */
   static <Symbol, Item> Mask<Symbol, Item> ofMap(Map<Symbol, Item> map) {
@@ -41,34 +41,38 @@ public interface Mask<Symbol, Item> {
   /**
    * 容器にマスクとパターンを貼る。
    *
-   * @param mask           the mask
-   * @param pattern        the pattern
+   * @param mask the mask
+   * @param pattern the pattern
    * @param indexGenerator どのスロットを更新するかを決定するジェネレータ
-   * @param updater        コンテナのセッター機能
-   * @param <Symbol>       the symbol type
-   * @param <Item>         element type
+   * @param updater コンテナのセッター機能
+   * @param <Symbol> the symbol type
+   * @param <Item> element type
    */
-  static <Symbol, Item> void apply(Mask<Symbol, Item> mask, Pattern<Symbol> pattern,
-      IntStream indexGenerator, IntBiConsumer<Item> updater) {
-    indexGenerator.forEach(index -> {
-      Symbol symbol = pattern.getSymbol(index);
-      var item = mask.getItem(symbol);
-      if (item.isPresent()) {
-        updater.accept(index, item.get());
-      }
-    });
+  static <Symbol, Item> void apply(
+      Mask<Symbol, Item> mask,
+      Pattern<Symbol> pattern,
+      IntStream indexGenerator,
+      IntBiConsumer<Item> updater) {
+    indexGenerator.forEach(
+        index -> {
+          Symbol symbol = pattern.getSymbol(index);
+          var item = mask.getItem(symbol);
+          if (item.isPresent()) {
+            updater.accept(index, item.get());
+          }
+        });
   }
 
   /**
    * インベントリに一括更新を適用します。パターンとマスクがサポートされているすべてのインベントリスロットが更新されます。
    *
-   * @param mask      the mask
-   * @param pattern   the pattern
+   * @param mask the mask
+   * @param pattern the pattern
    * @param inventory the inventory
-   * @param <Symbol>  the symbol type
+   * @param <Symbol> the symbol type
    */
-  static <Symbol> void applyInventory(Mask<Symbol, ItemStack> mask, Pattern<Symbol> pattern,
-      Inventory inventory) {
+  static <Symbol> void applyInventory(
+      Mask<Symbol, ItemStack> mask, Pattern<Symbol> pattern, Inventory inventory) {
     for (int slot = 0; slot < inventory.getSize(); slot++) {
       Symbol symbol = pattern.getSymbol(slot);
       var item = mask.getItem(symbol);
@@ -81,12 +85,12 @@ public interface Mask<Symbol, Item> {
   /**
    * メニューに一括更新を適用する。パターンとマスクが対応しているすべてのメニュースロットが更新されます。
    *
-   * @param mask     the mask
-   * @param pattern  the pattern
-   * @param menu     the inventory
+   * @param mask the mask
+   * @param pattern the pattern
+   * @param menu the inventory
    * @param <Symbol> the symbol Type
-   * @param <P>      the plugin type
-   * @param <MH>     the MenuHolder type
+   * @param <P> the plugin type
+   * @param <MH> the MenuHolder type
    */
   static <Symbol, P extends Plugin, MH extends MenuHolder<P>> void applyMenu(
       Mask<Symbol, ? extends MenuButton<MH>> mask, Pattern<Symbol> pattern, MH menu) {
@@ -106,7 +110,6 @@ public interface Mask<Symbol, Item> {
    * @return マップされた値を含む Option、またはシンボルがこの Mask でサポートされていない場合は、空の Option を指定します。
    */
   Option<Item> getItem(Symbol symbol);
-
 }
 
 class SingleMask<Symbol, Item> implements Mask<Symbol, Item> {
@@ -148,7 +151,6 @@ class SingleMask<Symbol, Item> implements Mask<Symbol, Item> {
   public String toString() {
     return "SingleMask(symbol=" + symbol + ",item=" + item + ")";
   }
-
 }
 
 class MapMask<Symbol, Item> implements Mask<Symbol, Item> {
@@ -188,7 +190,7 @@ class MapMask<Symbol, Item> implements Mask<Symbol, Item> {
     if (obj == this) {
       return true;
     }
-    if (!(obj instanceof MapMask<?,?> that)) {
+    if (!(obj instanceof MapMask<?, ?> that)) {
       return false;
     }
 
@@ -199,5 +201,4 @@ class MapMask<Symbol, Item> implements Mask<Symbol, Item> {
   public String toString() {
     return "MapMask(mapper=" + mapper + ")";
   }
-
 }

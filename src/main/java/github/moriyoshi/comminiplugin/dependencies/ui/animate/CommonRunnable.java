@@ -7,7 +7,6 @@ abstract class CommonRunnable extends BukkitRunnable {
   abstract long stepDelay();
 
   abstract boolean isDone();
-
 }
 
 class RunOnce extends CommonRunnable {
@@ -36,7 +35,6 @@ class RunOnce extends CommonRunnable {
   boolean isDone() {
     return done || isCancelled();
   }
-
 }
 
 class RunFixedRate extends CommonRunnable {
@@ -63,7 +61,6 @@ class RunFixedRate extends CommonRunnable {
   boolean isDone() {
     return isCancelled();
   }
-
 }
 
 class RunStepLimited extends CommonRunnable {
@@ -99,7 +96,6 @@ class RunStepLimited extends CommonRunnable {
   boolean isDone() {
     return source.isDone() || stepsPassed >= stepLimit || isCancelled();
   }
-
 }
 
 class RunTimeLimited extends CommonRunnable {
@@ -135,7 +131,6 @@ class RunTimeLimited extends CommonRunnable {
   boolean isDone() {
     return source.isDone() || timePassed > timeLimit || isCancelled();
   }
-
 }
 
 class RunConcat extends CommonRunnable {
@@ -171,5 +166,4 @@ class RunConcat extends CommonRunnable {
       cancel();
     }
   }
-
 }

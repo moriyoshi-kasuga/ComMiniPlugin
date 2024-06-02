@@ -1,14 +1,13 @@
 package github.moriyoshi.comminiplugin.dependencies.ui.button;
 
+import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import lombok.Getter;
+import lombok.NonNull;
 import org.bukkit.Location;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import lombok.NonNull;
 
 /**
  * クリックすると、プレイヤーをある場所にテレポートさせるボタンです。
@@ -19,13 +18,13 @@ public class TeleportButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
   private Location location;
 
-  @Getter
-  private TeleportCause cause;
+  @Getter private TeleportCause cause;
+
   /**
    * TeleportButtonを作成します。
    *
    * @param icon the icon
-   * @param to   プレイヤーがテレポートする場所を指定します。
+   * @param to プレイヤーがテレポートする場所を指定します。
    */
   public TeleportButton(ItemStack icon, Location to) {
     super(icon);
@@ -40,9 +39,8 @@ public class TeleportButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   }
 
   /**
-   * 固定された目的地を持たないTeleportButtonsのためのプロテクテッドコンストラクタです。
-   * このボタンを使用するサブクラスは、{@link #getTo()}または{@link #getTo(MenuHolder,
-   * InventoryClickEvent)}のいずれかをオーバーライドする必要があります。
+   * 固定された目的地を持たないTeleportButtonsのためのプロテクテッドコンストラクタです。 このボタンを使用するサブクラスは、{@link #getTo()}または{@link
+   * #getTo(MenuHolder, InventoryClickEvent)}のいずれかをオーバーライドする必要があります。
    *
    * @param icon the icon
    */
@@ -54,7 +52,7 @@ public class TeleportButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
    * プレイヤーをテレポートさせる。
    *
    * @param menuHolder the menu holder
-   * @param event      the InventoryClickEvent
+   * @param event the InventoryClickEvent
    */
   @Override
   public void onClick(@NotNull MH menuHolder, @NotNull InventoryClickEvent event) {
@@ -84,15 +82,14 @@ public class TeleportButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   }
 
   /**
-   * ボタンがクリックされたときに、プレイヤーがテレポートする場所を取得します。 サブクラスはこのメソッドをオーバーライドして、定数でない位置を使用できます。
-   * デフォルトの実装では、{@link #getTo()}に委譲されます。
+   * ボタンがクリックされたときに、プレイヤーがテレポートする場所を取得します。 サブクラスはこのメソッドをオーバーライドして、定数でない位置を使用できます。 デフォルトの実装では、{@link
+   * #getTo()}に委譲されます。
    *
    * @param menuHolder the menu holder
-   * @param event      the InventoryClickEvent
+   * @param event the InventoryClickEvent
    * @return the location to which the player will be teleported.
    */
   protected Location getTo(MH menuHolder, InventoryClickEvent event) {
     return getTo();
   }
-
 }

@@ -19,14 +19,18 @@ public class RandomTeleport extends CommandAPICommand {
     withArguments(new Location2DArgument("loc"));
     withArguments(new IntegerArgument("radius", 1));
     withOptionalArguments(new IntegerArgument("maxTry", 1));
-    executesPlayer((p, args) -> {
-      final Location2D loc = (Location2D) args.get("loc");
-      if (!BukkitUtil.randomTeleport(p, (World) args.get("world"), loc.getBlockX(), loc.getBlockZ(),
-          (int) args.get("radius"),
-          (int) args.getOrDefault("maxTry", 100))) {
-        ComMiniPrefix.MAIN.send(p,
-            "<red>そのあたりにテレポートはできません(もしかしたら海などです)");
-      }
-    });
+    executesPlayer(
+        (p, args) -> {
+          final Location2D loc = (Location2D) args.get("loc");
+          if (!BukkitUtil.randomTeleport(
+              p,
+              (World) args.get("world"),
+              loc.getBlockX(),
+              loc.getBlockZ(),
+              (int) args.get("radius"),
+              (int) args.getOrDefault("maxTry", 100))) {
+            ComMiniPrefix.MAIN.send(p, "<red>そのあたりにテレポートはできません(もしかしたら海などです)");
+          }
+        });
   }
 }

@@ -9,11 +9,11 @@ import org.jetbrains.annotations.NotNull;
 public interface RedirectButton<MH extends MenuHolder<?>> extends MenuButton<MH> {
 
   /**
-   * ボタンがクリックされたときに呼び出されるコールバックです。 1回クリックすると、プレイヤーのインベントリは閉じられ、インベントリに供給された
-   * {@link #to(MenuHolder, InventoryClickEvent)}が開かれます。
+   * ボタンがクリックされたときに呼び出されるコールバックです。 1回クリックすると、プレイヤーのインベントリは閉じられ、インベントリに供給された {@link #to(MenuHolder,
+   * InventoryClickEvent)}が開かれます。
    *
    * @param holder the MenuHolder
-   * @param event  the InventoryClickEvent
+   * @param event the InventoryClickEvent
    */
   @Override
   default void onClick(@NotNull MH holder, @NotNull InventoryClickEvent event) {
@@ -32,9 +32,8 @@ public interface RedirectButton<MH extends MenuHolder<?>> extends MenuButton<MH>
    * このボタンがリダイレクトするインベントリを取得します。
    *
    * @param MenuHolder the MenuHolder
-   * @param event      the InventoryClickEvent
+   * @param event the InventoryClickEvent
    * @return the inventory
    */
   Inventory to(MH MenuHolder, InventoryClickEvent event);
-
 }

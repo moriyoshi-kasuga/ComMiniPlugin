@@ -1,5 +1,13 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.item.CooldownItem;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.Util;
+import lombok.val;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -10,15 +18,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.item.CooldownItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
-import lombok.val;
-import net.kyori.adventure.text.Component;
 
 public class Jump extends CustomItem implements CooldownItem {
 
@@ -74,7 +73,6 @@ public class Jump extends CustomItem implements CooldownItem {
           this.cancel();
         }
       }
-
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
   }
 

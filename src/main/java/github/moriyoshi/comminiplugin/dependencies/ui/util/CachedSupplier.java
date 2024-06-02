@@ -41,5 +41,4 @@ public class CachedSupplier<R> implements Supplier<R> {
     }
     return (R) result;
   }
-
 }

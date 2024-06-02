@@ -1,13 +1,5 @@
 package github.moriyoshi.comminiplugin.object;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.bukkit.Material;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
@@ -15,8 +7,14 @@ import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
 import github.moriyoshi.comminiplugin.game.battleroyale.TreasureChest;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import java.util.List;
+import java.util.Optional;
 import lombok.val;
 import net.wesjd.anvilgui.AnvilGUI.ResponseAction;
+import org.bukkit.Material;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class TestItem extends CustomItem {
 
@@ -48,17 +46,21 @@ public class TestItem extends CustomItem {
         ComMiniPrefix.SYSTEM.send(player, "<red>already a custom block");
         return;
       }
-      AnvilInputs.getInput(ComMiniPlugin.getPlugin(), "<red>Create Treasure Chest", (str, state) -> {
-        try {
-          return Optional.of(Integer.parseInt(str));
-        } catch (NumberFormatException ignore) {
-          return Optional.empty();
-        }
-      }, (num, state) -> {
-        new TreasureChest(block, num);
-        return List.of(ResponseAction.close());
-      }).open(player);
+      AnvilInputs.getInput(
+              ComMiniPlugin.getPlugin(),
+              "<red>Create Treasure Chest",
+              (str, state) -> {
+                try {
+                  return Optional.of(Integer.parseInt(str));
+                } catch (NumberFormatException ignore) {
+                  return Optional.empty();
+                }
+              },
+              (num, state) -> {
+                new TreasureChest(block, num);
+                return List.of(ResponseAction.close());
+              })
+          .open(player);
     }
   }
-
 }

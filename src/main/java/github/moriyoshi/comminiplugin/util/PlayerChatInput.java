@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.util;
 
+import lombok.val;
 import org.bukkit.conversations.Conversable;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.conversations.ConversationAbandonedListener;
@@ -13,8 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import lombok.val;
-
 public class PlayerChatInput implements ConversationAbandonedListener {
 
   public static boolean isInputted(final Player player) {
@@ -23,18 +22,27 @@ public class PlayerChatInput implements ConversationAbandonedListener {
 
   private final ConversationFactory factory;
 
-  public PlayerChatInput(final Plugin plugin, final String prefix, final boolean cancelable, final Prompt prompt) {
-    val factory = new ConversationFactory(plugin).withPrefix(context -> prefix)
-        .withFirstPrompt(prompt).withLocalEcho(false);
+  public PlayerChatInput(
+      final Plugin plugin, final String prefix, final boolean cancelable, final Prompt prompt) {
+    val factory =
+        new ConversationFactory(plugin)
+            .withPrefix(context -> prefix)
+            .withFirstPrompt(prompt)
+            .withLocalEcho(false);
     if (cancelable) {
       factory.withEscapeSequence("cancel");
     }
-    factory.addConversationAbandonedListener(this)
+    factory
+        .addConversationAbandonedListener(this)
         .thatExcludesNonPlayersWithMessage("プレイヤーしか入力できません");
     this.factory = factory;
   }
 
-  public PlayerChatInput(final Plugin plugin, final String prefix, final boolean cancelable, final Prompt prompt,
+  public PlayerChatInput(
+      final Plugin plugin,
+      final String prefix,
+      final boolean cancelable,
+      final Prompt prompt,
       final int timeout) {
     this(plugin, prefix, cancelable, prompt);
     this.factory.withTimeout(timeout);
@@ -42,8 +50,7 @@ public class PlayerChatInput implements ConversationAbandonedListener {
 
   public final void build(final Player player) {
     if (isInputted(player)) {
-      throw new RuntimeException(
-          "チャット入力中なのにまた入力のメゾットを使用しています player = " + player.getName());
+      throw new RuntimeException("チャット入力中なのにまた入力のメゾットを使用しています player = " + player.getName());
     } else {
       factory.buildConversation(player).begin();
     }
@@ -75,5 +82,4 @@ public class PlayerChatInput implements ConversationAbandonedListener {
   public String getResetCancel() {
     return "入力をリセットしました";
   }
-
 }

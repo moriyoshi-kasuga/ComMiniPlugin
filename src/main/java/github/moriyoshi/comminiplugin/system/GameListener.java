@@ -1,7 +1,10 @@
 package github.moriyoshi.comminiplugin.system;
 
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
 import java.util.List;
-
+import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -20,11 +23,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.block.CustomBlock;
-import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
-import lombok.val;
 
 public class GameListener implements Listener {
 
@@ -47,21 +45,23 @@ public class GameListener implements Listener {
 
       @Override
       public void run() {
-        Bukkit.getOnlinePlayers().forEach(p -> {
-          val gp = ComMiniPlayer.getPlayer(p.getUniqueId());
-          if (!gp.isHunger()) {
-            p.setFoodLevel(20);
-          }
-        });
+        Bukkit.getOnlinePlayers()
+            .forEach(
+                p -> {
+                  val gp = ComMiniPlayer.getPlayer(p.getUniqueId());
+                  if (!gp.isHunger()) {
+                    p.setFoodLevel(20);
+                  }
+                });
       }
-
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 20, 20);
   }
 
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
-    if (GameSystem.isIn() && GameSystem.getGame().isGamePlayer(p, PlayerJoinEvent.class)
+    if (GameSystem.isIn()
+        && GameSystem.getGame().isGamePlayer(p, PlayerJoinEvent.class)
         && GameSystem.getGame().listener.join(e)) {
       return;
     }
@@ -70,7 +70,8 @@ public class GameListener implements Listener {
 
   @EventHandler
   public void quit(PlayerQuitEvent e) {
-    if (GameSystem.isIn() && GameSystem.getGame().isGamePlayer(e.getPlayer(), PlayerQuitEvent.class)) {
+    if (GameSystem.isIn()
+        && GameSystem.getGame().isGamePlayer(e.getPlayer(), PlayerQuitEvent.class)) {
       GameSystem.getGame().listener.quit(e);
     }
   }
@@ -147,16 +148,19 @@ public class GameListener implements Listener {
   @EventHandler
   public void move(PlayerMoveEvent e) {
     var p = e.getPlayer();
-    p.getActivePotionEffects().forEach(effect -> {
-      if (effect.getType().equals(PotionEffectType.SLOWNESS) && effect.getAmplifier() == 138) {
-        Location from = e.getFrom();
-        Location to = e.getTo();
-        from.setYaw(to.getYaw());
-        from.setPitch(to.getPitch());
-        e.setTo(from);
-        return;
-      }
-    });
+    p.getActivePotionEffects()
+        .forEach(
+            effect -> {
+              if (effect.getType().equals(PotionEffectType.SLOWNESS)
+                  && effect.getAmplifier() == 138) {
+                Location from = e.getFrom();
+                Location to = e.getTo();
+                from.setYaw(to.getYaw());
+                from.setPitch(to.getPitch());
+                e.setTo(from);
+                return;
+              }
+            });
     val to = e.getTo().clone();
     for (val loc : List.of(to, to.clone().subtract(0, 0.1, 0))) {
       if (CustomBlock.isCustomBlock(loc, JumpPadBlock.class)) {

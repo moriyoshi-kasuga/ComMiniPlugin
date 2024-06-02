@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
-
+import lombok.val;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import lombok.val;
 
 public abstract class HotbarSlot extends ArrayList<Integer> {
   public HotbarSlot() {
@@ -37,7 +35,8 @@ public abstract class HotbarSlot extends ArrayList<Integer> {
 
   protected abstract List<Supplier<ItemStack>> getDefaults();
 
-  public List<Supplier<ItemStack>> generate(Supplier<ItemStack> e1,
+  public List<Supplier<ItemStack>> generate(
+      Supplier<ItemStack> e1,
       Supplier<ItemStack> e2,
       Supplier<ItemStack> e3,
       Supplier<ItemStack> e4,

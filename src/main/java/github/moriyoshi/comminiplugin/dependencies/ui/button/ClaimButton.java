@@ -9,9 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * クリックすると、アイテムスタックをプレイヤーのインベントリに転送するボタンを表します。
- */
+/** クリックすると、アイテムスタックをプレイヤーのインベントリに転送するボタンを表します。 */
 public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
   private final PlayerInventoryFullCallback<MH> inventoryFullCallback;
@@ -40,7 +38,7 @@ public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * Creates the ClaimButton.
    *
-   * @param item                  プレーヤーが請求できるアイテム
+   * @param item プレーヤーが請求できるアイテム
    * @param inventoryFullCallback アイテムがプレイヤーのインベントリに移動できなかった場合に呼び出されるコールバック - nullも可
    */
   public ClaimButton(ItemStack item, PlayerInventoryFullCallback<MH> inventoryFullCallback) {
@@ -50,19 +48,19 @@ public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * Creates the ClaimButton.
    *
-   * @param copy                  アイテムのコピーをトップインベントリに残すかどうか
-   * @param item                  プレーヤーが請求できるアイテム
+   * @param copy アイテムのコピーをトップインベントリに残すかどうか
+   * @param item プレーヤーが請求できるアイテム
    * @param inventoryFullCallback アイテムがプレイヤーのインベントリに移動できなかった場合に呼び出されるコールバック - nullも可
    */
-  public ClaimButton(ItemStack item, boolean copy,
-      PlayerInventoryFullCallback<MH> inventoryFullCallback) {
+  public ClaimButton(
+      ItemStack item, boolean copy, PlayerInventoryFullCallback<MH> inventoryFullCallback) {
     this(item, copy, inventoryFullCallback, null);
   }
 
   /**
    * Creates the ClaimButton.
    *
-   * @param item                       プレーヤーが請求できるアイテム
+   * @param item プレーヤーが請求できるアイテム
    * @param successFulTransferCallback アイテムが正常に転送された後に呼び出されるコールバック - nullも可能です。
    */
   public ClaimButton(ItemStack item, SuccessFulTransferCallback<MH> successFulTransferCallback) {
@@ -72,23 +70,25 @@ public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * Creates the ClaimButton.
    *
-   * @param item                       プレーヤーが請求できるアイテム
-   * @param copy                       アイテムのコピーをトップインベントリに残すかどうか
+   * @param item プレーヤーが請求できるアイテム
+   * @param copy アイテムのコピーをトップインベントリに残すかどうか
    * @param successFulTransferCallback アイテムが正常に転送された後に呼び出されるコールバック - nullも可能です。
    */
-  public ClaimButton(ItemStack item, boolean copy,
-      SuccessFulTransferCallback<MH> successFulTransferCallback) {
+  public ClaimButton(
+      ItemStack item, boolean copy, SuccessFulTransferCallback<MH> successFulTransferCallback) {
     this(item, copy, null, successFulTransferCallback);
   }
 
   /**
    * Creates the ClaimButton.
    *
-   * @param item                       プレーヤーが請求できるアイテム
-   * @param inventoryFullCallback      アイテムがプレイヤーのインベントリに移動できなかった場合に呼び出されるコールバック - nullも可
+   * @param item プレーヤーが請求できるアイテム
+   * @param inventoryFullCallback アイテムがプレイヤーのインベントリに移動できなかった場合に呼び出されるコールバック - nullも可
    * @param successFulTransferCallback アイテムが正常に転送された後に呼び出されるコールバック - nullも可能です。
    */
-  public ClaimButton(ItemStack item, PlayerInventoryFullCallback<MH> inventoryFullCallback,
+  public ClaimButton(
+      ItemStack item,
+      PlayerInventoryFullCallback<MH> inventoryFullCallback,
       SuccessFulTransferCallback<MH> successFulTransferCallback) {
     this(item, false, inventoryFullCallback, successFulTransferCallback);
   }
@@ -96,12 +96,14 @@ public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * Creates the ClaimButton.
    *
-   * @param item                       プレーヤーが請求できるアイテム
-   * @param copy                       アイテムのコピーをトップインベントリに残すかどうか
-   * @param inventoryFullCallback      アイテムがプレイヤーのインベントリに移動できなかった場合に呼び出されるコールバック - nullも可
+   * @param item プレーヤーが請求できるアイテム
+   * @param copy アイテムのコピーをトップインベントリに残すかどうか
+   * @param inventoryFullCallback アイテムがプレイヤーのインベントリに移動できなかった場合に呼び出されるコールバック - nullも可
    * @param successFulTransferCallback アイテムが正常に転送された後に呼び出されるコールバック - nullも可能です。
    */
-  public ClaimButton(ItemStack item, boolean copy,
+  public ClaimButton(
+      ItemStack item,
+      boolean copy,
       PlayerInventoryFullCallback<MH> inventoryFullCallback,
       SuccessFulTransferCallback<MH> successFulTransferCallback) {
     super(item);
@@ -114,7 +116,7 @@ public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
    * アイテムをプレイヤーのインベントリに移動させようとします。移動に成功した場合、メニューからボタンが削除されます。
    *
    * @param menuHolder このボタンが含まれるメニュー
-   * @param event      クリックイベント
+   * @param event クリックイベント
    */
   @Override
   public void onClick(@NotNull MH menuHolder, @NotNull InventoryClickEvent event) {
@@ -127,14 +129,15 @@ public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
         event.setCurrentItem(null);
         menuHolder.unsetButton(event.getSlot());
       }
-      getSuccessFulTransferCallback().ifPresent(
-          (Consumer<SuccessFulTransferCallback<MH>>) callback -> callback.afterTransfer(menuHolder,
-              event, clickedItem
-          ));
+      getSuccessFulTransferCallback()
+          .ifPresent(
+              (Consumer<SuccessFulTransferCallback<MH>>)
+                  callback -> callback.afterTransfer(menuHolder, event, clickedItem));
     } else {
-      getInventoryFullCallback().ifPresent(
-          (Consumer<PlayerInventoryFullCallback<MH>>) callback -> callback.onPlayerInventoryFull(
-              menuHolder, event));
+      getInventoryFullCallback()
+          .ifPresent(
+              (Consumer<PlayerInventoryFullCallback<MH>>)
+                  callback -> callback.onPlayerInventoryFull(menuHolder, event));
     }
   }
 
@@ -162,29 +165,28 @@ public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
    * @param <MH> メニューホルダータイプ
    */
   @FunctionalInterface
-  public interface PlayerInventoryFullCallback<MH extends MenuHolder<?>> extends
-      BiConsumer<MH, InventoryClickEvent> {
+  public interface PlayerInventoryFullCallback<MH extends MenuHolder<?>>
+      extends BiConsumer<MH, InventoryClickEvent> {
 
     /**
      * ボタンがクリックされたが、アイテムが満杯でプレイヤーのインベントリに移動できない場合に実行される機能的なメソッドです。
      *
      * @param menuHolder the menu holder
-     * @param event      the click event
+     * @param event the click event
      */
     void onPlayerInventoryFull(MH menuHolder, InventoryClickEvent event);
 
     /**
      * {@linkplain BiConsumer}が必要な場所で{@linkplain PlayerInventoryFullCallback}を動作させるための便利なメソッドです。 The
-     * default implementation delegates to
-     * {@link #onPlayerInventoryFull(MenuHolder, InventoryClickEvent)}.
+     * default implementation delegates to {@link #onPlayerInventoryFull(MenuHolder,
+     * InventoryClickEvent)}.
      *
      * @param menuHolder the menu holder
-     * @param event      the inventory click event
+     * @param event the inventory click event
      */
     default void accept(MH menuHolder, InventoryClickEvent event) {
       onPlayerInventoryFull(menuHolder, event);
     }
-
   }
 
   /**
@@ -199,11 +201,9 @@ public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
      * ボタンがクリックされ、ItemStackがプレイヤーのインベントリに転送された後に実行される機能的なメソッドです。
      *
      * @param menuHolder the menu holder
-     * @param event      the inventory click event
-     * @param reward     プレイヤーのインベントリに転送された報酬
+     * @param event the inventory click event
+     * @param reward プレイヤーのインベントリに転送された報酬
      */
     void afterTransfer(MH menuHolder, InventoryClickEvent event, ItemStack reward);
-
   }
-
 }

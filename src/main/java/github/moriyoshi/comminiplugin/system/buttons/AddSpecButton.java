@@ -1,10 +1,5 @@
 package github.moriyoshi.comminiplugin.system.buttons;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.jetbrains.annotations.NotNull;
-
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.constant.Messages;
@@ -12,6 +7,10 @@ import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class AddSpecButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
 
@@ -28,8 +27,8 @@ public class AddSpecButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   }
 
   @Override
-  public void onClick(@NotNull MenuHolder<ComMiniPlugin> holder,
-      @NotNull InventoryClickEvent event) {
+  public void onClick(
+      @NotNull MenuHolder<ComMiniPlugin> holder, @NotNull InventoryClickEvent event) {
     var player = (Player) event.getWhoClicked();
     if (!GameSystem.isStarted()) {
       Messages.GAME_NOT_START.send(player);
@@ -41,5 +40,4 @@ public class AddSpecButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       ComMiniPrefix.MAIN.send(player, "<red>観戦に入れません");
     }
   }
-
 }

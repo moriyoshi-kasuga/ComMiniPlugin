@@ -18,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
 
-  private final ItemStack YES_STACK = new ItemBuilder(Material.LIME_CONCRETE).name(
-      "Yes - continue").build();
-  private final ItemStack NO_STACK = new ItemBuilder(Material.RED_CONCRETE).name(
-      "No - cancel").build();
+  private final ItemStack YES_STACK =
+      new ItemBuilder(Material.LIME_CONCRETE).name("Yes - continue").build();
+  private final ItemStack NO_STACK =
+      new ItemBuilder(Material.RED_CONCRETE).name("No - cancel").build();
 
   private final ItemStack defaultItemStack;
   protected final BiConsumer<ItemStack, InventoryClickEvent> yesAction;
@@ -29,7 +29,10 @@ public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
   protected boolean isCloseable = false;
   private ItemStack itemStack;
 
-  public ItemInputMenu(P plugin, String title, ItemStack defaultItemStack,
+  public ItemInputMenu(
+      P plugin,
+      String title,
+      ItemStack defaultItemStack,
       BiConsumer<ItemStack, InventoryClickEvent> yesAction,
       BiConsumer<ItemStack, InventoryClickEvent> noAction) {
     super(plugin, InventoryType.HOPPER, title);
@@ -39,39 +42,52 @@ public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
     setupButtons();
   }
 
-  public ItemInputMenu(P plugin, String title, BiConsumer<ItemStack, InventoryClickEvent> yesAction,
+  public ItemInputMenu(
+      P plugin,
+      String title,
+      BiConsumer<ItemStack, InventoryClickEvent> yesAction,
       BiConsumer<ItemStack, InventoryClickEvent> noAction) {
-    this(plugin, title, new ItemBuilder(Material.END_CRYSTAL).name(
-        "ドラッグでアイテムをセット").build(), yesAction, noAction);
+    this(
+        plugin,
+        title,
+        new ItemBuilder(Material.END_CRYSTAL).name("ドラッグでアイテムをセット").build(),
+        yesAction,
+        noAction);
   }
 
   protected void setupButtons() {
     setButton(0, makeButton(true));
-    setButton(2, new ItemButton<>(defaultItemStack) {
+    setButton(
+        2,
+        new ItemButton<>(defaultItemStack) {
 
-      @Override
-      public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-        ItemStack cursor = event.getCursor();
-        if (cursor.isEmpty()) {
-          event.getClickedInventory().setItem(event.getSlot(), stack);
-          itemStack = null;
-          return;
-        }
-        itemStack = cursor.clone();
-        event.setCurrentItem(cursor);
-      }
-    });
+          @Override
+          public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+            ItemStack cursor = event.getCursor();
+            if (cursor.isEmpty()) {
+              event.getClickedInventory().setItem(event.getSlot(), stack);
+              itemStack = null;
+              return;
+            }
+            itemStack = cursor.clone();
+            event.setCurrentItem(cursor);
+          }
+        });
     setButton(4, makeButton(false));
   }
 
   @Override
   public void onClose(InventoryCloseEvent event) {
     if (!isCloseable) {
-      getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
-        event.getPlayer().openInventory(getInventory());
-        Util.send(event.getPlayer(),
-            "<red>このインベントリーを閉じることはできるません<gray>(noボタンを押して閉じてください)");
-      });
+      getPlugin()
+          .getServer()
+          .getScheduler()
+          .runTask(
+              getPlugin(),
+              () -> {
+                event.getPlayer().openInventory(getInventory());
+                Util.send(event.getPlayer(), "<red>このインベントリーを閉じることはできるません<gray>(noボタンを押して閉じてください)");
+              });
     }
   }
 
@@ -120,5 +136,4 @@ public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
       }
     };
   }
-
 }

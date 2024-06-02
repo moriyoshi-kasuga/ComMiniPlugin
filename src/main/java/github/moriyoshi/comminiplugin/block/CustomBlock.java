@@ -21,10 +21,9 @@ import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
 /**
- * 左クリック、右クリックで処理を受け取るカスタムブロック {@link #clearData()} を自分で拡張して {@link #remove()}
- * でブロックを削除できます
- * <p>
- * 登録する場合は {@link #registers(Reflections)} で登録してください
+ * 左クリック、右クリックで処理を受け取るカスタムブロック {@link #clearData()} を自分で拡張して {@link #remove()} でブロックを削除できます
+ *
+ * <p>登録する場合は {@link #registers(Reflections)} で登録してください
  */
 @Getter
 public abstract class CustomBlock {
@@ -50,7 +49,7 @@ public abstract class CustomBlock {
   /**
    * ここで鯖起動もしくは再起動時に独自の値を持たせている場合に{@link #getBlockData()} 保存したものを読み込むためのコンストラクタです
    *
-   * @param block       カスタムブロックのブロック
+   * @param block カスタムブロックのブロック
    * @param dataElement ロードするデータ
    */
   public CustomBlock(Block block, JsonElement dataElement) {
@@ -60,7 +59,7 @@ public abstract class CustomBlock {
   /**
    * これはブロックをプレイヤーが設置したという風に処理したい場合に使用します
    *
-   * @param block  カスタムブロックの位置
+   * @param block カスタムブロックの位置
    * @param player 設置したプレイヤー
    */
   public CustomBlock(Block block, Player player) {
@@ -68,10 +67,13 @@ public abstract class CustomBlock {
   }
 
   public static void registers(final Reflections reflections) {
-    ReflectionUtil.forEachAllClass(reflections, CustomBlock.class, block -> {
-      ComMiniPrefix.SYSTEM.logDebug("<aqua>REGISTER BLOCK " + block.getSimpleName());
-      customBlocks.put(block.getSimpleName(), block);
-    });
+    ReflectionUtil.forEachAllClass(
+        reflections,
+        CustomBlock.class,
+        block -> {
+          ComMiniPrefix.SYSTEM.logDebug("<aqua>REGISTER BLOCK " + block.getSimpleName());
+          customBlocks.put(block.getSimpleName(), block);
+        });
   }
 
   /**
@@ -158,14 +160,17 @@ public abstract class CustomBlock {
 
   static void loadCustomBlock(String identifier, Location location, JsonElement element) {
     if (!isRegister(identifier)) {
-      throw new IllegalArgumentException(identifier +
-          "のCustomBlockは登録されていません");
+      throw new IllegalArgumentException(identifier + "のCustomBlockは登録されていません");
     }
     try {
-      CustomBlock.customBlocks.get(identifier)
+      CustomBlock.customBlocks
+          .get(identifier)
           .getDeclaredConstructor(Block.class, JsonElement.class)
           .newInstance(location.getBlock(), element);
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+    } catch (InstantiationException
+        | IllegalAccessException
+        | InvocationTargetException
+        | NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
   }
@@ -176,9 +181,7 @@ public abstract class CustomBlock {
     blocks.remove(block.getLocation());
   }
 
-  /**
-   * block を削除される前の処理 (セーブされるまえも)
-   */
+  /** block を削除される前の処理 (セーブされるまえも) */
   public abstract void clearData();
 
   /**
@@ -195,16 +198,14 @@ public abstract class CustomBlock {
    *
    * @param e event
    */
-  public void interact(PlayerInteractEvent e) {
-  }
+  public void interact(PlayerInteractEvent e) {}
 
   /**
    * default cancelled please {@code e.setCancelled(false);}
    *
    * @param e event
    */
-  public void blockBreak(BlockBreakEvent e) {
-  }
+  public void blockBreak(BlockBreakEvent e) {}
 
   /**
    * ブロックの識別子を取得します
@@ -223,5 +224,4 @@ public abstract class CustomBlock {
     loc.setPitch(0);
     return loc;
   }
-
 }

@@ -8,19 +8,15 @@ import org.jetbrains.annotations.NotNull;
 
 public final class ComMiniWorld {
 
-  @NotNull
-  public static final World LOBBY_WORLD = Objects.requireNonNull(Bukkit.getWorld("lobby"));
+  @NotNull public static final World LOBBY_WORLD = Objects.requireNonNull(Bukkit.getWorld("lobby"));
 
-  @NotNull
-  public static final World GAME_WORLD = Objects.requireNonNull(Bukkit.getWorld("game"));
+  @NotNull public static final World GAME_WORLD = Objects.requireNonNull(Bukkit.getWorld("game"));
 
-  @NotNull
-  public static final Location LOBBY = new Location(LOBBY_WORLD, -0.5, 1.0, -0.5);
+  @NotNull public static final Location LOBBY = new Location(LOBBY_WORLD, -0.5, 1.0, -0.5);
 
   public static boolean isLobbyWorld(final World world) {
     return LOBBY_WORLD.equals(world);
   }
 
-  private ComMiniWorld() {
-  }
+  private ComMiniWorld() {}
 }

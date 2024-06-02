@@ -1,7 +1,9 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
+import github.moriyoshi.comminiplugin.system.AbstractGameListener;
+import github.moriyoshi.comminiplugin.util.Util;
 import java.util.Map.Entry;
-
+import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -16,10 +18,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-
-import github.moriyoshi.comminiplugin.system.AbstractGameListener;
-import github.moriyoshi.comminiplugin.util.Util;
-import lombok.val;
 
 public class BRListener implements AbstractGameListener<BRGame> {
 
@@ -88,8 +86,10 @@ public class BRListener implements AbstractGameListener<BRGame> {
 
   @Override
   public void damageByEntity(EntityDamageByEntityEvent e) {
-    if (!getGame().isCanPvP() && e.getEntity() instanceof Player
-        && e.getDamager() instanceof final Player attacker && getGame().isGamePlayer(attacker)) {
+    if (!getGame().isCanPvP()
+        && e.getEntity() instanceof Player
+        && e.getDamager() instanceof final Player attacker
+        && getGame().isGamePlayer(attacker)) {
       getGame().prefix.send(attacker, "<red>まだPvPはできません");
       e.setCancelled(true);
     }
@@ -105,5 +105,4 @@ public class BRListener implements AbstractGameListener<BRGame> {
     }
     game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()));
   }
-
 }

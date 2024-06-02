@@ -14,16 +14,12 @@ import org.bukkit.inventory.ItemStack;
 public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
 
   private final WeakHashMap<MH, Set<Integer>> inventoriesContainingMe = new WeakHashMap<>();
-  /**
-   * このボタンのアイコンです アイコンを更新するには inventoryを更新したいボタンは、代わりに {@link #setIcon(ItemStack)} を使用してください。
-   */
+
+  /** このボタンのアイコンです アイコンを更新するには inventoryを更新したいボタンは、代わりに {@link #setIcon(ItemStack)} を使用してください。 */
   protected ItemStack stack;
 
-  /**
-   * アイコンを持たないItemButtonを作成します。
-   */
-  protected ItemButton() {
-  }
+  /** アイコンを持たないItemButtonを作成します。 */
+  protected ItemButton() {}
 
   /**
    * 指定されたItemStackを持つItemButtonを作成します。 ボタンはItemStackのクローンを使用します。
@@ -51,8 +47,9 @@ public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
    */
   public final void setIcon(ItemStack icon) {
     stack = icon == null ? null : icon.clone();
-    inventoriesContainingMe.forEach((menuHolder, slots) -> slots.forEach(
-        slot -> menuHolder.getInventory().setItem(slot, stack)));
+    inventoriesContainingMe.forEach(
+        (menuHolder, slots) ->
+            slots.forEach(slot -> menuHolder.getInventory().setItem(slot, stack)));
   }
 
   /**
@@ -60,7 +57,7 @@ public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
    * によってアイコンが更新されると、それらのインベントリ内のアイテムスタックが更新されます。
    *
    * @param menuHolder the menu
-   * @param slot       設置するslot
+   * @param slot 設置するslot
    * @return ボタンがメニューに追加できるかどうか
    */
   @Override
@@ -72,7 +69,7 @@ public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
    * メニューが含まれているメニューのキャッシュからメニューを削除する。
    *
    * @param menuHolder the menu
-   * @param slot       削除するslot
+   * @param slot 削除するslot
    * @return ボタンがメニューから外せるかどうか
    */
   @Override
@@ -87,5 +84,4 @@ public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
     }
     return true;
   }
-
 }

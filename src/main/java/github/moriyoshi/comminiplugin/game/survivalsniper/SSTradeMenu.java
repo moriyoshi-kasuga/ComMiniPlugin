@@ -20,9 +20,15 @@ public class SSTradeMenu extends MenuHolder<ComMiniPlugin> {
 
   @RequiredArgsConstructor
   private enum TradeItem {
-    EscapeDeep(() -> new EscapeDeep().getItem(), "4レベル", (p) -> p.getLevel() >= 4,
+    EscapeDeep(
+        () -> new EscapeDeep().getItem(),
+        "4レベル",
+        (p) -> p.getLevel() >= 4,
         (p) -> p.setLevel(p.getLevel() - 4)),
-    BEEF(() -> new ItemStack(Material.COOKED_BEEF), "1レベル", (p) -> p.getLevel() >= 1,
+    BEEF(
+        () -> new ItemStack(Material.COOKED_BEEF),
+        "1レベル",
+        (p) -> p.getLevel() >= 1,
         (p) -> p.setLevel(p.getLevel() - 1));
 
     public final Supplier<ItemStack> item;
@@ -38,24 +44,28 @@ public class SSTradeMenu extends MenuHolder<ComMiniPlugin> {
     }
     var i = 10;
     for (val item : TradeItem.values()) {
-      setButton(i, new ItemButton<>(new ItemBuilder(item.item.get()).addLore("")
-          .addLore("<green>" + item.tradeDescription + "でトレード").build()) {
+      setButton(
+          i,
+          new ItemButton<>(
+              new ItemBuilder(item.item.get())
+                  .addLore("")
+                  .addLore("<green>" + item.tradeDescription + "でトレード")
+                  .build()) {
 
-        @Override
-        public void onClick(@NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-          val p = (Player) event.getWhoClicked();
-          if (!item.predicate.test(p)) {
-            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_AMBIENT, 1, 1);
-            return;
-          }
-          p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-          p.getInventory().addItem(item.item.get());
-          item.buyCallback.accept(p);
-        }
-
-      });
+            @Override
+            public void onClick(
+                @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
+              val p = (Player) event.getWhoClicked();
+              if (!item.predicate.test(p)) {
+                p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_AMBIENT, 1, 1);
+                return;
+              }
+              p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+              p.getInventory().addItem(item.item.get());
+              item.buyCallback.accept(p);
+            }
+          });
       i++;
     }
   }
-
 }

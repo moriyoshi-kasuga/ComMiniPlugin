@@ -1,20 +1,7 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
-
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.api.BlockInputsAPI;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
@@ -22,9 +9,19 @@ import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.RandomCollection;
 import github.moriyoshi.comminiplugin.util.tuple.Pair;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.val;
 import net.wesjd.anvilgui.AnvilGUI.ResponseAction;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 @Getter
 @SuppressWarnings("deprecation")
@@ -32,9 +29,12 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
 
   public TreasureLocation(String name) {
     super(ComMiniPlugin.getPlugin(), "br/treasure", name);
-    getLocations().keySet().forEach(loc -> {
-      loc.getBlock().setType(Material.BEDROCK);
-    });
+    getLocations()
+        .keySet()
+        .forEach(
+            loc -> {
+              loc.getBlock().setType(Material.BEDROCK);
+            });
   }
 
   private int level = 1;
@@ -42,16 +42,22 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
   public final void setLevel(int level) {
     this.level = level;
     val game = GameSystem.getGame(BRGame.class);
-    getPlayers().values().forEach(p -> game.prefix.send(p, "<red>change Treasure level to <yellow>" + level));
+    getPlayers()
+        .values()
+        .forEach(p -> game.prefix.send(p, "<red>change Treasure level to <yellow>" + level));
   }
 
   @Override
   public List<Pair<Integer, Integer>> loadLocData(JsonElement element) {
-    return element.getAsJsonArray().asList().stream().map(e -> {
-      final Pair<Integer, Integer> value = ComMiniPlugin.gson.fromJson(e, new TypeToken<Pair<Integer, Integer>>() {
-      }.getType());
-      return value;
-    }).toList();
+    return element.getAsJsonArray().asList().stream()
+        .map(
+            e -> {
+              final Pair<Integer, Integer> value =
+                  ComMiniPlugin.gson.fromJson(
+                      e, new TypeToken<Pair<Integer, Integer>>() {}.getType());
+              return value;
+            })
+        .toList();
   }
 
   @Override
@@ -61,38 +67,52 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
 
   @Override
   protected void innerAddLocation(Location location, Player player) {
-    AnvilInputs.getInput(ComMiniPlugin.getPlugin(), "<red>Treasure", (str, state) -> {
-      if (StringUtils.isEmpty(str)) {
-        return Optional.of(List.of(Pair.of(1, 1)));
-      }
-      if (str.contains(",")) {
-        return checkData(Stream.of(str.split(",")).map(s -> {
-          try {
-            return Pair.of(Integer.valueOf(s), 1);
-          } catch (IllegalArgumentException ignore) {
-            try {
-              val p = s.split("%");
-              return Pair.of(Integer.valueOf(p[1]), Integer.valueOf(p[0]));
-            } catch (Exception e) {
-              return Pair.of(-1, 1);
-            }
-          }
-        }).toList());
-      }
-      if (str.contains("~")) {
-        val list = Stream.of(str.split("~")).map(Integer::valueOf).toList();
-        return checkData(IntStream.range(list.get(0), list.get(1) + 1).boxed().map(i -> Pair.of(i, 1)).toList());
-      }
-      try {
-        return checkData(List.of(Pair.of(Integer.parseInt(str), 1)));
-      } catch (NumberFormatException e) {
-        return Optional.empty();
-      }
-    }, (str, state) -> Collections.emptyList(), (list, state) -> {
-      finalAddLocation(location, list);
-      location.getBlock().setType(Material.BEDROCK);
-      return List.of(ResponseAction.close());
-    }).open(player);
+    AnvilInputs.getInput(
+            ComMiniPlugin.getPlugin(),
+            "<red>Treasure",
+            (str, state) -> {
+              if (StringUtils.isEmpty(str)) {
+                return Optional.of(List.of(Pair.of(1, 1)));
+              }
+              if (str.contains(",")) {
+                return checkData(
+                    Stream.of(str.split(","))
+                        .map(
+                            s -> {
+                              try {
+                                return Pair.of(Integer.valueOf(s), 1);
+                              } catch (IllegalArgumentException ignore) {
+                                try {
+                                  val p = s.split("%");
+                                  return Pair.of(Integer.valueOf(p[1]), Integer.valueOf(p[0]));
+                                } catch (Exception e) {
+                                  return Pair.of(-1, 1);
+                                }
+                              }
+                            })
+                        .toList());
+              }
+              if (str.contains("~")) {
+                val list = Stream.of(str.split("~")).map(Integer::valueOf).toList();
+                return checkData(
+                    IntStream.range(list.get(0), list.get(1) + 1)
+                        .boxed()
+                        .map(i -> Pair.of(i, 1))
+                        .toList());
+              }
+              try {
+                return checkData(List.of(Pair.of(Integer.parseInt(str), 1)));
+              } catch (NumberFormatException e) {
+                return Optional.empty();
+              }
+            },
+            (str, state) -> Collections.emptyList(),
+            (list, state) -> {
+              finalAddLocation(location, list);
+              location.getBlock().setType(Material.BEDROCK);
+              return List.of(ResponseAction.close());
+            })
+        .open(player);
   }
 
   private Optional<List<Pair<Integer, Integer>>> checkData(List<Pair<Integer, Integer>> list) {
@@ -108,7 +128,8 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
 
   @Override
   public ChatColor getColor(Location location) {
-    return switch (Collections.max(getLocations().get(location).stream().map(p -> p.getFirst()).toList())) {
+    return switch (Collections.max(
+        getLocations().get(location).stream().map(p -> p.getFirst()).toList())) {
       case 5 -> ChatColor.DARK_PURPLE;
       case 4 -> ChatColor.AQUA;
       case 3 -> ChatColor.GREEN;
@@ -116,28 +137,30 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
       case 1 -> ChatColor.WHITE;
       default -> ChatColor.BLACK;
     };
-
   }
 
   public void setTreasures() {
-    getLocations().forEach((loc, pairs) -> {
-      val random = new RandomCollection<Integer>();
-      pairs.forEach(pair -> random.add(pair.getSecond(), pair.getFirst()));
-      val value = random.next();
-      if (value == 0) {
-        return;
-      }
-      new TreasureChest(loc.getBlock(), value);
-    });
+    getLocations()
+        .forEach(
+            (loc, pairs) -> {
+              val random = new RandomCollection<Integer>();
+              pairs.forEach(pair -> random.add(pair.getSecond(), pair.getFirst()));
+              val value = random.next();
+              if (value == 0) {
+                return;
+              }
+              new TreasureChest(loc.getBlock(), value);
+            });
   }
 
   public void clearTreasures() {
-    getLocations().forEach((loc, list) -> {
-      val block = loc.getBlock();
-      if (CustomBlock.isCustomBlock(block, TreasureChest.class)) {
-        CustomBlock.getCustomBlock(block).remove();
-      }
-    });
+    getLocations()
+        .forEach(
+            (loc, list) -> {
+              val block = loc.getBlock();
+              if (CustomBlock.isCustomBlock(block, TreasureChest.class)) {
+                CustomBlock.getCustomBlock(block).remove();
+              }
+            });
   }
-
 }

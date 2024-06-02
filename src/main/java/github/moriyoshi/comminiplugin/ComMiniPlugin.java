@@ -1,19 +1,7 @@
 package github.moriyoshi.comminiplugin;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.bukkit.Location;
-import org.bukkit.World.Environment;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
-import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.reflections.Reflections;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import de.tr7zw.changeme.nbtapi.NBTContainer;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
@@ -35,34 +23,46 @@ import github.moriyoshi.comminiplugin.system.CustomListener;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.ReflectionUtil;
+import java.lang.reflect.InvocationTargetException;
 import lombok.Getter;
 import lombok.val;
+import org.bukkit.Location;
+import org.bukkit.World.Environment;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.reflections.Reflections;
 
 public final class ComMiniPlugin extends JavaPlugin {
 
-  /**
-   * {@link Location} and {@link ItemStack} を Serializer and Deserializer できる
-   * {@link Gson}
-   */
-  public static final Gson gson = new GsonBuilder().registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
-      .registerTypeAdapter(Location.class, new LocationAdapter()).create();
+  /** {@link Location} and {@link ItemStack} を Serializer and Deserializer できる {@link Gson} */
+  public static final Gson gson =
+      new GsonBuilder()
+          .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
+          .registerTypeAdapter(Location.class, new LocationAdapter())
+          .create();
 
-  @Getter
-  private static GuiListener guiListener;
+  @Getter private static GuiListener guiListener;
 
   public static ComMiniPlugin getPlugin() {
     return getPlugin(ComMiniPlugin.class);
   }
 
-  @Getter
-  private static GlowingEntities glowingEntities;
-  @Getter
-  private static GlowingBlocks glowingBlocks;
+  @Getter private static GlowingEntities glowingEntities;
+  @Getter private static GlowingBlocks glowingBlocks;
 
   public void loadWorlds() {
-    new WorldCreator("lobby").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
+    new WorldCreator("lobby")
+        .environment(Environment.NORMAL)
+        .type(WorldType.FLAT)
+        .generateStructures(false)
         .createWorld();
-    new WorldCreator("game").environment(Environment.NORMAL).type(WorldType.FLAT).generateStructures(false)
+    new WorldCreator("game")
+        .environment(Environment.NORMAL)
+        .type(WorldType.FLAT)
+        .generateStructures(false)
         .createWorld();
 
     new WorldCreator("SkiResort").environment(Environment.NORMAL).createWorld();
@@ -87,26 +87,39 @@ public final class ComMiniPlugin extends JavaPlugin {
     CustomBlock.registers(reflectionsObject);
     CustomBlock.registers(reflectionsGame);
     val commands = new Reflections("github.moriyoshi.comminiplugin.command");
-    ReflectionUtil.forEachAllClass(commands, CommandAPICommand.class, command -> {
-      try {
-        registerCommand(command.getDeclaredConstructor().newInstance());
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-          | NoSuchMethodException | SecurityException e) {
-        e.printStackTrace();
-      }
-    });
-    ReflectionUtil.forEachAllClass(commands, CommandTree.class, command -> {
-      try {
-        registerCommand(command.getDeclaredConstructor().newInstance());
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-          | NoSuchMethodException | SecurityException e) {
-        e.printStackTrace();
-      }
-    });
+    ReflectionUtil.forEachAllClass(
+        commands,
+        CommandAPICommand.class,
+        command -> {
+          try {
+            registerCommand(command.getDeclaredConstructor().newInstance());
+          } catch (InstantiationException
+              | IllegalAccessException
+              | IllegalArgumentException
+              | InvocationTargetException
+              | NoSuchMethodException
+              | SecurityException e) {
+            e.printStackTrace();
+          }
+        });
+    ReflectionUtil.forEachAllClass(
+        commands,
+        CommandTree.class,
+        command -> {
+          try {
+            registerCommand(command.getDeclaredConstructor().newInstance());
+          } catch (InstantiationException
+              | IllegalAccessException
+              | IllegalArgumentException
+              | InvocationTargetException
+              | NoSuchMethodException
+              | SecurityException e) {
+            e.printStackTrace();
+          }
+        });
 
     CustomBlockData.getInstance();
     ComMiniPlayer.gameInitialize();
-
   }
 
   @Override
@@ -156,6 +169,7 @@ public final class ComMiniPlugin extends JavaPlugin {
 
   @Override
   public void onLoad() {
-    CommandAPI.onLoad(new CommandAPIBukkitConfig(this).initializeNBTAPI(NBTContainer.class, NBTContainer::new));
+    CommandAPI.onLoad(
+        new CommandAPIBukkitConfig(this).initializeNBTAPI(NBTContainer.class, NBTContainer::new));
   }
 }

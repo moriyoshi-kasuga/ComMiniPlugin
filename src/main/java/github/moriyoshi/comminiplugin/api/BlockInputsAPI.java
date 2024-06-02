@@ -1,24 +1,21 @@
 package github.moriyoshi.comminiplugin.api;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+import lombok.Getter;
+import lombok.val;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import lombok.Getter;
-import lombok.val;
 
 @Getter
 @SuppressWarnings("deprecation")
@@ -158,10 +155,15 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
     locations = new HashMap<>();
     val data = dataElement.getAsJsonObject();
     if (data.has("locations")) {
-      data.getAsJsonArray("locations").forEach(element -> {
-        val obj = element.getAsJsonObject();
-        getLocations().put(ComMiniPlugin.gson.fromJson(obj.get("loc"), Location.class), loadLocData(obj.get("data")));
-      });
+      data.getAsJsonArray("locations")
+          .forEach(
+              element -> {
+                val obj = element.getAsJsonObject();
+                getLocations()
+                    .put(
+                        ComMiniPlugin.gson.fromJson(obj.get("loc"), Location.class),
+                        loadLocData(obj.get("data")));
+              });
     }
   }
 
@@ -169,14 +171,14 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
   protected JsonElement generateSaveData() {
     val object = new JsonObject();
     val array = new JsonArray();
-    locations.forEach((loc, data) -> {
-      val obj = new JsonObject();
-      obj.add("loc", ComMiniPlugin.gson.toJsonTree(loc));
-      obj.add("data", saveLocData(data));
-      array.add(obj);
-    });
+    locations.forEach(
+        (loc, data) -> {
+          val obj = new JsonObject();
+          obj.add("loc", ComMiniPlugin.gson.toJsonTree(loc));
+          obj.add("data", saveLocData(data));
+          array.add(obj);
+        });
     object.add("locations", array);
     return object;
   }
-
 }

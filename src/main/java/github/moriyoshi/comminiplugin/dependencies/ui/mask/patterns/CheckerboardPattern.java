@@ -22,7 +22,7 @@ public class CheckerboardPattern implements Pattern<CheckerboardPattern.Tile> {
   /**
    * CheckerboardPatternを構築する。
    *
-   * @param size      インベントリグリッドの大きさ
+   * @param size インベントリグリッドの大きさ
    * @param startWith 最初のタイルの色です。
    */
   public CheckerboardPattern(int size, Tile startWith) {
@@ -104,5 +104,4 @@ public class CheckerboardPattern implements Pattern<CheckerboardPattern.Tile> {
       };
     }
   }
-
 }

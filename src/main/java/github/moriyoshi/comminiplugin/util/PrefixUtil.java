@@ -4,9 +4,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-/**
- * {@link #prefix} を先頭につけメッセージを送信するUtil
- */
+/** {@link #prefix} を先頭につけメッセージを送信するUtil */
 public class PrefixUtil {
 
   private final Component prefix;
@@ -98,7 +96,7 @@ public class PrefixUtil {
   /**
    * 引数のbooleanに寄って送信するかを選択します
    *
-   * @param message  送信するメッセージ
+   * @param message 送信するメッセージ
    * @param loggable メッセージを送信するか
    */
   protected final void log(final Object message, final boolean loggable) {

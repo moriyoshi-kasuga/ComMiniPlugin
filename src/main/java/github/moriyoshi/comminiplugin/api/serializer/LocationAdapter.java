@@ -21,12 +21,16 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
   }
 
   @Override
-  public Location deserialize(JsonElement jsonElement, Type type,
-      JsonDeserializationContext context) throws JsonParseException {
+  public Location deserialize(
+      JsonElement jsonElement, Type type, JsonDeserializationContext context)
+      throws JsonParseException {
     JsonObject obj = jsonElement.getAsJsonObject();
-    return new Location(Bukkit.getWorld(obj.get("world").getAsString()),
-        obj.get("x").getAsDouble(), obj.get("y").getAsDouble(), obj.get("z").getAsDouble(),
-        obj.get("yaw").getAsFloat(), obj.get("pitch").getAsFloat());
+    return new Location(
+        Bukkit.getWorld(obj.get("world").getAsString()),
+        obj.get("x").getAsDouble(),
+        obj.get("y").getAsDouble(),
+        obj.get("z").getAsDouble(),
+        obj.get("yaw").getAsFloat(),
+        obj.get("pitch").getAsFloat());
   }
-
 }

@@ -17,17 +17,15 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
-/**
- * GUIが開かれ、クリックされ、閉じられたときにリスニングを行うリスナーです。
- */
+/** GUIが開かれ、クリックされ、閉じられたときにリスニングを行うリスナーです。 */
 public class GuiListener implements Listener {
 
   private static final GuiListener INSTANCE = new GuiListener();
 
-  private final WeakHashMap<Object/* NMS Inventory */, WeakReference<GuiInventoryHolder<?>>> guiInventories = new WeakHashMap<>();
+  private final WeakHashMap<Object /* NMS Inventory */, WeakReference<GuiInventoryHolder<?>>>
+      guiInventories = new WeakHashMap<>();
 
-  private GuiListener() {
-  }
+  private GuiListener() {}
 
   /**
    * GuiListenerを取得します。
@@ -43,7 +41,7 @@ public class GuiListener implements Listener {
   /**
    * インベントリーGUIを登録する。
    *
-   * @param holder    the gui holder
+   * @param holder the gui holder
    * @param inventory gui アイテムスタックを保持するインベントリ
    * @return guiが正常に登録された場合はtrue、そうでない場合はfalseとなります。
    */
@@ -75,8 +73,8 @@ public class GuiListener implements Listener {
       return (GuiInventoryHolder<?>) holder;
     }
 
-    WeakReference<GuiInventoryHolder<?>> reference = guiInventories.get(
-        getBaseInventory(inventory));
+    WeakReference<GuiInventoryHolder<?>> reference =
+        guiInventories.get(getBaseInventory(inventory));
     if (reference == null) {
       return null;
     }
@@ -88,7 +86,7 @@ public class GuiListener implements Listener {
    * インベントリがguiインベントリホルダーに登録されているかどうかをチェックします。
    *
    * @param inventory ホルダーに登録されるかもしれないインベントリー
-   * @param holder    確認するホルダー
+   * @param holder 確認するホルダー
    * @return ホルダーとインベントリーが登録されているかどうか
    */
   public boolean isGuiRegistered(GuiInventoryHolder<?> holder, Inventory inventory) {
@@ -137,10 +135,12 @@ public class GuiListener implements Listener {
    */
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   public void onInventoryClick(InventoryClickEvent event) {
-    onGuiInventoryEvent(event, gui -> {
-      event.setCancelled(true);
-      gui.onClick(event);
-    });
+    onGuiInventoryEvent(
+        event,
+        gui -> {
+          event.setCancelled(true);
+          gui.onClick(event);
+        });
   }
 
   /**
@@ -151,10 +151,12 @@ public class GuiListener implements Listener {
    */
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   public void onInventoryDrag(InventoryDragEvent event) {
-    onGuiInventoryEvent(event, gui -> {
-      event.setCancelled(true);
-      gui.onDrag(event);
-    });
+    onGuiInventoryEvent(
+        event,
+        gui -> {
+          event.setCancelled(true);
+          gui.onDrag(event);
+        });
   }
 
   /**

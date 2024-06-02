@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * 右クリックで前の状態に、左クリックで次の状態に、内部状態を更新できるボタン。
  *
- * @param <T>  the state's type
+ * @param <T> the state's type
  * @param <MH> the menu holder's type
  */
 public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends IteratingButton<T, MH> {
@@ -17,12 +17,10 @@ public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends Iteratin
   private UnaryOperator<T> backwardsFunction;
 
   /**
-   * アイコンのみを持つTwoWayIteratingButtonを作成します。
-   * このコンストラクタを使用すると、サブクラスは構築時にフィールド{@link #backwardsFunction}、{@link #stateUpdater}、{@link
-   * #currentState}を初期化することが必要になります。
-   * あるいは、{@link #updateStateForwards(MenuHolder, InventoryClickEvent)}、{@link
-   * #updateStateBackwards(MenuHolder, InventoryClickEvent)}、 {@link #getCurrentState()}
-   * をオーバーライドしなければならない。
+   * アイコンのみを持つTwoWayIteratingButtonを作成します。 このコンストラクタを使用すると、サブクラスは構築時にフィールド{@link
+   * #backwardsFunction}、{@link #stateUpdater}、{@link #currentState}を初期化することが必要になります。 あるいは、{@link
+   * #updateStateForwards(MenuHolder, InventoryClickEvent)}、{@link #updateStateBackwards(MenuHolder,
+   * InventoryClickEvent)}、 {@link #getCurrentState()} をオーバーライドしなければならない。
    *
    * @param icon the icon of this button
    */
@@ -33,12 +31,15 @@ public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends Iteratin
   /**
    * TwoWayIteratingButtonを作成します。
    *
-   * @param icon              the icon of this button
-   * @param initialState      the initial current state
-   * @param forwardsFunction  the function that provides next states
+   * @param icon the icon of this button
+   * @param initialState the initial current state
+   * @param forwardsFunction the function that provides next states
    * @param backwardsFunction the function that provides previous states.
    */
-  public TwoWayIteratingButton(ItemStack icon, T initialState, UnaryOperator<T> forwardsFunction,
+  public TwoWayIteratingButton(
+      ItemStack icon,
+      T initialState,
+      UnaryOperator<T> forwardsFunction,
       UnaryOperator<T> backwardsFunction) {
     super(icon, initialState, forwardsFunction);
     this.backwardsFunction = backwardsFunction;
@@ -47,10 +48,10 @@ public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends Iteratin
   /**
    * リスト・イテレータから新しいTwoWayIteratingButtonを作成します。
    *
-   * @param icon         the icon
+   * @param icon the icon
    * @param listIterator the iterator providing the states
-   * @param <T>          the state type
-   * @param <MH>         the menu holder type
+   * @param <T> the state type
+   * @param <MH> the menu holder type
    * @return a new TwoWayIteratingButton
    * @throws IllegalArgumentException if the listIterator has no element.
    */
@@ -94,7 +95,7 @@ public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends Iteratin
    * 現在の状態を更新します。左クリックの場合、次の状態に更新されます。 右クリックの場合は、前の状態に更新されます。
    *
    * @param menuHolder the MenuHolder
-   * @param event      the event that caused the state update
+   * @param event the event that caused the state update
    */
   @Override
   protected void updateCurrentState(MH menuHolder, InventoryClickEvent event) {
@@ -109,7 +110,7 @@ public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends Iteratin
    * 内部状態を次の状態に更新する。
    *
    * @param menuHolder the menu holder
-   * @param event      the click event that caused the state update
+   * @param event the click event that caused the state update
    */
   protected void updateStateForwards(MH menuHolder, InventoryClickEvent event) {
     super.updateCurrentState(menuHolder, event);
@@ -119,10 +120,9 @@ public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends Iteratin
    * 内部状態を前の状態に更新する。
    *
    * @param menuHolder the menu holder
-   * @param event      the click event that caused the state update
+   * @param event the click event that caused the state update
    */
   protected void updateStateBackwards(MH menuHolder, InventoryClickEvent event) {
     setCurrentState(backwardsFunction.apply(getCurrentState()));
   }
-
 }

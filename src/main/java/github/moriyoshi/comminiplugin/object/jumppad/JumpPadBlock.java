@@ -1,9 +1,15 @@
 package github.moriyoshi.comminiplugin.object.jumppad;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.block.CustomBlock;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-
+import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -15,48 +21,28 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.block.CustomBlock;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.val;
-
 public class JumpPadBlock extends CustomBlock {
 
   private static Set<FallingBlock> fallingBlocks = new HashSet<>();
 
   public static void clear() {
-    fallingBlocks.forEach(falling -> {
-      if (!falling.isDead()) {
-        falling.remove();
-      }
-    });
+    fallingBlocks.forEach(
+        falling -> {
+          if (!falling.isDead()) {
+            falling.remove();
+          }
+        });
     fallingBlocks.clear();
   }
 
   private BukkitRunnable task;
 
-  @Getter
-  @Setter
-  private float angel = 30;
-  @Getter
-  @Setter
-  private float direction = -1;
-  @Getter
-  @Setter
-  private float power = 10;
-  @Getter
-  @Setter
-  private Material material = Material.BEDROCK;
-  @Getter
-  @Setter
-  private Sound sound = Sound.ENTITY_ENDER_DRAGON_FLAP;
-  @Getter
-  @Setter
-  private Particle particle = Particle.HAPPY_VILLAGER;
+  @Getter @Setter private float angel = 30;
+  @Getter @Setter private float direction = -1;
+  @Getter @Setter private float power = 10;
+  @Getter @Setter private Material material = Material.BEDROCK;
+  @Getter @Setter private Sound sound = Sound.ENTITY_ENDER_DRAGON_FLAP;
+  @Getter @Setter private Particle particle = Particle.HAPPY_VILLAGER;
 
   public JumpPadBlock(Block block, Player player) {
     super(block, player);
@@ -115,16 +101,22 @@ public class JumpPadBlock extends CustomBlock {
     if (direction != -1.0) {
       launchLocation.setYaw(direction);
     }
-    val falling = launchLocation.getWorld().spawn(launchLocation,
-        FallingBlock.class, entity -> {
-          entity.setBlockData(Material.MOVING_PISTON.createBlockData());
-          entity.setInvisible(true);
-          entity.setSilent(true);
-          entity.setGravity(true);
-          entity.setDropItem(false);
-          entity.setCancelDrop(true);
-          entity.setVelocity(launchLocation.getDirection().normalize().multiply(power / 15f));
-        });
+    val falling =
+        launchLocation
+            .getWorld()
+            .spawn(
+                launchLocation,
+                FallingBlock.class,
+                entity -> {
+                  entity.setBlockData(Material.MOVING_PISTON.createBlockData());
+                  entity.setInvisible(true);
+                  entity.setSilent(true);
+                  entity.setGravity(true);
+                  entity.setDropItem(false);
+                  entity.setCancelDrop(true);
+                  entity.setVelocity(
+                      launchLocation.getDirection().normalize().multiply(power / 15f));
+                });
 
     fallingBlocks.add(falling);
 
@@ -136,7 +128,9 @@ public class JumpPadBlock extends CustomBlock {
           this.cancel();
           return;
         }
-        if (0 >= falling.getVelocity().getY() || 0 == falling.getVelocity().getX() || 0 == falling.getVelocity().getZ()
+        if (0 >= falling.getVelocity().getY()
+            || 0 == falling.getVelocity().getX()
+            || 0 == falling.getVelocity().getZ()
             || falling.isOnGround()) {
           falling.remove();
           this.cancel();
@@ -144,7 +138,6 @@ public class JumpPadBlock extends CustomBlock {
         }
         player.setVelocity(falling.getVelocity());
       }
-
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
     val loc = getBlock().getLocation();
     loc.getWorld().playSound(loc, sound, SoundCategory.MASTER, 1, 1);
@@ -152,17 +145,17 @@ public class JumpPadBlock extends CustomBlock {
 
   private void spawn() {
     val random = new Random();
-    this.task = new BukkitRunnable() {
-      private final Location shift = getBlock().getLocation().add(0.5, 0.9, 0.5);
+    this.task =
+        new BukkitRunnable() {
+          private final Location shift = getBlock().getLocation().add(0.5, 0.9, 0.5);
 
-      @Override
-      public void run() {
-        if (particle != null && random.nextInt(5) >= 3) {
-          shift.getWorld().spawnParticle(particle, shift, 1, 0.4, 0.2, 0.4);
-        }
-      }
-
-    };
+          @Override
+          public void run() {
+            if (particle != null && random.nextInt(5) >= 3) {
+              shift.getWorld().spawnParticle(particle, shift, 1, 0.4, 0.2, 0.4);
+            }
+          }
+        };
     task.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
   }
 
@@ -170,5 +163,4 @@ public class JumpPadBlock extends CustomBlock {
   public void clearData() {
     this.task.cancel();
   }
-
 }

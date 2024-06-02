@@ -1,15 +1,14 @@
 package github.moriyoshi.comminiplugin.object;
 
+import github.moriyoshi.comminiplugin.command.MenuCommand;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import github.moriyoshi.comminiplugin.command.MenuCommand;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
 
 public class MenuItem extends CustomItem {
 
@@ -40,5 +39,4 @@ public class MenuItem extends CustomItem {
   public boolean canMoveOtherInv(final InventoryClickEvent e) {
     return false;
   }
-
 }

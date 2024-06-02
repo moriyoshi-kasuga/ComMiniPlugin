@@ -1,22 +1,5 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
-import org.bukkit.World;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
@@ -29,9 +12,24 @@ import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
 import github.moriyoshi.comminiplugin.util.tuple.Sequence;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.val;
 import net.kyori.adventure.bossbar.BossBar;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
+import org.bukkit.World;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class BRGame extends AbstractGame implements WinnerTypeGame {
 
@@ -43,15 +41,14 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   private final int BORDERE_CONTRACTION_SIZE = 70;
   private final int BORDERE_BEFORE_MOVE_TIME = 10;
 
-  private final List<Sequence<Integer, Integer, Material, BlockData>> lobbyBlows = new ArrayList<>();
+  private final List<Sequence<Integer, Integer, Material, BlockData>> lobbyBlows =
+      new ArrayList<>();
 
   private BossBar bossBar;
 
-  @Getter
-  private boolean isCanPvP;
+  @Getter private boolean isCanPvP;
 
-  @Getter
-  private BRField field;
+  @Getter private BRField field;
 
   public void setField(final BRField field) {
     if (this.field != null) {
@@ -127,27 +124,28 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     }
     field.initialize();
 
-    bossBar = BossBar.bossBar(Util.mm("<red>投下まで<u>20</u>秒"), 1f,
-        BossBar.Color.RED,
-        BossBar.Overlay.NOTCHED_10);
+    bossBar =
+        BossBar.bossBar(
+            Util.mm("<red>投下まで<u>20</u>秒"), 1f, BossBar.Color.RED, BossBar.Overlay.NOTCHED_10);
 
-    runPlayers(p -> {
-      val uuid = p.getUniqueId();
-      val inv = p.getInventory();
-      inv.clear();
-      if (players.get(uuid)) {
-        val gamePlayer = ComMiniPlayer.getPlayer(uuid);
-        gamePlayer.setHideNameTag(true);
-        gamePlayer.getGamePlayerData(BRPlayer.class).getHotbar().setItems(inv);
-        p.setGameMode(GameMode.SURVIVAL);
-      } else {
-        p.setGameMode(GameMode.SPECTATOR);
-        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
-      }
-      p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, -1, 0, true, false));
-      p.showBossBar(bossBar);
-      teleportLobby(p);
-    });
+    runPlayers(
+        p -> {
+          val uuid = p.getUniqueId();
+          val inv = p.getInventory();
+          inv.clear();
+          if (players.get(uuid)) {
+            val gamePlayer = ComMiniPlayer.getPlayer(uuid);
+            gamePlayer.setHideNameTag(true);
+            gamePlayer.getGamePlayerData(BRPlayer.class).getHotbar().setItems(inv);
+            p.setGameMode(GameMode.SURVIVAL);
+          } else {
+            p.setGameMode(GameMode.SPECTATOR);
+            p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
+          }
+          p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, -1, 0, true, false));
+          p.showBossBar(bossBar);
+          teleportLobby(p);
+        });
 
     field.getTreasure().setTreasures();
 
@@ -162,7 +160,10 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
           return;
         }
         if (--time == 0) {
-          runPlayers(p -> p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1));
+          runPlayers(
+              p ->
+                  p.playSound(
+                      p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1));
 
           val loc = getLobby().clone().subtract(0, 1, 0);
           for (int x = -10; x <= 10; x++) {
@@ -181,15 +182,15 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
             @Override
             public void run() {
               if (GameSystem.isIn()) {
-                lobbyBlows.forEach(s -> {
-                  val b = loc.clone().add(s.getFirst(), 0, s.getSecond()).getBlock();
-                  b.setType(s.getThird());
-                  b.setBlockData(s.getFourth());
-                });
+                lobbyBlows.forEach(
+                    s -> {
+                      val b = loc.clone().add(s.getFirst(), 0, s.getSecond()).getBlock();
+                      b.setType(s.getThird());
+                      b.setBlockData(s.getFourth());
+                    });
                 lobbyBlows.clear();
               }
             }
-
           }.runTaskLater(ComMiniPlugin.getPlugin(), 20 * 10);
 
           new BukkitRunnable() {
@@ -200,17 +201,24 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
                 isCanPvP = true;
               }
             }
-
           }.runTaskLater(ComMiniPlugin.getPlugin(), 20 * 3);
           this.cancel();
           return;
         }
         if (3 >= time) {
-          runPlayers(p -> p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.MASTER, 1, 1));
+          runPlayers(
+              p ->
+                  p.playSound(
+                      p.getLocation(),
+                      Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
+                      SoundCategory.MASTER,
+                      1,
+                      1));
         }
-        bossBar.name(Util.mm("<red>投下まで<u>" + time + "</u>秒")).progress((float) time / (float) START_DROP);
+        bossBar
+            .name(Util.mm("<red>投下まで<u>" + time + "</u>秒"))
+            .progress((float) time / (float) START_DROP);
       }
-
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
 
     hidePlayer();
@@ -218,71 +226,76 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   }
 
   public void startContractionBorder() {
-    field.startContraction(field.getLobby(), BORDERE_CONTRACTION_SIZE, BORDERE_CONTRACTION_TIME, signal -> {
-      switch (signal) {
-        case SIGNAL.MIN min -> {
-          new BukkitRunnable() {
+    field.startContraction(
+        field.getLobby(),
+        BORDERE_CONTRACTION_SIZE,
+        BORDERE_CONTRACTION_TIME,
+        signal -> {
+          switch (signal) {
+            case SIGNAL.MIN min -> {
+              new BukkitRunnable() {
 
-            private int temp = BORDERE_BEFORE_MOVE_TIME + 1;
+                private int temp = BORDERE_BEFORE_MOVE_TIME + 1;
 
-            @Override
-            public void run() {
-              if (!GameSystem.isIn()) {
-                this.cancel();
-                return;
-              }
-              if (0 >= --temp) {
-                bossBar.name(Util.mm("<red>動きまくります!")).progress(0f);
-                field.startMove(20, 15, 10);
-                this.cancel();
-                return;
-              }
-              bossBar.name(Util.mm("<yellow>ボーダー最小サイズ: 動くまで<u>" + temp + "</u>秒"))
-                  .progress((float) temp / (float) BORDERE_BEFORE_MOVE_TIME);
+                @Override
+                public void run() {
+                  if (!GameSystem.isIn()) {
+                    this.cancel();
+                    return;
+                  }
+                  if (0 >= --temp) {
+                    bossBar.name(Util.mm("<red>動きまくります!")).progress(0f);
+                    field.startMove(20, 15, 10);
+                    this.cancel();
+                    return;
+                  }
+                  bossBar
+                      .name(Util.mm("<yellow>ボーダー最小サイズ: 動くまで<u>" + temp + "</u>秒"))
+                      .progress((float) temp / (float) BORDERE_BEFORE_MOVE_TIME);
+                }
+              }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
             }
+            case SIGNAL.END end -> {
+              new BukkitRunnable() {
 
-          }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
-        }
-        case SIGNAL.END end -> {
-          new BukkitRunnable() {
+                private int temp = BORDERE_INTERVAL + 1;
 
-            private int temp = BORDERE_INTERVAL + 1;
-
-            @Override
-            public void run() {
-              if (!GameSystem.isIn()) {
-                this.cancel();
-                return;
-              }
-              if (0 >= --temp) {
-                startContractionBorder();
-                this.cancel();
-                return;
-              }
-              bossBar.name(Util.mm("<aqua>ボーダー停止中: 起動まで<u>" + temp + "</u>秒"))
-                  .progress((float) temp / (float) BORDERE_INTERVAL);
+                @Override
+                public void run() {
+                  if (!GameSystem.isIn()) {
+                    this.cancel();
+                    return;
+                  }
+                  if (0 >= --temp) {
+                    startContractionBorder();
+                    this.cancel();
+                    return;
+                  }
+                  bossBar
+                      .name(Util.mm("<aqua>ボーダー停止中: 起動まで<u>" + temp + "</u>秒"))
+                      .progress((float) temp / (float) BORDERE_INTERVAL);
+                }
+              }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
             }
-
-          }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
-        }
-        case SIGNAL.NONE none -> {
-          bossBar.name(Util.mm("<red>ボーダー収縮残り: <u>" + none.restTime() + "</u>秒"))
-              .progress((float) none.restTime() / (float) BORDERE_CONTRACTION_TIME);
-        }
-      }
-    });
-
+            case SIGNAL.NONE none -> {
+              bossBar
+                  .name(Util.mm("<red>ボーダー収縮残り: <u>" + none.restTime() + "</u>秒"))
+                  .progress((float) none.restTime() / (float) BORDERE_CONTRACTION_TIME);
+            }
+          }
+        });
   }
 
   @Override
   protected void innerFinishGame() {
     if (field != null) {
       val loc = field.getLobby();
-      lobbyBlows.forEach(s -> {
-        val b = loc.clone().add(s.getFirst(), 0, s.getSecond()).getBlock();
-        b.setType(s.getThird());
-        b.setBlockData(s.getFourth());
-      });
+      lobbyBlows.forEach(
+          s -> {
+            val b = loc.clone().add(s.getFirst(), 0, s.getSecond()).getBlock();
+            b.setType(s.getThird());
+            b.setBlockData(s.getFourth());
+          });
       field.stop();
     }
     if (bossBar != null) {
@@ -309,5 +322,4 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   public World getWorld() {
     return field.getLobby().getWorld();
   }
-
 }

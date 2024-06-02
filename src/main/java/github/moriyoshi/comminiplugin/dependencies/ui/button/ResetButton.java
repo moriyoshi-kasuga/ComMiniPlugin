@@ -22,9 +22,9 @@ public class ResetButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   private IntFunction<? extends MenuButton<? super MH>> mapper;
 
   /**
-   * スロットプロバイダとスロットからボタンへのマッピングがないリセットボタンを作成します。
-   * このメソッドを使用するサブクラスは、{@link #setMapping(Supplier, IntFunction)} )} またはそのオーバーロードのいずれかを呼び出す必要があります。
-   * または、{@link #getResetSlots()}と{@link #getButtonFor(int)}をオーバーライドする必要があります。
+   * スロットプロバイダとスロットからボタンへのマッピングがないリセットボタンを作成します。 このメソッドを使用するサブクラスは、{@link #setMapping(Supplier,
+   * IntFunction)} )} またはそのオーバーロードのいずれかを呼び出す必要があります。 または、{@link #getResetSlots()}と{@link
+   * #getButtonFor(int)}をオーバーライドする必要があります。
    *
    * @param icon the button's icon
    */
@@ -35,7 +35,7 @@ public class ResetButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * リセットボタンを作成します。
    *
-   * @param icon        the icon
+   * @param icon the icon
    * @param newContents the slot-to-button mapping
    */
   public ResetButton(ItemStack icon, Map<Integer, ? extends MenuButton<? super MH>> newContents) {
@@ -46,7 +46,7 @@ public class ResetButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * リセットボタンを作成します。
    *
-   * @param icon        the icon
+   * @param icon the icon
    * @param newContents the slot-to-button mapping
    */
   public ResetButton(ItemStack icon, MenuButton<? super MH>[] newContents) {
@@ -57,7 +57,7 @@ public class ResetButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * リセットボタンを作成する.
    *
-   * @param icon        the icon
+   * @param icon the icon
    * @param newContents the slot-to-button mapping
    */
   public ResetButton(ItemStack icon, List<? extends MenuButton<? super MH>> newContents) {
@@ -68,11 +68,13 @@ public class ResetButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * リセットボタンを作成します。
    *
-   * @param icon   the icon
-   * @param slots  このボタンがリセットを実行するスロットを示します。
+   * @param icon the icon
+   * @param slots このボタンがリセットを実行するスロットを示します。
    * @param mapper どのボタンがどのスロットでリセットされる必要があるかを計算するマッピング機能
    */
-  public ResetButton(ItemStack icon, Supplier<IntStream> slots,
+  public ResetButton(
+      ItemStack icon,
+      Supplier<IntStream> slots,
       IntFunction<? extends MenuButton<? super MH>> mapper) {
     super(icon);
     setMapping(slots, mapper);
@@ -114,11 +116,11 @@ public class ResetButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
   /**
    * Set the mapping.
    *
-   * @param slots  the slots for which to reset buttons
+   * @param slots the slots for which to reset buttons
    * @param mapper the slot-to-button mapping
    */
-  public void setMapping(Supplier<IntStream> slots,
-      IntFunction<? extends MenuButton<? super MH>> mapper) {
+  public void setMapping(
+      Supplier<IntStream> slots, IntFunction<? extends MenuButton<? super MH>> mapper) {
     this.slots = Objects.requireNonNull(slots, "Slots supplier cannot be null");
     this.mapper = Objects.requireNonNull(mapper, "Slot-to-button mapper cannot be null");
   }
@@ -129,9 +131,10 @@ public class ResetButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
    * @return the stream of slots
    */
   protected IntStream getResetSlots() {
-    return Objects.requireNonNull(slots.get(),
-        "The supplier that supplies reset slots cannot return null. Just use an empty stream already."
-    );
+    return Objects.requireNonNull(
+        slots.get(),
+        "The supplier that supplies reset slots cannot return null. Just use an empty stream"
+            + " already.");
   }
 
   /**
@@ -148,11 +151,10 @@ public class ResetButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
    * Resets the buttons in the menu.
    *
    * @param menuHolder the menu holder
-   * @param event      the InventoryClickEvent
+   * @param event the InventoryClickEvent
    */
   @Override
   public void onClick(@NotNull MH menuHolder, @NotNull InventoryClickEvent event) {
     getResetSlots().forEach(slot -> menuHolder.setButton(slot, getButtonFor(slot)));
   }
-
 }

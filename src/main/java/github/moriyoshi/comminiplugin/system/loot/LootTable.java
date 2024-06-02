@@ -5,14 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
+import lombok.val;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import lombok.val;
 
 public class LootTable {
 
@@ -27,11 +25,12 @@ public class LootTable {
   }
 
   public LootTable(Pool pool) {
-    this.pools = new ArrayList<>() {
-      {
-        add(pool);
-      }
-    };
+    this.pools =
+        new ArrayList<>() {
+          {
+            add(pool);
+          }
+        };
   }
 
   public List<ItemStack> random() {
@@ -39,10 +38,15 @@ public class LootTable {
   }
 
   public void fillInventory(Inventory inventory) {
-    val range = IntStream.range(0, inventory.getSize()).filter(i -> {
-      val item = inventory.getItem(i);
-      return item == null || item.isEmpty();
-    }).boxed().collect(Collectors.toList());
+    val range =
+        IntStream.range(0, inventory.getSize())
+            .filter(
+                i -> {
+                  val item = inventory.getItem(i);
+                  return item == null || item.isEmpty();
+                })
+            .boxed()
+            .collect(Collectors.toList());
     Collections.shuffle(range);
     for (val item : random()) {
       if (range.isEmpty()) {
@@ -56,5 +60,4 @@ public class LootTable {
     location.getBlock().setType(Material.CHEST);
     fillInventory(((Chest) location.getBlock().getState()).getInventory());
   }
-
 }

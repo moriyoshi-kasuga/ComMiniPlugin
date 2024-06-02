@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * {@link ToggleButton}の一般化です。このボタンは、固定配列の状態を循環させる。
  *
- * @param <T>  the state type
+ * @param <T> the state type
  * @param <MH> the menu holder type
  */
 public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingButton<T, MH> {
@@ -21,10 +21,10 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
   /**
    * Creates the cycle button.
    *
-   * @param icon       the icon of this button
-   * @param items      このボタンで切り替わる項目
+   * @param icon the icon of this button
+   * @param items このボタンで切り替わる項目
    * @param startIndex どのインデックスでサイクリングを開始するか
-   * @param copyArray  ボタンが配列のコピーを使用するかどうか
+   * @param copyArray ボタンが配列のコピーを使用するかどうか
    */
   protected CycleButton(ItemStack icon, T[] items, int startIndex, boolean copyArray) {
     super(icon);
@@ -42,7 +42,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
   /**
    * Creates the cycle button.
    *
-   * @param icon  the icon of this button
+   * @param icon the icon of this button
    * @param items このボタンで切り替わる項目
    */
   @SafeVarargs
@@ -53,8 +53,8 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
   /**
    * Creates the cycle button.
    *
-   * @param icon       the icon of this button
-   * @param items      このボタンで切り替わる項目
+   * @param icon the icon of this button
+   * @param items このボタンで切り替わる項目
    * @param startIndex どのインデックスでサイクリングを開始するか
    */
   public CycleButton(ItemStack icon, T[] items, int startIndex) {
@@ -64,7 +64,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
   /**
    * Creates the cycle button.
    *
-   * @param icon  the icon of this button
+   * @param icon the icon of this button
    * @param items このボタンで切り替わる項目
    */
   public CycleButton(ItemStack icon, Collection<? extends T> items) {
@@ -74,8 +74,8 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
   /**
    * Creates the cycle button.
    *
-   * @param icon       the icon of this button
-   * @param items      このボタンで切り替わる項目
+   * @param icon the icon of this button
+   * @param items このボタンで切り替わる項目
    * @param startIndex どのインデックスでサイクリングを開始するか
    */
   @SuppressWarnings("unchecked")
@@ -86,10 +86,10 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
   /**
    * すべての列挙値を循環させるサイクルボタンを作成します。
    *
-   * @param icon      the icon of this button
+   * @param icon the icon of this button
    * @param enumClass the enumeration
-   * @param <T>       the type of the state in this button
-   * @param <MH>      the MenuHolder type
+   * @param <T> the type of the state in this button
+   * @param <MH> the MenuHolder type
    * @return a new cycle button
    */
   public static <T extends Enum<?>, MH extends MenuHolder<?>> CycleButton<T, MH> fromEnum(
@@ -100,11 +100,11 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
   /**
    * すべての列挙値を循環させるサイクルボタンを作成します。
    *
-   * @param icon       the icon of this button
-   * @param enumClass  the enumeration
+   * @param icon the icon of this button
+   * @param enumClass the enumeration
    * @param startValue the enum value at which to start cycling
-   * @param <T>        the type of the state in this button
-   * @param <MH>       the MenuHolder type
+   * @param <T> the type of the state in this button
+   * @param <MH> the MenuHolder type
    * @return a new cycle button
    */
   public static <T extends Enum<?>, MH extends MenuHolder<?>> CycleButton<T, MH> fromEnum(
@@ -115,10 +115,10 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
   /**
    * 与えられた列挙値を循環させるサイクルボタンを返します。
    *
-   * @param icon  the icon of this button
+   * @param icon the icon of this button
    * @param items the items this button cycles through
-   * @param <T>   the type of the state in this button
-   * @param <MH>  the MenuHolder type
+   * @param <T> the type of the state in this button
+   * @param <MH> the MenuHolder type
    * @return a new cycle button
    */
   // completely redundant since users could just use the collection constructor,
@@ -131,11 +131,11 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
   /**
    * 与えられた列挙値を循環させるサイクルボタンを返します。
    *
-   * @param icon       the icon of this button
-   * @param items      the items this button cycles through
+   * @param icon the icon of this button
+   * @param items the items this button cycles through
    * @param startValue the enum value at which to start cycling
-   * @param <T>        the type of the state in this button
-   * @param <MH>       the MenuHolder type
+   * @param <T> the type of the state in this button
+   * @param <MH> the MenuHolder type
    * @return a new cycle button
    */
   public static <T extends Enum<?>, MH extends MenuHolder<?>> CycleButton<T, MH> fromEnum(
@@ -143,16 +143,12 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
     return new CycleButton<>(icon, items, startValue.ordinal());
   }
 
-  /**
-   * Moves the cursor to the next state.
-   */
+  /** Moves the cursor to the next state. */
   protected void incrementCursor() {
     setCursor(getCursor() + 1);
   }
 
-  /**
-   * Moves the cursor to the previous state.
-   */
+  /** Moves the cursor to the previous state. */
   protected void decrementCursor() {
     setCursor(getCursor() - 1);
   }
@@ -193,7 +189,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
    * 現在の状態を前の状態に更新する。 CycleButtonの実装は{@link #incrementCursor()}に委譲しています。
    *
    * @param menuHolder the menu holder
-   * @param event      状態更新の原因となったクリックイベント
+   * @param event 状態更新の原因となったクリックイベント
    */
   @Override
   public void updateStateForwards(MH menuHolder, InventoryClickEvent event) {
@@ -204,11 +200,10 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
    * 現在の状態を次の状態に更新する。 CycleButtonの実装では、{@link #decrementCursor()} に委譲しています。
    *
    * @param menuHolder the menu holder
-   * @param event      状態更新の原因となったクリックイベント
+   * @param event 状態更新の原因となったクリックイベント
    */
   @Override
   public void updateStateBackwards(MH menuHolder, InventoryClickEvent event) {
     decrementCursor();
   }
-
 }

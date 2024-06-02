@@ -1,9 +1,14 @@
 package github.moriyoshi.comminiplugin.system;
 
+import de.tr7zw.changeme.nbtapi.NBT;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -22,13 +27,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.tr7zw.changeme.nbtapi.NBT;
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.block.CustomBlock;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.item.CustomItemFlag;
-import lombok.val;
-
 public class CustomListener implements Listener {
 
   private static final CustomListener INSTANCE = new CustomListener();
@@ -40,15 +38,20 @@ public class CustomListener implements Listener {
       @Override
       public void run() {
         val flag = tick <= 0;
-        Bukkit.getOnlinePlayers().forEach(p -> p.getInventory().forEach(i -> {
-          if (CustomItem.isCustomItem(i)) {
-            val custom = CustomItem.getCustomItem(i);
-            custom.runTick(p);
-            if (flag) {
-              custom.runSecond(p);
-            }
-          }
-        }));
+        Bukkit.getOnlinePlayers()
+            .forEach(
+                p ->
+                    p.getInventory()
+                        .forEach(
+                            i -> {
+                              if (CustomItem.isCustomItem(i)) {
+                                val custom = CustomItem.getCustomItem(i);
+                                custom.runTick(p);
+                                if (flag) {
+                                  custom.runSecond(p);
+                                }
+                              }
+                            }));
         if (flag) {
           tick = 20;
           return;
@@ -70,12 +73,14 @@ public class CustomListener implements Listener {
     if (item == null || item.isEmpty()) {
       return Optional.empty();
     }
-    return NBT.get(item, nbt -> {
-      if (!nbt.hasTag("customitemflag")) {
-        return Optional.empty();
-      }
-      return Optional.of(nbt.getCompound("customitemflag").getBoolean(flag));
-    });
+    return NBT.get(
+        item,
+        nbt -> {
+          if (!nbt.hasTag("customitemflag")) {
+            return Optional.empty();
+          }
+          return Optional.of(nbt.getCompound("customitemflag").getBoolean(flag));
+        });
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
@@ -201,13 +206,15 @@ public class CustomListener implements Listener {
       list.add(CustomItem.getCustomItem(click));
     }
     if (!list.isEmpty()) {
-      if (list.stream().anyMatch(i -> {
-        val type = e.getView().getTopInventory().getType();
-        return switch (type) {
-          case CRAFTING, WORKBENCH -> false;
-          default -> !i.canMoveOtherInv(e);
-        };
-      })) {
+      if (list.stream()
+          .anyMatch(
+              i -> {
+                val type = e.getView().getTopInventory().getType();
+                return switch (type) {
+                  case CRAFTING, WORKBENCH -> false;
+                  default -> !i.canMoveOtherInv(e);
+                };
+              })) {
         e.setCancelled(true);
         return;
       }

@@ -1,33 +1,31 @@
 package github.moriyoshi.comminiplugin.system;
 
-import java.util.HashMap;
-import java.util.List;
-
-import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
-
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRGame;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSGame;
 import github.moriyoshi.comminiplugin.object.MenuItem;
+import java.util.HashMap;
+import java.util.List;
 import lombok.Getter;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 
 public class GameSystem {
 
-  public static final HashMap<String, AbstractGame> games = new HashMap<>() {
-    {
-      List.of(
-          // ALl Game
-          new SSGame(),
-          new BRGame()
-      // End
-      ).forEach(g -> put(g.id, g));
-    }
-  };
+  public static final HashMap<String, AbstractGame> games =
+      new HashMap<>() {
+        {
+          List.of(
+                  // ALl Game
+                  new SSGame(), new BRGame()
+                  // End
+                  )
+              .forEach(g -> put(g.id, g));
+        }
+      };
 
-  @Getter
-  private static AbstractGame game = null;
+  @Getter private static AbstractGame game = null;
 
   public static <T extends AbstractGame> T getGame(Class<T> t) {
     return t.cast(game);
@@ -36,26 +34,22 @@ public class GameSystem {
   /**
    * 運営がこの関数を通してゲームを呼びます
    *
-   * @param player   呼び出す運営
+   * @param player 呼び出す運営
    * @param gameName 呼び出すゲーム
    * @return 呼び出せたらtrue
    */
   public static boolean initializeGame(Player player, String gameName) {
     if (isIn()) {
-      ComMiniPrefix.SYSTEM.send(
-          player,
-          "<green>現在は <u>" + game.name + "<reset><green>が開催されています!");
+      ComMiniPrefix.SYSTEM.send(player, "<green>現在は <u>" + game.name + "<reset><green>が開催されています!");
       return false;
     }
     if (!games.containsKey(gameName)) {
-      ComMiniPrefix.SYSTEM.important(
-          "<red>" + gameName + "ゲームの識別子が正しくありません! 開発者に連絡してください。");
+      ComMiniPrefix.SYSTEM.important("<red>" + gameName + "ゲームの識別子が正しくありません! 開発者に連絡してください。");
       return false;
     }
     var temp = games.get(gameName);
     if (!temp.initializeGame(player)) {
-      ComMiniPrefix.SYSTEM.send(player,
-          "<red>" + gameName + "を始められません、初期化条件が存在します!");
+      ComMiniPrefix.SYSTEM.send(player, "<red>" + gameName + "を始められません、初期化条件が存在します!");
       return false;
     }
     game = temp;
@@ -127,5 +121,4 @@ public class GameSystem {
     p.clearActivePotionEffects();
     p.setHealth(20);
   }
-
 }

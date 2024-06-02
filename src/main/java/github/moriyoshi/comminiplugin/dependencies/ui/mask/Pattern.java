@@ -18,13 +18,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 /**
- * <p>
  * パターンは、スロットからある種のオブジェクトへのマッピングを表します。 このオブジェクトタイプは、適切なequalsとhashCodeの実装を持たなければなりません（MUST）。
- * </p>
- * <p>
- * パターンはマスクと組み合わせて使用するのが最適です, see {@link Mask#applyInventory(Mask, Pattern, Inventory)},
- * {@link Mask#applyMenu(Mask, Pattern, MenuHolder)}.
- * </p>
+ *
+ * <p>パターンはマスクと組み合わせて使用するのが最適です, see {@link Mask#applyInventory(Mask, Pattern, Inventory)}, {@link
+ * Mask#applyMenu(Mask, Pattern, MenuHolder)}.
  *
  * @param <Symbol> オブジェクトの種類を表します。一般的には、Boolean、Integer、Character、またはenumです。
  * @see Mask
@@ -39,7 +36,7 @@ public interface Pattern<Symbol> {
   /**
    * Mapで裏打ちされたパターンを作成する。返されたPatternは、そのシンボルをMapで検索します。
    *
-   * @param symbols  the map
+   * @param symbols the map
    * @param <Symbol> パターンが提供するシンボルの種類
    * @return 名文句
    */
@@ -52,7 +49,7 @@ public interface Pattern<Symbol> {
   /**
    * 配列で裏打ちされたパターンを作成します。返されたパターンは、そのシンボルを配列で検索します。
    *
-   * @param symbols  the array
+   * @param symbols the array
    * @param <Symbol> パターンが提供するシンボルの種類
    * @return the pattern
    */
@@ -65,7 +62,7 @@ public interface Pattern<Symbol> {
   /**
    * リストで裏打ちされたパターンを作成する。返されたPatternは、そのシンボルをリストで検索します。
    *
-   * @param symbols  the array
+   * @param symbols the array
    * @param <Symbol> パターンが提供するシンボルの種類
    * @return the pattern
    */
@@ -99,10 +96,10 @@ public interface Pattern<Symbol> {
   }
 
   /**
-   * スロットがインベントリグリッドの端にある場合、スロットを{@link Border#OUTER}にマップするパターンを作成する。
-   * その他のスロットは{@link Border#INNER}にマッピングされます。 グリッド外のスロットインデックスはNULLにマッピングされます。
+   * スロットがインベントリグリッドの端にある場合、スロットを{@link Border#OUTER}にマップするパターンを作成する。 その他のスロットは{@link
+   * Border#INNER}にマッピングされます。 グリッド外のスロットインデックスはNULLにマッピングされます。
    *
-   * @param width  インベントリグリッドの幅
+   * @param width インベントリグリッドの幅
    * @param height インベントリグリッドの高さ
    * @return the pattern
    */
@@ -147,19 +144,19 @@ public interface Pattern<Symbol> {
    */
   Symbol getSymbol(int location);
 
-  default <Item> void apply(Mask<Symbol, Item> mask,
-      IntStream indexGenerator, IntBiConsumer<Item> updater) {
-    indexGenerator.forEach(index -> {
-      Symbol symbol = getSymbol(index);
-      var item = mask.getItem(symbol);
-      if (item.isPresent()) {
-        updater.accept(index, item.get());
-      }
-    });
+  default <Item> void apply(
+      Mask<Symbol, Item> mask, IntStream indexGenerator, IntBiConsumer<Item> updater) {
+    indexGenerator.forEach(
+        index -> {
+          Symbol symbol = getSymbol(index);
+          var item = mask.getItem(symbol);
+          if (item.isPresent()) {
+            updater.accept(index, item.get());
+          }
+        });
   }
 
-  default void applyInventory(Mask<Symbol, ItemStack> mask,
-      Inventory inventory) {
+  default void applyInventory(Mask<Symbol, ItemStack> mask, Inventory inventory) {
     for (int slot = 0; slot < inventory.getSize(); slot++) {
       Symbol symbol = getSymbol(slot);
       var item = mask.getItem(symbol);
@@ -170,8 +167,7 @@ public interface Pattern<Symbol> {
   }
 
   default <P extends Plugin, MH extends MenuHolder<P>> void applyMenu(
-      Mask<Symbol, ? extends MenuButton<MH>> mask,
-      MH menu) {
+      Mask<Symbol, ? extends MenuButton<MH>> mask, MH menu) {
     for (int slot = 0; slot < menu.getInventory().getSize(); slot++) {
       Symbol symbol = getSymbol(slot);
       var button = mask.getItem(symbol);
@@ -180,5 +176,4 @@ public interface Pattern<Symbol> {
       }
     }
   }
-
 }

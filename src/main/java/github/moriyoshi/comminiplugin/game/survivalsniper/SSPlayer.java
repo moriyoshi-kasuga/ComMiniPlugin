@@ -1,7 +1,6 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import com.google.gson.JsonObject;
-
 import github.moriyoshi.comminiplugin.system.player.HotbarGamePlayer;
 import github.moriyoshi.comminiplugin.system.player.InterfaceGamePlayer;
 import lombok.Getter;
@@ -23,5 +22,4 @@ public class SSPlayer implements InterfaceGamePlayer, HotbarGamePlayer {
   public void generateLoadData(JsonObject object) {
     this.hotbar = getHotBar(SSSlot.class, object.get(getHotBarPath()));
   }
-
 }

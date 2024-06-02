@@ -12,8 +12,7 @@ public interface IntBiConsumer<T> {
    * intと別の値を消費する。
    *
    * @param integer the int
-   * @param value   the other value
+   * @param value the other value
    */
   void accept(int integer, T value);
-
 }

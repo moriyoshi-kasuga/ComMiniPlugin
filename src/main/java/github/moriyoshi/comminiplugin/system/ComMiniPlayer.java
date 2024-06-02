@@ -1,5 +1,10 @@
 package github.moriyoshi.comminiplugin.system;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.api.JsonAPI;
+import github.moriyoshi.comminiplugin.system.player.InterfaceGamePlayer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,20 +12,12 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.api.JsonAPI;
-import github.moriyoshi.comminiplugin.system.player.InterfaceGamePlayer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import org.bukkit.Bukkit;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 public final class ComMiniPlayer extends JsonAPI {
 
@@ -57,13 +54,9 @@ public final class ComMiniPlayer extends JsonAPI {
 
   private final UUID uuid;
 
-  @Getter
-  @Setter
-  private boolean isHunger;
+  @Getter @Setter private boolean isHunger;
 
-  @Getter
-  @Setter
-  private boolean isDebug;
+  @Getter @Setter private boolean isDebug;
 
   private ComMiniPlayer(final UUID uuid) {
     super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
@@ -90,7 +83,8 @@ public final class ComMiniPlayer extends JsonAPI {
         Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName()));
   }
 
-  private final Map<Class<? extends InterfaceGamePlayer>, InterfaceGamePlayer> gamePlayerDatas = new HashMap<>();
+  private final Map<Class<? extends InterfaceGamePlayer>, InterfaceGamePlayer> gamePlayerDatas =
+      new HashMap<>();
 
   private JsonObject datas;
 
@@ -102,13 +96,17 @@ public final class ComMiniPlayer extends JsonAPI {
     T data = null;
     try {
       data = clazz.getDeclaredConstructor().newInstance();
-    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-        | NoSuchMethodException | SecurityException e) {
+    } catch (InstantiationException
+        | IllegalAccessException
+        | IllegalArgumentException
+        | InvocationTargetException
+        | NoSuchMethodException
+        | SecurityException e) {
       e.printStackTrace();
     }
     val name = clazz.getSimpleName();
-    data.generateLoadData(Optional.ofNullable(datas.getAsJsonObject(name)).orElseGet(
-        JsonObject::new));
+    data.generateLoadData(
+        Optional.ofNullable(datas.getAsJsonObject(name)).orElseGet(JsonObject::new));
     gamePlayerDatas.put(clazz, data);
     return data;
   }
@@ -117,7 +115,8 @@ public final class ComMiniPlayer extends JsonAPI {
   protected JsonElement generateSaveData() {
     val object = new JsonObject();
     val finalDatas = new JsonObject();
-    gamePlayerDatas.forEach((clazz, instance) -> finalDatas.add(clazz.getSimpleName(), instance.generateSaveData()));
+    gamePlayerDatas.forEach(
+        (clazz, instance) -> finalDatas.add(clazz.getSimpleName(), instance.generateSaveData()));
     object.add("datas", finalDatas);
     return object;
   }

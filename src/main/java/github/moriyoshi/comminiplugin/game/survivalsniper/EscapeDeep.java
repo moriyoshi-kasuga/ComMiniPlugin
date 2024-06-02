@@ -1,22 +1,24 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class EscapeDeep extends CustomItem {
 
   public EscapeDeep() {
-    this(new ItemBuilder(Material.CARROT_ON_A_STICK).name("<red>緊急脱出矢印!")
-        .lore("<gray>これを使えば地上まで一っ飛びだ!")
-        .customModelData(1).build());
+    this(
+        new ItemBuilder(Material.CARROT_ON_A_STICK)
+            .name("<red>緊急脱出矢印!")
+            .lore("<gray>これを使えば地上まで一っ飛びだ!")
+            .customModelData(1)
+            .build());
   }
 
   public EscapeDeep(final ItemStack item) {
