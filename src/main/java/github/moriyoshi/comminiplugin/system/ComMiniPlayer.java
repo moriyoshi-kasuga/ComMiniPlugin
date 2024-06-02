@@ -56,7 +56,9 @@ public final class ComMiniPlayer extends JsonAPI {
 
   @Getter @Setter private boolean isHunger;
 
-  @Getter @Setter private boolean isDebug;
+  @Getter @Setter private boolean canFoodRegain;
+
+  @Getter @Setter private boolean isDebug = false;
 
   private ComMiniPlayer(final UUID uuid) {
     super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
@@ -66,6 +68,7 @@ public final class ComMiniPlayer extends JsonAPI {
 
   public void initialize() {
     this.isHunger = false;
+    this.canFoodRegain = true;
     hidenametag.removeEntry(Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName()));
   }
 

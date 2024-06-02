@@ -1,14 +1,19 @@
 package github.moriyoshi.comminiplugin.system;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
-import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.BiConsumer;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,7 +22,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -146,27 +154,71 @@ public class GameListener implements Listener {
   }
 
   @EventHandler
-  public void move(PlayerMoveEvent e) {
-    var p = e.getPlayer();
-    p.getActivePotionEffects()
+  public void jump(PlayerJumpEvent e) {
+    e.getPlayer()
+        .getActivePotionEffects()
         .forEach(
             effect -> {
               if (effect.getType().equals(PotionEffectType.SLOWNESS)
                   && effect.getAmplifier() == 138) {
-                Location from = e.getFrom();
-                Location to = e.getTo();
-                from.setYaw(to.getYaw());
-                from.setPitch(to.getPitch());
-                e.setTo(from);
+                e.setCancelled(true);
                 return;
               }
             });
+  }
+
+  @SuppressWarnings("deprecation")
+  @EventHandler
+  public void move(PlayerMoveEvent e) {
+    var p = e.getPlayer();
+    if (p.isOnGround()) {
+      p.getActivePotionEffects()
+          .forEach(
+              effect -> {
+                if (effect.getType().equals(PotionEffectType.SLOWNESS)
+                    && effect.getAmplifier() == 138) {
+                  Location from = e.getFrom();
+                  Location to = e.getTo();
+                  from.setYaw(to.getYaw());
+                  from.setPitch(to.getPitch());
+                  e.setTo(from);
+                  return;
+                }
+              });
+    }
     val to = e.getTo().clone();
     for (val loc : List.of(to, to.clone().subtract(0, 0.1, 0))) {
-      if (CustomBlock.isCustomBlock(loc, JumpPadBlock.class)) {
-        CustomBlock.getCustomBlock(loc, JumpPadBlock.class).jump(p, to);
+      if (CustomBlock.isCustomBlock(loc)) {
+        CustomBlock.getCustomBlock(loc).walk(e);
         return;
       }
+    }
+  }
+
+  @EventHandler
+  public void regain(EntityRegainHealthEvent e) {
+    if (!(e.getEntity() instanceof Player p)) {
+      return;
+    }
+    if (e.getRegainReason() == RegainReason.SATIATED
+        && !ComMiniPlayer.getPlayer(p.getUniqueId()).isCanFoodRegain()) {
+      e.setCancelled(true);
+    }
+  }
+
+  private static final Map<UUID, BiConsumer<Projectile, ProjectileHitEvent>> projectileHitMap =
+      new HashMap<>();
+
+  public static void addProjectileHitListener(
+      UUID id, BiConsumer<Projectile, ProjectileHitEvent> l) {
+    projectileHitMap.put(id, l);
+  }
+
+  @EventHandler
+  public void projectileHit(ProjectileHitEvent e) {
+    val entity = e.getEntity();
+    if (projectileHitMap.containsKey(entity.getUniqueId())) {
+      projectileHitMap.get(entity.getUniqueId()).accept(entity, e);
     }
   }
 }
