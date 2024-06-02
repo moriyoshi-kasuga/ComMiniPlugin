@@ -25,7 +25,6 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 
 public class Sniper extends CustomItem implements CooldownItem {
 
@@ -126,7 +125,7 @@ public class Sniper extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public @NotNull Optional<Consumer<Player>> heldItem(final ItemStack item) {
+  public Optional<Consumer<Player>> heldItem(final ItemStack item) {
     return Optional.of(
         player -> {
           final String bullet = Bullet.getFirstBullet(player).map(Bullet::getName).orElse(null);

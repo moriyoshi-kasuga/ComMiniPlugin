@@ -7,11 +7,10 @@ import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 import lombok.val;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,6 +22,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reflections.Reflections;
 
 public abstract class CustomItem implements InterfaceItem {
@@ -44,10 +44,11 @@ public abstract class CustomItem implements InterfaceItem {
           }
           generateUUID()
               .ifPresent(
-                  uuid -> {
+                  supplier -> {
                     if (compound.hasTag("uuid")) {
                       this.uuid = compound.getUUID("uuid");
                     } else {
+                      val uuid = supplier.get();
                       compound.setUUID("uuid", uuid);
                       this.uuid = uuid;
                     }
@@ -200,13 +201,13 @@ public abstract class CustomItem implements InterfaceItem {
         });
   }
 
-  public Optional<UUID> generateUUID() {
-    return Optional.of(UUID.randomUUID());
+  public Optional<Supplier<UUID>> generateUUID() {
+    return Optional.of(() -> UUID.randomUUID());
   }
 
   @Override
-  public @NotNull UUID getUniqueId() {
-    return Objects.requireNonNull(this.uuid);
+  public @Nullable UUID getUniqueId() {
+    return this.uuid;
   }
 
   @Override
@@ -236,16 +237,18 @@ public abstract class CustomItem implements InterfaceItem {
    * @param e event
    */
   public void heldOfThis(final PlayerItemHeldEvent e) {
-    final Player player = e.getPlayer();
-    final CustomItem v = this;
-    if (heldItem(getItem()).isPresent()) {
+    val player = e.getPlayer();
+    val v = this;
+    val opt = heldItem(getItem());
+    if (opt.isPresent()) {
+      val consumer = opt.get();
       new BukkitRunnable() {
 
         @Override
         public void run() {
-          final ItemStack item = player.getInventory().getItemInMainHand();
+          val item = player.getInventory().getItemInMainHand();
           if (CustomItem.isCustomItem(item) && v.equals(CustomItem.getCustomItem(item))) {
-            heldItem(item).ifPresent(consumer -> consumer.accept(player));
+            consumer.accept(player);
             return;
           }
           this.cancel();

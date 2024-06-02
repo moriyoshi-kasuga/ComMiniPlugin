@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.item;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -7,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface InterfaceItem {
 
@@ -26,12 +28,30 @@ public interface InterfaceItem {
    *
    * @return uuid
    */
-  @NotNull
+  @Nullable
   UUID getUniqueId();
 
+  /**
+   * このアイテムのキーを取得します {@code #getUniqueId()} が null の場合はエラーがでます<br>
+   * その時は {code {@link #getItemKey(Player)}} を使用してください
+   *
+   * @return
+   */
   @NotNull
   default CustomItemKey getItemKey() {
-    return new CustomItemKey(getIdentifier(), getUniqueId());
+    return new CustomItemKey(getIdentifier(), Objects.requireNonNull(getUniqueId()));
+  }
+
+  /**
+   * {@code #getUniqueId()} が null の場合 こちらを使ってください <br>
+   * プレイヤーで共有のアイテムのキーを作成したい場合に使ってください
+   *
+   * @param player
+   * @return
+   */
+  @NotNull
+  default CustomItemKey getItemKey(Player player) {
+    return new CustomItemKey(getIdentifier(), player.getUniqueId());
   }
 
   /**
@@ -48,7 +68,6 @@ public interface InterfaceItem {
    *
    * @return 処理
    */
-  @NotNull
   default Optional<Consumer<Player>> heldItem(final ItemStack item) {
     return Optional.empty();
   }

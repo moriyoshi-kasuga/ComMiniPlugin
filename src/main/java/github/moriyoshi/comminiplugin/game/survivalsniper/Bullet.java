@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -133,7 +134,7 @@ public class Bullet extends CustomItem {
   }
 
   @Override
-  public Optional<UUID> generateUUID() {
+  public Optional<Supplier<UUID>> generateUUID() {
     return Optional.empty();
   }
 
