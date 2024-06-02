@@ -10,6 +10,7 @@ import java.util.Optional;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -19,17 +20,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class TreasureChest extends CustomModelBlock {
 
-  // 鉄Lv.1 エメラルドLv.2 ラピスラズリLv.3 ダイアlv.4 アメジストLv.5
   private final int level;
 
-  public TreasureChest(Block block) {
-    super(block);
-    this.level = 1;
-    spawn();
-  }
-
-  public TreasureChest(Block block, int level) {
-    super(block);
+  public TreasureChest(Block block, BlockFace face, int level) {
+    super(block, face);
     this.level = level;
     spawn();
   }

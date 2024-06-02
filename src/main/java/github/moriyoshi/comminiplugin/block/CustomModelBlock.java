@@ -60,6 +60,11 @@ public abstract class CustomModelBlock extends CustomBlock {
     setFace(player.getFacing().getOppositeFace());
   }
 
+  public CustomModelBlock(Block block, BlockFace face) {
+    this(block);
+    setFace(face);
+  }
+
   @Override
   public JsonElement getBlockData() {
     JsonObject json = new JsonObject();
@@ -69,12 +74,13 @@ public abstract class CustomModelBlock extends CustomBlock {
     return json;
   }
 
-  public void setFace(BlockFace face) {
-    if (block.getBlockData() instanceof org.bukkit.block.data.Directional directional) {
-      directional.setFacing(face);
-      block.setBlockData(directional);
+  @Override
+  public boolean setFace(BlockFace face) {
+    if (super.setFace(face)) {
       display.setRotation(BukkitUtil.convertBlockFaceToYaw(face), 0);
+      return false;
     }
+    return true;
   }
 
   public void updateDisplayItem() {

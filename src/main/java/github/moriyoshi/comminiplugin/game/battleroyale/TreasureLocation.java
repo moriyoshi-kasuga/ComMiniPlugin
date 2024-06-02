@@ -6,12 +6,13 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.api.BlockInputsAPI;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.RandomCollection;
 import github.moriyoshi.comminiplugin.util.tuple.Pair;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import lombok.Getter;
@@ -38,14 +39,6 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
   }
 
   private int level = 1;
-
-  public final void setLevel(int level) {
-    this.level = level;
-    val game = GameSystem.getGame(BRGame.class);
-    getPlayers()
-        .values()
-        .forEach(p -> game.prefix.send(p, "<red>change Treasure level to <yellow>" + level));
-  }
 
   @Override
   public List<Pair<Integer, Integer>> loadLocData(JsonElement element) {
@@ -140,16 +133,18 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
   }
 
   public void setTreasures() {
+    val r = new Random();
     getLocations()
         .forEach(
             (loc, pairs) -> {
-              val random = new RandomCollection<Integer>();
+              val random = new RandomCollection<Integer>(r);
               pairs.forEach(pair -> random.add(pair.getSecond(), pair.getFirst()));
               val value = random.next();
               if (value == 0) {
                 return;
               }
-              new TreasureChest(loc.getBlock(), value);
+              new TreasureChest(
+                  loc.getBlock(), BukkitUtil.convertYawToBlockFace(loc.getYaw()), value);
             });
   }
 

@@ -14,6 +14,7 @@ import lombok.val;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -65,6 +66,17 @@ public abstract class CustomBlock {
    */
   public CustomBlock(Block block, Player player) {
     this(block);
+  }
+
+  /**
+   * ブロックの向きを変えたい場合に使用します
+   *
+   * @param block block
+   * @param face face
+   */
+  public CustomBlock(Block block, BlockFace face) {
+    this(block);
+    setFace(face);
   }
 
   public static void registers(final Reflections reflections) {
@@ -226,5 +238,14 @@ public abstract class CustomBlock {
     loc.setYaw(0);
     loc.setPitch(0);
     return loc;
+  }
+
+  public boolean setFace(BlockFace face) {
+    if (!(block.getBlockData() instanceof org.bukkit.block.data.Directional directional)) {
+      return false;
+    }
+    directional.setFacing(face);
+    block.setBlockData(directional);
+    return true;
   }
 }

@@ -56,4 +56,9 @@ public class JumpPadItem extends CustomItem {
       new JumpPadBlock(block, player);
     }
   }
+
+  @Override
+  public boolean canShowing() {
+    return false;
+  }
 }

@@ -57,7 +57,7 @@ public class TestItem extends CustomItem {
                 }
               },
               (num, state) -> {
-                new TreasureChest(block, num);
+                new TreasureChest(block, state.getPlayer().getFacing(), num);
                 return List.of(ResponseAction.close());
               })
           .open(player);
