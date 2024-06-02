@@ -12,33 +12,25 @@ public class Entry {
   public final BooleanSupplier condition;
 
   public Entry(double weight) {
-    this.supplier = () -> null;
-    this.weight = weight;
-    this.condition = () -> true;
+    this(weight, () -> null);
   }
 
   public Entry(@NonNull Supplier<ItemStack> supplier) {
-    this.supplier = supplier;
-    this.weight = 1;
-    this.condition = () -> true;
+    this(1, supplier);
   }
 
-  public Entry(@NonNull Supplier<ItemStack> supplier, double weight) {
-    this.supplier = supplier;
-    this.weight = weight;
-    this.condition = () -> true;
+  public Entry(double weight, @NonNull Supplier<ItemStack> supplier) {
+    this(weight, supplier, () -> true);
   }
 
   public Entry(
-      @NonNull Supplier<ItemStack> supplier, double weight, @NonNull BooleanSupplier condition) {
-    this.supplier = supplier;
+      double weight, @NonNull Supplier<ItemStack> supplier, @NonNull BooleanSupplier condition) {
     this.weight = weight;
+    this.supplier = supplier;
     this.condition = condition;
   }
 
   public Entry(@NonNull Supplier<ItemStack> supplier, @NonNull BooleanSupplier condition) {
-    this.supplier = supplier;
-    this.weight = 1;
-    this.condition = condition;
+    this(1, supplier, condition);
   }
 }

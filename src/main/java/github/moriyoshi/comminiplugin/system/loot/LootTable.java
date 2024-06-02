@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.system.loot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.val;
@@ -34,7 +35,11 @@ public class LootTable {
   }
 
   public List<ItemStack> random() {
-    return pools.stream().map(Pool::random).flatMap(List::stream).collect(Collectors.toList());
+    val r = new Random();
+    return pools.stream()
+        .map(pool -> pool.random(r))
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
   }
 
   public void fillInventory(Inventory inventory) {

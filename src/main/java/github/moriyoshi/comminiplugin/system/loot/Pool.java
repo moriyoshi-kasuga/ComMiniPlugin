@@ -5,15 +5,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.IntSupplier;
 import lombok.val;
 import org.bukkit.inventory.ItemStack;
 
 public class Pool {
 
-  public final double rolls;
-  public final IntSupplier bonusRolls;
+  private final int rolls;
+  private final Function<Random, Integer> bonusRolls;
 
   protected final Set<Entry> entries = new HashSet<>();
 
@@ -21,19 +23,29 @@ public class Pool {
     this(1);
   }
 
-  public Pool(double rolls) {
+  public Pool(int rolls) {
     this.rolls = rolls;
-    this.bonusRolls = () -> 0;
+    this.bonusRolls = (r) -> 1;
   }
 
   public Pool(IntSupplier bonusRolls) {
     this.rolls = 1;
-    this.bonusRolls = bonusRolls;
+    this.bonusRolls = (r) -> bonusRolls.getAsInt();
   }
 
-  public Pool(double rolls, IntSupplier bonusRolls) {
+  public Pool(int rolls, IntSupplier bonusRolls) {
     this.rolls = rolls;
-    this.bonusRolls = bonusRolls;
+    this.bonusRolls = (r) -> bonusRolls.getAsInt();
+  }
+
+  public Pool(int rolls, int origin, int bound) {
+    this.rolls = rolls;
+    this.bonusRolls = (r) -> r.nextInt(origin, bound);
+  }
+
+  public Pool(int rolls, Function<Random, Integer> bonusRolls) {
+    this.rolls = rolls;
+    this.bonusRolls = (r) -> bonusRolls.apply(r);
   }
 
   public int size() {
@@ -54,14 +66,14 @@ public class Pool {
     return this;
   }
 
-  public List<ItemStack> random() {
-    final RandomCollection<Entry> random = new RandomCollection<>();
+  public List<ItemStack> random(Random r) {
+    final RandomCollection<Entry> random = new RandomCollection<>(r);
     val list = new ArrayList<ItemStack>();
     entries.forEach(entry -> random.add(entry.weight, entry));
-    for (int i = 0; i < (rolls + bonusRolls.getAsInt()); i++) {
+    for (int i = 0; i < (rolls + bonusRolls.apply(r)); i++) {
       val entry = random.next();
       val item = entry.supplier.get();
-      if (!item.isEmpty() && entry.condition.getAsBoolean()) {
+      if (item != null && !item.isEmpty() && entry.condition.getAsBoolean()) {
         list.add(item);
       }
     }
