@@ -3,6 +3,8 @@ package github.moriyoshi.comminiplugin.game.battleroyale.items;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
+import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
+import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock.JUMP_STATE;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
@@ -17,8 +19,8 @@ public class WingItem extends CustomItem {
   public WingItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
-            .name("<yellow>これを使えばどこまでも")
-            .lore("<gray>使うと垂直にジャンプしてそこからエリトラで滑空することができます", "<gray>地面につくとエリトラは消えます")
+            .name("<yellow>これを使えば近くまで")
+            .lore("<gray>使うと垂直にジャンプしてそこからエリトラで滑空できます", "<gray>地面につくとエリトラは消えます")
             .customModelData(7)
             .build());
   }
@@ -30,14 +32,14 @@ public class WingItem extends CustomItem {
   public static void setWing(Player player) {
     val equiments = player.getEquipment();
     val temp = equiments.getItem(EquipmentSlot.CHEST);
-    equiments.setItem(
-        EquipmentSlot.CHEST,
+    val wing =
         new ItemBuilder(Material.ELYTRA)
             .name("<yellow>Wing")
             .customItemFlag(CustomItemFlag.MOVE_INV, false)
             .customItemFlag(CustomItemFlag.DROP, false)
-            .build(),
-        false);
+            .build();
+    val flag = !wing.isSimilar(temp);
+    equiments.setItem(EquipmentSlot.CHEST, wing, false);
     new BukkitRunnable() {
 
       @SuppressWarnings("deprecation")
@@ -46,10 +48,12 @@ public class WingItem extends CustomItem {
         if (!player.isOnGround()) {
           return;
         }
-        equiments.setItem(EquipmentSlot.CHEST, temp);
+        if (flag) {
+          equiments.setItem(EquipmentSlot.CHEST, temp);
+        }
         this.cancel();
       }
-    }.runTaskTimer(ComMiniPlugin.getPlugin(), 10, 1);
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 5, 1);
   }
 
   @Override
@@ -59,7 +63,7 @@ public class WingItem extends CustomItem {
     }
     itemUse();
     val player = e.getPlayer();
-    player.setVelocity(player.getVelocity().setY(2));
+    JumpPadBlock.setVelocity(player, player.getVelocity().setY(2), JUMP_STATE.FREE);
     setWing(player);
   }
 

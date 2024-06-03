@@ -1,6 +1,8 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
+import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock.JUMP_STATE;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
@@ -32,13 +34,15 @@ public class ShockWaveItem extends CustomItem {
       loc.getNearbyPlayers(15, p -> !player.equals(p))
           .forEach(
               p -> {
-                p.setVelocity(
-                    loc.toVector().subtract(p.getLocation().toVector()).normalize().multiply(2));
+                JumpPadBlock.setVelocity(
+                    p,
+                    loc.toVector().subtract(p.getLocation().toVector()).normalize().multiply(2),
+                    JUMP_STATE.FREE);
               });
       return;
     } else {
       loc.setPitch(Math.min(Math.max(loc.getPitch(), -20), 20));
-      player.setVelocity(loc.getDirection().multiply(2));
+      JumpPadBlock.setVelocity(player, loc.getDirection().multiply(2), JUMP_STATE.FREE);
     }
   }
 

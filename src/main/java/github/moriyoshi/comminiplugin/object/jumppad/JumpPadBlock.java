@@ -6,10 +6,11 @@ import com.google.gson.JsonPrimitive;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.util.tuple.Pair;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.Set;
+import java.util.UUID;
 import java.util.stream.IntStream;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,23 +21,27 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public class JumpPadBlock extends CustomBlock {
 
-  private static Set<FallingBlock> fallingBlocks = new HashSet<>();
+  private static Map<UUID, Entity> fallingBlocks = new HashMap<>();
 
   public static void clear() {
-    fallingBlocks.forEach(
-        falling -> {
-          if (!falling.isDead()) {
-            falling.remove();
-          }
-        });
+    fallingBlocks
+        .values()
+        .forEach(
+            falling -> {
+              if (!falling.isDead()) {
+                falling.remove();
+              }
+            });
     fallingBlocks.clear();
   }
 
@@ -138,30 +143,41 @@ public class JumpPadBlock extends CustomBlock {
   @Override
   public void walk(PlayerMoveEvent e) {
     val player = e.getPlayer();
+    if (fallingBlocks.containsKey(player.getUniqueId())) {
+      return;
+    }
     val launchLocation = e.getTo().clone();
     launchLocation.getWorld().playSound(launchLocation, sound, SoundCategory.MASTER, 1, 1);
     launchLocation.setPitch(-angel);
     if (direction != -1.0) {
       launchLocation.setYaw(direction);
     }
+    setVelocity(player, launchLocation.getDirection().normalize().multiply(power / 16f), state);
+  }
+
+  public static void setVelocity(Player player, Vector velocity, JUMP_STATE state) {
+    val uuid = player.getUniqueId();
+    val temp = fallingBlocks.remove(uuid);
+    if (temp != null) {
+      temp.remove();
+    }
+    val loc = player.getLocation();
     val falling =
-        launchLocation
-            .getWorld()
+        loc.getWorld()
             .spawn(
-                launchLocation,
+                loc,
                 FallingBlock.class,
                 entity -> {
                   entity.setBlockData(Material.MOVING_PISTON.createBlockData());
                   entity.setInvisible(true);
+                  entity.setInvulnerable(true);
                   entity.setSilent(true);
                   entity.setGravity(true);
                   entity.setDropItem(false);
                   entity.setCancelDrop(true);
-                  entity.setVelocity(
-                      launchLocation.getDirection().normalize().multiply(power / 15f));
+                  entity.setVelocity(velocity);
                 });
-
-    fallingBlocks.add(falling);
+    fallingBlocks.put(player.getUniqueId(), falling);
     switch (state) {
       case FREE -> {
         new BukkitRunnable() {
@@ -174,12 +190,9 @@ public class JumpPadBlock extends CustomBlock {
               this.cancel();
               return;
             }
-            if (0 >= --rest
-                || 0 >= falling.getVelocity().getY()
-                || 0 == falling.getVelocity().getX()
-                || 0 == falling.getVelocity().getZ()
-                || falling.isOnGround()) {
+            if (0 >= --rest || falling.isOnGround()) {
               falling.remove();
+              fallingBlocks.remove(uuid);
               this.cancel();
               return;
             }
@@ -196,11 +209,9 @@ public class JumpPadBlock extends CustomBlock {
               this.cancel();
               return;
             }
-            if (0 >= falling.getVelocity().getY()
-                || 0 == falling.getVelocity().getX()
-                || 0 == falling.getVelocity().getZ()
-                || falling.isOnGround()) {
+            if (0 >= falling.getVelocity().getY() || falling.isOnGround()) {
               falling.remove();
+              fallingBlocks.remove(uuid);
               this.cancel();
               return;
             }
@@ -217,10 +228,9 @@ public class JumpPadBlock extends CustomBlock {
               this.cancel();
               return;
             }
-            if (0 == falling.getVelocity().getX()
-                || 0 == falling.getVelocity().getZ()
-                || falling.isOnGround()) {
+            if (falling.isOnGround()) {
               falling.remove();
+              fallingBlocks.remove(uuid);
               this.cancel();
               return;
             }
@@ -252,7 +262,7 @@ public class JumpPadBlock extends CustomBlock {
     this.task.cancel();
   }
 
-  enum JUMP_STATE {
+  public enum JUMP_STATE {
     FIXED,
     DOWN,
     FREE,
