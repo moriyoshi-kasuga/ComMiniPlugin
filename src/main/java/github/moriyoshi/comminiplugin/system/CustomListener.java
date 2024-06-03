@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -31,6 +32,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class CustomListener implements Listener {
 
   private static final CustomListener INSTANCE = new CustomListener();
+
+  public static CustomListener getInstance() {
+    return INSTANCE;
+  }
 
   private CustomListener() {
     new BukkitRunnable() {
@@ -58,10 +63,6 @@ public class CustomListener implements Listener {
                 });
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
-  }
-
-  public static CustomListener getInstance() {
-    return INSTANCE;
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
@@ -249,6 +250,17 @@ public class CustomListener implements Listener {
       val custom = CustomItem.getCustomItem(item);
       if (custom != null) {
         custom.projectileLaunch(e, player);
+      }
+    }
+  }
+
+  @EventHandler(priority = EventPriority.HIGHEST)
+  public void damageEntity(final EntityDamageByEntityEvent e) {
+    if (e.getDamager() instanceof Player player) {
+      val item = player.getInventory().getItemInMainHand();
+      val custom = CustomItem.getCustomItem(item);
+      if (custom != null) {
+        custom.damageEntity(e, player);
       }
     }
   }

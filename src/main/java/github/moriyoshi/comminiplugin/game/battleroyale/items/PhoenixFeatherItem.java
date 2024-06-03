@@ -35,8 +35,8 @@ public class PhoenixFeatherItem extends CustomItem implements PlayerCooldownItem
       return;
     }
     itemUse();
-    setCooldown(20 * 20, player.getUniqueId());
-    player.setHealth(20);
+    setCooldown(90 * 20, player.getUniqueId());
+    player.heal(300);
     val loc = e.getPlayer().getLocation();
     val world = loc.getWorld();
     world.playSound(loc, Sound.ENTITY_VILLAGER_WORK_CLERIC, 3, 1);

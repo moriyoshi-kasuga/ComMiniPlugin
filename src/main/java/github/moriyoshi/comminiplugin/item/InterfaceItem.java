@@ -4,6 +4,7 @@ import java.util.UUID;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -77,7 +78,7 @@ public interface InterfaceItem {
    * @param player
    */
   @NotNull
-  default CustomItemKey getItemKey(Player player) {
+  default CustomItemKey getItemKey(final Player player) {
     return new CustomItemKey(getIdentifier(), player.getUniqueId());
   }
 
@@ -88,7 +89,7 @@ public interface InterfaceItem {
    * @param uuid uuid
    */
   @NotNull
-  default CustomItemKey getItemKey(@NonNull UUID uuid) {
+  default CustomItemKey getItemKey(@NonNull final UUID uuid) {
     return new CustomItemKey(getIdentifier(), uuid);
   }
 
@@ -189,9 +190,18 @@ public interface InterfaceItem {
   /**
    * このアイテムで projectile を launch したときに呼ばれます
    *
-   * @param e
+   * @param e event
+   * @param player player
    */
-  default void projectileLaunch(ProjectileLaunchEvent e, Player player) {}
+  default void projectileLaunch(final ProjectileLaunchEvent e, final Player player) {}
+
+  /**
+   * このアイテムを entity を攻撃したら呼ばれます
+   *
+   * @param e event
+   * @param player player
+   */
+  default void damageEntity(final EntityDamageByEntityEvent e, final Player player) {}
 
   default void itemUse() {
     getItem().setAmount(getItem().getAmount() - 1);
