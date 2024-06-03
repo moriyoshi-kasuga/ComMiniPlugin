@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import lombok.val;
 import net.wesjd.anvilgui.AnvilGUI.ResponseAction;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -145,17 +146,19 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
   @SuppressWarnings("unchecked")
   public ListMenu<T> getNewMenu(List<T> list, int rewardStartIndex, int rewardEndIndex) {
     try {
-      return getClass()
-          .getDeclaredConstructor(
-              ComMiniPlugin.class,
-              String.class,
-              int.class,
-              List.class,
-              int.class,
-              int.class,
-              Function.class)
-          .newInstance(
-              getPlugin(), title, getPageSize(), list, rewardStartIndex, rewardEndIndex, function);
+      val constructor =
+          getClass()
+              .getDeclaredConstructor(
+                  ComMiniPlugin.class,
+                  String.class,
+                  int.class,
+                  List.class,
+                  int.class,
+                  int.class,
+                  Function.class);
+      constructor.setAccessible(true);
+      return constructor.newInstance(
+          getPlugin(), title, getPageSize(), list, rewardStartIndex, rewardEndIndex, function);
     } catch (InstantiationException
         | IllegalAccessException
         | IllegalArgumentException
