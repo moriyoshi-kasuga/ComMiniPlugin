@@ -5,7 +5,6 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -38,12 +37,5 @@ public class InvisibleCloakItem extends CustomItem implements CooldownItem {
     val player = e.getPlayer();
     player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 200, 0, true, false));
     player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1, true, false));
-  }
-
-  @Override
-  public void runTick(Player player) {
-    if (inCooldown()) {
-      countDown();
-    }
   }
 }

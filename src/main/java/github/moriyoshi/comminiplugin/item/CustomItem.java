@@ -14,17 +14,6 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.val;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -230,37 +219,4 @@ public abstract class CustomItem implements InterfaceItem {
   public @NotNull String getIdentifier() {
     return getClass().getSimpleName();
   }
-
-  @Override
-  public void runTick(Player player) {}
-
-  @Override
-  public void clickItem(InventoryClickEvent e) {}
-
-  @Override
-  public void itemSpawn(ItemSpawnEvent e) {}
-
-  @Override
-  public void blockBreak(BlockBreakEvent e) {}
-
-  @Override
-  public void heldOfOther(PlayerItemHeldEvent e) {}
-
-  @Override
-  public void shiftItem(PlayerToggleSneakEvent e, @Nullable EquipmentSlot equipmentSlot) {}
-
-  @Override
-  public void dropItem(PlayerDropItemEvent e) {}
-
-  @Override
-  public void swapToMainHand(PlayerSwapHandItemsEvent e) {}
-
-  @Override
-  public void swapToOffHand(PlayerSwapHandItemsEvent e) {}
-
-  @Override
-  public void interact(PlayerInteractEvent e) {}
-
-  @Override
-  public void projectileLaunch(ProjectileLaunchEvent e, Player player) {}
 }

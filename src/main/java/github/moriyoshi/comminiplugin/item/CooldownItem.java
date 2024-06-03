@@ -4,9 +4,7 @@ import github.moriyoshi.comminiplugin.util.Util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public interface CooldownItem extends InterfaceItem {
@@ -14,10 +12,8 @@ public interface CooldownItem extends InterfaceItem {
   Map<CustomItemKey, Integer> COOLDOWN = new HashMap<>();
 
   default int getCooldown() {
-    if (!inCooldown()) {
-      throw new RuntimeException(getItemKey() + "のクールダウンはありません");
-    }
-    return COOLDOWN.get(getItemKey());
+    return Optional.ofNullable(COOLDOWN.get(getItemKey()))
+        .orElseThrow(() -> new RuntimeException(getItemKey() + "のクールダウンはありません"));
   }
 
   default void setCooldown(final int cooldown) {
@@ -43,16 +39,16 @@ public interface CooldownItem extends InterfaceItem {
       return true;
     }
     COOLDOWN.remove(getItemKey());
+    endCountDown();
     return false;
   }
 
+  default void endCountDown() {}
+
   @Override
-  default Optional<BiConsumer<Player, ItemStack>> heldItem() {
-    return Optional.of(
-        (player, item) -> {
-          player.sendActionBar(
-              Util.mm(inCooldown() ? getHasCooldownMessage(getCooldown()) : getReadyMessage()));
-        });
+  default void heldItem(Player player) {
+    player.sendActionBar(
+        Util.mm(inCooldown() ? getHasCooldownMessage(getCooldown()) : getReadyMessage()));
   }
 
   /**
@@ -63,11 +59,15 @@ public interface CooldownItem extends InterfaceItem {
    */
   @NotNull
   default String getHasCooldownMessage(int cooldown) {
-    return "<red>Now on " + cooldown / 20 + " cooldown";
+    return "<red>Now on %.1f cooldown".formatted((double) cooldown / 20.0);
   }
 
   @NotNull
   default String getReadyMessage() {
     return "<green>READY";
+  }
+
+  default boolean shouldAutoReduceCountDown() {
+    return true;
   }
 }

@@ -6,8 +6,6 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.Util;
 import java.util.HashMap;
-import java.util.Optional;
-import java.util.function.BiConsumer;
 import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
@@ -119,44 +117,37 @@ public class Sniper extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public Optional<BiConsumer<Player, ItemStack>> heldItem() {
-    return Optional.of(
-        (player, item) -> {
-          final String bullet = Bullet.getFirstBullet(player).map(Bullet::getName).orElse(null);
-          final boolean flag =
-              NBT.modify(
-                  item,
-                  nbt -> {
-                    val compound = nbt.getCompound(nbtKey);
-                    if (compound.hasTag("nextBullet")) {
-                      return !compound.getString("nextBullet").equals(bullet);
-                    }
-                    return true;
-                  });
-          if (flag) {
-            new ItemBuilder(item)
-                .name(
-                    DEFAULT_NAME.append(
-                        StringUtils.isEmpty(bullet)
-                            ? Util.mm("<gray>: <red>None")
-                            : Util.mm("<gray>: <white>" + bullet)));
-            NBT.modify(
-                item,
-                nbt -> {
-                  nbt.getCompound(nbtKey).setString("nextBullet", bullet);
-                });
-          }
-        });
+  public void heldItem(final Player player) {
+    val bullet = Bullet.getFirstBullet(player).map(Bullet::getName).orElse(null);
+    val item = getItem();
+    val flag =
+        NBT.modify(
+            item,
+            nbt -> {
+              val compound = nbt.getCompound(nbtKey);
+              if (compound.hasTag("nextBullet")) {
+                return !compound.getString("nextBullet").equals(bullet);
+              }
+              return true;
+            });
+    if (flag) {
+      new ItemBuilder(item)
+          .name(
+              DEFAULT_NAME.append(
+                  StringUtils.isEmpty(bullet)
+                      ? Util.mm("<gray>: <red>None")
+                      : Util.mm("<gray>: <white>" + bullet)));
+      NBT.modify(
+          item,
+          nbt -> {
+            nbt.getCompound(nbtKey).setString("nextBullet", bullet);
+          });
+    }
   }
 
   @Override
-  public void runTick(final Player player) {
-    if (!inCooldown()) {
-      return;
-    }
-    if (!countDown()) {
-      new ItemBuilder(getItem()).type(Material.SPYGLASS);
-    }
+  public void endCountDown() {
+    new ItemBuilder(getItem()).type(Material.SPYGLASS);
   }
 
   @Override

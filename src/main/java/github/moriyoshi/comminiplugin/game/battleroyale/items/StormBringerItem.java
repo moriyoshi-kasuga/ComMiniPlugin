@@ -6,7 +6,6 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -53,12 +52,5 @@ public class StormBringerItem extends CustomItem implements CooldownItem {
               world.strikeLightningEffect(p.getLocation()).setFlashCount(3);
               p.damage(10);
             });
-  }
-
-  @Override
-  public void runTick(Player player) {
-    if (inCooldown()) {
-      countDown();
-    }
   }
 }

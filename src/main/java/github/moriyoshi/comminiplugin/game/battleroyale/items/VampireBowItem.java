@@ -6,8 +6,6 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.BiConsumer;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -77,26 +75,28 @@ public class VampireBowItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public Optional<BiConsumer<Player, ItemStack>> heldItem() {
-    return Optional.of(
-        (player, item) -> {
-          if (7 > player.getHealth()) {
-            return;
-          }
-          if (!inCooldown()) {
-            setCooldown(40);
-            return;
-          }
-          if (countDown()) {
-            return;
-          }
-          player.damage(1);
-          NBT.modify(
-              item,
-              nbt -> {
-                nbt.getCompound(nbtKey).setInteger("level", ++level);
-              });
-          new ItemBuilder(getItem()).name("<red>弓血鬼 +" + level);
+  public void heldItem(final Player player) {
+    if (7 > player.getHealth()) {
+      return;
+    }
+    if (!inCooldown()) {
+      setCooldown(40);
+      return;
+    }
+    if (countDown()) {
+      return;
+    }
+    player.damage(1);
+    NBT.modify(
+        getItem(),
+        nbt -> {
+          nbt.getCompound(nbtKey).setInteger("level", ++level);
         });
+    new ItemBuilder(getItem()).name("<red>弓血鬼 +" + level);
+  }
+
+  @Override
+  public boolean shouldAutoReduceCountDown() {
+    return false;
   }
 }

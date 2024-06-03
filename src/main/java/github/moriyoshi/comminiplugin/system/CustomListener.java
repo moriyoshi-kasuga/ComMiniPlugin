@@ -2,6 +2,7 @@ package github.moriyoshi.comminiplugin.system;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.item.CooldownItem;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.item.PlayerCooldownItem;
@@ -35,26 +36,26 @@ public class CustomListener implements Listener {
     new BukkitRunnable() {
       @Override
       public void run() {
+        PlayerCooldownItem.allCountDown();
         Bukkit.getOnlinePlayers()
             .forEach(
-                p ->
-                    p.getInventory()
-                        .forEach(
-                            i -> {
-                              val item = CustomItem.getCustomItem(i);
-                              if (item != null) item.runTick(p);
-                            }));
-
-        val it = PlayerCooldownItem.COOLDOWN.entrySet().iterator();
-        while (it.hasNext()) {
-          val entry = it.next();
-          var num = entry.getValue();
-          if (0 >= --num) {
-            PlayerCooldownItem.COOLDOWN.remove(entry.getKey());
-            return;
-          }
-          PlayerCooldownItem.COOLDOWN.put(entry.getKey(), num);
-        }
+                p -> {
+                  val inv = p.getInventory();
+                  val main = CustomItem.getCustomItem(inv.getItemInMainHand());
+                  if (main != null) main.heldItem(p);
+                  inv.forEach(
+                      i -> {
+                        val item = CustomItem.getCustomItem(i);
+                        if (item != null) {
+                          item.runTick(p);
+                          if (item instanceof CooldownItem cooldownItem
+                              && cooldownItem.shouldAutoReduceCountDown()
+                              && cooldownItem.inCooldown()) {
+                            cooldownItem.countDown();
+                          }
+                        }
+                      });
+                });
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
   }

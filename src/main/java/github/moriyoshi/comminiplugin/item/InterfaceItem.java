@@ -1,11 +1,7 @@
 package github.moriyoshi.comminiplugin.item;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 import lombok.NonNull;
-import lombok.val;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
@@ -18,7 +14,6 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,6 +46,19 @@ public interface InterfaceItem {
    */
   default boolean canStack() {
     return false;
+  }
+
+  default boolean canMoveOtherInv(final InventoryClickEvent e) {
+    return true;
+  }
+
+  /**
+   * {@code CustomItemsCommand } に載せるかどうか?
+   *
+   * @return true なら載せる
+   */
+  default boolean canShowing() {
+    return true;
   }
 
   /**
@@ -93,49 +101,46 @@ public interface InterfaceItem {
   ItemStack getItem();
 
   /**
-   * {@link CustomItem#heldOfThis(PlayerItemHeldEvent)} で開始してほかのアイテムに変えた場合に終了する
    * アイテムを持っている間だけ1tickごとにする処理です
    *
    * @return 処理
    */
-  default Optional<BiConsumer<Player, ItemStack>> heldItem() {
-    return Optional.empty();
-  }
+  default void heldItem(final Player player) {}
 
   /**
    * プレイヤーのインベントリーにあるさいに常に更新されるアイテムです
    *
    * @param player player
    */
-  void runTick(final Player player);
+  default void runTick(final Player player) {}
 
   /**
    * インベントリー上でアイテムをクリックしました
    *
    * @param e event
    */
-  void clickItem(final InventoryClickEvent e);
+  default void clickItem(final InventoryClickEvent e) {}
 
   /**
    * このアイテムがスポーンした際に呼ばれます
    *
    * @param e event
    */
-  void itemSpawn(final ItemSpawnEvent e);
+  default void itemSpawn(final ItemSpawnEvent e) {}
 
   /**
    * このアイテムをメインハンドに持ってブロックを破壊したさいに呼ばれます
    *
    * @param e event
    */
-  void blockBreak(final BlockBreakEvent e);
+  default void blockBreak(final BlockBreakEvent e) {}
 
   /**
    * このアイテムからほかのにswapした時の処理
    *
    * @param e event
    */
-  void heldOfOther(final PlayerItemHeldEvent e);
+  default void heldOfOther(final PlayerItemHeldEvent e) {}
 
   /**
    * このアイテムをもちsneakをするときの処理
@@ -143,83 +148,52 @@ public interface InterfaceItem {
    * @param e event
    * @parmam equipmentSlot 要求される装備スロット (null なら inventory です)
    */
-  void shiftItem(final PlayerToggleSneakEvent e, final @Nullable EquipmentSlot equipmentSlot);
+  default void shiftItem(
+      final PlayerToggleSneakEvent e, final @Nullable EquipmentSlot equipmentSlot) {}
 
   /**
    * このアイテムを捨てたさいの処理
    *
    * @param e event
    */
-  void dropItem(final PlayerDropItemEvent e);
+  default void dropItem(final PlayerDropItemEvent e) {}
 
   /**
    * マインハンドにアイテムを切り替えたら発動 先にオフハンドが呼び出されます、キャンセルされたらこれは呼び出されません
    *
    * @param e event
    */
-  void swapToMainHand(final PlayerSwapHandItemsEvent e);
+  default void swapToMainHand(final PlayerSwapHandItemsEvent e) {}
 
   /**
    * オフハンドに切り替えたら発動 先にこれが呼び出されキャンセルたらメインハンドは呼び出されません
    *
    * @param e event
    */
-  void swapToOffHand(final PlayerSwapHandItemsEvent e);
-
-  default boolean canMoveOtherInv(final InventoryClickEvent e) {
-    return true;
-  }
-
-  /**
-   * {@code CustomItemsCommand } に載せるかどうか?
-   *
-   * @return true なら載せる
-   */
-  default boolean canShowing() {
-    return true;
-  }
-
-  default void itemUse() {
-    getItem().setAmount(getItem().getAmount() - 1);
-  }
+  default void swapToOffHand(final PlayerSwapHandItemsEvent e) {}
 
   /**
    * デフォルトではeventはキャンセルされますが {@code e.setCancelled(false)} をすることでキャンセルするのを防げます
    *
    * @param e event
    */
-  void interact(final PlayerInteractEvent e);
+  default void interact(final PlayerInteractEvent e) {}
 
   /**
    * ほかのアイテムからこのカスタムアイテムにswapした時の処理
    *
    * @param e event
    */
-  default void heldOfThis(final PlayerItemHeldEvent e) {
-    val player = e.getPlayer();
-    val v = this;
-    val opt = heldItem();
-    if (opt.isPresent()) {
-      val consumer = opt.get();
-      new BukkitRunnable() {
-
-        @Override
-        public void run() {
-          val item = player.getInventory().getItemInMainHand();
-          if (v.equals(CustomItem.getCustomItem(item))) {
-            consumer.accept(player, item);
-            return;
-          }
-          this.cancel();
-        }
-      }.runTaskTimer(ComMiniPlugin.getPlugin(), 0L, 1L);
-    }
-  }
+  default void heldOfThis(final PlayerItemHeldEvent e) {}
 
   /**
    * このアイテムで projectile を launch したときに呼ばれます
    *
    * @param e
    */
-  void projectileLaunch(ProjectileLaunchEvent e, Player player);
+  default void projectileLaunch(ProjectileLaunchEvent e, Player player) {}
+
+  default void itemUse() {
+    getItem().setAmount(getItem().getAmount() - 1);
+  }
 }

@@ -115,4 +115,9 @@ public class SpeedBootsItem extends CustomItem implements CooldownItem {
       }
     }
   }
+
+  @Override
+  public boolean shouldAutoReduceCountDown() {
+    return false;
+  }
 }

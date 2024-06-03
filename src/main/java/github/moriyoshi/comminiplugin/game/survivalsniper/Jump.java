@@ -11,7 +11,6 @@ import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -82,10 +81,8 @@ public class Jump extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void runTick(final Player player) {
-    if (!countDown()) {
-      new ItemBuilder(getItem()).type(Material.PHANTOM_MEMBRANE);
-    }
+  public void endCountDown() {
+    new ItemBuilder(getItem()).type(Material.PHANTOM_MEMBRANE);
   }
 
   @Override
