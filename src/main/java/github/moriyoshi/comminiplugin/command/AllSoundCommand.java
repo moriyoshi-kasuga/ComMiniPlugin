@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AllSoundCommand extends CommandAPICommand {
 
+  //TODO: もっとちゃんとアイテム適用するようにする
   public static Material getMaterial(final Sound sound) {
     final String name = sound.name();
     val materials = new ArrayList<>(Arrays.asList(Material.values()));
