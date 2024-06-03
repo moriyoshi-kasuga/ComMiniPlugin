@@ -30,6 +30,7 @@ import org.bukkit.Location;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -130,6 +131,10 @@ public final class ComMiniPlugin extends JavaPlugin {
     CustomBlockData.getInstance().saveFile();
     CommandAPI.onDisable();
     LocationsCommands.getManager().saveFile();
+
+    HandlerList.unregisterAll(guiListener);
+    HandlerList.unregisterAll(GameListener.getInstance());
+    HandlerList.unregisterAll(CustomListener.getInstance());
 
     JumpPadBlock.clear();
 
