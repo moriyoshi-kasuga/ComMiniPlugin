@@ -11,21 +11,21 @@ import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
-public class Jump extends CustomItem implements CooldownItem {
+public class JumpItem extends CustomItem implements CooldownItem {
 
   private static final Component DEFAULT_NAME = Util.mm("<yellow>ジャンプ");
   private static final Component DESCRIPTION = Util.mm("<red>注意! 着地した後一定時間操作不能");
   private static final int DEFAULT_COOLDOWN_TICK = 140;
   private static final Vector MULTIPLY = new Vector(3, 2.4, 3);
 
-  public Jump() {
+  public JumpItem() {
     this(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
             .name(DEFAULT_NAME)
@@ -34,28 +34,25 @@ public class Jump extends CustomItem implements CooldownItem {
             .build());
   }
 
-  public Jump(final ItemStack item) {
+  public JumpItem(@NotNull ItemStack item) {
     super(item);
   }
 
   @Override
   public void interact(final PlayerInteractEvent e) {
     if (e.getAction().isLeftClick()) {
-      e.setCancelled(false);
       return;
     }
     val p = e.getPlayer();
-    val eyeLoc = p.getEyeLocation();
+    val loc = p.getLocation();
     if (inCooldown()) {
-      if ((DEFAULT_COOLDOWN_TICK - 10) > getCooldown()) {
-        p.playSound(eyeLoc, Sound.BLOCK_DISPENSER_FAIL, 1, 1);
-      }
+      p.playSound(loc, Sound.BLOCK_DISPENSER_FAIL, 1, 1);
       return;
     }
-    p.getWorld().playSound(eyeLoc, Sound.ITEM_ARMOR_EQUIP_LEATHER, 2, 1);
+    p.getWorld().playSound(loc, Sound.ITEM_ARMOR_EQUIP_LEATHER, 2, 1);
     setCooldown(DEFAULT_COOLDOWN_TICK);
     p.setFallDistance(0);
-    p.setVelocity(eyeLoc.getDirection().multiply(MULTIPLY));
+    p.setVelocity(loc.getDirection().multiply(MULTIPLY));
     new ItemBuilder(getItem()).type(Material.CLOCK);
     new BukkitRunnable() {
 
@@ -88,10 +85,5 @@ public class Jump extends CustomItem implements CooldownItem {
   @Override
   public boolean canMoveOtherInv(final InventoryClickEvent e) {
     return false;
-  }
-
-  @Override
-  public void itemSpawn(final ItemSpawnEvent e) {
-    e.getEntity().remove();
   }
 }

@@ -22,7 +22,7 @@ public class SSSlot extends HotbarSlot {
   protected List<Supplier<ItemStack>> getDefaults() {
     return generate(
         () -> new Sniper().getItem(),
-        () -> new Jump().getItem(),
+        () -> new JumpItem().getItem(),
         () -> new ItemStack(Material.IRON_AXE),
         () -> new ItemStack(Material.IRON_PICKAXE),
         () -> new ItemBuilder(Material.OAK_SAPLING).amount(3).build(),
