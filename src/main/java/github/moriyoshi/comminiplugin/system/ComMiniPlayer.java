@@ -44,12 +44,13 @@ public final class ComMiniPlayer extends JsonAPI {
   }
 
   public static ComMiniPlayer getPlayer(final UUID uuid) {
-    if (players.containsKey(uuid)) {
-      return players.get(uuid);
+    var player = players.get(uuid);
+    if (player != null) {
+      return player;
     }
-    val p = new ComMiniPlayer(uuid);
-    players.put(uuid, p);
-    return p;
+    player = new ComMiniPlayer(uuid);
+    players.put(uuid, player);
+    return player;
   }
 
   private final UUID uuid;
@@ -95,10 +96,10 @@ public final class ComMiniPlayer extends JsonAPI {
 
   @SuppressWarnings("unchecked")
   public <T extends InterfaceGamePlayer> T getGamePlayerData(final Class<T> clazz) {
-    if (gamePlayerDatas.containsKey(clazz)) {
-      return (T) gamePlayerDatas.get(clazz);
+    T data = (T) gamePlayerDatas.get(clazz);
+    if (data != null) {
+      return data;
     }
-    T data = null;
     try {
       data = clazz.getDeclaredConstructor().newInstance();
     } catch (InstantiationException

@@ -5,10 +5,14 @@ import com.google.common.collect.HashBiMap;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.util.HashUUID;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.val;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -29,6 +33,8 @@ import org.reflections.Reflections;
 public abstract class CustomItem implements InterfaceItem {
 
   private static final BiMap<String, Class<? extends CustomItem>> registers = HashBiMap.create();
+  private static final Map<String, Constructor<? extends CustomItem>> newConstructors =
+      HashBiMap.create();
 
   public static final BiMap<String, Class<? extends CustomItem>> canShowingRegisters =
       HashBiMap.create();
@@ -40,10 +46,12 @@ public abstract class CustomItem implements InterfaceItem {
         item -> {
           String id;
           boolean canShowing;
+          Constructor<? extends CustomItem> newConstructor;
           try {
             val instance = item.getDeclaredConstructor().newInstance();
             id = instance.getIdentifier();
             canShowing = instance.canShowing();
+            newConstructor = item.getDeclaredConstructor(ItemStack.class);
           } catch (InstantiationException
               | IllegalAccessException
               | InvocationTargetException
@@ -61,6 +69,7 @@ public abstract class CustomItem implements InterfaceItem {
           ComMiniPrefix.SYSTEM.logDebug(
               "<gray>REGISTER ITEM " + item.getSimpleName() + " (canShowing: " + canShowing + ")");
           CustomItem.registers.put(id, item);
+          CustomItem.newConstructors.put(id, newConstructor);
           if (canShowing) {
             CustomItem.canShowingRegisters.putIfAbsent(id, item);
           }
@@ -84,27 +93,24 @@ public abstract class CustomItem implements InterfaceItem {
   }
 
   public static Optional<CustomItem> getCustomItemOptional(final ItemStack item) {
-    if (CustomItem.isCustomItem(item)) {
-      return Optional.of(getCustomItem(item));
-    }
-    return Optional.empty();
+    return Optional.ofNullable(getCustomItem(item));
   }
 
+  @Nullable
   public static CustomItem getCustomItem(final ItemStack item) {
     final var ci = getIdentifier(item);
     if (ci.isPresent()) {
       try {
-        return registers.get(ci.get()).getDeclaredConstructor(ItemStack.class).newInstance(item);
+        return newConstructors.get(ci.get()).newInstance(item);
       } catch (InstantiationException
           | IllegalAccessException
           | IllegalArgumentException
           | InvocationTargetException
-          | NoSuchMethodException
           | SecurityException e) {
-        throw new RuntimeException(e);
+        return null;
       }
     }
-    throw new IllegalArgumentException("このアイテムは CustomItem ではありません。" + item.toString());
+    return null;
   }
 
   public static boolean equalsItem(final ItemStack itemStack, final Class<?> clazz) {
@@ -184,9 +190,9 @@ public abstract class CustomItem implements InterfaceItem {
         });
   }
 
-  @NotNull private final ItemStack item;
+  @Getter @NotNull private final ItemStack item;
 
-  private UUID uuid;
+  @NotNull private UUID uuid;
 
   public CustomItem(@NotNull final ItemStack item) {
     NBT.modify(
@@ -196,29 +202,19 @@ public abstract class CustomItem implements InterfaceItem {
           if (!compound.hasTag("identifier")) {
             compound.setString("identifier", getIdentifier());
           }
-          generateUUID()
-              .ifPresent(
-                  supplier -> {
-                    if (compound.hasTag("uuid")) {
-                      this.uuid = compound.getUUID("uuid");
-                    } else {
-                      val uuid = supplier.get();
-                      compound.setUUID("uuid", uuid);
-                      this.uuid = uuid;
-                    }
-                  });
+          if (compound.hasTag("uuid")) {
+            this.uuid = compound.getUUID("uuid");
+          } else {
+            val uuid = canStack() ? HashUUID.v5(getClass().getName()) : UUID.randomUUID();
+            compound.setUUID("uuid", uuid);
+            this.uuid = uuid;
+          }
         });
     this.item = item;
   }
 
-  @Override
-  public @Nullable UUID getUniqueId() {
-    return this.uuid;
-  }
-
-  @Override
-  public @NotNull ItemStack getItem() {
-    return this.item;
+  public UUID getUniqueId() {
+    return uuid;
   }
 
   @Override

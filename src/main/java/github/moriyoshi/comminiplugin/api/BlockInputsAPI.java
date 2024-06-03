@@ -71,8 +71,9 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
     val location = loc.toBlockLocation();
     for (val yaw : List.of(180, 90, -90, 0)) {
       location.setYaw(yaw);
-      if (locations.containsKey(location)) {
-        return locations.get(location);
+      val finalLoc = locations.get(location);
+      if (finalLoc != null) {
+        return finalLoc;
       }
     }
     return null;
@@ -100,14 +101,16 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
     return false;
   }
 
-  public final void removeLocation(Location loc) {
+  public final Location removeLocation(Location loc) {
     val location = loc.toBlockLocation();
     for (val yaw : List.of(180, 90, -90, 0)) {
       location.setYaw(yaw);
       if (locations.remove(location) != null) {
         hideLocation(location);
+        return location;
       }
     }
+    return null;
   }
 
   public final void hideAllLocation(Player player) {

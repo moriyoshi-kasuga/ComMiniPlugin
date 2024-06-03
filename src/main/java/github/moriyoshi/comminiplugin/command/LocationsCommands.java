@@ -53,11 +53,11 @@ public class LocationsCommands extends JsonAPI {
       withOptionalArguments(new EntitySelectorArgument.ManyPlayers("players"));
       executesPlayer(
           (p, args) -> {
-            if (!getManager().locations.containsKey((String) args.get("name"))) {
+            val loc = getManager().locations.get(args.get("name"));
+            if (loc == null) {
               ComMiniPrefix.SYSTEM.send(p, "<red>その名前のlocはありません");
               return;
             }
-            val loc = getManager().locations.get((String) args.get("name"));
             args.getOptional("players")
                 .ifPresentOrElse(
                     (players) ->
@@ -80,12 +80,10 @@ public class LocationsCommands extends JsonAPI {
                               () -> getManager().locations.keySet().toArray(String[]::new)))));
       executesPlayer(
           (p, args) -> {
-            val name = (String) args.get("name");
-            if (!getManager().locations.containsKey(name)) {
+            if (getManager().locations.remove(args.get("name")) == null) {
               ComMiniPrefix.SYSTEM.send(p, "<red>その名前のlocはありません");
               return;
             }
-            getManager().locations.remove(name);
           });
     }
   }
@@ -116,8 +114,7 @@ public class LocationsCommands extends JsonAPI {
     }
   }
 
-  @Getter(lazy = true)
-  private static final LocationsCommands manager = new LocationsCommands();
+  @Getter() private static final LocationsCommands manager = new LocationsCommands();
 
   private Map<String, Location> locations;
 

@@ -70,7 +70,7 @@ public final class BukkitUtil {
     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, tick, 138, true, false));
   }
 
-  private static final BlockFace[] axis = {
+  public static final BlockFace[] axis = {
     BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
   };
 

@@ -43,11 +43,11 @@ public class GameSystem {
       ComMiniPrefix.SYSTEM.send(player, "<green>現在は <u>" + game.name + "<reset><green>が開催されています!");
       return false;
     }
-    if (!games.containsKey(gameName)) {
+    var temp = games.get(gameName);
+    if (temp == null) {
       ComMiniPrefix.SYSTEM.important("<red>" + gameName + "ゲームの識別子が正しくありません! 開発者に連絡してください。");
       return false;
     }
-    var temp = games.get(gameName);
     if (!temp.initializeGame(player)) {
       ComMiniPrefix.SYSTEM.send(player, "<red>" + gameName + "を始められません、初期化条件が存在します!");
       return false;

@@ -4,9 +4,6 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Supplier;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -66,7 +63,7 @@ public class WingItem extends CustomItem {
   }
 
   @Override
-  public Optional<Supplier<UUID>> generateUUID() {
-    return Optional.empty();
+  public boolean canStack() {
+    return true;
   }
 }

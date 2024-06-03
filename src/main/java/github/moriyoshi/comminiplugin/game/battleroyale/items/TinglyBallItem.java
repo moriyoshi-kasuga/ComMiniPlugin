@@ -4,9 +4,6 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Supplier;
 import lombok.val;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -75,7 +72,7 @@ public class TinglyBallItem extends CustomItem {
   }
 
   @Override
-  public Optional<Supplier<UUID>> generateUUID() {
-    return Optional.empty();
+  public boolean canStack() {
+    return true;
   }
 }

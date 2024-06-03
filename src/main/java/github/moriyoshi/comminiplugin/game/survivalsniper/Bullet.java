@@ -5,9 +5,7 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -128,8 +126,8 @@ public class Bullet extends CustomItem {
   }
 
   @Override
-  public Optional<Supplier<UUID>> generateUUID() {
-    return Optional.empty();
+  public boolean canStack() {
+    return true;
   }
 
   public void use(final Player p) {

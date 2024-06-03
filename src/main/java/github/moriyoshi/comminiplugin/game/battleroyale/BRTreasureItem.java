@@ -62,15 +62,14 @@ public class BRTreasureItem extends CustomItem {
     }
     val treasure = game.getField().getTreasure();
     if (e.getAction().isLeftClick()) {
-      if (!treasure.containsLocation(block.getLocation())) {
+      if (treasure.removeLocation(block.getLocation()) == null) {
         ComMiniPrefix.SYSTEM.send(player, "<red>please look at a treasure block");
         return;
       }
-      treasure.removeLocation(block.getLocation());
       ComMiniPrefix.SYSTEM.send(player, "<green>successfully removed treasure block");
     } else {
-      if (treasure.containsLocation(block.getLocation())) {
-        val values = treasure.getLocationData(block.getLocation());
+      val values = treasure.getLocationData(block.getLocation());
+      if (values != null) {
         if (values.stream().allMatch(p -> p.getSecond() == 1)) {
           ComMiniPrefix.SYSTEM.send(
               player,

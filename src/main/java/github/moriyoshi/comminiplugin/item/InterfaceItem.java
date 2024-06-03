@@ -1,11 +1,9 @@
 package github.moriyoshi.comminiplugin.item;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 import lombok.NonNull;
 import lombok.val;
 import org.bukkit.entity.Player;
@@ -42,11 +40,17 @@ public interface InterfaceItem {
    *
    * @return uuid
    */
-  @Nullable
+  @NotNull
   UUID getUniqueId();
 
-  default Optional<Supplier<UUID>> generateUUID() {
-    return Optional.of(() -> UUID.randomUUID());
+  /**
+   * これを true にするとスタックできます、しかし内部でuuidを固定にしているので、<br>
+   * {@code #getItemKey()} を使った処理が使えなくなります
+   *
+   * @return can stack
+   */
+  default boolean canStack() {
+    return false;
   }
 
   /**
@@ -55,7 +59,7 @@ public interface InterfaceItem {
    */
   @NotNull
   default CustomItemKey getItemKey() {
-    return new CustomItemKey(getIdentifier(), Objects.requireNonNull(getUniqueId()));
+    return new CustomItemKey(getIdentifier(), getUniqueId());
   }
 
   /**
@@ -202,7 +206,7 @@ public interface InterfaceItem {
         @Override
         public void run() {
           val item = player.getInventory().getItemInMainHand();
-          if (CustomItem.isCustomItem(item) && v.equals(CustomItem.getCustomItem(item))) {
+          if (v.equals(CustomItem.getCustomItem(item))) {
             consumer.accept(player, item);
             return;
           }

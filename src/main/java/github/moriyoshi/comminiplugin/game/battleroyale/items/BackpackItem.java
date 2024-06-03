@@ -3,9 +3,6 @@ package github.moriyoshi.comminiplugin.game.battleroyale.items;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Supplier;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -47,7 +44,7 @@ public class BackpackItem extends CustomItem {
   }
 
   @Override
-  public Optional<Supplier<UUID>> generateUUID() {
-    return Optional.empty();
+  public boolean canStack() {
+    return true;
   }
 }

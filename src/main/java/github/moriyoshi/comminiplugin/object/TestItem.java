@@ -36,12 +36,12 @@ public class TestItem extends CustomItem {
       return;
     }
     if (e.getAction().isLeftClick()) {
-      if (!CustomBlock.isCustomBlock(block)) {
-        ComMiniPrefix.SYSTEM.send(player, "<red>please look at a custom block");
+      if (!CustomBlock.isCustomBlock(block,TreasureChest.class)) {
+        ComMiniPrefix.SYSTEM.send(player, "<red>please look at a Treasure block");
         return;
       }
       CustomBlock.getCustomBlock(block).remove();
-      ComMiniPrefix.SYSTEM.send(player, "<green>successfully removed custom block");
+      ComMiniPrefix.SYSTEM.send(player, "<green>successfully removed Treasure block");
     } else {
       if (CustomBlock.isCustomBlock(block)) {
         ComMiniPrefix.SYSTEM.send(player, "<red>already a custom block");
