@@ -3,15 +3,21 @@ package github.moriyoshi.comminiplugin.command;
 import dev.jorel.commandapi.CommandAPICommand;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.buttons.AddSpecButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.TeleportLobbyButton;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 public class MenuCommand extends CommandAPICommand {
 
@@ -34,6 +40,15 @@ public class MenuCommand extends CommandAPICommand {
               setButton(14, AddSpecButton.of());
             }
           };
+      setButton(
+          9,
+          new ItemButton<>(
+              new ItemBuilder(Material.NETHER_STAR).name("<yellow>リソパをリロードする").build()) {
+            @Override
+            public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+              ResourcePackUtil.updateComMiniResoucePack((Player) event.getWhoClicked());
+            }
+          });
     }
 
     @Override

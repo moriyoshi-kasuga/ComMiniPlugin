@@ -3,12 +3,7 @@ package github.moriyoshi.comminiplugin.system;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,23 +75,8 @@ public class GameListener implements Listener {
         && GameSystem.getGame().listener.join(e)) {
       return;
     }
-    try {
-      val url =
-          new URI(
-                  "https://raw.githubusercontent.com/moriyoshi-kasuga/ComMiniResoucePack/hash/hash.txt")
-              .toURL();
-      try (BufferedReader reader =
-          new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"))) {
-        val hash = reader.readLine();
-        p.setResourcePack(
-            "https://github.com/moriyoshi-kasuga/ComMiniResoucePack/releases/download/latest/resources.zip",
-            hash,
-            true);
-      } catch (IOException e1) {
-      }
-    } catch (MalformedURLException | URISyntaxException e1) {
-    }
     GameSystem.initializePlayer(p);
+    ResourcePackUtil.updateComMiniResoucePack(p);
   }
 
   @EventHandler
