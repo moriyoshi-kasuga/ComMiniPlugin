@@ -1,6 +1,5 @@
 package github.moriyoshi.comminiplugin.system;
 
-import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
@@ -179,39 +178,39 @@ public class GameListener implements Listener {
     }
   }
 
-  @EventHandler
-  public void jump(PlayerJumpEvent e) {
-    e.getPlayer()
-        .getActivePotionEffects()
-        .forEach(
-            effect -> {
-              if (effect.getType().equals(PotionEffectType.SLOWNESS)
-                  && effect.getAmplifier() == 138) {
-                e.setCancelled(true);
-                return;
-              }
-            });
-  }
+  private static Map<UUID, Location> disableMoveLocation = new HashMap<>();
 
   @SuppressWarnings("deprecation")
   @EventHandler
   public void move(PlayerMoveEvent e) {
     var p = e.getPlayer();
-    if (p.isOnGround()) {
-      p.getActivePotionEffects()
-          .forEach(
-              effect -> {
-                if (effect.getType().equals(PotionEffectType.SLOWNESS)
-                    && effect.getAmplifier() == 138) {
-                  Location from = e.getFrom();
-                  Location to = e.getTo();
-                  from.setYaw(to.getYaw());
-                  from.setPitch(to.getPitch());
-                  e.setTo(from);
-                  return;
-                }
-              });
-    }
+    for (val effect : p.getActivePotionEffects())
+      if (effect.getType().equals(PotionEffectType.SLOWNESS) && effect.getAmplifier() == 138) {
+        Location loc = disableMoveLocation.get(p.getUniqueId());
+        if (loc == null) {
+          if (!p.isOnGround()) {
+            return;
+          }
+          loc = e.getTo();
+          disableMoveLocation.put(p.getUniqueId(), loc);
+          if (!effect.isInfinite()) {
+            new BukkitRunnable() {
+
+              private final UUID uuid = p.getUniqueId();
+
+              @Override
+              public void run() {
+                disableMoveLocation.remove(uuid);
+              }
+            }.runTaskLaterAsynchronously(ComMiniPlugin.getPlugin(), effect.getDuration());
+          }
+        }
+        Location to = e.getTo();
+        loc.setYaw(to.getYaw());
+        loc.setPitch(to.getPitch());
+        e.setTo(loc);
+        return;
+      }
     val to = e.getTo().clone();
     for (val loc : List.of(to, to.clone().subtract(0, 0.1, 0))) {
       if (CustomBlock.isCustomBlock(loc)) {
