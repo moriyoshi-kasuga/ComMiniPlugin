@@ -126,6 +126,7 @@ public class JumpPadBlock extends CustomBlock {
     if (particle != null) {
       data.addProperty("particle", particle.name());
     }
+    data.addProperty("state", state.name());
     return data;
   }
 
@@ -165,7 +166,7 @@ public class JumpPadBlock extends CustomBlock {
       case FREE -> {
         new BukkitRunnable() {
 
-          private int rest = 5;
+          private int rest = 3;
 
           @Override
           public void run() {
@@ -173,7 +174,8 @@ public class JumpPadBlock extends CustomBlock {
               this.cancel();
               return;
             }
-            if (0 >= --rest && 0 >= falling.getVelocity().getY()
+            if (0 >= --rest
+                || 0 >= falling.getVelocity().getY()
                 || 0 == falling.getVelocity().getX()
                 || 0 == falling.getVelocity().getZ()
                 || falling.isOnGround()) {
@@ -215,8 +217,7 @@ public class JumpPadBlock extends CustomBlock {
               this.cancel();
               return;
             }
-            if (0 == falling.getVelocity().getY()
-                || 0 == falling.getVelocity().getX()
+            if (0 == falling.getVelocity().getX()
                 || 0 == falling.getVelocity().getZ()
                 || falling.isOnGround()) {
               falling.remove();

@@ -216,6 +216,46 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
         });
 
     setButton(
+        16,
+        new ItemButton<>(
+            new ItemBuilder(Material.ENDER_EYE)
+                .name("<dark_purple>direction: " + jumpPadBlock.getDirection())
+                .lore(
+                    "<gray>-1でプレイヤーの方向に飛びます",
+                    "<gray>0 or 360 represents the +z",
+                    "<gray>180 represents the -z",
+                    "<gray>90 represents the -x",
+                    "<gray>270 represents the +x")
+                .build()) {
+          @Override
+          public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+            AnvilInputs.postClose(
+                    AnvilInputs.getInput(
+                        ComMiniPlugin.getPlugin(),
+                        "<dark_purple>360 >= direction >= -1",
+                        (str, state) -> {
+                          try {
+                            return Optional.of(Float.parseFloat(str))
+                                .filter(f -> 360 >= f && f >= -1);
+                          } catch (NumberFormatException e) {
+                            return Optional.empty();
+                          }
+                        },
+                        (str, state) -> Collections.emptyList(),
+                        (value, state) -> {
+                          setConsumer(block -> block.setDirection(value), isIncludeLinked);
+                          return List.of(
+                              AnvilGUI.ResponseAction.openInventory(
+                                  new JumpPadSettingsMenu(jumpPadBlock).getInventory()));
+                        }),
+                    getPlugin(),
+                    state ->
+                        state.getPlayer().openInventory(JumpPadSettingsMenu.this.getInventory()))
+                .open((Player) event.getWhoClicked());
+          }
+        });
+
+    setButton(
         9,
         new ItemButton<>(
             new ItemBuilder(Material.FIREWORK_ROCKET)
