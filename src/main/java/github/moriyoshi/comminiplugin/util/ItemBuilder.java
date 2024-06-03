@@ -413,10 +413,11 @@ public class ItemBuilder {
     return NBT.get(
         item,
         nbt -> {
-          if (!nbt.hasTag("customitemflag")) {
+          var compound = nbt.getCompound("customitemflag");
+          if (compound == null || !compound.hasTag(flag)) {
             return Optional.empty();
           }
-          return Optional.of(nbt.getCompound("customitemflag").getBoolean(flag));
+          return Optional.of(compound.getBoolean(flag));
         });
   }
 }
