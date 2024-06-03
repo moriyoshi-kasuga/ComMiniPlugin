@@ -5,12 +5,14 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.buttons.AddSpecButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.TeleportLobbyButton;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
+import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -41,12 +43,24 @@ public class MenuCommand extends CommandAPICommand {
             }
           };
       setButton(
-          9,
+          0,
           new ItemButton<>(
-              new ItemBuilder(Material.NETHER_STAR).name("<yellow>リソパをリロードする").build()) {
+              new ItemBuilder(Material.NETHER_STAR).name("<yellow>リソパをロードする (リロード)").build()) {
             @Override
             public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-              ResourcePackUtil.updateComMiniResoucePack((Player) event.getWhoClicked());
+              val who = event.getWhoClicked();
+              ComMiniPlayer.getPlayer(who.getUniqueId()).setShouldLoadResourcePack(true);
+              ResourcePackUtil.updateComMiniResoucePack(who);
+            }
+          });
+      setButton(
+          18,
+          new ItemButton<>(new ItemBuilder(Material.NAUTILUS_SHELL).name("<red>リソパを外す").build()) {
+            @Override
+            public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+              val who = event.getWhoClicked();
+              ComMiniPlayer.getPlayer(who.getUniqueId()).setShouldLoadResourcePack(false);
+              who.removeResourcePacks(ResourcePackUtil.buildComMiniResourcePack());
             }
           });
     }

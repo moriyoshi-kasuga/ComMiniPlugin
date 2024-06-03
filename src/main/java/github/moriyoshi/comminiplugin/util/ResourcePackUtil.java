@@ -6,15 +6,15 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URLConnection;
 import lombok.val;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackRequest;
-import org.bukkit.entity.Player;
 
 public final class ResourcePackUtil {
 
   private ResourcePackUtil() {}
 
-  public static void updateComMiniResoucePack(Player player) {
+  public static void updateComMiniResoucePack(Audience audience) {
     final ResourcePackRequest request =
         ResourcePackRequest.resourcePackRequest()
             .packs(buildComMiniResourcePack())
@@ -22,7 +22,7 @@ public final class ResourcePackUtil {
             .required(true)
             .build();
 
-    player.sendResourcePacks(request);
+    audience.sendResourcePacks(request);
   }
 
   public static String getComMiniResourcePackHash() {

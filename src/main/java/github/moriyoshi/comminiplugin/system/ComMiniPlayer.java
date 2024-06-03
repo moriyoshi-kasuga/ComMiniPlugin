@@ -60,6 +60,8 @@ public final class ComMiniPlayer extends JsonAPI {
 
   @Getter @Setter private boolean isDebug = false;
 
+  @Getter @Setter private boolean shouldLoadResourcePack;
+
   private ComMiniPlayer(final UUID uuid) {
     super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
     this.uuid = uuid;
@@ -121,6 +123,7 @@ public final class ComMiniPlayer extends JsonAPI {
     gamePlayerDatas.forEach(
         (clazz, instance) -> finalDatas.add(clazz.getSimpleName(), instance.generateSaveData()));
     object.add("datas", finalDatas);
+    object.addProperty("shouldLoadResourcePack", shouldLoadResourcePack);
     return object;
   }
 
@@ -131,6 +134,11 @@ public final class ComMiniPlayer extends JsonAPI {
       datas = data.getAsJsonObject("datas");
     } else {
       datas = new JsonObject();
+    }
+    if (data.has("shouldLoadResourcePack")) {
+      shouldLoadResourcePack = data.get("shouldLoadResourcePack").getAsBoolean();
+    } else {
+      shouldLoadResourcePack = true;
     }
   }
 }

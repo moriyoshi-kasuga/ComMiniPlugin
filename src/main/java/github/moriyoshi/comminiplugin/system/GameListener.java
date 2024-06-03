@@ -76,7 +76,9 @@ public class GameListener implements Listener {
       return;
     }
     GameSystem.initializePlayer(p);
-    ResourcePackUtil.updateComMiniResoucePack(p);
+    if (ComMiniPlayer.getPlayer(p.getUniqueId()).isShouldLoadResourcePack()) {
+      ResourcePackUtil.updateComMiniResoucePack(p);
+    }
   }
 
   @EventHandler
