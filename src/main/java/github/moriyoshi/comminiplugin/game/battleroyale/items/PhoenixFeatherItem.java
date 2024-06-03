@@ -28,16 +28,19 @@ public class PhoenixFeatherItem extends CustomItem implements PlayerCooldownItem
   @Override
   public void interact(PlayerInteractEvent e) {
     val player = e.getPlayer();
-    if (e.getAction().isLeftClick() && inCooldown(player.getUniqueId())) {
+    if (e.getAction().isLeftClick()) {
+      return;
+    }
+    if (inCooldown(player.getUniqueId())) {
       return;
     }
     itemUse();
-    setCooldown(20, player.getUniqueId());
+    setCooldown(20 * 20, player.getUniqueId());
     player.setHealth(20);
     val loc = e.getPlayer().getLocation();
     val world = loc.getWorld();
-    world.playSound(loc, Sound.ENTITY_VILLAGER_WORK_CLERIC, 1, 1);
-    world.playSound(loc, Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
+    world.playSound(loc, Sound.ENTITY_VILLAGER_WORK_CLERIC, 3, 1);
+    world.playSound(loc, Sound.ENTITY_ENDER_DRAGON_FLAP, 3, 1);
   }
 
   @Override

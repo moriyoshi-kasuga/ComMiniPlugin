@@ -1,14 +1,19 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
-import de.tr7zw.changeme.nbtapi.NBT;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.item.CooldownItem;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.tuple.Pair;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import lombok.val;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -16,7 +21,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+// TODO: あと playsound そしたら cooldown とか戻して
 public class RecallClockItem extends CustomItem implements CooldownItem {
+
+  private static Map<UUID, Pair<Location, Double>> datas = new HashMap<>();
+
   public RecallClockItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -32,29 +41,25 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
 
   @Override
   public void runTick(final Player player) {
-    val loc = player.getLocation();
     new BukkitRunnable() {
 
-      private final ItemStack item = getItem();
+      private final Location loc = player.getLocation();
+      private final double health = player.getHealth();
+      private final UUID key = getUniqueId();
 
       @Override
       public void run() {
-        if (item == null || item.isEmpty()) {
-          return;
+        val item = getInventoryCustomItem(player.getInventory(), key);
+        if (!datas.containsKey(key)) {
+          new ItemBuilder(item.getItem())
+              .name("<light_purple>リコールクロノ<gray>:<red>turn back the clock");
+          player.playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
         }
-        NBT.modify(
-            item,
-            nbt -> {
-              val compound = nbt.getCompound(nbtKey);
-              if (!compound.hasTag("locations")) {
-                new ItemBuilder(item).name("<light_purple>リコールクロノ<gray>:<red>turn back the clock");
-                player.playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
-              }
-              compound.setString("locations", ComMiniPlugin.gson.toJson(loc));
-              return;
-            });
+        datas.put(key, Pair.of(loc, health));
       }
-    }.runTaskLater(ComMiniPlugin.getPlugin(), 300);
+      // WARN:
+      // }.runTaskLater(ComMiniPlugin.getPlugin(), 15 * 20);
+    }.runTaskLater(ComMiniPlugin.getPlugin(), 5 * 20);
   }
 
   @Override
@@ -63,22 +68,41 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
       e.setCancelled(true);
       return;
     }
-    val loc =
-        NBT.modify(
-            getItem(),
-            nbt -> {
-              val compound = nbt.getCompound(nbtKey);
-              if (!compound.hasTag("locations")) {
-                return null;
-              }
-              return ComMiniPlugin.gson.fromJson(compound.getString("locations"), Location.class);
-            });
+    if (inCooldown()) {
+      return;
+    }
     val player = e.getPlayer();
-    if (loc == null) {
+    val pair = datas.get(getUniqueId());
+    if (pair == null) {
       ComMiniPrefix.MAIN.send(player, "<red>15秒前の記憶はありません");
       return;
     }
-    setCooldown(2400);
+    val loc = pair.getFirst();
+    setCooldown(1 * 20);
+    // WARN:
+    // setCooldown(120 * 20);
+    val world = player.getWorld();
+    world.spawnParticle(
+        Particle.DUST,
+        player.getLocation(),
+        300,
+        1,
+        1,
+        1,
+        0,
+        new Particle.DustOptions(Color.fromRGB(0x8C4CBB), 1),
+        true);
     player.teleport(loc);
+    player.setHealth(pair.getSecond());
+    world.spawnParticle(
+        Particle.DUST,
+        loc,
+        300,
+        1,
+        1,
+        1,
+        0,
+        new Particle.DustOptions(Color.fromRGB(0x61DF80), 1),
+        true);
   }
 }

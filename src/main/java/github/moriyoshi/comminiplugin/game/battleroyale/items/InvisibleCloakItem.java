@@ -16,7 +16,7 @@ public class InvisibleCloakItem extends CustomItem implements CooldownItem {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
             .name("<#C1C7C1>透明マント")
-            .lore("<gray>エルフの職人が織り上げた透明なマント。", "<gray>装備すると10秒間姿を消すことができる。")
+            .lore("<gray>エルフの職人が織り上げた透明なマント。", "<gray>装備すると10秒間姿を消し、足が速くなる。")
             .customModelData(10)
             .build());
   }

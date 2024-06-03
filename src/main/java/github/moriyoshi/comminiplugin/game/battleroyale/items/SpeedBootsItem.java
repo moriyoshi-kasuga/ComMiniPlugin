@@ -95,7 +95,7 @@ public class SpeedBootsItem extends CustomItem implements CooldownItem {
         }
         val world = p.getWorld();
         val loc = p.getLocation();
-        world.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1);
+        world.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 3, 1);
         world.spawnParticle(Particle.EXPLOSION, loc, 10, 1.5, 1.5, 1.5, 1, null, true);
         setCooldown(1200);
         p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 0, true, false));

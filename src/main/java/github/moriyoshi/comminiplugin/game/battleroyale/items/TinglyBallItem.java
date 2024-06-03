@@ -51,7 +51,7 @@ public class TinglyBallItem extends CustomItem {
         (entity, event) -> {
           val loc = entity.getLocation();
           loc.getWorld()
-              .playSound(loc, Sound.ENTITY_FIREWORK_ROCKET_BLAST, SoundCategory.MASTER, 1, 1);
+              .playSound(loc, Sound.ENTITY_FIREWORK_ROCKET_BLAST, SoundCategory.MASTER, 3, 1);
           loc.getWorld()
               .spawnParticle(
                   Particle.DUST,

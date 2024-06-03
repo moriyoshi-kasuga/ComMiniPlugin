@@ -35,6 +35,7 @@ public class WingItem extends CustomItem {
         new ItemBuilder(Material.ELYTRA)
             .name("<yellow>Wing")
             .customItemFlag(CustomItemFlag.MOVE_INV, false)
+            .customItemFlag(CustomItemFlag.DROP, false)
             .build(),
         false);
     new BukkitRunnable() {

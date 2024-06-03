@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.val;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -97,6 +98,25 @@ public abstract class CustomItem implements InterfaceItem {
           | InvocationTargetException
           | SecurityException e) {
         return null;
+      }
+    }
+    return null;
+  }
+
+  public static boolean hasCustomItem(Inventory inv, Class<?> clazz) {
+    for (val item : inv) {
+      if (equalsItem(item, clazz)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static CustomItem getInventoryCustomItem(Inventory inv, UUID uuid) {
+    for (val item : inv) {
+      val custom = getCustomItem(item);
+      if (custom != null && uuid.equals(custom.getUniqueId())) {
+        return custom;
       }
     }
     return null;

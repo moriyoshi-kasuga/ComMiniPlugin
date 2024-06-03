@@ -60,7 +60,7 @@ public class VampireBowItem extends CustomItem implements CooldownItem {
     val loc = player.getLocation();
     sounds.forEach(
         sound -> {
-          loc.getWorld().playSound(loc, sound, SoundCategory.MASTER, 1, 1);
+          loc.getWorld().playSound(loc, sound, SoundCategory.MASTER, 3, 1);
         });
   }
 
