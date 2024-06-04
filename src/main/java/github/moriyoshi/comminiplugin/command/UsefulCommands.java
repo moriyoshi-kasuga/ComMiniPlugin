@@ -2,14 +2,16 @@ package github.moriyoshi.comminiplugin.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
 import github.moriyoshi.comminiplugin.object.jumppad.JumpPadItem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import lombok.val;
 
+@SuppressWarnings("unused")
 public class UsefulCommands {
 
-  public static class JumpPad extends CommandAPICommand {
-    public JumpPad() {
+  private static class JumpPadCommand extends CommandAPICommand {
+    public JumpPadCommand() {
       super("jumppad");
       executesPlayer(
           (player, args) -> {
@@ -18,8 +20,8 @@ public class UsefulCommands {
     }
   }
 
-  public static class DebugMode extends CommandAPICommand {
-    public DebugMode() {
+  private static class DebugModeCommand extends CommandAPICommand {
+    public DebugModeCommand() {
       super("debugmode");
       executesPlayer(
           (sender, args) -> {
@@ -27,6 +29,16 @@ public class UsefulCommands {
             val flag = !player.isDebug();
             player.setDebug(flag);
             ComMiniPrefix.SYSTEM.send(sender, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
+          });
+    }
+  }
+
+  private static class SSCustomMenuCommand extends CommandAPICommand {
+    public SSCustomMenuCommand() {
+      super("sscustommenu");
+      executesPlayer(
+          (sender, args) -> {
+            sender.openInventory(new SSCustomMenu().getInventory());
           });
     }
   }

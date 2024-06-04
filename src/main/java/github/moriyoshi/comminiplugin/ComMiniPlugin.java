@@ -92,7 +92,9 @@ public final class ComMiniPlugin extends JavaPlugin {
         CommandAPICommand.class,
         command -> {
           try {
-            registerCommand(command.getDeclaredConstructor().newInstance());
+            val constructor = command.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            registerCommand(constructor.newInstance());
           } catch (InstantiationException
               | IllegalAccessException
               | IllegalArgumentException
@@ -107,7 +109,9 @@ public final class ComMiniPlugin extends JavaPlugin {
         CommandTree.class,
         command -> {
           try {
-            registerCommand(command.getDeclaredConstructor().newInstance());
+            val constructor = command.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            registerCommand(constructor.newInstance());
           } catch (InstantiationException
               | IllegalAccessException
               | IllegalArgumentException

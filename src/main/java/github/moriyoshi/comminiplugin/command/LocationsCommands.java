@@ -18,9 +18,10 @@ import lombok.val;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("unused")
 public class LocationsCommands extends JsonAPI {
 
-  public static class PutLocCommand extends CommandAPICommand {
+  private static class PutLocCommand extends CommandAPICommand {
     public PutLocCommand() {
       super("putloc");
       withPermission(CommandPermission.OP);
@@ -38,7 +39,7 @@ public class LocationsCommands extends JsonAPI {
     }
   }
 
-  public static class MvLocCommand extends CommandAPICommand {
+  private static class MvLocCommand extends CommandAPICommand {
     @SuppressWarnings("unchecked")
     public MvLocCommand() {
       super("mvloc");
@@ -67,7 +68,7 @@ public class LocationsCommands extends JsonAPI {
     }
   }
 
-  public static class DelLocCommand extends CommandAPICommand {
+  private static class DelLocCommand extends CommandAPICommand {
     public DelLocCommand() {
       super("delloc");
       withPermission(CommandPermission.OP);
@@ -88,7 +89,7 @@ public class LocationsCommands extends JsonAPI {
     }
   }
 
-  public static class ListLocCommand extends CommandAPICommand {
+  private static class ListLocCommand extends CommandAPICommand {
     public ListLocCommand() {
       super("listloc");
       withPermission(CommandPermission.OP);

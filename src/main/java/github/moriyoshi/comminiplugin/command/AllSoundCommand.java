@@ -7,6 +7,7 @@ import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ListMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class AllSoundCommand extends CommandAPICommand {
   public static Material getMaterial(final Sound sound) {
     final String name = sound.name();
     val materials = Arrays.asList(Material.values());
-    val split = Arrays.asList(name.split("_"));
+    val split = new ArrayList<>(Arrays.asList(name.split("_")));
     val finalName = split.get(1).toLowerCase();
     return switch (split.removeFirst()) {
       case "AMBIENT" -> Material.STONE;
