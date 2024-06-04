@@ -7,11 +7,9 @@ import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ListMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.val;
@@ -23,11 +21,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class AllSoundCommand extends CommandAPICommand {
 
-  //TODO: もっとちゃんとアイテム適用するようにする
+  // TODO: もっとちゃんとアイテム適用するようにする
+  // あと list menu の serach method は new redirect する
   public static Material getMaterial(final Sound sound) {
     final String name = sound.name();
-    val materials = new ArrayList<>(Arrays.asList(Material.values()));
-    val split = new ArrayList<>(List.of(name.split("_")));
+    val materials = Arrays.asList(Material.values());
+    val split = Arrays.asList(name.split("_"));
     val finalName = split.get(1).toLowerCase();
     return switch (split.removeFirst()) {
       case "AMBIENT" -> Material.STONE;
@@ -72,7 +71,7 @@ public class AllSoundCommand extends CommandAPICommand {
       super(
           "<green>Sounds",
           45,
-          new ArrayList<>(Arrays.asList(Sound.values())),
+          Arrays.asList(Sound.values()),
           (sound) -> {
             val m = getMaterial(sound);
             return new ItemButton<>(
@@ -108,8 +107,14 @@ public class AllSoundCommand extends CommandAPICommand {
     }
 
     @Override
-    public Optional<BiPredicate<String, Sound>> getSerachMethod() {
-      return Optional.of((key, sound) -> sound.name().toLowerCase().contains(key.toLowerCase()));
+    public Optional<Function<String, List<Sound>>> getMenuBySearch() {
+      return Optional.of(
+          str -> {
+            val upper = str.toUpperCase();
+            return Arrays.asList(Sound.values()).stream()
+                .filter(sound -> sound.name().toLowerCase().contains(upper))
+                .toList();
+          });
     }
   }
 

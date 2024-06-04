@@ -12,9 +12,9 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import lombok.val;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -60,8 +60,14 @@ public class CustomItemsCommand extends CommandAPICommand {
     }
 
     @Override
-    public Optional<BiPredicate<String, String>> getSerachMethod() {
-      return Optional.of((search, key) -> key.toLowerCase().contains(search.toLowerCase()));
+    public Optional<Function<String, List<String>>> getMenuBySearch() {
+      return Optional.of(
+          str -> {
+            val lower = str.toLowerCase();
+            return CustomItem.canShowingRegisters.keySet().stream()
+                .filter(key -> key.toLowerCase().contains(lower))
+                .toList();
+          });
     }
   }
 

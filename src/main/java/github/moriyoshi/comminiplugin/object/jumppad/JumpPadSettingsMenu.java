@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -369,8 +368,12 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
     }
 
     @Override
-    public Optional<BiPredicate<String, Sound>> getSerachMethod() {
-      return Optional.of((key, sound) -> sound.name().toLowerCase().contains(key.toLowerCase()));
+    public Optional<Function<String, List<Sound>>> getMenuBySearch() {
+      return Optional.of(
+          str -> {
+            val upper = str.toUpperCase();
+            return Stream.of(Sound.values()).filter(key -> key.name().contains(upper)).toList();
+          });
     }
   }
 }

@@ -9,7 +9,6 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.val;
@@ -81,9 +80,9 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
               setButton(
                   getPageSize(),
                   new RedirectItemButton<>(goToFirstPage, () -> menu.get().getInventory()));
-              getSerachMethod()
+              getMenuBySearch()
                   .ifPresent(
-                      method ->
+                      func ->
                           setButton(
                               getPageSize() + 8,
                               new ItemButton<>(
@@ -99,12 +98,7 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
                                               (s, completion) ->
                                                   List.of(
                                                       ResponseAction.openInventory(
-                                                          getNewRewadsMenu(
-                                                                  rewards.stream()
-                                                                      .filter(
-                                                                          key ->
-                                                                              method.test(s, key))
-                                                                      .toList())
+                                                          getNewRewadsMenu(func.apply(s))
                                                               .getInventory()))),
                                           ComMiniPlugin.getPlugin(),
                                           state -> state.getPlayer().openInventory(getInventory()))
@@ -122,7 +116,7 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
     super.onClick(clickEvent);
   }
 
-  public Optional<BiPredicate<String, T>> getSerachMethod() {
+  public Optional<Function<String, List<T>>> getMenuBySearch() {
     return Optional.empty();
   }
 
