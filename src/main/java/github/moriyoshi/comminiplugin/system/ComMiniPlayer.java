@@ -120,7 +120,7 @@ public final class ComMiniPlayer extends JsonAPI {
   @Override
   protected JsonElement generateSaveData() {
     val object = new JsonObject();
-    val finalDatas = new JsonObject();
+    val finalDatas = datas;
     gamePlayerDatas.forEach(
         (clazz, instance) -> finalDatas.add(clazz.getSimpleName(), instance.generateSaveData()));
     object.add("datas", finalDatas);
