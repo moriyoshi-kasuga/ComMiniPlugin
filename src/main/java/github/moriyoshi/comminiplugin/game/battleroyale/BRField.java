@@ -1,6 +1,7 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.AllOrNothingItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.TinglyBallItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
 import github.moriyoshi.comminiplugin.system.GameSystem;
@@ -181,7 +182,10 @@ public class BRField {
     return new LootTable(
         new ArrayList<>() {
           {
-            add(new Pool().add(new Entry(() -> new WingItem().getItem())));
+            add(
+                new Pool()
+                    .add(new Entry(() -> new AllOrNothingItem().getItem()))
+                    .add(new Entry(() -> new WingItem().getItem())));
           }
         });
   }

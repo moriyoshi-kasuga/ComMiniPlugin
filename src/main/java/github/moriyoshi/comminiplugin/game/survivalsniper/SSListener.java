@@ -6,6 +6,7 @@ import github.moriyoshi.comminiplugin.util.tuple.Pair;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -21,6 +22,8 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class SSListener implements AbstractGameListener<SSGame> {
 
@@ -68,6 +71,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
     p.setGameMode(GameMode.SPECTATOR);
     game.runPlayers(pl -> Util.send(pl, e.deathMessage()));
     game.players.put(uuid, Pair.of(false, -1));
+    p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
     reducePlayer(p);
   }
 
@@ -98,12 +102,16 @@ public class SSListener implements AbstractGameListener<SSGame> {
 
   @Override
   public void damageByEntity(final EntityDamageByEntityEvent e) {
-    if (!getGame().isCanPvP()
-        && e.getEntity() instanceof Player
-        && e.getDamager() instanceof final Player attacker
-        && getGame().isGamePlayer(attacker)) {
-      getGame().prefix.send(attacker, "<red>まだPvPはできません");
-      e.setCancelled(true);
+    if (e.getEntity() instanceof Player && e.getDamager() instanceof final Player attacker) {
+      if (!getGame().isCanPvP()) {
+        getGame().prefix.send(attacker, "<red>まだPvPはできません");
+        e.setCancelled(true);
+      }
+      val main = attacker.getInventory().getItemInMainHand().getType();
+      if (EnchantmentTarget.TOOL.includes(main)
+          && (main.name().contains("STONE") || main.name().contains("WOODEN"))) {
+        e.setCancelled(true);
+      }
     }
   }
 

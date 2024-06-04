@@ -85,6 +85,7 @@ public abstract class AbstractGame implements InterfaceGame {
     player.teleport(getLobby());
   }
 
+  //TODO: join の対象にもしたほうがいい、あと join message は isGamepLayer のやつには渡さない
   public final void hidePlayer() {
     final List<UUID> list =
         Bukkit.getOnlinePlayers().stream()

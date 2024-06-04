@@ -2,11 +2,13 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
+import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
 import github.moriyoshi.comminiplugin.util.tuple.Pair;
@@ -24,12 +26,12 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+// TODO: チーム戦実装する
 public class SSGame extends AbstractGame implements WinnerTypeGame {
 
   private final int MAX_RADIUS_RANGE = 600;
@@ -63,7 +65,12 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
 
   public final void joinPlayer(final Player player, final boolean isPlayer) {
     val uuid = player.getUniqueId();
-    player.getInventory().removeItem(new ItemStack(Material.SPYGLASS));
+    val item =
+        new ItemBuilder(Material.SPYGLASS)
+            .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
+            .customItemFlag(CustomItemFlag.DISABLE_MOVE_INV, true)
+            .build();
+    player.getInventory().removeItem(item);
     if (players.containsKey(uuid)) {
       if (players.get(uuid).getFirst() == isPlayer) {
         players.remove(uuid);
@@ -74,7 +81,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     }
     players.put(uuid, Pair.of(isPlayer, isPlayer ? AIR_LIMIT : -1));
     player.teleport(lobby);
-    player.getInventory().addItem(new ItemStack(Material.SPYGLASS));
+    player.getInventory().addItem(item);
     prefix.cast(player.getName() + "が" + (isPlayer ? "<blue>参加" : "<gray>観戦") + "します");
   }
 
@@ -125,6 +132,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
       prefix.send(player, "<red>二人以上でしかプレイできません");
       return false;
     }
+    // TODO: タイトルで5秒カウントする
     val vec = lobby.toVector();
     val min = vec.clone().add(VOID_BLOCK_RADIUS);
     val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
@@ -153,6 +161,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
           @Override
           public void run() {
             if (second != -1) {
+              // TODO: ここで alert を出す
               if (second > 0) {
                 bossBar
                     .name(Util.mm("<red>PvP解禁まで<u>" + second + "</u>秒"))
@@ -256,8 +265,8 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     if (run != null) {
       run.cancel();
     }
-    players.clear();
     showPlayer();
+    players.clear();
   }
 
   @Override
