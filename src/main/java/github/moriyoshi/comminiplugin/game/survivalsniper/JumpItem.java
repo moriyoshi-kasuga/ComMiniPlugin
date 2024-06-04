@@ -32,7 +32,7 @@ public class JumpItem extends CustomItem implements CooldownItem {
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
             .name(DEFAULT_NAME)
             .lore(DESCRIPTION)
-            .customItemFlag(CustomItemFlag.DROP, false)
+            .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
             .build());
   }
 
@@ -64,7 +64,7 @@ public class JumpItem extends CustomItem implements CooldownItem {
       @Override
       public void run() {
         p.setFallDistance(0);
-        if (10 > num) {
+        if (5 > num) {
           num++;
           return;
         }

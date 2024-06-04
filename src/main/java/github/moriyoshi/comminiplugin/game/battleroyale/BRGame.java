@@ -137,7 +137,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     val barrier =
         new ItemBuilder(Material.BARRIER)
             .name("<red>Barrier")
-            .customItemFlag(CustomItemFlag.MOVE_INV, false)
+            .customItemFlag(CustomItemFlag.DISABLE_MOVE_INV, true)
             .build();
     runPlayers(
         p -> {
@@ -319,8 +319,8 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     }
     lobbyBlocks.clear();
     isCanPvP = false;
-    players.clear();
     showPlayer();
+    players.clear();
   }
 
   @Override

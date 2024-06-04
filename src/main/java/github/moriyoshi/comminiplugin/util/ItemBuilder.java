@@ -363,18 +363,18 @@ public class ItemBuilder {
         });
   }
 
-  public ItemBuilder customItemFlag(final String flag, boolean isCan) {
+  public ItemBuilder customItemFlag(final String flag, boolean isEnabled) {
     return change(
         i ->
             NBT.modify(
                 i,
                 nbt -> {
-                  nbt.getOrCreateCompound("customitemflag").setBoolean(flag, isCan);
+                  nbt.getOrCreateCompound("customitemflag").setBoolean(flag, isEnabled);
                 }));
   }
 
-  public ItemBuilder customItemFlag(final CustomItemFlag flag, boolean isCan) {
-    return customItemFlag(flag.id, isCan);
+  public ItemBuilder customItemFlag(final CustomItemFlag flag, boolean isEnabled) {
+    return customItemFlag(flag.id, isEnabled);
   }
 
   /**

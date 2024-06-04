@@ -35,8 +35,8 @@ public class WingItem extends CustomItem {
     val wing =
         new ItemBuilder(Material.ELYTRA)
             .name("<yellow>Wing")
-            .customItemFlag(CustomItemFlag.MOVE_INV, false)
-            .customItemFlag(CustomItemFlag.DROP, false)
+            .customItemFlag(CustomItemFlag.DISABLE_MOVE_INV, true)
+            .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
             .build();
     val flag = !wing.isSimilar(temp);
     equiments.setItem(EquipmentSlot.CHEST, wing, false);

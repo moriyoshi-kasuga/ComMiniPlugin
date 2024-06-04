@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum CustomItemFlag {
-  DROP("drop"),
-  CLICK_INTERACT("click_interact"),
-  MOVE_INV("move_inv"),
-  ITEM_SPAWN("item_spawn");
+  DISABLE_DROP("drop"),
+  DISABLE_CLICK_INTERACT("click_interact"),
+  DISABLE_MOVE_INV("move_inv"),
+  DISABLE_ITEM_SPAWN("item_spawn");
 
   public final String id;
 }

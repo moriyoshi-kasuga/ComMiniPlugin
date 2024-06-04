@@ -16,8 +16,7 @@ public class ShockWaveItem extends CustomItem {
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
             .name("<#874B2A>ショックウェーブ")
             .lore("<gray>左クリックで半径15ブロック以内の相手すベてを遠くに（縦横５～７ブロック）吹き飛ばす", "<gray>右クリックは自分を前に移動させる")
-            // WARN: apply correct custom model data
-            .customModelData(17)
+            .customModelData(24)
             .build());
   }
 

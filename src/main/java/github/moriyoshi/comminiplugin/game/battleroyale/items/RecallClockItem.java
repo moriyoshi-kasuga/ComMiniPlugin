@@ -15,13 +15,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-// TODO: あと playsound そしたら cooldown とか戻して
 public class RecallClockItem extends CustomItem implements CooldownItem {
 
   private static Map<UUID, Pair<Location, Double>> datas = new HashMap<>();
@@ -57,9 +57,7 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
         }
         datas.put(key, Pair.of(loc, health));
       }
-      // WARN:
-      // }.runTaskLater(ComMiniPlugin.getPlugin(), 15 * 20);
-    }.runTaskLater(ComMiniPlugin.getPlugin(), 5 * 20);
+    }.runTaskLater(ComMiniPlugin.getPlugin(), 15 * 20);
   }
 
   @Override
@@ -78,9 +76,7 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
       return;
     }
     val loc = pair.getFirst();
-    setCooldown(1 * 20);
-    // WARN:
-    // setCooldown(120 * 20);
+    setCooldown(120 * 20);
     val world = player.getWorld();
     world.spawnParticle(
         Particle.DUST,
@@ -92,6 +88,7 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
         0,
         new Particle.DustOptions(Color.fromRGB(0x8C4CBB), 1),
         true);
+    world.playSound(player.getLocation(), Sound.BLOCK_CONDUIT_ACTIVATE, SoundCategory.MASTER, 1, 1);
     player.teleport(loc);
     player.setHealth(pair.getSecond());
     world.spawnParticle(
@@ -104,5 +101,6 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
         0,
         new Particle.DustOptions(Color.fromRGB(0x61DF80), 1),
         true);
+    world.playSound(loc, Sound.BLOCK_CONDUIT_ACTIVATE, SoundCategory.MASTER, 1, 1);
   }
 }

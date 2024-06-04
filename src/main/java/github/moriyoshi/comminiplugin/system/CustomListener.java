@@ -68,7 +68,7 @@ public class CustomListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void dropItem(final PlayerDropItemEvent e) {
     val item = e.getItemDrop().getItemStack();
-    if (!ItemBuilder.getCustomItemFlag(item, CustomItemFlag.DROP).orElse(true)) {
+    if (ItemBuilder.getCustomItemFlag(item, CustomItemFlag.DISABLE_DROP).orElse(false)) {
       e.setCancelled(true);
       return;
     }
@@ -105,7 +105,7 @@ public class CustomListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void interact(final PlayerInteractEvent e) {
     val item = e.getItem();
-    if (!ItemBuilder.getCustomItemFlag(item, CustomItemFlag.CLICK_INTERACT).orElse(true)) {
+    if (ItemBuilder.getCustomItemFlag(item, CustomItemFlag.DISABLE_CLICK_INTERACT).orElse(false)) {
       e.setCancelled(true);
       return;
     }
@@ -192,7 +192,7 @@ public class CustomListener implements Listener {
   public void inventoryClick(final InventoryClickEvent e) {
     val items = Arrays.asList(e.getCursor(), e.getCurrentItem());
     for (val item : items) {
-      if (!ItemBuilder.getCustomItemFlag(item, CustomItemFlag.MOVE_INV).orElse(true)) {
+      if (ItemBuilder.getCustomItemFlag(item, CustomItemFlag.DISABLE_MOVE_INV).orElse(false)) {
         e.setCancelled(true);
         return;
       }
@@ -232,7 +232,7 @@ public class CustomListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void itemSpawn(final ItemSpawnEvent e) {
     val item = e.getEntity().getItemStack();
-    if (!ItemBuilder.getCustomItemFlag(item, CustomItemFlag.ITEM_SPAWN).orElse(true)) {
+    if (ItemBuilder.getCustomItemFlag(item, CustomItemFlag.DISABLE_ITEM_SPAWN).orElse(false)) {
       e.setCancelled(true);
       return;
     }

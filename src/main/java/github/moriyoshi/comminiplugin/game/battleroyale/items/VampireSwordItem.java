@@ -28,10 +28,9 @@ public class VampireSwordItem extends CustomItem implements CooldownItem {
                 new AttributeModifier("damage", 6, Operation.ADD_NUMBER))
             .addAttribute(
                 Attribute.GENERIC_ATTACK_SPEED,
-                new AttributeModifier("speed", -2.4, Operation.ADD_NUMBER))
+                new AttributeModifier("speed", -3.0, Operation.ADD_NUMBER))
             .flags(ItemFlag.HIDE_ATTRIBUTES)
-            // WARN: apply correct custom model data
-            .customModelData(17)
+            .customModelData(23)
             .build());
   }
 

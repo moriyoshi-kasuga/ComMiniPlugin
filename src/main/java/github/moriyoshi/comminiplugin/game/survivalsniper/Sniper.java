@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 import de.tr7zw.changeme.nbtapi.NBT;
 import github.moriyoshi.comminiplugin.item.CooldownItem;
 import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.Util;
 import java.util.HashMap;
@@ -16,7 +17,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +32,12 @@ public class Sniper extends CustomItem implements CooldownItem {
   private static final int DEFAULT_COOLDOWN_TICK = 40;
 
   public Sniper() {
-    this(new ItemBuilder(Material.SPYGLASS).name(DEFAULT_NAME).customModelData(1).build());
+    this(
+        new ItemBuilder(Material.SPYGLASS)
+            .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
+            .name(DEFAULT_NAME)
+            .customModelData(1)
+            .build());
   }
 
   public Sniper(final ItemStack item) {
@@ -148,11 +153,6 @@ public class Sniper extends CustomItem implements CooldownItem {
   @Override
   public void endCountDown() {
     new ItemBuilder(getItem()).type(Material.SPYGLASS);
-  }
-
-  @Override
-  public void dropItem(final PlayerDropItemEvent e) {
-    e.setCancelled(true);
   }
 
   @Override

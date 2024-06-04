@@ -31,7 +31,7 @@ public class SpeedBootsItem extends CustomItem implements CooldownItem {
     super(
         new ItemBuilder(Material.LEATHER_BOOTS)
             .name("<aqua>スピードブーツ")
-            .lore("<gray>履くことで移動速度が一時的に上がる魔法のブーツ。", "<gray>シフト3秒間で10秒間さらにスピードアップ (cooldown: 60秒)")
+            .lore("<gray>履くことで移動速度が一時的に上がる魔法のブーツ。", "<gray>シフト1秒間で10秒間さらにスピードアップ (cooldown: 60秒)")
             .addAttribute(
                 Attribute.GENERIC_MOVEMENT_SPEED,
                 new AttributeModifier(
@@ -64,6 +64,9 @@ public class SpeedBootsItem extends CustomItem implements CooldownItem {
     if (!e.isSneaking()) {
       return;
     }
+    if (inCooldown()) {
+      return;
+    }
     if (equipmentSlot == null) {
       return;
     }
@@ -73,7 +76,7 @@ public class SpeedBootsItem extends CustomItem implements CooldownItem {
     val p = e.getPlayer();
     new BukkitRunnable() {
 
-      private int rest = 60;
+      private int rest = 20;
 
       @Override
       public void run() {
@@ -82,7 +85,7 @@ public class SpeedBootsItem extends CustomItem implements CooldownItem {
           return;
         }
         if (--rest > 0) {
-          if (rest % 20 == 0) {
+          if (rest % 5 == 0) {
             p.getWorld()
                 .playSound(
                     p.getLocation(),

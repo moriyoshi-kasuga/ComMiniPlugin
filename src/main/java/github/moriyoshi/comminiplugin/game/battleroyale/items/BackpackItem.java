@@ -36,7 +36,8 @@ public class BackpackItem extends CustomItem {
         val item = inv.getItem(slot);
         if (item != null
             && !item.isEmpty()
-            && !ItemBuilder.getCustomItemFlag(item, CustomItemFlag.MOVE_INV).orElse(true)) {
+            && ItemBuilder.getCustomItemFlag(item, CustomItemFlag.DISABLE_MOVE_INV)
+                .orElse(false)) {
           inv.setItem(slot, null);
           break;
         }
