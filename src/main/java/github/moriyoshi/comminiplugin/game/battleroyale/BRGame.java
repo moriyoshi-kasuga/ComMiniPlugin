@@ -43,7 +43,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   private final int BORDERE_CONTRACTION_SIZE = 70;
   private final int BORDERE_BEFORE_MOVE_TIME = 10;
 
-  private final List<Sequence<Integer, Integer, Material, BlockData>> lobbyBlows =
+  private final List<Sequence<Integer, Integer, Material, BlockData>> lobbyBlocks =
       new ArrayList<>();
 
   private BossBar bossBar;
@@ -102,6 +102,10 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
     teleportLobby(player);
     return true;
+  }
+
+  public boolean isPlayingPlayer(Player player) {
+    return players.get(player.getUniqueId());
   }
 
   @Override
@@ -182,7 +186,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
           for (int x = -10; x <= 10; x++) {
             for (int z = -10; z <= 10; z++) {
               val temp = loc.clone().add(x, 0, z).getBlock();
-              lobbyBlows.add(Sequence.of(x, z, temp.getType(), temp.getBlockData()));
+              lobbyBlocks.add(Sequence.of(x, z, temp.getType(), temp.getBlockData()));
               temp.setType(Material.AIR);
             }
           }
@@ -194,13 +198,13 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
             @Override
             public void run() {
               if (GameSystem.isIn()) {
-                lobbyBlows.forEach(
+                lobbyBlocks.forEach(
                     s -> {
                       val b = loc.clone().add(s.getFirst(), 0, s.getSecond()).getBlock();
                       b.setType(s.getThird());
                       b.setBlockData(s.getFourth());
                     });
-                lobbyBlows.clear();
+                lobbyBlocks.clear();
               }
             }
           }.runTaskLater(ComMiniPlugin.getPlugin(), 20 * 10);
@@ -302,7 +306,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   protected void innerFinishGame() {
     if (field != null) {
       val loc = field.getLobby();
-      lobbyBlows.forEach(
+      lobbyBlocks.forEach(
           s -> {
             val b = loc.clone().add(s.getFirst(), 0, s.getSecond()).getBlock();
             b.setType(s.getThird());
@@ -313,7 +317,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     if (bossBar != null) {
       runPlayers(p -> p.hideBossBar(bossBar));
     }
-    lobbyBlows.clear();
+    lobbyBlocks.clear();
     isCanPvP = false;
     players.clear();
     showPlayer();
