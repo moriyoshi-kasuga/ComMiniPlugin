@@ -37,6 +37,7 @@ public class BRTreasureItem extends CustomItem {
 
   @Override
   public void interact(PlayerInteractEvent e) {
+    e.setCancelled(true);
     val player = e.getPlayer();
     if (!GameSystem.isIn(BRGame.class)) {
       ComMiniPrefix.SYSTEM.send(player, "<red>please start in battleroyale game");

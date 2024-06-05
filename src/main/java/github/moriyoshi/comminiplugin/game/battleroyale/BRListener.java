@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -14,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -92,5 +94,24 @@ public class BRListener implements AbstractGameListener<BRGame> {
       return;
     }
     game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()).getName());
+  }
+
+  @EventHandler
+  public void interact(PlayerInteractEvent e) {
+    val player = e.getPlayer();
+    if (getGame().isGamePlayer(player) && e.hasBlock()) {
+      val block = e.getClickedBlock();
+      if (!(block.getState() instanceof Container)) {
+        return;
+      }
+      val field = getGame().getField();
+      if (field == null) {
+        return;
+      }
+      if (!field.getTreasure().containsLocation(block.getLocation())) {
+        e.setCancelled(true);
+        getGame().prefix.send(player, "<red>宝箱以外のチェストは開けません");
+      }
+    }
   }
 }

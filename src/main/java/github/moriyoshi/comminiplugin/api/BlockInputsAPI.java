@@ -34,6 +34,7 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
   }
 
   public final void addLocation(Location location, Player player) {
+    location.setPitch(0);
     location.setYaw(BukkitUtil.convertBlockFaceToYaw(player.getFacing().getOppositeFace()));
     innerAddLocation(location.toBlockLocation(), player);
   }
@@ -69,6 +70,7 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
 
   public final T getLocationData(Location loc) {
     val location = loc.toBlockLocation();
+    location.setPitch(0);
     for (val yaw : List.of(180, 90, -90, 0)) {
       location.setYaw(yaw);
       val finalLoc = locations.get(location);
@@ -81,6 +83,7 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
 
   public final BlockFace getLocationBlockFace(Location loc) {
     val location = loc.toBlockLocation();
+    location.setPitch(0);
     for (val yaw : List.of(180, 90, -90, 0)) {
       location.setYaw(yaw);
       if (locations.containsKey(location)) {
@@ -92,6 +95,7 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
 
   public final boolean containsLocation(Location loc) {
     val location = loc.toBlockLocation();
+    location.setPitch(0);
     for (val yaw : List.of(180, 90, -90, 0)) {
       location.setYaw(yaw);
       if (locations.containsKey(location)) {
@@ -103,6 +107,7 @@ public abstract class BlockInputsAPI<T> extends JsonAPI {
 
   public final Location removeLocation(Location loc) {
     val location = loc.toBlockLocation();
+    location.setPitch(0);
     for (val yaw : List.of(180, 90, -90, 0)) {
       location.setYaw(yaw);
       if (locations.remove(location) != null) {
