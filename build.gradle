@@ -33,7 +33,7 @@ def relocates = [
 
 def lombok = 'org.projectlombok:lombok:1.18.32'
 
-paperweight.reobfArtifactConfiguration = ReobfArtifactConfiguration.Companion.MOJANG_PRODUCTION
+// paperweight.reobfArtifactConfiguration = ReobfArtifactConfiguration.Companion.MOJANG_PRODUCTION
 
 dependencies {
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
@@ -87,7 +87,7 @@ shadowJar {
 tasks.register('copyPlugin') {
     dependsOn reobfJar
     doLast {
-        if (file("./build/libs/ComMiniPlugin-${version}-reobf.jar").exists()) {
+        if (file("./build/libs/ComMiniPlugin-${version}.jar").exists()) {
             if (file('./copy.bat').exists()) {
                 exec {
                     workingDir '.'
@@ -115,7 +115,7 @@ tasks.register('copyPlugin') {
 tasks.register('runPlugin') {
     dependsOn reobfJar
     doLast {
-        if (file("./build/libs/ComMiniPlugin-${version}-reobf.jar").exists()) {
+        if (file("./build/libs/ComMiniPlugin-${version}.jar").exists()) {
             if (file('./copy.bat').exists()) {
                 exec {
                     workingDir '.'

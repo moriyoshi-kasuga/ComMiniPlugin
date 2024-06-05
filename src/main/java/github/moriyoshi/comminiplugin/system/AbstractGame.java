@@ -3,19 +3,10 @@ package github.moriyoshi.comminiplugin.system;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
 import lombok.Getter;
-import lombok.val;
-import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
-import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
@@ -58,6 +49,7 @@ public abstract class AbstractGame implements InterfaceGame {
     if (!innerStartGame(player)) {
       return false;
     }
+    hidePlayer();
     isStarted = true;
     ComMiniPlugin.getPlugin().registerEvent(listener);
     return true;
@@ -66,45 +58,10 @@ public abstract class AbstractGame implements InterfaceGame {
   public final void finishGame() {
     isStarted = false;
     HandlerList.unregisterAll(listener);
+    showPlayer();
     runPlayers(GameSystem::initializePlayer);
     innerFinishGame();
     fieldInitialize(false);
-  }
-
-  public final void runPlayers(final Consumer<Player> consumer) {
-    Bukkit.getOnlinePlayers()
-        .forEach(
-            p -> {
-              if (isGamePlayer(p)) {
-                consumer.accept(p);
-              }
-            });
-  }
-
-  public final void teleportLobby(final Player player) {
-    player.teleport(getLobby());
-  }
-
-  //TODO: join の対象にもしたほうがいい、あと join message は isGamepLayer のやつには渡さない
-  public final void hidePlayer() {
-    final List<UUID> list =
-        Bukkit.getOnlinePlayers().stream()
-            .filter(p -> !isGamePlayer(p))
-            .map(Entity::getUniqueId)
-            .toList();
-    final ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(list);
-    runPlayers(p -> ((CraftPlayer) p).getHandle().connection.send(packet));
-  }
-
-  public final void showPlayer() {
-    val list =
-        Bukkit.getOnlinePlayers().stream()
-            .filter(p -> !isGamePlayer(p))
-            .map(p -> ((CraftPlayer) p).getHandle())
-            .toList();
-    final ClientboundPlayerInfoUpdatePacket packet =
-        ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(list);
-    runPlayers(p -> ((CraftPlayer) p).getHandle().connection.send(packet));
   }
 
   protected abstract void fieldInitialize(boolean isCreatingInstance);
@@ -113,6 +70,21 @@ public abstract class AbstractGame implements InterfaceGame {
 
   protected abstract void innerFinishGame();
 
-  // TODO: createHelpMenu も作ったほうがいい
+  /**
+   * ゲームが始まってからの観戦
+   *
+   * @param player 観戦させたい人
+   * @return true で参加させ、false で観戦不可能
+   */
+  public abstract boolean addSpec(Player player);
 
+  /**
+   * ゲームの初期化
+   *
+   * @param player 初期化する人
+   * @return true で初期化し、false で初期化不可能
+   */
+  public abstract boolean initializeGame(Player player);
+
+  // TODO: createHelpMenu も作ったほうがいい
 }

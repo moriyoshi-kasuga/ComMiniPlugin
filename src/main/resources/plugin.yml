@@ -2,6 +2,5 @@ name: ComMiniPlugin
 prefix: ComMiniPlugin
 version: ${version}
 main: github.moriyoshi.comminiplugin.ComMiniPlugin
-api-version: '1.20.6'
+api-version: 1.20.6
 author: moriyoshi-kasuga
-load: POSTWORLD

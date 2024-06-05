@@ -91,6 +91,6 @@ public class BRListener implements AbstractGameListener<BRGame> {
       game.teleportLobby(p);
       return;
     }
-    game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()));
+    game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()).getName());
   }
 }

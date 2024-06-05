@@ -11,18 +11,21 @@ import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
-import github.moriyoshi.comminiplugin.util.tuple.Pair;
+import github.moriyoshi.comminiplugin.util.tuple.Triple;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.val;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.HeightMap;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -31,7 +34,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-// TODO: チーム戦実装する
+@SuppressWarnings("deprecation")
 public class SSGame extends AbstractGame implements WinnerTypeGame {
 
   private final int MAX_RADIUS_RANGE = 600;
@@ -46,12 +49,25 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   private double previousBorderSize;
 
   // true は生きている、falseは観戦者(死んで観戦者で機能を統一)
-  public final HashMap<UUID, Pair<Boolean, Integer>> players = new HashMap<>();
+  public final HashMap<UUID, Triple<Boolean, Integer, ChatColor>> players = new HashMap<>();
 
   @Getter private boolean canPvP;
   private BossBar bossBar;
   private BukkitRunnable run;
   private boolean isFinalArea;
+
+  @Getter private Mode mode;
+
+  public void setMode(Mode mode) {
+    this.mode = mode;
+    prefix.cast("<red>Modeが<u>" + mode.name() + "</u>に変わりました");
+    prefix.cast("<gray>ゲームをしたい人はもう一度参加ボタンを押してください");
+    runPlayers(
+        player -> {
+          GameSystem.initializePlayer(player);
+        });
+    players.clear();
+  }
 
   public SSGame() {
     super(
@@ -63,26 +79,50 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         new SSListener());
   }
 
-  public final void joinPlayer(final Player player, final boolean isPlayer) {
+  public final void leavePlayer(final Player player) {
     val uuid = player.getUniqueId();
+    if (!players.containsKey(uuid)) {
+      prefix.send(player, "<red>あなたはゲームに参加していません");
+      return;
+    }
     val item =
         new ItemBuilder(Material.SPYGLASS)
             .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
             .customItemFlag(CustomItemFlag.DISABLE_MOVE_INV, true)
             .build();
     player.getInventory().removeItem(item);
-    if (players.containsKey(uuid)) {
-      if (players.get(uuid).getFirst() == isPlayer) {
-        players.remove(uuid);
-        GameSystem.initializePlayer(player);
-        prefix.cast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
-        return;
-      }
+    GameSystem.initializePlayer(player);
+    val isPlayer = players.remove(uuid).getFirst();
+    prefix.cast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
+  }
+
+  public final void joinPlayer(final Player player, final boolean isPlayer, final ChatColor color) {
+    val prev = players.get(player.getUniqueId());
+    if (prev != null && prev.getFirst() == isPlayer && prev.getThird() == color) {
+      prefix.send(player, "<red>抜けるには抜けるボタンを押してください");
+      return;
     }
-    players.put(uuid, Pair.of(isPlayer, isPlayer ? AIR_LIMIT : -1));
+    val item =
+        new ItemBuilder(Material.SPYGLASS)
+            .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
+            .customItemFlag(CustomItemFlag.DISABLE_MOVE_INV, true)
+            .build();
+    player.getInventory().removeItem(item);
+    players.put(player.getUniqueId(), Triple.of(isPlayer, isPlayer ? AIR_LIMIT : -1, color));
     player.teleport(lobby);
     player.getInventory().addItem(item);
-    prefix.cast(player.getName() + "が" + (isPlayer ? "<blue>参加" : "<gray>観戦") + "します");
+    if (isPlayer) {
+      if (color == null) {
+        prefix.cast(player.getName() + "が<blue>参加します");
+      } else {
+        prefix.cast(
+            Util.mm(player.getName() + "が<white>")
+                .append(Util.colorToComponent(color, color.name()))
+                .append(Util.mm("<gray>に<blue>参加します")));
+      }
+    } else {
+      prefix.cast(player.getName() + "が<gray>観戦します");
+    }
   }
 
   @Override
@@ -92,7 +132,10 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
 
   @Override
   public MenuHolder<ComMiniPlugin> createGameMenu(final Player player) {
-    return new SSMenu();
+    if (mode == Mode.FFA) {
+      return new SSFFAMenu();
+    }
+    return new SSTeamMenu();
   }
 
   @Override
@@ -109,6 +152,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
     world.setClearWeatherDuration(0);
     world.setTime(1000);
+    clearMonster();
     val vec = lobby.toVector();
     val min = vec.clone().add(VOID_BLOCK_RADIUS);
     val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
@@ -128,11 +172,54 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
 
   @Override
   public boolean innerStartGame(final Player player) {
-    if (2 > players.values().stream().filter(Pair::getFirst).toList().size()) {
-      prefix.send(player, "<red>二人以上でしかプレイできません");
-      return false;
+    if (mode == Mode.FFA) {
+      if (2 > players.values().stream().filter(Triple::getFirst).toList().size()) {
+        prefix.send(player, "<red>二人以上でしかプレイできません");
+        return false;
+      }
+    } else {
+      if (2 > players.values().stream().collect(Collectors.groupingBy(Triple::getThird)).size()) {
+        prefix.send(player, "<red>二チーム以上でしかプレイできません");
+        return false;
+      }
     }
-    // TODO: タイトルで5秒カウントする
+    new BukkitRunnable() {
+
+      private int rest = 11;
+
+      @Override
+      public void run() {
+        if (1 > --rest) {
+          runPlayers(
+              p -> {
+                p.playSound(
+                    p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1);
+                Util.title(p, "<red>スタート!", null);
+              });
+          start();
+          this.cancel();
+          return;
+        }
+        if (3 >= rest) {
+          runPlayers(
+              p ->
+                  p.playSound(
+                      p.getLocation(),
+                      Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
+                      SoundCategory.MASTER,
+                      1,
+                      1));
+        }
+        runPlayers(
+            p -> {
+              Util.title(p, "<red><u>" + rest + "</u>秒後に始まります", null);
+            });
+      }
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
+    return true;
+  }
+
+  private void start() {
     val vec = lobby.toVector();
     val min = vec.clone().add(VOID_BLOCK_RADIUS);
     val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
@@ -156,16 +243,28 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
 
     run =
         new BukkitRunnable() {
-          private int second = AFTER_PVP_SECOND;
+          private int second = AFTER_PVP_SECOND + 1;
 
           @Override
           public void run() {
             if (second != -1) {
-              // TODO: ここで alert を出す
-              if (second > 0) {
+              if (--second > 0) {
                 bossBar
                     .name(Util.mm("<red>PvP解禁まで<u>" + second + "</u>秒"))
                     .progress((float) second / (float) AFTER_PVP_SECOND);
+                if (second % 60 == 0) {
+                  val message = Util.mm("<red>PvP解禁まで<u>" + second / 60 + "</u>分");
+                  runPlayers(
+                      p -> {
+                        prefix.send(p, message);
+                      });
+                }
+                if (10 >= second) {
+                  runPlayers(
+                      p -> {
+                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
+                      });
+                }
               } else {
                 canPvP = true;
                 runPlayers(
@@ -178,7 +277,6 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                   speedUpBorder();
                 }
               }
-              second--;
             }
             players.forEach(
                 (t, u) -> {
@@ -196,7 +294,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                     return;
                   }
                   if (num > 0) {
-                    players.put(t, Pair.of(true, inCave ? --num : ++num));
+                    players.put(t, Triple.of(true, inCave ? --num : ++num, u.getThird()));
                     return;
                   }
                   p.setHealth(0);
@@ -239,8 +337,27 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             p.teleport(world.getHighestBlockAt(loc, HeightMap.MOTION_BLOCKING).getLocation());
           }
         });
-    hidePlayer();
-    return true;
+    if (mode == Mode.TEAM) {
+      players.entrySet().stream()
+          .collect(Collectors.groupingBy(entry -> entry.getValue().getThird()))
+          .forEach(
+              (color, entries) -> {
+                val size = entries.size();
+                for (int i = 0; i < size; i++) {
+                  val current = Bukkit.getPlayer(entries.get(i).getKey());
+                  current.playerListName(Util.colorToComponent(color, current.getName()));
+                  for (int j = 0; j < size; j++) {
+                    if (i != j) {
+                      try {
+                        ComMiniPlugin.getGlowingEntities()
+                            .setGlowing(Bukkit.getPlayer(entries.get(j).getKey()), current, color);
+                      } catch (ReflectiveOperationException e) {
+                      }
+                    }
+                  }
+                }
+              });
+    }
   }
 
   @Override
@@ -265,7 +382,27 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     if (run != null) {
       run.cancel();
     }
-    showPlayer();
+    if (mode == Mode.TEAM) {
+      players.entrySet().stream()
+          .collect(Collectors.groupingBy(entry -> entry.getValue().getThird()))
+          .forEach(
+              (color, entries) -> {
+                val size = entries.size();
+                for (int i = 0; i < size; i++) {
+                  Player current = Bukkit.getPlayer(entries.get(i).getKey());
+                  current.playerListName(Util.mm(current.getName()));
+                  for (int j = 0; j < size; j++) {
+                    if (i != j) {
+                      try {
+                        ComMiniPlugin.getGlowingEntities()
+                            .unsetGlowing(Bukkit.getPlayer(entries.get(j).getKey()), current);
+                      } catch (ReflectiveOperationException e) {
+                      }
+                    }
+                  }
+                }
+              });
+    }
     players.clear();
   }
 
@@ -277,7 +414,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   @Override
   public boolean addSpec(final Player player) {
     val uuid = player.getUniqueId();
-    players.put(uuid, Pair.of(false, -1));
+    players.put(uuid, Triple.of(false, -1, null));
     player.setGameMode(GameMode.SPECTATOR);
     player.getInventory().clear();
     player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
@@ -302,9 +439,9 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     world
         .getNearbyLivingEntities(
             world.getWorldBorder().getCenter(),
-            MIN_BORDER_RANGE,
+            MIN_BORDER_RANGE + 50,
             320,
-            MIN_BORDER_RANGE,
+            MIN_BORDER_RANGE + 50,
             (entity) -> entity instanceof Monster)
         .forEach(LivingEntity::remove);
   }
@@ -319,5 +456,11 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     isFinalArea = false;
     previousBorderSize = MAX_RADIUS_RANGE;
     previousTime = MAX_SECOND;
+    mode = Mode.FFA;
+  }
+
+  public enum Mode {
+    FFA,
+    TEAM
   }
 }

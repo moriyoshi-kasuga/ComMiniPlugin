@@ -10,9 +10,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import lombok.val;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
@@ -69,15 +71,25 @@ public class GameListener implements Listener {
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
+    if (ComMiniPlayer.getPlayer(p.getUniqueId()).isShouldLoadResourcePack()) {
+      ResourcePackUtil.updateComMiniResoucePack(p);
+    }
+    final ClientboundPlayerInfoRemovePacket packet =
+        new ClientboundPlayerInfoRemovePacket(List.of(p.getUniqueId()));
+    Bukkit.getOnlinePlayers().stream()
+        .filter(
+            player ->
+                !player.equals(p) && ComMiniPlayer.getPlayer(player.getUniqueId()).isJoinGame())
+        .forEach(
+            player -> {
+              ((CraftPlayer) p).getHandle().connection.send(packet);
+            });
     if (GameSystem.isIn()
         && GameSystem.getGame().isGamePlayer(p, PlayerJoinEvent.class)
         && GameSystem.getGame().listener.join(e)) {
       return;
     }
     GameSystem.initializePlayer(p);
-    if (ComMiniPlayer.getPlayer(p.getUniqueId()).isShouldLoadResourcePack()) {
-      ResourcePackUtil.updateComMiniResoucePack(p);
-    }
   }
 
   @EventHandler

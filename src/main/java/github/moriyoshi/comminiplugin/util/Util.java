@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -125,6 +126,11 @@ public class Util {
    */
   public static String serializeLegacy(final Component str) {
     return LegacyComponentSerializer.legacyAmpersand().serializeOrNull(str);
+  }
+
+  public static Component colorToComponent(final ChatColor color,String text) {
+    return Component.text(text)
+        .color(TextColor.color(color.asBungee().getColor().getRGB()));
   }
 
   /**

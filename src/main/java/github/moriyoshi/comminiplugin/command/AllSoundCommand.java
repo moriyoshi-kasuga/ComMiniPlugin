@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 public class AllSoundCommand extends CommandAPICommand {
 
   // TODO: もっとちゃんとアイテム適用するようにする
-  // あと list menu の serach method は new redirect する
   public static Material getMaterial(final Sound sound) {
     final String name = sound.name();
     val materials = Arrays.asList(Material.values());
@@ -113,7 +112,7 @@ public class AllSoundCommand extends CommandAPICommand {
           str -> {
             val upper = str.toUpperCase();
             return Arrays.asList(Sound.values()).stream()
-                .filter(sound -> sound.name().toLowerCase().contains(upper))
+                .filter(sound -> sound.name().contains(upper))
                 .toList();
           });
     }

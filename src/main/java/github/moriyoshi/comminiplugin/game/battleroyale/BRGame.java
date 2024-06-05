@@ -236,8 +236,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
             .progress((float) time / (float) START_DROP);
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
-
-    hidePlayer();
     return true;
   }
 
@@ -319,7 +317,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     }
     lobbyBlocks.clear();
     isCanPvP = false;
-    showPlayer();
     players.clear();
   }
 

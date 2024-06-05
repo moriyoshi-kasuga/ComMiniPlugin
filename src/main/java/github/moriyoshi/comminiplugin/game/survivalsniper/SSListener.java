@@ -1,10 +1,14 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import github.moriyoshi.comminiplugin.system.AbstractGameListener;
+import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.Util;
-import github.moriyoshi.comminiplugin.util.tuple.Pair;
+import github.moriyoshi.comminiplugin.util.tuple.Triple;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.val;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
@@ -25,6 +29,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+@SuppressWarnings("deprecation")
 public class SSListener implements AbstractGameListener<SSGame> {
 
   @Override
@@ -70,7 +75,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
     }
     p.setGameMode(GameMode.SPECTATOR);
     game.runPlayers(pl -> Util.send(pl, e.deathMessage()));
-    game.players.put(uuid, Pair.of(false, -1));
+    game.players.put(uuid, Triple.of(false, -1, null));
     p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
     reducePlayer(p);
   }
@@ -102,11 +107,23 @@ public class SSListener implements AbstractGameListener<SSGame> {
 
   @Override
   public void damageByEntity(final EntityDamageByEntityEvent e) {
-    if (e.getEntity() instanceof Player && e.getDamager() instanceof final Player attacker) {
-      if (!getGame().isCanPvP()) {
-        getGame().prefix.send(attacker, "<red>まだPvPはできません");
+    if (e.getEntity() instanceof Player entity && e.getDamager() instanceof final Player attacker) {
+      val game = getGame();
+      if (!game.isCanPvP()) {
+        game.prefix.send(attacker, "<red>まだPvPはできません");
         e.setCancelled(true);
+        return;
       }
+      ChatColor color1 =
+          Optional.ofNullable(game.players.get(entity.getUniqueId()))
+              .map(t -> t.getThird())
+              .orElse(null);
+      val color2 = game.players.get(attacker.getUniqueId()).getThird();
+      if (color1 != null && color2 != null && color1 == color2) {
+        e.setCancelled(true);
+        return;
+      }
+
       val main = attacker.getInventory().getItemInMainHand().getType();
       if (EnchantmentTarget.TOOL.includes(main)
           && (main.name().contains("STONE") || main.name().contains("WOODEN"))) {
@@ -146,15 +163,37 @@ public class SSListener implements AbstractGameListener<SSGame> {
           world.dropItemNaturally(loc, i);
         });
     inv.clear();
-    val alives =
-        game.players.entrySet().stream().filter(entry -> entry.getValue().getFirst()).toList();
-    if (alives.size() != 1) {
-      if (alives.size() == 2) {
-        game.speedUpBorder();
+    if (getGame().getMode() == SSGame.Mode.FFA) {
+      val alives =
+          game.players.entrySet().stream().filter(entry -> entry.getValue().getFirst()).toList();
+      if (alives.size() != 1) {
+        if (alives.size() == 2) {
+          game.speedUpBorder();
+        }
+        game.teleportLobby(p);
+        return;
       }
-      game.teleportLobby(p);
-      return;
+      game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()).getName());
+    } else {
+      val alives =
+          game.players.entrySet().stream()
+              .collect(Collectors.groupingBy(entry -> entry.getValue().getThird()));
+      if (alives.isEmpty()) {
+        getGame().prefix.cast("<red>エラーです。残りのプレイヤーが0人です");
+        GameSystem.finalGame();
+        return;
+      }
+      if (alives.size() != 1) {
+        if (alives.size() == 2) {
+          game.speedUpBorder();
+        }
+        game.teleportLobby(p);
+        return;
+      }
+      alives.forEach(
+          (color, list) -> {
+            game.endGame(Util.colorToComponent(color, color.name() + " チーム"));
+          });
     }
-    game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()));
   }
 }

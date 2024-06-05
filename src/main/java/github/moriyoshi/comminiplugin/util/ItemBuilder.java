@@ -160,12 +160,24 @@ public class ItemBuilder {
   /**
    * loreの追加
    *
-   * @param str 追加するloreの文
+   * @param addLore 追加するloreの文
    * @return new instance (use {@link #build()} to create)
    */
-  public ItemBuilder addLore(final Object str) {
+  public ItemBuilder addLore(final Object... addLore) {
     final List<Component> lore = getLore();
-    lore.add(Util.mm(str));
+    lore.addAll(Util.ListMM(Arrays.asList(addLore)));
+    return lore(lore);
+  }
+
+  /**
+   * loreの追加
+   *
+   * @param addLore 追加するloreの文
+   * @return new instance (use {@link #build()} to create)
+   */
+  public ItemBuilder addLore(final List<?> addLore) {
+    final List<Component> lore = getLore();
+    lore.addAll(Util.ListMM(addLore));
     return lore(lore);
   }
 
