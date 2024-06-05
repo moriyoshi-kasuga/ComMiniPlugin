@@ -36,6 +36,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
   public void damage(EntityDamageEvent e, Player player) {
     if (e.getCause().equals(DamageCause.FALL)) {
       e.setCancelled(false);
+      e.setDamage(e.getDamage() / 2);
     }
   }
 

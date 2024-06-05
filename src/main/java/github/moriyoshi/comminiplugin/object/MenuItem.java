@@ -32,11 +32,6 @@ public class MenuItem extends CustomItem {
   }
 
   @Override
-  public @NotNull String getIdentifier() {
-    return "menu";
-  }
-
-  @Override
   public boolean canMoveOtherInv(final InventoryClickEvent e) {
     return false;
   }
