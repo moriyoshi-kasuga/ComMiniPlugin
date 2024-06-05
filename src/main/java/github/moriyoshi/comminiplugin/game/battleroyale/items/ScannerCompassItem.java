@@ -25,6 +25,7 @@ public class ScannerCompassItem extends CustomItem {
     super(item);
   }
 
+  // TODO: ここ実装する
   @Override
   public void interact(PlayerInteractEvent e) {
     if (e.getAction().isLeftClick()) {

@@ -35,13 +35,13 @@ public class StormBringerItem extends CustomItem implements CooldownItem {
     if (inCooldown()) {
       return;
     }
-    setCooldown(1200);
     val player = e.getPlayer();
     val target = player.getTargetBlockExact(50);
     if (target == null || target.isEmpty()) {
       ComMiniPrefix.MAIN.send(player, "<red>対象のブロックを見つけられません。");
       return;
     }
+    setCooldown(1200);
     val world = player.getWorld();
     world.strikeLightningEffect(target.getLocation()).setFlashCount(3);
     target

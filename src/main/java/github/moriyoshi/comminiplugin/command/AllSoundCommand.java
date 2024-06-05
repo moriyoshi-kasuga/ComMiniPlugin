@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.val;
+import net.kyori.adventure.sound.SoundStop;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -100,6 +101,20 @@ public class AllSoundCommand extends CommandAPICommand {
         final Function<Sound, MenuButton<MenuHolder<ComMiniPlugin>>> function) {
       super(plugin, title, pageSize, rewards, rewardStartIndex, rewardEndIndex, function);
     }
+
+    @Override
+    public void onOpen(org.bukkit.event.inventory.InventoryOpenEvent event) {
+      setButton(
+          49,
+          new ItemButton<>(new ItemBuilder(Material.BUCKET).name("<gray>音を消す").build()) {
+            @Override
+            public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent e) {
+              e.getWhoClicked().stopSound(SoundStop.all());
+            }
+          });
+      super.onOpen(event);
+    }
+    ;
 
     @Override
     public @NotNull Optional<Supplier<ListMenu<Sound>>> getDefaultMenu() {

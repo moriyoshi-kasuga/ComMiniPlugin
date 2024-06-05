@@ -2,7 +2,16 @@ package github.moriyoshi.comminiplugin.game.battleroyale;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.AllOrNothingItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.BackpackItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.CurryBreadItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.HKPRItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.MagicMirrorItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.RecallClockItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.ScannerCompassItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.TinglyBallItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.UpgradeWingItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.VampireBowItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.VampireSwordItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.loot.Entry;
@@ -140,7 +149,11 @@ public class BRField {
     return new LootTable(
         new ArrayList<>() {
           {
-            add(new Pool().add(new Entry(() -> new WingItem().getItem())));
+            add(
+                new Pool()
+                    .add(new Entry(10, () -> new CurryBreadItem().getItem()))
+                    .add(new Entry(5, () -> new TinglyBallItem().getItem()))
+                    .add(new Entry(5, () -> new WingItem().getItem())));
             add(new Pool().add(new Entry(arrows::next)));
           }
         });
@@ -152,8 +165,9 @@ public class BRField {
           {
             add(
                 new Pool()
-                    .add(new Entry(60, () -> new WingItem().getItem()))
-                    .add(new Entry(40, () -> new TinglyBallItem().getItem())));
+                    .add(new Entry(10, () -> new WingItem().getItem()))
+                    .add(new Entry(10, () -> new TinglyBallItem().getItem()))
+                    .add(new Entry(5, () -> new BackpackItem().getItem())));
             add(new Pool().add(new Entry(arrows::next)));
           }
         });
@@ -163,7 +177,11 @@ public class BRField {
     return new LootTable(
         new ArrayList<>() {
           {
-            add(new Pool().add(new Entry(() -> new WingItem().getItem())));
+            add(
+                new Pool()
+                    .add(new Entry(10, () -> new WingItem().getItem()))
+                    .add(new Entry(10, () -> new BackpackItem().getItem()))
+                    .add(new Entry(5, () -> new VampireBowItem().getItem())));
             add(new Pool().add(new Entry(arrows::next)));
           }
         });
@@ -173,7 +191,12 @@ public class BRField {
     return new LootTable(
         new ArrayList<>() {
           {
-            add(new Pool().add(new Entry(() -> new WingItem().getItem())));
+            add(
+                new Pool()
+                    .add(new Entry(10, () -> new ItemStack(Material.ENDER_PEARL)))
+                    .add(new Entry(10, () -> new VampireBowItem().getItem()))
+                    .add(new Entry(5, () -> new VampireSwordItem().getItem()))
+                    .add(new Entry(5, () -> new UpgradeWingItem().getItem())));
           }
         });
   }
@@ -184,8 +207,14 @@ public class BRField {
           {
             add(
                 new Pool()
-                    .add(new Entry(() -> new AllOrNothingItem().getItem()))
-                    .add(new Entry(() -> new WingItem().getItem())));
+                    .add(new Entry(5, () -> new ItemStack(Material.ENDER_PEARL)))
+                    .add(new Entry(10, () -> new AllOrNothingItem().getItem()))
+                    .add(new Entry(10, () -> new RecallClockItem().getItem()))
+                    .add(new Entry(10, () -> new MagicMirrorItem().getItem()))
+                    .add(new Entry(10, () -> new HKPRItem().getItem()))
+                    .add(new Entry(10, () -> new ScannerCompassItem().getItem()))
+                    .add(new Entry(10, () -> new VampireSwordItem().getItem()))
+                    .add(new Entry(10, () -> new UpgradeWingItem().getItem())));
           }
         });
   }
