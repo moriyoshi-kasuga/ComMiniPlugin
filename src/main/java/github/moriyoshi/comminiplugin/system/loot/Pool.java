@@ -25,7 +25,7 @@ public class Pool {
 
   public Pool(int rolls) {
     this.rolls = rolls;
-    this.bonusRolls = (r) -> 1;
+    this.bonusRolls = (r) -> 0;
   }
 
   public Pool(IntSupplier bonusRolls) {
@@ -72,6 +72,9 @@ public class Pool {
     entries.forEach(entry -> random.add(entry.weight, entry));
     for (int i = 0; i < (rolls + bonusRolls.apply(r)); i++) {
       val entry = random.next();
+      if (!entry.isDuplicate()) {
+        random.remove(entry);
+      }
       val item = entry.supplier.get();
       if (item != null && !item.isEmpty() && entry.condition.getAsBoolean()) {
         list.add(item);
