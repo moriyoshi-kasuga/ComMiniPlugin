@@ -18,8 +18,7 @@ public class HKPRItem extends CustomItem {
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
             .name("<yellow>HKPR")
             .lore("<gray>一番近くのプレイヤーと位置を交換します")
-            // WARN: apply correct custom model data
-            .customModelData(17)
+            .customModelData(16)
             .build());
   }
 
@@ -33,8 +32,8 @@ public class HKPRItem extends CustomItem {
       return;
     }
     val player = e.getPlayer();
-    if (!GameSystem.isIn(BRGame.class)) {
-      Messages.GAME_NOT_FOUND.send(player);
+    if (!GameSystem.isStarted(BRGame.class)) {
+      Messages.GAME_NOT_START.send(player);
       return;
     }
     itemUse();

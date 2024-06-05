@@ -87,7 +87,7 @@ public class TreasureChest extends CustomModelBlock {
                     public void run() {
                       if (getBlock().getState() instanceof Chest chest) {
                         if (chest.getInventory().isEmpty()) {
-                          getBlock().setType(Material.AIR);
+                          remove();
                         }
                       }
                     }

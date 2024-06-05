@@ -124,8 +124,8 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
     return switch (Collections.max(
         getLocations().get(location).stream().map(p -> p.getFirst()).toList())) {
       case 5 -> ChatColor.DARK_PURPLE;
-      case 4 -> ChatColor.AQUA;
-      case 3 -> ChatColor.GREEN;
+      case 4 -> ChatColor.GREEN;
+      case 3 -> ChatColor.AQUA;
       case 2 -> ChatColor.BLUE;
       case 1 -> ChatColor.WHITE;
       default -> ChatColor.BLACK;

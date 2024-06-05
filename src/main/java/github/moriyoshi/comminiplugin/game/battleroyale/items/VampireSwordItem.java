@@ -43,7 +43,7 @@ public class VampireSwordItem extends CustomItem implements CooldownItem {
     if (inCooldown()) {
       return;
     }
-    player.heal(Math.min(e.getDamage(), 6));
+    player.heal(Math.min(e.getFinalDamage(), 6));
     setCooldown(5 * 20);
     var loc = player.getLocation();
     loc.getWorld().playSound(loc, Sound.ITEM_WOLF_ARMOR_BREAK, SoundCategory.MASTER, 1, 1);

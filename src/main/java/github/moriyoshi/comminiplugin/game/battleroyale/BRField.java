@@ -5,9 +5,13 @@ import github.moriyoshi.comminiplugin.game.battleroyale.items.AllOrNothingItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.BackpackItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.CurryBreadItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.HKPRItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.InvisibleCloakItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.MagicMirrorItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.PhoenixFeatherItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.RecallClockItem;
-import github.moriyoshi.comminiplugin.game.battleroyale.items.ScannerCompassItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.ShockWaveItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.SpeedBootsItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.StormBringerItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.TinglyBallItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.UpgradeWingItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.VampireBowItem;
@@ -29,6 +33,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class BRField {
@@ -50,7 +57,7 @@ public class BRField {
     this.treasure = new TreasureLocation(name);
     this.arrows =
         new RandomCollection<ItemStack>()
-            .add(100, null)
+            .add(300, null)
             .add(50, new ItemBuilder(Material.ARROW).amount(3).build())
             .add(30, new ItemBuilder(Material.ARROW).amount(5).build())
             .add(10, new ItemBuilder(Material.ARROW).amount(7).build())
@@ -150,10 +157,53 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool()
+                new Pool(1, 0, 2)
                     .add(new Entry(10, () -> new CurryBreadItem().getItem()))
-                    .add(new Entry(5, () -> new TinglyBallItem().getItem()))
-                    .add(new Entry(5, () -> new WingItem().getItem())));
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.FIREWORK_ROCKET)
+                                    .changeMeta((Consumer<FireworkMeta>) meta -> meta.setPower(1))
+                                    .build()))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.POTION)
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> meta.setBasePotionType(PotionType.LEAPING))
+                                    .build()))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.POTION)
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> meta.setBasePotionType(PotionType.REGENERATION))
+                                    .build()))
+                    .add(new Entry(10, () -> new ItemStack(Material.SPECTRAL_ARROW)))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.TIPPED_ARROW)
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> meta.setBasePotionType(PotionType.SLOWNESS))
+                                    .build()))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.TIPPED_ARROW)
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> meta.setBasePotionType(PotionType.POISON))
+                                    .build()))
+                    .add(new Entry(10, () -> new TinglyBallItem().getItem())));
             add(new Pool().add(new Entry(arrows::next)));
           }
         });
@@ -164,10 +214,32 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool()
-                    .add(new Entry(10, () -> new WingItem().getItem()))
+                new Pool(1, 0, 2)
+                    .add(new Entry(10, () -> new CurryBreadItem().getItem()))
+                    .add(new Entry(10, () -> new ShockWaveItem().getItem()))
                     .add(new Entry(10, () -> new TinglyBallItem().getItem()))
-                    .add(new Entry(5, () -> new BackpackItem().getItem())));
+                    .add(new Entry(10, () -> new ItemStack(Material.SPYGLASS)))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.FIREWORK_ROCKET)
+                                    .changeMeta((Consumer<FireworkMeta>) meta -> meta.setPower(2))
+                                    .build()))
+                    .add(new Entry(10, () -> new BackpackItem().getItem()))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.TIPPED_ARROW)
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta ->
+                                                meta.setBasePotionType(PotionType.LONG_WEAKNESS))
+                                    .build()))
+                    .add(new Entry(3, () -> new ItemStack(Material.LEATHER_CHESTPLATE)))
+                    .add(new Entry(3, () -> new ItemStack(Material.LEATHER_LEGGINGS)))
+                    .add(new Entry(5, () -> new SpeedBootsItem().getItem())));
             add(new Pool().add(new Entry(arrows::next)));
           }
         });
@@ -178,9 +250,31 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool()
-                    .add(new Entry(10, () -> new WingItem().getItem()))
+                new Pool(1, 0, 2)
                     .add(new Entry(10, () -> new BackpackItem().getItem()))
+                    .add(new Entry(10, () -> new ShockWaveItem().getItem()))
+                    .add(new Entry(10, () -> new SpeedBootsItem().getItem()))
+                    .add(new Entry(10, () -> new AllOrNothingItem().getItem()))
+                    .add(new Entry(5, () -> new ItemStack(Material.LEATHER_CHESTPLATE)))
+                    .add(new Entry(5, () -> new ItemStack(Material.LEATHER_LEGGINGS)))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.FIREWORK_ROCKET)
+                                    .changeMeta((Consumer<FireworkMeta>) meta -> meta.setPower(3))
+                                    .build()))
+                    .add(
+                        new Entry(
+                            5,
+                            () ->
+                                new ItemBuilder(Material.TIPPED_ARROW)
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> meta.setBasePotionType(PotionType.HEALING))
+                                    .build()))
+                    .add(new Entry(5, () -> new BackpackItem().getItem()))
+                    .add(new Entry(5, () -> new RecallClockItem().getItem()))
                     .add(new Entry(5, () -> new VampireBowItem().getItem())));
             add(new Pool().add(new Entry(arrows::next)));
           }
@@ -192,9 +286,16 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool()
+                new Pool(1, 0, 2)
                     .add(new Entry(10, () -> new ItemStack(Material.ENDER_PEARL)))
                     .add(new Entry(10, () -> new VampireBowItem().getItem()))
+                    .add(new Entry(10, () -> new RecallClockItem().getItem()))
+                    .add(new Entry(10, () -> new InvisibleCloakItem().getItem()))
+                    .add(new Entry(10, () -> new HKPRItem().getItem()))
+                    .add(new Entry(10, () -> new WingItem().getItem()))
+                    .add(new Entry(10, () -> new ItemStack(Material.ENDER_PEARL)))
+                    .add(new Entry(10, () -> new ItemStack(Material.TIPPED_ARROW)))
+                    .add(new Entry(5, () -> new PhoenixFeatherItem().getItem()))
                     .add(new Entry(5, () -> new VampireSwordItem().getItem()))
                     .add(new Entry(5, () -> new UpgradeWingItem().getItem())));
           }
@@ -206,13 +307,18 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool()
+                new Pool(1, 0, 2)
                     .add(new Entry(5, () -> new ItemStack(Material.ENDER_PEARL)))
-                    .add(new Entry(10, () -> new AllOrNothingItem().getItem()))
-                    .add(new Entry(10, () -> new RecallClockItem().getItem()))
                     .add(new Entry(10, () -> new MagicMirrorItem().getItem()))
                     .add(new Entry(10, () -> new HKPRItem().getItem()))
-                    .add(new Entry(10, () -> new ScannerCompassItem().getItem()))
+                    .add(new Entry(10, () -> new ItemStack(Material.TOTEM_OF_UNDYING)))
+                    // TODO: 実装したら追加
+                    // .add(new Entry(10, () -> new ScannerCompassItem().getItem()))
+                    .add(new Entry(10, () -> new PhoenixFeatherItem().getItem()))
+                    .add(new Entry(10, () -> new StormBringerItem().getItem()))
+                    .add(new Entry(10, () -> new ItemStack(Material.ENCHANTED_GOLDEN_APPLE)))
+                    // TODO: ここ勇者の盾,実装したら replace で
+                    .add(new Entry(10, () -> new ItemStack(Material.SHIELD)))
                     .add(new Entry(10, () -> new VampireSwordItem().getItem()))
                     .add(new Entry(10, () -> new UpgradeWingItem().getItem())));
           }

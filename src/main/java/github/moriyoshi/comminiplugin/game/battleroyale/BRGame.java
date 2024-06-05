@@ -105,7 +105,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   }
 
   public boolean isPlayingPlayer(Player player) {
-    return players.get(player.getUniqueId());
+    return players.get(player.getUniqueId()) == true;
   }
 
   @Override

@@ -6,6 +6,7 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Optional;
+import java.util.Random;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -40,7 +41,11 @@ public class MagicMirrorItem extends CustomItem {
         .ifPresentOrElse(
             field -> {
               itemUse();
-              player.getInventory().addItem(field.getLevel5().random().getFirst());
+              if (new Random().nextBoolean()) {
+                player.getInventory().addItem(field.getLevel4().random().getFirst());
+              } else {
+                player.getInventory().addItem(field.getLevel5().random().getFirst());
+              }
             },
             () -> {
               Messages.GAME_NOT_START.send(player);

@@ -46,7 +46,7 @@ public class VampireBowItem extends CustomItem implements CooldownItem {
     GameListener.addProjectileDamageListener(
         e.getEntity().getUniqueId(),
         (projectile, event) -> {
-          event.setDamage(event.getDamage() + level);
+          event.setDamage(event.getFinalDamage() + level);
         });
     List<Sound> sounds;
 
