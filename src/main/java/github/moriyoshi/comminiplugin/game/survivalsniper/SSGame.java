@@ -178,7 +178,11 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         return false;
       }
     } else {
-      if (2 > players.values().stream().collect(Collectors.groupingBy(Triple::getThird)).size()) {
+      if (2
+          > players.values().stream()
+              .filter(value -> value.getThird() != null)
+              .collect(Collectors.groupingBy(Triple::getThird))
+              .size()) {
         prefix.send(player, "<red>二チーム以上でしかプレイできません");
         return false;
       }
@@ -339,6 +343,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         });
     if (mode == Mode.TEAM) {
       players.entrySet().stream()
+          .filter(entry -> entry.getValue().getThird() != null)
           .collect(Collectors.groupingBy(entry -> entry.getValue().getThird()))
           .forEach(
               (color, entries) -> {
@@ -384,6 +389,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     }
     if (mode == Mode.TEAM) {
       players.entrySet().stream()
+          .filter(entry -> entry.getValue().getThird() != null)
           .collect(Collectors.groupingBy(entry -> entry.getValue().getThird()))
           .forEach(
               (color, entries) -> {
@@ -394,9 +400,11 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                   for (int j = 0; j < size; j++) {
                     if (i != j) {
                       try {
+                        // TODO: ここ network protocol error が起こる
                         ComMiniPlugin.getGlowingEntities()
                             .unsetGlowing(Bukkit.getPlayer(entries.get(j).getKey()), current);
                       } catch (ReflectiveOperationException e) {
+                        e.printStackTrace();
                       }
                     }
                   }

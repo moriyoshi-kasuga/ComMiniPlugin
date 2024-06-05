@@ -48,6 +48,7 @@ public class SSBullet extends CustomItem {
     WOOD(Material.OAK_BUTTON, (m) -> m.name().contains("BUTTON") && m.isFuel(), "木", "木材系のボタン", 0),
     STONE(Material.STONE_BUTTON, (m) -> m == Material.STONE_BUTTON, "石", "焼き石のボタン", 1),
     COAL_BLOCK(Material.COAL_BLOCK, (m) -> m == Material.COAL_BLOCK, "石炭", "石炭のブロック", 2);
+    //TODO: 圧縮レッドストーンブロックを作ってそれをつける
 
     public final Material icon;
     public final Predicate<Material> predicate;

@@ -36,7 +36,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
   public void damage(EntityDamageEvent e, Player player) {
     if (e.getCause().equals(DamageCause.FALL)) {
       e.setCancelled(false);
-      e.setDamage(e.getDamage() / 2);
+      e.setDamage(e.getFinalDamage() / 2);
     }
   }
 
@@ -125,6 +125,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
         return;
       }
 
+      // TODO: 初期のアイテムとかもplayer以外は殴れるようにする
       val main = attacker.getInventory().getItemInMainHand().getType();
       if (EnchantmentTarget.TOOL.includes(main)
           && (main.name().contains("STONE") || main.name().contains("WOODEN"))) {
@@ -178,6 +179,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
     } else {
       val alives =
           game.players.entrySet().stream()
+              .filter(entry -> entry.getValue().getThird() != null)
               .collect(Collectors.groupingBy(entry -> entry.getValue().getThird()));
       if (alives.isEmpty()) {
         getGame().prefix.cast("<red>エラーです。残りのプレイヤーが0人です");

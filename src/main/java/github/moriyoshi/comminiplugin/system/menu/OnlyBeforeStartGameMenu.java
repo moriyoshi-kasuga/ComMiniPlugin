@@ -18,15 +18,14 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
           val message = additional();
           if (message != null) {
             val flag = Component.IS_NOT_EMPTY.test(message);
-            getInventory()
-                .getViewers()
+            com.google.common.collect.Lists.newArrayList(getInventory().getViewers())
                 .forEach(
                     human -> {
                       if (flag) {
                         human.sendMessage(message);
                       }
+                      human.closeInventory();
                     });
-            getInventory().close();
             return;
           }
 
@@ -34,8 +33,7 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
             return;
           }
         }
-        getInventory()
-            .getViewers()
+        com.google.common.collect.Lists.newArrayList(getInventory().getViewers())
             .forEach(
                 human -> {
                   Messages.GAME_FINAL_OR_START.send(human);
@@ -50,15 +48,14 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
       val message = additional();
       if (message != null) {
         val flag = Component.IS_NOT_EMPTY.test(message);
-        getInventory()
-            .getViewers()
+        com.google.common.collect.Lists.newArrayList(getInventory().getViewers())
             .forEach(
                 human -> {
                   if (flag) {
                     human.sendMessage(message);
                   }
+                  human.closeInventory();
                 });
-        getInventory().close();
         return true;
       }
 
@@ -66,13 +63,11 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
         return false;
       }
     }
-    getInventory()
-        .getViewers()
+    com.google.common.collect.Lists.newArrayList(getInventory().getViewers())
         .forEach(
             human -> {
               Messages.GAME_FINAL_OR_START.send(human);
             });
-    getInventory().close();
     return true;
   }
 

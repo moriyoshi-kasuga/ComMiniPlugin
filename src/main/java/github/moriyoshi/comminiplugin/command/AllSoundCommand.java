@@ -114,7 +114,6 @@ public class AllSoundCommand extends CommandAPICommand {
           });
       super.onOpen(event);
     }
-    ;
 
     @Override
     public @NotNull Optional<Supplier<ListMenu<Sound>>> getDefaultMenu() {
