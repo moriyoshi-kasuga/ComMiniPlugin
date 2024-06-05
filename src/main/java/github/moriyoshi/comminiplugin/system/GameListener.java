@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.system;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
@@ -191,6 +192,20 @@ public class GameListener implements Listener {
   }
 
   private static Map<UUID, Location> disableMoveLocation = new HashMap<>();
+
+  @SuppressWarnings("deprecation")
+  @EventHandler
+  public void jump(PlayerJumpEvent e) {
+    var p = e.getPlayer();
+    if (!p.isOnGround()) {
+      return;
+    }
+    for (val effect : p.getActivePotionEffects())
+      if (effect.getType().equals(PotionEffectType.SLOWNESS) && effect.getAmplifier() == 138) {
+        e.setCancelled(true);
+        return;
+      }
+  }
 
   @SuppressWarnings("deprecation")
   @EventHandler
