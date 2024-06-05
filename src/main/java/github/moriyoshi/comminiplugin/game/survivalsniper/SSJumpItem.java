@@ -20,14 +20,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-public class JumpItem extends CustomItem implements CooldownItem {
+public class SSJumpItem extends CustomItem implements CooldownItem {
 
   private static final Component DEFAULT_NAME = Util.mm("<yellow>ジャンプ");
   private static final Component DESCRIPTION = Util.mm("<red>注意! 着地した後一定時間操作不能");
   private static final int DEFAULT_COOLDOWN_TICK = 140;
   private static final Vector MULTIPLY = new Vector(3, 2.4, 3);
 
-  public JumpItem() {
+  public SSJumpItem() {
     this(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
             .name(DEFAULT_NAME)
@@ -36,7 +36,7 @@ public class JumpItem extends CustomItem implements CooldownItem {
             .build());
   }
 
-  public JumpItem(@NotNull ItemStack item) {
+  public SSJumpItem(@NotNull ItemStack item) {
     super(item);
   }
 

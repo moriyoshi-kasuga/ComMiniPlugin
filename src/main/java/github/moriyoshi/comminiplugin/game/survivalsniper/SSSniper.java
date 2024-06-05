@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-public class Sniper extends CustomItem implements CooldownItem {
+public class SSSniper extends CustomItem implements CooldownItem {
 
   private static final Component DEFAULT_NAME = Util.mm("<blue>スナイパー");
   private static final Vector EYE_SIZE = new Vector(0.3, 0.3, 0.3);
@@ -31,7 +31,7 @@ public class Sniper extends CustomItem implements CooldownItem {
   private static final int MAX_LENGTH = 1000;
   private static final int DEFAULT_COOLDOWN_TICK = 40;
 
-  public Sniper() {
+  public SSSniper() {
     this(
         new ItemBuilder(Material.SPYGLASS)
             .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
@@ -40,7 +40,7 @@ public class Sniper extends CustomItem implements CooldownItem {
             .build());
   }
 
-  public Sniper(final ItemStack item) {
+  public SSSniper(final ItemStack item) {
     super(item);
   }
 
@@ -53,7 +53,7 @@ public class Sniper extends CustomItem implements CooldownItem {
       p.playSound(eyeLoc, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
       return;
     }
-    val optBullet = Bullet.getFirstBullet(p);
+    val optBullet = SSBullet.getFirstBullet(p);
     if (optBullet.isEmpty()) {
       p.playSound(eyeLoc, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
       return;
@@ -123,7 +123,7 @@ public class Sniper extends CustomItem implements CooldownItem {
 
   @Override
   public void heldItem(final Player player) {
-    val bullet = Bullet.getFirstBullet(player).map(Bullet::getName).orElse(null);
+    val bullet = SSBullet.getFirstBullet(player).map(SSBullet::getName).orElse(null);
     val item = getItem();
     val flag =
         NBT.modify(

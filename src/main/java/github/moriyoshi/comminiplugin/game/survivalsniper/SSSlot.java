@@ -26,8 +26,8 @@ public class SSSlot extends HotbarSlot {
   @Override
   protected List<Supplier<ItemStack>> getDefaults() {
     return generate(
-        () -> new Sniper().getItem(),
-        () -> new JumpItem().getItem(),
+        () -> new SSSniper().getItem(),
+        () -> new SSJumpItem().getItem(),
         () ->
             new ItemBuilder(Material.IRON_AXE)
                 .name("<red>Iron Axe")

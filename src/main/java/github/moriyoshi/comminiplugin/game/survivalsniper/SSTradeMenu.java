@@ -21,7 +21,7 @@ public class SSTradeMenu extends MenuHolder<ComMiniPlugin> {
   @RequiredArgsConstructor
   private enum TradeItem {
     EscapeDeep(
-        () -> new EscapeDeep().getItem(),
+        () -> new SSEscapeDeep().getItem(),
         "4レベル",
         (p) -> p.getLevel() >= 4,
         (p) -> p.setLevel(p.getLevel() - 4)),

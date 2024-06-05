@@ -30,7 +30,7 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
       new MenuHolder<>(ComMiniPlugin.getPlugin(), 27, "<yellow>弾頭") {
         {
           int slot = 1;
-          for (val head : Bullet.WARHEAD.values()) {
+          for (val head : SSBullet.WARHEAD.values()) {
             setButton(
                 slot,
                 new ItemButton<>(
@@ -51,7 +51,7 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
       new MenuHolder<>(ComMiniPlugin.getPlugin(), 27, "<green>背面") {
         {
           int slot = 1;
-          for (val tail : Bullet.WARTAIL.values()) {
+          for (val tail : SSBullet.WARTAIL.values()) {
             setButton(
                 slot,
                 new ItemButton<>(
@@ -133,8 +133,8 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
 
       @Override
       public void run() {
-        Bullet.WARHEAD head = null;
-        Bullet.WARTAIL tail = null;
+        SSBullet.WARHEAD head = null;
+        SSBullet.WARTAIL tail = null;
         int headSlot = -1;
         int tailSlot = -1;
         val inv = getInventory();
@@ -145,7 +145,7 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
             continue;
           }
           val material = item.getType();
-          for (val h : Bullet.WARHEAD.values()) {
+          for (val h : SSBullet.WARHEAD.values()) {
             if (h.material == material) {
               if (head != null) {
                 setButton(15, none);
@@ -156,7 +156,7 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
               continue root;
             }
           }
-          for (val t : Bullet.WARTAIL.values()) {
+          for (val t : SSBullet.WARTAIL.values()) {
             if (t.predicate.test(material)) {
               if (tail != null) {
                 setButton(15, none);
@@ -195,7 +195,7 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
                 event
                     .getWhoClicked()
                     .getInventory()
-                    .addItem(new Bullet(result, name, damage, headShot, sound).getItem());
+                    .addItem(new SSBullet(result, name, damage, headShot, sound).getItem());
                 val temp1 = getInventory().getItem(tmp1);
                 val temp2 = getInventory().getItem(tmp2);
                 temp1.setAmount(temp1.getAmount() - 1);

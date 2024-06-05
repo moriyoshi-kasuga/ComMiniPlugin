@@ -10,9 +10,9 @@ import org.bukkit.Sound;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class EscapeDeep extends CustomItem {
+public class SSEscapeDeep extends CustomItem {
 
-  public EscapeDeep() {
+  public SSEscapeDeep() {
     this(
         new ItemBuilder(Material.CARROT_ON_A_STICK)
             .name("<red>緊急脱出矢印!")
@@ -21,7 +21,7 @@ public class EscapeDeep extends CustomItem {
             .build());
   }
 
-  public EscapeDeep(final ItemStack item) {
+  public SSEscapeDeep(final ItemStack item) {
     super(item);
   }
 

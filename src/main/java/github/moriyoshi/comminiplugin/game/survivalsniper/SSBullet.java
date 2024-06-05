@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 @Getter
-public class Bullet extends CustomItem {
+public class SSBullet extends CustomItem {
 
   @RequiredArgsConstructor
   public enum WARHEAD {
@@ -64,10 +64,10 @@ public class Bullet extends CustomItem {
 
   private static final String SOUND = "sound";
 
-  public static Optional<Bullet> getFirstBullet(final Player p) {
+  public static Optional<SSBullet> getFirstBullet(final Player p) {
     for (final ItemStack item : p.getInventory().getContents()) {
-      if (CustomItem.equalsItem(item, Bullet.class)) {
-        return Optional.of(new Bullet(item));
+      if (CustomItem.equalsItem(item, SSBullet.class)) {
+        return Optional.of(new SSBullet(item));
       }
     }
     return Optional.empty();
@@ -81,7 +81,7 @@ public class Bullet extends CustomItem {
 
   private Sound sound;
 
-  public Bullet() {
+  public SSBullet() {
     this(
         new ItemBuilder(Material.IRON_NUGGET).name("Example").build(),
         "Example",
@@ -90,7 +90,7 @@ public class Bullet extends CustomItem {
         Sound.ENTITY_FIREWORK_ROCKET_BLAST);
   }
 
-  public Bullet(final ItemStack item) {
+  public SSBullet(final ItemStack item) {
     super(item);
     NBT.modify(
         item,
@@ -103,7 +103,7 @@ public class Bullet extends CustomItem {
         });
   }
 
-  public Bullet(
+  public SSBullet(
       final ItemStack item,
       final String name,
       final int damage,
