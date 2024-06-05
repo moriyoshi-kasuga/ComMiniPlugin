@@ -7,6 +7,7 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.item.PlayerCooldownItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.Util;
 import java.util.Arrays;
 import java.util.Objects;
 import lombok.val;
@@ -261,6 +262,16 @@ public class CustomListener implements Listener {
       val custom = CustomItem.getCustomItem(item);
       if (custom != null) {
         custom.damageEntity(e, player);
+        if (e.isCancelled()) {
+          return;
+        }
+      }
+    }
+    if (e.getEntity() instanceof Player player) {
+      val item = player.getInventory().getItemInMainHand();
+      val custom = CustomItem.getCustomItem(item);
+      if (custom != null) {
+        custom.damageByEntity(e, player);
       }
     }
   }

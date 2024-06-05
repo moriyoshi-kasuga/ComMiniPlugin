@@ -196,12 +196,20 @@ public interface InterfaceItem {
   default void projectileLaunch(final ProjectileLaunchEvent e, final Player player) {}
 
   /**
-   * このアイテムを entity を攻撃したら呼ばれます
+   * このアイテムで entity を攻撃したら呼ばれます
    *
    * @param e event
    * @param player player
    */
   default void damageEntity(final EntityDamageByEntityEvent e, final Player player) {}
+
+  /**
+   * このアイテムを手に持っているプレイヤーが攻撃されたら呼ばれます
+   *
+   * @param e event
+   * @param player player
+   */
+  default void damageByEntity(final EntityDamageByEntityEvent e, final Player player) {}
 
   default void itemUse() {
     getItem().setAmount(getItem().getAmount() - 1);
