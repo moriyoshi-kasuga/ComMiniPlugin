@@ -17,7 +17,7 @@ public class BraveShieldItem extends CustomItem implements CooldownItem {
         new ItemBuilder(Material.SHIELD)
             .name("<gray>名もなき勇者の盾")
             .lore("<gray>勇者が使っていた盾(古くなっている)", "<gray>最大20ダメージまで耐える")
-            .customModelData(18)
+            .customModelData(1)
             .build());
     setCooldown(200);
   }

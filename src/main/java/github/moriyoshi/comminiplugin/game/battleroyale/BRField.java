@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.game.battleroyale;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.AllOrNothingItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.BackpackItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.BraveShieldItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.CurryBreadItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.HKPRItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.InvisibleCloakItem;
@@ -317,8 +318,7 @@ public class BRField {
                     .add(new Entry(10, () -> new PhoenixFeatherItem().getItem()))
                     .add(new Entry(10, () -> new StormBringerItem().getItem()))
                     .add(new Entry(10, () -> new ItemStack(Material.ENCHANTED_GOLDEN_APPLE)))
-                    // TODO: ここ勇者の盾,実装したら replace で
-                    .add(new Entry(10, () -> new ItemStack(Material.SHIELD)))
+                    .add(new Entry(10, () -> new BraveShieldItem().getItem()))
                     .add(new Entry(10, () -> new VampireSwordItem().getItem()))
                     .add(new Entry(10, () -> new UpgradeWingItem().getItem())));
           }
