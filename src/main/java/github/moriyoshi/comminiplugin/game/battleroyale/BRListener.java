@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -76,12 +77,18 @@ public class BRListener implements AbstractGameListener<BRGame> {
 
   @Override
   public void damageByEntity(EntityDamageByEntityEvent e) {
-    if (!getGame().isCanPvP()
-        && e.getEntity() instanceof Player
-        && e.getDamager() instanceof final Player attacker
-        && getGame().isGamePlayer(attacker)) {
-      getGame().prefix.send(attacker, "<red>まだPvPはできません");
-      e.setCancelled(true);
+    if (!getGame().isCanPvP() && e.getEntity() instanceof Player) {
+      if (e.getDamager() instanceof final Player attacker && getGame().isGamePlayer(attacker)) {
+        getGame().prefix.send(attacker, "<red>まだPvPはできません");
+        e.setCancelled(true);
+        return;
+      }
+      if (e.getDamager() instanceof final Projectile projectile
+          && projectile.getShooter() instanceof Player attacker
+          && getGame().isGamePlayer(attacker)) {
+        getGame().prefix.send(attacker, "<red>まだPvPはできません");
+        e.setCancelled(true);
+      }
     }
   }
 

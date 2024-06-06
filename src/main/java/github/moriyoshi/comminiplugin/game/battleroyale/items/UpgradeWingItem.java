@@ -33,7 +33,7 @@ public class UpgradeWingItem extends CustomItem implements CooldownItem {
     if (inCooldown()) {
       return;
     }
-    setCooldown(2 * 20);
+    setCooldown(60 * 20);
     val player = e.getPlayer();
     val loc = player.getLocation();
     loc.setPitch(-30);

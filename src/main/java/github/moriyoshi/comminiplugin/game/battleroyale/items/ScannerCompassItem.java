@@ -20,9 +20,10 @@ import org.jetbrains.annotations.NotNull;
 public class ScannerCompassItem extends CustomItem implements CoolityItem {
   public ScannerCompassItem() {
     super(
-        new ItemBuilder(Material.RECOVERY_COMPASS)
+        new ItemBuilder(Material.COMPASS)
             .name("<light_purple>スキャナーコンパス")
             .lore("<gray>すぐそばのチェストの方向を指すコンパス", "<gray>チェストのティアがコンパスの色に反映される。")
+            .customModelData(100)
             .build());
     setDurability(8);
   }
@@ -79,7 +80,6 @@ public class ScannerCompassItem extends CustomItem implements CoolityItem {
                             CustomBlock.getCustomBlock(loc, TreasureChest.class).getLevel())
                         .changeMeta(
                             (Consumer<CompassMeta>)
-                                // TODO: recovery compass じゃだめそう 普通の compass にしてもらう
                                 meta -> {
                                   meta.setLodestone(loc);
                                   meta.setLodestoneTracked(false);

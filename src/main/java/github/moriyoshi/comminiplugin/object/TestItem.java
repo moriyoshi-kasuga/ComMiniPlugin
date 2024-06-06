@@ -29,6 +29,9 @@ public class TestItem extends CustomItem {
   @Override
   public void interact(PlayerInteractEvent e) {
     e.setCancelled(true);
+  }
+
+  private void treasure(PlayerInteractEvent e) {
     val player = e.getPlayer();
     val block = player.getTargetBlockExact(10);
     if (block == null || block.isEmpty()) {
@@ -36,7 +39,7 @@ public class TestItem extends CustomItem {
       return;
     }
     if (e.getAction().isLeftClick()) {
-      if (!CustomBlock.isCustomBlock(block,TreasureChest.class)) {
+      if (!CustomBlock.isCustomBlock(block, TreasureChest.class)) {
         ComMiniPrefix.SYSTEM.send(player, "<red>please look at a Treasure block");
         return;
       }
