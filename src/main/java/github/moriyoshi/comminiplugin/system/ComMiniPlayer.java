@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
@@ -75,21 +74,31 @@ public final class ComMiniPlayer extends JsonAPI {
     this.isHunger = false;
     this.canFoodRegain = true;
     this.isJoinGame = false;
-    hidenametag.removeEntry(Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName()));
+    val player = Bukkit.getOfflinePlayer(this.uuid);
+    if (player != null) {
+      hidenametag.removeEntry(player.getName());
+    }
   }
 
   public void setHideNameTag(final boolean isHideNameTag) {
-    val p = Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName());
+    val player = Bukkit.getOfflinePlayer(this.uuid);
+    if (player == null) {
+      return;
+    }
+    val name = player.getName();
     if (isHideNameTag) {
-      hidenametag.addEntry(p);
+      hidenametag.addEntry(name);
     } else {
-      hidenametag.removeEntry(p);
+      hidenametag.removeEntry(name);
     }
   }
 
   public boolean isHideNameTag() {
-    return hidenametag.hasEntry(
-        Objects.requireNonNull(Bukkit.getOfflinePlayer(this.uuid).getName()));
+    val player = Bukkit.getOfflinePlayer(this.uuid);
+    if (player == null) {
+      return false;
+    }
+    return hidenametag.hasEntry(player.getName());
   }
 
   private final Map<Class<? extends InterfaceGamePlayer>, InterfaceGamePlayer> gamePlayerDatas =

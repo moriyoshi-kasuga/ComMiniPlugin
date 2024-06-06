@@ -7,7 +7,6 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.item.PlayerCooldownItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
 import java.util.Arrays;
 import java.util.Objects;
 import lombok.val;
@@ -259,6 +258,16 @@ public class CustomListener implements Listener {
   public void damageEntity(final EntityDamageByEntityEvent e) {
     if (e.getDamager() instanceof Player player) {
       val item = player.getInventory().getItemInMainHand();
+      if (ItemBuilder.getCustomItemFlag(item, CustomItemFlag.DISABLE_ATTACK).orElse(false)) {
+        e.setCancelled(true);
+        return;
+      }
+      if (e.getEntity() instanceof Player
+          && ItemBuilder.getCustomItemFlag(item, CustomItemFlag.DISABLE_ATTACK_TO_PLAYER)
+              .orElse(false)) {
+        e.setCancelled(true);
+        return;
+      }
       val custom = CustomItem.getCustomItem(item);
       if (custom != null) {
         custom.damageEntity(e, player);

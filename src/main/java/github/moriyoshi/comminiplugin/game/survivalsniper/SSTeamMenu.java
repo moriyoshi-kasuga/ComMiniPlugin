@@ -104,7 +104,6 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
     if (getGame().getMode() == Mode.TEAM) {
       setButton(20, createTeamButton(ChatColor.RED));
       setButton(21, createTeamButton(ChatColor.GREEN));
-      setButton(22, createTeamButton(ChatColor.BLACK));
       setButton(23, createTeamButton(ChatColor.YELLOW));
       setButton(24, createTeamButton(ChatColor.BLUE));
       return null;

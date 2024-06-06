@@ -7,10 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.attribute.AttributeModifier.Operation;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 public class SSSlot extends HotbarSlot {
@@ -32,19 +28,13 @@ public class SSSlot extends HotbarSlot {
             new ItemBuilder(Material.IRON_AXE)
                 .name("<red>Iron Axe")
                 .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
-                .addAttribute(
-                    Attribute.GENERIC_ATTACK_DAMAGE,
-                    new AttributeModifier("damage", -8, Operation.ADD_NUMBER))
-                .flags(ItemFlag.HIDE_ATTRIBUTES)
+                .customItemFlag(CustomItemFlag.DISABLE_ATTACK_TO_PLAYER, true)
                 .build(),
         () ->
             new ItemBuilder(Material.IRON_PICKAXE)
                 .name("<red>Iron Pickaxe")
                 .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
-                .addAttribute(
-                    Attribute.GENERIC_ATTACK_DAMAGE,
-                    new AttributeModifier("damage", -3, Operation.ADD_NUMBER))
-                .flags(ItemFlag.HIDE_ATTRIBUTES)
+                .customItemFlag(CustomItemFlag.DISABLE_ATTACK_TO_PLAYER, true)
                 .build(),
         () -> new ItemBuilder(Material.OAK_SAPLING).amount(3).build(),
         () -> new ItemBuilder(Material.BONE_MEAL).amount(10).build(),

@@ -67,6 +67,7 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
         .forEach(
             human -> {
               Messages.GAME_FINAL_OR_START.send(human);
+              human.closeInventory();
             });
     return true;
   }

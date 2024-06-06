@@ -125,7 +125,6 @@ public class SSListener implements AbstractGameListener<SSGame> {
         return;
       }
 
-      // TODO: 初期のアイテムとかもplayer以外は殴れるようにする
       val main = attacker.getInventory().getItemInMainHand().getType();
       if (EnchantmentTarget.TOOL.includes(main)
           && (main.name().contains("STONE") || main.name().contains("WOODEN"))) {
