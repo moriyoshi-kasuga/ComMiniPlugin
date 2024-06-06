@@ -335,4 +335,9 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   public World getWorld() {
     return field.getLobby().getWorld();
   }
+
+  @Override
+  public MenuHolder<ComMiniPlugin> createHelpMenu() {
+    return new BRHelpMenu();
+  }
 }

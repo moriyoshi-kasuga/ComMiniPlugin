@@ -396,11 +396,10 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                 val size = entries.size();
                 for (int i = 0; i < size; i++) {
                   Player current = Bukkit.getPlayer(entries.get(i).getKey());
-                  current.playerListName(Util.mm(current.getName()));
+                  current.playerListName(null);
                   for (int j = 0; j < size; j++) {
                     if (i != j) {
                       try {
-                        // TODO: ここ network protocol error が起こる
                         ComMiniPlugin.getGlowingEntities()
                             .unsetGlowing(Bukkit.getPlayer(entries.get(j).getKey()), current);
                       } catch (ReflectiveOperationException e) {
@@ -470,5 +469,10 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   public enum Mode {
     FFA,
     TEAM
+  }
+
+  @Override
+  public MenuHolder<ComMiniPlugin> createHelpMenu() {
+    return new SSHelpMenu();
   }
 }

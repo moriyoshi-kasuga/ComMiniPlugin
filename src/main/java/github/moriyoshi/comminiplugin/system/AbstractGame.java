@@ -86,5 +86,5 @@ public abstract class AbstractGame implements InterfaceGame {
    */
   public abstract boolean initializeGame(Player player);
 
-  // TODO: createHelpMenu も作ったほうがいい
+  public abstract MenuHolder<ComMiniPlugin> createHelpMenu();
 }

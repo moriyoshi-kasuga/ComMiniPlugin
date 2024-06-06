@@ -8,6 +8,7 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.buttons.AddSpecButton;
+import github.moriyoshi.comminiplugin.system.buttons.GameHelpMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.TeleportLobbyButton;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
@@ -31,6 +32,7 @@ public class MenuCommand extends CommandAPICommand {
       super(ComMiniPlugin.getPlugin(), 27, "<yellow>Menu");
       setButton(11, TeleportLobbyButton.of());
       setButton(13, GameMenuButton.of());
+      setButton(22, GameHelpMenuButton.of());
       setButton(14, AddSpecButton.of());
       this.task =
           new BukkitRunnable() {
@@ -39,6 +41,7 @@ public class MenuCommand extends CommandAPICommand {
             public void run() {
               setButton(11, TeleportLobbyButton.of());
               setButton(13, GameMenuButton.of());
+              setButton(22, GameHelpMenuButton.of());
               setButton(14, AddSpecButton.of());
             }
           };

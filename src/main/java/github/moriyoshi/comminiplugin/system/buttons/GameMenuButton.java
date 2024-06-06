@@ -21,7 +21,12 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       return;
     }
     var game = GameSystem.getGame();
-    setIcon(new ItemBuilder(game.material).name(game.name).lore(game.description).build());
+    setIcon(
+        new ItemBuilder(game.material)
+            .name(game.name)
+            .lore(game.description)
+            .addLore("", "<gray>クリックでゲームメニューを開く")
+            .build());
   }
 
   private GameMenuButton(ItemStack stack) {
@@ -48,7 +53,7 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       return;
     }
     if (GameSystem.isStarted()) {
-      ComMiniPrefix.MAIN.send(player, "<red>Menuは開けません");
+      ComMiniPrefix.MAIN.send(player, "<red>GameMenuは開けません");
       return;
     }
     GameSystem.getGame().createGameMenu(player).openInv(player);
