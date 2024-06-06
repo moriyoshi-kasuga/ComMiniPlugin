@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.system;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +55,7 @@ public class GameListener implements Listener {
 
   private GameListener() {
     new BukkitRunnable() {
+      private String oldHash = ResourcePackUtil.getComMiniResourcePackHash();
 
       @Override
       public void run() {
@@ -65,6 +67,11 @@ public class GameListener implements Listener {
                     p.setFoodLevel(20);
                   }
                 });
+        val newHash = ResourcePackUtil.getComMiniResourcePackHash();
+        if (!oldHash.equalsIgnoreCase(newHash)) {
+          oldHash = newHash;
+          ComMiniPrefix.MAIN.cast("<red>リソースパックの更新があります!<gray>メニューから更新してください");
+        }
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 20, 20);
   }

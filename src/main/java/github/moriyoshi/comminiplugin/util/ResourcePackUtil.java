@@ -31,9 +31,11 @@ public final class ResourcePackUtil {
           URI.create(
                   "https://raw.githubusercontent.com/moriyoshi-kasuga/ComMiniResoucePack/hash/hash.txt")
               .toURL();
+
       URLConnection conn = url.openConnection();
 
       BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
       String hash = br.readLine();
       br.close();
       return hash;
