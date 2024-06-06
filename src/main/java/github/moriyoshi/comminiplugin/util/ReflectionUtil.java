@@ -6,6 +6,8 @@ import org.reflections.Reflections;
 
 public class ReflectionUtil {
 
+  private ReflectionUtil() {}
+
   public static <T> void forEachAllClass(
       final Reflections reflections,
       final Class<? extends T> clazz,
@@ -30,6 +32,4 @@ public class ReflectionUtil {
       consumer.accept(item);
     }
   }
-
-  private ReflectionUtil() {}
 }

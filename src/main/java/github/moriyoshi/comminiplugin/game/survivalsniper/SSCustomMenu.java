@@ -46,7 +46,9 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
           setButton(0, back);
         }
       };
-
+  private static final RedirectItemButton<MenuHolder<ComMiniPlugin>> heads =
+      new RedirectItemButton<>(
+          new ItemBuilder(Material.BAMBOO_SIGN).name("<yellow>弾頭").build(), WARHEADS::getInventory);
   private static final MenuHolder<ComMiniPlugin> WARTAILS =
       new MenuHolder<>(ComMiniPlugin.getPlugin(), 27, "<green>背面") {
         {
@@ -64,11 +66,6 @@ public class SSCustomMenu extends MenuHolder<ComMiniPlugin> {
           setButton(0, back);
         }
       };
-
-  private static final RedirectItemButton<MenuHolder<ComMiniPlugin>> heads =
-      new RedirectItemButton<>(
-          new ItemBuilder(Material.BAMBOO_SIGN).name("<yellow>弾頭").build(), WARHEADS::getInventory);
-
   private static final RedirectItemButton<MenuHolder<ComMiniPlugin>> tails =
       new RedirectItemButton<>(
           new ItemBuilder(Material.BAMBOO_HANGING_SIGN).name("<green>背面").build(),

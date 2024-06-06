@@ -33,6 +33,7 @@ public class SSJumpItem extends CustomItem implements CooldownItem {
             .name(DEFAULT_NAME)
             .lore(DESCRIPTION)
             .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
+            .customItemFlag(CustomItemFlag.DISABLE_ITEM_SPAWN, true)
             .build());
   }
 

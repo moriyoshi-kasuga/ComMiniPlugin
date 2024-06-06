@@ -28,17 +28,15 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("deprecation")
 public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>>> {
 
+  private int level = 1;
+
   public TreasureLocation(String name) {
     super(ComMiniPlugin.getPlugin(), "br/treasure", name);
     getLocations()
         .keySet()
         .forEach(
-            loc -> {
-              loc.getBlock().setType(Material.BEDROCK);
-            });
+            loc -> loc.getBlock().setType(Material.BEDROCK));
   }
-
-  private int level = 1;
 
   @Override
   public List<Pair<Integer, Integer>> loadLocData(JsonElement element) {

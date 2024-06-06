@@ -75,7 +75,7 @@ public interface InterfaceItem {
    * {@code #getUniqueId()} が null の場合 こちらを使ってください <br>
    * プレイヤーで共有のアイテムのキーを作成したい場合に使ってください
    *
-   * @param player
+   * @param player get by palyer's uuid
    */
   @NotNull
   default CustomItemKey getItemKey(final Player player) {
@@ -103,8 +103,6 @@ public interface InterfaceItem {
 
   /**
    * アイテムを持っている間だけ1tickごとにする処理です
-   *
-   * @return 処理
    */
   default void heldItem(final Player player) {}
 
@@ -147,7 +145,7 @@ public interface InterfaceItem {
    * このアイテムをもちsneakをするときの処理
    *
    * @param e event
-   * @parmam equipmentSlot 要求される装備スロット (null なら inventory です)
+   * @param equipmentSlot 要求される装備スロット (null なら inventory です)
    */
   default void shiftItem(
       final PlayerToggleSneakEvent e, final @Nullable EquipmentSlot equipmentSlot) {}

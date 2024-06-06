@@ -14,9 +14,9 @@ public final class ComMiniWorld {
 
   @NotNull public static final Location LOBBY = new Location(LOBBY_WORLD, -0.5, 1.0, -0.5);
 
+  private ComMiniWorld() {}
+
   public static boolean isLobbyWorld(final World world) {
     return LOBBY_WORLD.equals(world);
   }
-
-  private ComMiniWorld() {}
 }

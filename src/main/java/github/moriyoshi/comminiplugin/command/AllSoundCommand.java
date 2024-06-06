@@ -24,6 +24,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class AllSoundCommand extends CommandAPICommand {
 
+  public AllSoundCommand() {
+    super("allsound");
+    executesPlayer(
+        (p, args) -> {
+          new AllSoundMenu().openInv(p);
+        });
+  }
+
   // TODO: もっとちゃんとアイテム適用するようにする
   public static Material getMaterial(final Sound sound) {
     final String name = sound.name();
@@ -147,7 +155,7 @@ public class AllSoundCommand extends CommandAPICommand {
       return Optional.of(
           str -> {
             val upper = str.toUpperCase();
-            return Arrays.asList(Sound.values()).stream()
+            return Arrays.stream(Sound.values())
                 .filter(sound -> sound.name().contains(upper))
                 .toList();
           });
@@ -157,13 +165,5 @@ public class AllSoundCommand extends CommandAPICommand {
     public void toNew(AllSoundMenu old) {
       this.isSelf = old.isSelf;
     }
-  }
-
-  public AllSoundCommand() {
-    super("allsound");
-    executesPlayer(
-        (p, args) -> {
-          new AllSoundMenu().openInv(p);
-        });
   }
 }

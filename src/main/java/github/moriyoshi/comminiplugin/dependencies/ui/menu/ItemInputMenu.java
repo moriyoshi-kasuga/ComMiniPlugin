@@ -18,14 +18,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemInputMenu<P extends Plugin> extends MenuHolder<P> {
 
+  protected final BiConsumer<ItemStack, InventoryClickEvent> yesAction;
+  protected final BiConsumer<ItemStack, InventoryClickEvent> noAction;
   private final ItemStack YES_STACK =
       new ItemBuilder(Material.LIME_CONCRETE).name("Yes - continue").build();
   private final ItemStack NO_STACK =
       new ItemBuilder(Material.RED_CONCRETE).name("No - cancel").build();
-
   private final ItemStack defaultItemStack;
-  protected final BiConsumer<ItemStack, InventoryClickEvent> yesAction;
-  protected final BiConsumer<ItemStack, InventoryClickEvent> noAction;
   protected boolean isCloseable = false;
   private ItemStack itemStack;
 

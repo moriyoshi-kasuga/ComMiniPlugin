@@ -24,6 +24,24 @@ import org.jetbrains.annotations.NotNull;
 
 public class MenuCommand extends CommandAPICommand {
 
+  public MenuCommand() {
+    super("menu");
+    executesPlayer(
+        (p, args) -> {
+          open(p);
+        });
+  }
+
+  public static boolean open(final Player p) {
+    if (GameSystem.isStarted() && GameSystem.getGame().isGamePlayer(p)) {
+      ComMiniPrefix.MAIN.send(p, "<red>あなたはmenuを開けません");
+      return false;
+    }
+    new InnerMenu().openInv(p);
+    return true;
+  }
+
+
   private static class InnerMenu extends MenuHolder<ComMiniPlugin> {
 
     private final BukkitRunnable task;
@@ -77,22 +95,5 @@ public class MenuCommand extends CommandAPICommand {
     public void onOpen(InventoryOpenEvent event) {
       task.runTaskTimer(getPlugin(), 1, 1);
     }
-  }
-
-  public static boolean open(final Player p) {
-    if (GameSystem.isStarted() && GameSystem.getGame().isGamePlayer(p)) {
-      ComMiniPrefix.MAIN.send(p, "<red>あなたはmenuを開けません");
-      return false;
-    }
-    new InnerMenu().openInv(p);
-    return true;
-  }
-
-  public MenuCommand() {
-    super("menu");
-    executesPlayer(
-        (p, args) -> {
-          open(p);
-        });
   }
 }

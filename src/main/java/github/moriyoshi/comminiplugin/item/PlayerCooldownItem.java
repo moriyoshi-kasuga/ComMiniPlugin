@@ -15,6 +15,22 @@ public interface PlayerCooldownItem extends InterfaceItem {
 
   Map<CustomItemKey, Triple<Integer, Boolean, Optional<Consumer<UUID>>>> COOLDOWN = new HashMap<>();
 
+  static void allCountDown() {
+    for (Map.Entry<CustomItemKey, Triple<Integer, Boolean, Optional<Consumer<UUID>>>> entry : COOLDOWN.entrySet()) {
+      val triple = entry.getValue();
+      if (!triple.getSecond()) {
+        continue;
+      }
+      var num = triple.getFirst();
+      if (0 >= --num) {
+        COOLDOWN.remove(entry.getKey());
+        triple.getThird().ifPresent(consumer -> consumer.accept(entry.getKey().uuid()));
+        return;
+      }
+      COOLDOWN.put(entry.getKey(), Triple.of(num, true, triple.getThird()));
+    }
+  }
+
   default int getCooldown(UUID uuid) {
     return Optional.ofNullable(COOLDOWN.get(getItemKey(uuid)))
         .map(Triple::getFirst)
@@ -56,23 +72,5 @@ public interface PlayerCooldownItem extends InterfaceItem {
 
   default boolean shouldAutoReduceCountDown() {
     return true;
-  }
-
-  static void allCountDown() {
-    val it = COOLDOWN.entrySet().iterator();
-    while (it.hasNext()) {
-      val entry = it.next();
-      val triple = entry.getValue();
-      if (!triple.getSecond()) {
-        continue;
-      }
-      var num = triple.getFirst();
-      if (0 >= --num) {
-        COOLDOWN.remove(entry.getKey());
-        triple.getThird().ifPresent(consumer -> consumer.accept(entry.getKey().uuid()));
-        return;
-      }
-      COOLDOWN.put(entry.getKey(), Triple.of(num, true, triple.getThird()));
-    }
   }
 }

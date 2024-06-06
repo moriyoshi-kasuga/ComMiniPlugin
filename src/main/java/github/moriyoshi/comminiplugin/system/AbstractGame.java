@@ -18,12 +18,9 @@ public abstract class AbstractGame implements InterfaceGame {
   public final Material material;
   @Getter public final PrefixUtil prefix;
   final AbstractGameListener<?> listener;
-
-  @Getter private boolean isStarted = false;
-
   @Getter protected World world;
-
   @Getter protected Location lobby;
+  @Getter private boolean isStarted = false;
 
   public AbstractGame(
       final String id,

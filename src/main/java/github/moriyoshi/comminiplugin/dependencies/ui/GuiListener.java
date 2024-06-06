@@ -21,6 +21,27 @@ import org.bukkit.inventory.InventoryHolder;
 public class GuiListener implements Listener {
 
   private static final GuiListener INSTANCE = new GuiListener();
+  private static final Class<?> CRAFT_INVENTORY;
+  private static final Method GET_INVENTORY;
+
+  static {
+    Class<?> craftInventoryClass = null;
+    Method getInventoryMethod = null;
+    Class<?> serverClass = Bukkit.getServer().getClass();
+    if ("CraftServer".equals(serverClass.getSimpleName())) {
+      String serverPackage = serverClass.getPackageName();
+      String className = serverPackage + ".inventory.CraftInventory";
+      try {
+        craftInventoryClass = Class.forName(className);
+        getInventoryMethod = craftInventoryClass.getMethod("getInventory");
+      } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+      }
+    }
+    CRAFT_INVENTORY = craftInventoryClass;
+    GET_INVENTORY = getInventoryMethod;
+  }
+
+  // ===== 登録 =====
 
   private final WeakHashMap<Object /* NMS Inventory */, WeakReference<GuiInventoryHolder<?>>>
       guiInventories = new WeakHashMap<>();
@@ -36,7 +57,33 @@ public class GuiListener implements Listener {
     return INSTANCE;
   }
 
-  // ===== 登録 =====
+  /**
+   * If the inventory is a CraftInventory, get the NMS inventory. If not, just return the bukkit
+   * Inventory.
+   *
+   * @param inventory the bukkit inventory
+   * @return the authorative inventory
+   */
+  // This works around a bug in CraftBukkit where CraftInventory instances cannot
+  // be used as WeakHashMap keys because CraftInventory instances are created
+  // on-demand.
+  // They are not stored in the nms inventory, hence to obtain an object that
+  // persists the inventory, we need the NMS inventory: IInventory(mc-dev)
+  // Container(moj-map).
+  private static Object getBaseInventory(Inventory inventory) {
+    if (CRAFT_INVENTORY != null && GET_INVENTORY != null && CRAFT_INVENTORY.isInstance(inventory)) {
+      try {
+        return GET_INVENTORY.invoke(inventory);
+      } catch (InvocationTargetException | IllegalAccessException ignored) {
+      }
+    }
+    return inventory;
+  }
+
+  // unregisterGuiメソッドを作ると、InventoryからGuiInventoryHolderを外す必要があるため、絶対に作れません。
+  // なので、bukkitのapiにそのようなメソッドが追加されるまでは、nms/reflectionのハックをしないと不可能です。
+
+  // ===== event stuff =====
 
   /**
    * インベントリーGUIを登録する。
@@ -103,11 +150,6 @@ public class GuiListener implements Listener {
     return getHolder(inventory) != null;
   }
 
-  // unregisterGuiメソッドを作ると、InventoryからGuiInventoryHolderを外す必要があるため、絶対に作れません。
-  // なので、bukkitのapiにそのようなメソッドが追加されるまでは、nms/reflectionのハックをしないと不可能です。
-
-  // ===== event stuff =====
-
   @SuppressWarnings("rawtypes")
   private void onGuiInventoryEvent(InventoryEvent event, Consumer<GuiInventoryHolder> action) {
     GuiInventoryHolder<?> guiHolder = getHolder(event.getInventory());
@@ -116,6 +158,8 @@ public class GuiListener implements Listener {
       action.accept(guiHolder);
     }
   }
+
+  // ===== nms stuff =====
 
   /**
    * トップインベントリがGuiによって保持され、イベントがキャンセルされない場合、InventoryOpenEventを{@link GuiInventoryHolder}に委譲します。
@@ -167,50 +211,5 @@ public class GuiListener implements Listener {
   @EventHandler(priority = EventPriority.HIGH)
   public void onInventoryClose(InventoryCloseEvent event) {
     onGuiInventoryEvent(event, gui -> gui.onClose(event));
-  }
-
-  // ===== nms stuff =====
-
-  private static final Class<?> CRAFT_INVENTORY;
-  private static final Method GET_INVENTORY;
-
-  static {
-    Class<?> craftInventoryClass = null;
-    Method getInventoryMethod = null;
-    Class<?> serverClass = Bukkit.getServer().getClass();
-    if ("CraftServer".equals(serverClass.getSimpleName())) {
-      String serverPackage = serverClass.getPackageName();
-      String className = serverPackage + ".inventory.CraftInventory";
-      try {
-        craftInventoryClass = Class.forName(className);
-        getInventoryMethod = craftInventoryClass.getMethod("getInventory");
-      } catch (ClassNotFoundException | NoSuchMethodException ignored) {
-      }
-    }
-    CRAFT_INVENTORY = craftInventoryClass;
-    GET_INVENTORY = getInventoryMethod;
-  }
-
-  /**
-   * If the inventory is a CraftInventory, get the NMS inventory. If not, just return the bukkit
-   * Inventory.
-   *
-   * @param inventory the bukkit inventory
-   * @return the authorative inventory
-   */
-  // This works around a bug in CraftBukkit where CraftInventory instances cannot
-  // be used as WeakHashMap keys because CraftInventory instances are created
-  // on-demand.
-  // They are not stored in the nms inventory, hence to obtain an object that
-  // persists the inventory, we need the NMS inventory: IInventory(mc-dev)
-  // Container(moj-map).
-  private static Object getBaseInventory(Inventory inventory) {
-    if (CRAFT_INVENTORY != null && GET_INVENTORY != null && CRAFT_INVENTORY.isInstance(inventory)) {
-      try {
-        return GET_INVENTORY.invoke(inventory);
-      } catch (InvocationTargetException | IllegalAccessException ignored) {
-      }
-    }
-    return inventory;
   }
 }

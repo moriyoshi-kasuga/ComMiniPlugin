@@ -7,7 +7,6 @@ import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Optional;
-
 import lombok.Getter;
 import lombok.val;
 import org.bukkit.Material;
@@ -24,6 +23,7 @@ public class TreasureChest extends CustomModelBlock {
 
   @Getter
   private final int level;
+  private BukkitRunnable task;
 
   public TreasureChest(Block block, BlockFace face, int level) {
     super(block, face);
@@ -63,8 +63,6 @@ public class TreasureChest extends CustomModelBlock {
       this.task.cancel();
     }
   }
-
-  private BukkitRunnable task;
 
   private void spawn() {
     updateDisplayItem();

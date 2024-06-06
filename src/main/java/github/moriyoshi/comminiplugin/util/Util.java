@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
 public class Util {
 
+  private Util() {}
+
   public static void log(final Object message) {
     Bukkit.getConsoleSender().sendMessage(Util.mm(message));
   }
@@ -128,9 +130,8 @@ public class Util {
     return LegacyComponentSerializer.legacyAmpersand().serializeOrNull(str);
   }
 
-  public static Component colorToComponent(final ChatColor color,String text) {
-    return Component.text(text)
-        .color(TextColor.color(color.asBungee().getColor().getRGB()));
+  public static Component colorToComponent(final ChatColor color, String text) {
+    return Component.text(text).color(TextColor.color(color.asBungee().getColor().getRGB()));
   }
 
   /**
@@ -191,6 +192,4 @@ public class Util {
               }
             });
   }
-
-  private Util() {}
 }

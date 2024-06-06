@@ -55,7 +55,6 @@ public class SpeedBootsItem extends CustomItem implements CooldownItem {
       return;
     }
     if (inCooldown()) {
-      return;
     }
   }
 

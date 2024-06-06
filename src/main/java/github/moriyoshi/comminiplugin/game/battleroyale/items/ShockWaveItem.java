@@ -38,14 +38,11 @@ public class ShockWaveItem extends CustomItem {
       val vec = loc.toVector();
       loc.getNearbyPlayers(15, p -> !player.equals(p))
           .forEach(
-              p -> {
-                JumpPadBlock.setVelocity(
-                    p,
-                    p.getLocation().toVector().subtract(vec).normalize().multiply(2),
-                    JUMP_STATE.FREE);
-              });
+              p -> JumpPadBlock.setVelocity(
+                  p,
+                  p.getLocation().toVector().subtract(vec).normalize().multiply(2),
+                  JUMP_STATE.FREE));
       world.playSound(loc, Sound.ENTITY_ENDER_DRAGON_SHOOT, 3, 1);
-      return;
     } else {
       loc.setPitch(Math.min(Math.max(loc.getPitch(), -20), 20));
       JumpPadBlock.setVelocity(player, loc.getDirection().multiply(2), JUMP_STATE.FREE);

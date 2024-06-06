@@ -18,6 +18,10 @@ import org.bukkit.util.BoundingBox;
 
 public final class BukkitUtil {
 
+  public static final BlockFace[] axis = {
+    BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
+  };
+
   public static List<Player> getSquarePlayers(final BoundingBox square) {
 
     return Bukkit.getOnlinePlayers().stream()
@@ -69,10 +73,6 @@ public final class BukkitUtil {
   public static void disableMove(final Player player, final int tick) {
     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, tick, 138, true, false));
   }
-
-  public static final BlockFace[] axis = {
-    BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
-  };
 
   public static BlockFace convertYawToBlockFace(float yaw) {
     return axis[Math.round(yaw / 90f) & 0x3];

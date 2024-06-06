@@ -61,7 +61,7 @@ public class AllOrNothingItem extends CustomItem {
     Collections.shuffle(types, random);
     val duration = random.nextInt(30 * 20, 60 * 20);
     for (int i = 0; i < random.nextInt(1, 4); i++) {
-      player.addPotionEffect(new PotionEffect(types.remove(0), duration, 1, true, true));
+      player.addPotionEffect(new PotionEffect(types.removeFirst(), duration, 1, true, true));
     }
     val loc = player.getLocation();
     loc.getWorld().playSound(loc, sound, 3, 1);

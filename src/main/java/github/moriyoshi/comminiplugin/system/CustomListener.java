@@ -33,10 +33,6 @@ public class CustomListener implements Listener {
 
   private static final CustomListener INSTANCE = new CustomListener();
 
-  public static CustomListener getInstance() {
-    return INSTANCE;
-  }
-
   private CustomListener() {
     new BukkitRunnable() {
       @Override
@@ -63,6 +59,10 @@ public class CustomListener implements Listener {
                 });
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 1, 1);
+  }
+
+  public static CustomListener getInstance() {
+    return INSTANCE;
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
@@ -201,9 +201,7 @@ public class CustomListener implements Listener {
         items.stream()
             .filter(item -> !(item == null || item.isEmpty()))
             .map(
-                item -> {
-                  return CustomItem.getCustomItem(item);
-                })
+                item -> CustomItem.getCustomItem(item))
             .filter(Objects::nonNull)
             .toList();
     if (customs.isEmpty()) {
@@ -245,7 +243,7 @@ public class CustomListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void projectileLaunch(ProjectileLaunchEvent e) {
     val shooter = e.getEntity().getShooter();
-    if (shooter != null && shooter instanceof Player player) {
+    if (shooter instanceof Player player) {
       val item = player.getInventory().getItemInMainHand();
       val custom = CustomItem.getCustomItem(item);
       if (custom != null) {

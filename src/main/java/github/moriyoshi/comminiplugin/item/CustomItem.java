@@ -22,12 +22,32 @@ import org.reflections.Reflections;
 
 public abstract class CustomItem implements InterfaceItem {
 
+  public static final BiMap<String, Class<? extends CustomItem>> canShowingRegisters =
+      HashBiMap.create();
   private static final BiMap<String, Class<? extends CustomItem>> registers = HashBiMap.create();
   private static final Map<String, Constructor<? extends CustomItem>> newConstructors =
       HashBiMap.create();
+  @Getter @NotNull private final ItemStack item;
+  private UUID uuid;
 
-  public static final BiMap<String, Class<? extends CustomItem>> canShowingRegisters =
-      HashBiMap.create();
+  public CustomItem(@NotNull final ItemStack item) {
+    NBT.modify(
+        item,
+        nbt -> {
+          final var compound = nbt.getOrCreateCompound(nbtKey);
+          if (!compound.hasTag("identifier")) {
+            compound.setString("identifier", getIdentifier());
+          }
+          if (compound.hasTag("uuid")) {
+            this.uuid = compound.getUUID("uuid");
+          } else {
+            val uuid = canStack() ? HashUUID.v5(getClass().getName()) : UUID.randomUUID();
+            compound.setUUID("uuid", uuid);
+            this.uuid = uuid;
+          }
+        });
+    this.item = item;
+  }
 
   public static void registers(final Reflections reflections) {
     github.moriyoshi.comminiplugin.util.ReflectionUtil.forEachAllClass(
@@ -199,38 +219,15 @@ public abstract class CustomItem implements InterfaceItem {
         });
   }
 
-  @Getter @NotNull private final ItemStack item;
-
-  @NotNull private UUID uuid;
-
-  public CustomItem(@NotNull final ItemStack item) {
-    NBT.modify(
-        item,
-        nbt -> {
-          final var compound = nbt.getOrCreateCompound(nbtKey);
-          if (!compound.hasTag("identifier")) {
-            compound.setString("identifier", getIdentifier());
-          }
-          if (compound.hasTag("uuid")) {
-            this.uuid = compound.getUUID("uuid");
-          } else {
-            val uuid = canStack() ? HashUUID.v5(getClass().getName()) : UUID.randomUUID();
-            compound.setUUID("uuid", uuid);
-            this.uuid = uuid;
-          }
-        });
-    this.item = item;
-  }
-
-  public UUID getUniqueId() {
+  public @NotNull UUID getUniqueId() {
     return uuid;
   }
 
   @Override
   public boolean equals(final Object obj) {
-    if (obj instanceof final CustomItem item) {
-      return item.getIdentifier().equals(getIdentifier())
-          && Objects.equals(item.getUniqueId(), getUniqueId());
+    if (obj instanceof final CustomItem objItem) {
+      return objItem.getIdentifier().equals(getIdentifier())
+          && Objects.equals(objItem.getUniqueId(), getUniqueId());
     }
     return false;
   }

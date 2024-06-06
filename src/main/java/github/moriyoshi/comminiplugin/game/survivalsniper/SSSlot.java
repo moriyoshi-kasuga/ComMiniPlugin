@@ -28,12 +28,14 @@ public class SSSlot extends HotbarSlot {
             new ItemBuilder(Material.IRON_AXE)
                 .name("<red>Iron Axe")
                 .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
+                .customItemFlag(CustomItemFlag.DISABLE_ITEM_SPAWN, true)
                 .customItemFlag(CustomItemFlag.DISABLE_ATTACK_TO_PLAYER, true)
                 .build(),
         () ->
             new ItemBuilder(Material.IRON_PICKAXE)
                 .name("<red>Iron Pickaxe")
                 .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
+                .customItemFlag(CustomItemFlag.DISABLE_ITEM_SPAWN, true)
                 .customItemFlag(CustomItemFlag.DISABLE_ATTACK_TO_PLAYER, true)
                 .build(),
         () -> new ItemBuilder(Material.OAK_SAPLING).amount(3).build(),

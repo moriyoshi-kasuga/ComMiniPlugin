@@ -15,7 +15,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -35,6 +34,7 @@ public class SSSniper extends CustomItem implements CooldownItem {
     this(
         new ItemBuilder(Material.SPYGLASS)
             .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
+            .customItemFlag(CustomItemFlag.DISABLE_ITEM_SPAWN, true)
             .name(DEFAULT_NAME)
             .customModelData(1)
             .build());
@@ -158,10 +158,5 @@ public class SSSniper extends CustomItem implements CooldownItem {
   @Override
   public boolean canMoveOtherInv(final InventoryClickEvent e) {
     return false;
-  }
-
-  @Override
-  public void itemSpawn(final ItemSpawnEvent e) {
-    e.getEntity().remove();
   }
 }

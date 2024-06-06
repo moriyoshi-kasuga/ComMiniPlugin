@@ -33,31 +33,6 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
 
   private final BukkitRunnable task = createAutoCloseTask();
 
-  private ItemButton<?> createTeamButton(ChatColor color) {
-    val list =
-        getGame().players.entrySet().stream()
-            .filter(
-                entry -> {
-                  return entry.getValue().getThird() == color;
-                })
-            .map(entry -> "<gray> " + Bukkit.getOfflinePlayer(entry.getKey()).getName())
-            .collect(Collectors.toCollection(ArrayList::new));
-    if (list.isEmpty()) {
-      list.add("<gray>empty");
-    }
-    return new ItemButton<>(
-        new ItemBuilder(Material.valueOf(color.name() + "_GLAZED_TERRACOTTA"))
-            .name(Util.colorToComponent(color, color.name()).append(Util.mm(" <white>チームに参加する")))
-            .lore("<gray>参加者リスト：")
-            .addLore(list)
-            .build()) {
-      @Override
-      public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-        getGame().joinPlayer((Player) event.getWhoClicked(), true, color);
-      }
-    };
-  }
-
   public SSTeamMenu() {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>サバイバルスナイパー");
     setButton(
@@ -79,6 +54,29 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
           }
         });
     setButton(4, new HotbarSlotButton(SSPlayer.class));
+  }
+
+  private ItemButton<?> createTeamButton(ChatColor color) {
+    val list =
+        getGame().players.entrySet().stream()
+            .filter(
+                entry -> entry.getValue().getThird() == color)
+            .map(entry -> "<gray> " + Bukkit.getOfflinePlayer(entry.getKey()).getName())
+            .collect(Collectors.toCollection(ArrayList::new));
+    if (list.isEmpty()) {
+      list.add("<gray>empty");
+    }
+    return new ItemButton<>(
+        new ItemBuilder(Material.valueOf(color.name() + "_GLAZED_TERRACOTTA"))
+            .name(Util.colorToComponent(color, color.name()).append(Util.mm(" <white>チームに参加する")))
+            .lore("<gray>参加者リスト：")
+            .addLore(list)
+            .build()) {
+      @Override
+      public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
+        getGame().joinPlayer((Player) event.getWhoClicked(), true, color);
+      }
+    };
   }
 
   @Override

@@ -411,9 +411,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P>
                   create(
                       plugin,
                       nextSupplier, // the nextSupplier is the iterator
-                      () ->
-                          pageMenu, // the previousSupplier is the pageMenu that was created just
-                                    // now
+                      () -> pageMenu, // the previousSupplier is the pageMenu that was created just
+                      // now
                       previousPageButton == null ? null : previousPageButton.clone(),
                       // I don't like this because the itemstack that was passed as a parameter may
                       // have changed in the meantime. well.
@@ -442,9 +441,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P>
                       plugin,
                       title,
                       nextSupplier, // the nextSupplier is the iterator
-                      () ->
-                          pageMenu, // the previousSupplier is the pageMenu that was created just
-                                    // now
+                      () -> pageMenu, // the previousSupplier is the pageMenu that was created just
+                      // now
                       previousPageButton == null ? null : previousPageButton.clone(), // Idem
                       nextPageButton == null ? null : nextPageButton.clone())); // Idem
     }

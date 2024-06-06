@@ -25,7 +25,10 @@ public class SSAdminMenu extends MenuHolder<ComMiniPlugin>
     setButton(
         13,
         new ItemButton<>(
-            new ItemBuilder(Material.BLACK_CONCRETE).name("<yellow>FFA mode").lore("<gray>default").build()) {
+            new ItemBuilder(Material.BLACK_CONCRETE)
+                .name("<yellow>FFA mode")
+                .lore("<gray>default")
+                .build()) {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
             getGame().setMode(Mode.FFA);

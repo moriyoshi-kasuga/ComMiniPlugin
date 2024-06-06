@@ -40,18 +40,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class GameListener implements Listener {
 
   private static final GameListener INSTANCE = new GameListener();
-
-  public static GameListener getInstance() {
-    return INSTANCE;
-  }
-
-  public static boolean isGamePlayer(Player p, Class<? extends Event> clazz) {
-    return GameSystem.isStarted() && GameSystem.getGame().isGamePlayer(p, clazz);
-  }
-
-  public static boolean isDebugPlayer(Player p) {
-    return ComMiniPlayer.getPlayer(p.getUniqueId()).isDebug();
-  }
+  private static final Map<UUID, BiConsumer<Projectile, ProjectileHitEvent>> projectileHitMap =
+      new HashMap<>();
+  private static final Map<UUID, BiConsumer<Projectile, EntityDamageByEntityEvent>>
+      projectileDamageMap = new HashMap<>();
+  private static Map<UUID, Location> disableMoveLocation = new HashMap<>();
 
   private GameListener() {
     new BukkitRunnable() {
@@ -76,6 +69,28 @@ public class GameListener implements Listener {
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 20, 20);
   }
 
+  public static GameListener getInstance() {
+    return INSTANCE;
+  }
+
+  public static boolean isGamePlayer(Player p, Class<? extends Event> clazz) {
+    return GameSystem.isStarted() && GameSystem.getGame().isGamePlayer(p, clazz);
+  }
+
+  public static boolean isDebugPlayer(Player p) {
+    return ComMiniPlayer.getPlayer(p.getUniqueId()).isDebug();
+  }
+
+  public static void addProjectileHitListener(
+      UUID id, BiConsumer<Projectile, ProjectileHitEvent> l) {
+    projectileHitMap.put(id, l);
+  }
+
+  public static void addProjectileDamageListener(
+      UUID id, BiConsumer<Projectile, EntityDamageByEntityEvent> l) {
+    projectileDamageMap.put(id, l);
+  }
+
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
@@ -89,9 +104,7 @@ public class GameListener implements Listener {
             player ->
                 !player.equals(p) && ComMiniPlayer.getPlayer(player.getUniqueId()).isJoinGame())
         .forEach(
-            player -> {
-              ((CraftPlayer) p).getHandle().connection.send(packet);
-            });
+            player -> ((CraftPlayer) p).getHandle().connection.send(packet));
     if (GameSystem.isIn()
         && GameSystem.getGame().isGamePlayer(p, PlayerJoinEvent.class)
         && GameSystem.getGame().listener.join(e)) {
@@ -144,9 +157,9 @@ public class GameListener implements Listener {
     }
 
     if (GameSystem.isStarted()
-        && (e.getDamager() instanceof Player player
-            ? isGamePlayer(player, EntityDamageByEntityEvent.class)
-            : true)) {
+        && (!(e.getDamager() instanceof Player player) || isGamePlayer(player,
+        EntityDamageByEntityEvent.class
+    ))) {
       GameSystem.getGame().listener.damageByEntity(e);
       return;
     }
@@ -197,8 +210,6 @@ public class GameListener implements Listener {
       e.setCancelled(true);
     }
   }
-
-  private static Map<UUID, Location> disableMoveLocation = new HashMap<>();
 
   @SuppressWarnings("deprecation")
   @EventHandler
@@ -263,22 +274,6 @@ public class GameListener implements Listener {
         && !ComMiniPlayer.getPlayer(p.getUniqueId()).isCanFoodRegain()) {
       e.setCancelled(true);
     }
-  }
-
-  private static final Map<UUID, BiConsumer<Projectile, ProjectileHitEvent>> projectileHitMap =
-      new HashMap<>();
-
-  public static void addProjectileHitListener(
-      UUID id, BiConsumer<Projectile, ProjectileHitEvent> l) {
-    projectileHitMap.put(id, l);
-  }
-
-  private static final Map<UUID, BiConsumer<Projectile, EntityDamageByEntityEvent>>
-      projectileDamageMap = new HashMap<>();
-
-  public static void addProjectileDamageListener(
-      UUID id, BiConsumer<Projectile, EntityDamageByEntityEvent> l) {
-    projectileDamageMap.put(id, l);
   }
 
   @EventHandler

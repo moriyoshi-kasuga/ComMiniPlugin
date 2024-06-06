@@ -18,25 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class SSTradeMenu extends MenuHolder<ComMiniPlugin> {
 
-  @RequiredArgsConstructor
-  private enum TradeItem {
-    EscapeDeep(
-        () -> new SSEscapeDeep().getItem(),
-        "4レベル",
-        (p) -> p.getLevel() >= 4,
-        (p) -> p.setLevel(p.getLevel() - 4)),
-    BEEF(
-        () -> new ItemStack(Material.COOKED_BEEF),
-        "1レベル",
-        (p) -> p.getLevel() >= 1,
-        (p) -> p.setLevel(p.getLevel() - 1));
-
-    public final Supplier<ItemStack> item;
-    public final String tradeDescription;
-    public final Predicate<Player> predicate;
-    public final Consumer<Player> buyCallback;
-  }
-
   public SSTradeMenu() {
     super(ComMiniPlugin.getPlugin(), 27, "<green>Trade");
     for (int i = 0; i < 27; i++) {
@@ -67,5 +48,24 @@ public class SSTradeMenu extends MenuHolder<ComMiniPlugin> {
           });
       i++;
     }
+  }
+
+  @RequiredArgsConstructor
+  private enum TradeItem {
+    EscapeDeep(
+        () -> new SSEscapeDeep().getItem(),
+        "4レベル",
+        (p) -> p.getLevel() >= 4,
+        (p) -> p.setLevel(p.getLevel() - 4)),
+    BEEF(
+        () -> new ItemStack(Material.COOKED_BEEF),
+        "1レベル",
+        (p) -> p.getLevel() >= 1,
+        (p) -> p.setLevel(p.getLevel() - 1));
+
+    public final Supplier<ItemStack> item;
+    public final String tradeDescription;
+    public final Predicate<Player> predicate;
+    public final Consumer<Player> buyCallback;
   }
 }

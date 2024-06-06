@@ -117,10 +117,10 @@ public class SSListener implements AbstractGameListener<SSGame> {
       }
       ChatColor color1 =
           Optional.ofNullable(game.players.get(entity.getUniqueId()))
-              .map(t -> t.getThird())
+              .map(Triple::getThird)
               .orElse(null);
       val color2 = game.players.get(attacker.getUniqueId()).getThird();
-      if (color1 != null && color2 != null && color1 == color2) {
+      if (color2 != null && color1 == color2) {
         e.setCancelled(true);
         return;
       }
@@ -134,7 +134,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
   }
 
   @EventHandler
-  public void moevDimension(final PlayerPortalEvent e) {
+  public void moveDimension(final PlayerPortalEvent e) {
     if (getGame().isGamePlayer(e.getPlayer())) {
       getGame().prefix.send(e.getPlayer(), "<red>ポータルを使うな!");
       e.setCancelled(true);
@@ -193,9 +193,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
         return;
       }
       alives.forEach(
-          (color, list) -> {
-            game.endGame(Util.colorToComponent(color, color.name() + " チーム"));
-          });
+          (color, list) -> game.endGame(Util.colorToComponent(color, color.name() + " チーム")));
     }
   }
 }

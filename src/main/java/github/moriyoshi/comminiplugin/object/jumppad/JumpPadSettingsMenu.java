@@ -36,9 +36,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
 
-  private boolean isIncludeLinked = true;
-
   private final JumpPadBlock jumpPadBlock;
+  private boolean isIncludeLinked = true;
 
   public JumpPadSettingsMenu(JumpPadBlock jumpPadBlock) {
     super(ComMiniPlugin.getPlugin(), 27, "<red>Settings Jump Pad");
@@ -83,9 +82,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                             return;
                           }
                           setConsumer(
-                              block -> {
-                                block.setMaterial(material);
-                              },
+                              block -> block.setMaterial(material),
                               isIncludeLinked);
                         },
                         (item, e) -> JumpPadSettingsMenu.this.openInv(e.getWhoClicked()))

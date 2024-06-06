@@ -27,18 +27,6 @@ import org.jetbrains.annotations.NotNull;
 /** アイテムを作成やmodifyするクラス */
 public class ItemBuilder {
 
-  /**
-   * プレイヤーの頭を作成するクラス
-   *
-   * @param skullOwner プレイヤーの名前
-   * @return 作成したアイテムスタック
-   */
-  @SuppressWarnings("deprecation")
-  public static ItemBuilder createSkull(final String skullOwner) {
-    return new ItemBuilder(Material.PLAYER_HEAD)
-        .changeMeta((Consumer<SkullMeta>) skullMeta -> skullMeta.setOwner(skullOwner));
-  }
-
   private final ItemStack itemStack;
 
   /**
@@ -60,6 +48,37 @@ public class ItemBuilder {
   public ItemBuilder(final ItemStack itemStack) {
     Objects.requireNonNull(itemStack, "ItemStack cannot be null");
     this.itemStack = itemStack;
+  }
+
+  /**
+   * プレイヤーの頭を作成するクラス
+   *
+   * @param skullOwner プレイヤーの名前
+   * @return 作成したアイテムスタック
+   */
+  @SuppressWarnings("deprecation")
+  public static ItemBuilder createSkull(final String skullOwner) {
+    return new ItemBuilder(Material.PLAYER_HEAD)
+        .changeMeta((Consumer<SkullMeta>) skullMeta -> skullMeta.setOwner(skullOwner));
+  }
+
+  public static Optional<Boolean> getCustomItemFlag(ItemStack item, CustomItemFlag flag) {
+    return getCustomItemFlag(item, flag.id);
+  }
+
+  public static Optional<Boolean> getCustomItemFlag(ItemStack item, String flag) {
+    if (item == null || item.isEmpty()) {
+      return Optional.empty();
+    }
+    return NBT.get(
+        item,
+        nbt -> {
+          var compound = nbt.getCompound("customitemflag");
+          if (compound == null || !compound.hasTag(flag)) {
+            return Optional.empty();
+          }
+          return Optional.of(compound.getBoolean(flag));
+        });
   }
 
   /**
@@ -412,24 +431,5 @@ public class ItemBuilder {
 
   public ItemStack build() {
     return itemStack;
-  }
-
-  public static Optional<Boolean> getCustomItemFlag(ItemStack item, CustomItemFlag flag) {
-    return getCustomItemFlag(item, flag.id);
-  }
-
-  public static Optional<Boolean> getCustomItemFlag(ItemStack item, String flag) {
-    if (item == null || item.isEmpty()) {
-      return Optional.empty();
-    }
-    return NBT.get(
-        item,
-        nbt -> {
-          var compound = nbt.getCompound("customitemflag");
-          if (compound == null || !compound.hasTag(flag)) {
-            return Optional.empty();
-          }
-          return Optional.of(compound.getBoolean(flag));
-        });
   }
 }

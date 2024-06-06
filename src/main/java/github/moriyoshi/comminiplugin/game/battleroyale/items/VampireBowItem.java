@@ -45,9 +45,8 @@ public class VampireBowItem extends CustomItem implements CooldownItem {
   public void projectileLaunch(ProjectileLaunchEvent e, Player player) {
     GameListener.addProjectileDamageListener(
         e.getEntity().getUniqueId(),
-        (projectile, event) -> {
-          event.setDamage(event.getFinalDamage() + level);
-        });
+        (projectile, event) -> event.setDamage(event.getFinalDamage() + level)
+    );
     List<Sound> sounds;
 
     if (level >= 14) {
@@ -59,9 +58,7 @@ public class VampireBowItem extends CustomItem implements CooldownItem {
     }
     val loc = player.getLocation();
     sounds.forEach(
-        sound -> {
-          loc.getWorld().playSound(loc, sound, SoundCategory.MASTER, 3, 1);
-        });
+        sound -> loc.getWorld().playSound(loc, sound, SoundCategory.MASTER, 3, 1));
   }
 
   @Override

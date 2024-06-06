@@ -21,6 +21,26 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("unused")
 public class LocationsCommands extends JsonAPI {
 
+  @Getter() private static final LocationsCommands manager = new LocationsCommands();
+  private Map<String, Location> locations;
+
+  private LocationsCommands() {
+    super(ComMiniPlugin.getPlugin(), "LocationsCommands");
+  }
+
+  @Override
+  protected JsonElement generateSaveData() {
+    return ComMiniPlugin.gson.toJsonTree(locations);
+  }
+
+  @Override
+  protected void generateLoadData(JsonElement dataElement) {
+    locations =
+        ComMiniPlugin.gson.fromJson(
+            dataElement, new TypeToken<Map<String, Location>>() {}.getType());
+  }
+
+
   private static class PutLocCommand extends CommandAPICommand {
     public PutLocCommand() {
       super("putloc");
@@ -38,6 +58,7 @@ public class LocationsCommands extends JsonAPI {
           });
     }
   }
+
 
   private static class MvLocCommand extends CommandAPICommand {
     @SuppressWarnings("unchecked")
@@ -68,6 +89,7 @@ public class LocationsCommands extends JsonAPI {
     }
   }
 
+
   private static class DelLocCommand extends CommandAPICommand {
     public DelLocCommand() {
       super("delloc");
@@ -83,11 +105,11 @@ public class LocationsCommands extends JsonAPI {
           (p, args) -> {
             if (getManager().locations.remove(args.get("name")) == null) {
               ComMiniPrefix.SYSTEM.send(p, "<red>その名前のlocはありません");
-              return;
             }
           });
     }
   }
+
 
   private static class ListLocCommand extends CommandAPICommand {
     public ListLocCommand() {
@@ -113,25 +135,5 @@ public class LocationsCommands extends JsonAPI {
                                 + location.getZ()));
           });
     }
-  }
-
-  @Getter() private static final LocationsCommands manager = new LocationsCommands();
-
-  private Map<String, Location> locations;
-
-  private LocationsCommands() {
-    super(ComMiniPlugin.getPlugin(), "LocationsCommands");
-  }
-
-  @Override
-  protected JsonElement generateSaveData() {
-    return ComMiniPlugin.gson.toJsonTree(locations);
-  }
-
-  @Override
-  protected void generateLoadData(JsonElement dataElement) {
-    locations =
-        ComMiniPlugin.gson.fromJson(
-            dataElement, new TypeToken<Map<String, Location>>() {}.getType());
   }
 }

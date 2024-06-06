@@ -16,9 +16,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
 
+  protected final MenuButton<MH> delegate;
   private final BiPredicate<MH, InventoryClickEvent> predicate;
   private final BiConsumer<MH, InventoryClickEvent> predicateFailedCallback;
-  protected final MenuButton<MH> delegate;
 
   /**
    * PredicateButtonを作成する。

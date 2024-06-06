@@ -14,10 +14,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class Pool {
 
+  protected final Set<Entry> entries = new HashSet<>();
   private final int rolls;
   private final Function<Random, Integer> bonusRolls;
-
-  protected final Set<Entry> entries = new HashSet<>();
 
   public Pool() {
     this(1);
@@ -45,7 +44,7 @@ public class Pool {
 
   public Pool(int rolls, Function<Random, Integer> bonusRolls) {
     this.rolls = rolls;
-    this.bonusRolls = (r) -> bonusRolls.apply(r);
+    this.bonusRolls = bonusRolls;
   }
 
   public int size() {

@@ -13,16 +13,14 @@ import java.util.UUID;
  */
 public class HashUUID {
 
-  private static final int V3 = 3; // MD5
-  private static final int V5 = 5; // SHA-1
-
-  private static final String HASH_V3 = "MD5";
-  private static final String HASH_V5 = "SHA-1";
-
   public static final UUID NAMESPACE_DNS = new UUID(0x6ba7b8109dad11d1L, 0x80b400c04fd430c8L);
   public static final UUID NAMESPACE_URL = new UUID(0x6ba7b8119dad11d1L, 0x80b400c04fd430c8L);
   public static final UUID NAMESPACE_OID = new UUID(0x6ba7b8129dad11d1L, 0x80b400c04fd430c8L);
   public static final UUID NAMESPACE_X500 = new UUID(0x6ba7b8149dad11d1L, 0x80b400c04fd430c8L);
+  private static final int V3 = 3; // MD5
+  private static final int V5 = 5; // SHA-1
+  private static final String HASH_V3 = "MD5";
+  private static final String HASH_V5 = "SHA-1";
 
   public static UUID v3(String name) {
     return generate(V3, HASH_V3, null, name);

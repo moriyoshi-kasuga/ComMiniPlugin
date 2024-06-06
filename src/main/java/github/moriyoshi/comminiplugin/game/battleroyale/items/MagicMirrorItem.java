@@ -47,8 +47,7 @@ public class MagicMirrorItem extends CustomItem {
                 player.getInventory().addItem(field.getLevel5().random().getFirst());
               }
             },
-            () -> {
-              Messages.GAME_NOT_START.send(player);
-            });
+            () -> Messages.GAME_NOT_START.send(player)
+        );
   }
 }

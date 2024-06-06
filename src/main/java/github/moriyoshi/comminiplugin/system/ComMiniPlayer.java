@@ -20,9 +20,23 @@ import org.bukkit.scoreboard.Team;
 
 public final class ComMiniPlayer extends JsonAPI {
 
-  private static Team hidenametag;
-
   private static final HashMap<UUID, ComMiniPlayer> players = new HashMap<>();
+  private static Team hidenametag;
+  private final UUID uuid;
+  private final Map<Class<? extends InterfaceGamePlayer>, InterfaceGamePlayer> gamePlayerDatas =
+      new HashMap<>();
+  @Getter @Setter private boolean isHunger;
+  @Getter @Setter private boolean canFoodRegain;
+  @Getter @Setter private boolean isDebug = false;
+  @Getter @Setter private boolean shouldLoadResourcePack;
+  @Getter @Setter private boolean isJoinGame;
+  private JsonObject datas;
+
+  private ComMiniPlayer(final UUID uuid) {
+    super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
+    this.uuid = uuid;
+    this.initialize();
+  }
 
   public static void save() {
     for (final Entry<UUID, ComMiniPlayer> entry : players.entrySet()) {
@@ -52,59 +66,37 @@ public final class ComMiniPlayer extends JsonAPI {
     return player;
   }
 
-  private final UUID uuid;
-
-  @Getter @Setter private boolean isHunger;
-
-  @Getter @Setter private boolean canFoodRegain;
-
-  @Getter @Setter private boolean isDebug = false;
-
-  @Getter @Setter private boolean shouldLoadResourcePack;
-
-  @Getter @Setter private boolean isJoinGame;
-
-  private ComMiniPlayer(final UUID uuid) {
-    super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
-    this.uuid = uuid;
-    this.initialize();
-  }
-
   public void initialize() {
     this.isHunger = false;
     this.canFoodRegain = true;
     this.isJoinGame = false;
-    val player = Bukkit.getOfflinePlayer(this.uuid);
-    if (player != null) {
-      hidenametag.removeEntry(player.getName());
+    val name = Bukkit.getOfflinePlayer(this.uuid).getName();
+    if (name == null) {
+      return;
     }
+    hidenametag.removeEntry(name);
+  }
+
+  public boolean isHideNameTag() {
+    val name = Bukkit.getOfflinePlayer(this.uuid).getName();
+    if (name == null) {
+      return false;
+    }
+    return hidenametag.hasEntry(name);
   }
 
   public void setHideNameTag(final boolean isHideNameTag) {
     val player = Bukkit.getOfflinePlayer(this.uuid);
-    if (player == null) {
+    val name = player.getName();
+    if (name == null) {
       return;
     }
-    val name = player.getName();
     if (isHideNameTag) {
       hidenametag.addEntry(name);
     } else {
       hidenametag.removeEntry(name);
     }
   }
-
-  public boolean isHideNameTag() {
-    val player = Bukkit.getOfflinePlayer(this.uuid);
-    if (player == null) {
-      return false;
-    }
-    return hidenametag.hasEntry(player.getName());
-  }
-
-  private final Map<Class<? extends InterfaceGamePlayer>, InterfaceGamePlayer> gamePlayerDatas =
-      new HashMap<>();
-
-  private JsonObject datas;
 
   @SuppressWarnings("unchecked")
   public <T extends InterfaceGamePlayer> T getGamePlayerData(final Class<T> clazz) {

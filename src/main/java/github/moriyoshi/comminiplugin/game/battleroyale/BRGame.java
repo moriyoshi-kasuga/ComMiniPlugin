@@ -52,13 +52,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
   @Getter private BRField field;
 
-  public void setField(final BRField field) {
-    if (this.field != null) {
-      this.field.stop();
-    }
-    this.field = field;
-  }
-
   public BRGame() {
     super(
         "battleroyale",
@@ -68,6 +61,13 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"),
         new BRListener());
     this.world = ComMiniWorld.GAME_WORLD;
+  }
+
+  public void setField(final BRField field) {
+    if (this.field != null) {
+      this.field.stop();
+    }
+    this.field = field;
   }
 
   public final void joinPlayer(final Player player, final boolean isPlayer) {
@@ -105,7 +105,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   }
 
   public boolean isPlayingPlayer(Player player) {
-    return players.get(player.getUniqueId()) == true;
+    return players.get(player.getUniqueId());
   }
 
   @Override

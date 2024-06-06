@@ -188,6 +188,13 @@ public abstract class CustomBlock {
     }
   }
 
+  public static Location toBlockLocation(Location location) {
+    val loc = location.toBlockLocation();
+    loc.setYaw(0);
+    loc.setPitch(0);
+    return loc;
+  }
+
   public final void remove() {
     this.clearData();
     block.setType(Material.AIR);
@@ -232,13 +239,6 @@ public abstract class CustomBlock {
   }
 
   protected abstract @NotNull Material getOriginMaterial();
-
-  public static Location toBlockLocation(Location location) {
-    val loc = location.toBlockLocation();
-    loc.setYaw(0);
-    loc.setPitch(0);
-    return loc;
-  }
 
   public boolean setFace(BlockFace face) {
     if (!(block.getBlockData() instanceof org.bukkit.block.data.Directional directional)) {

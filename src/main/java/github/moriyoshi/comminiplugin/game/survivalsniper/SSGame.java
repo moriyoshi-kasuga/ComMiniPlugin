@@ -37,37 +37,23 @@ import org.bukkit.util.Vector;
 @SuppressWarnings("deprecation")
 public class SSGame extends AbstractGame implements WinnerTypeGame {
 
+  // true は生きている、falseは観戦者(死んで観戦者で機能を統一)
+  public final HashMap<UUID, Triple<Boolean, Integer, ChatColor>> players = new HashMap<>();
   private final int MAX_RADIUS_RANGE = 600;
-  private final int MIN_BORDER_RANGE = 50;
-  private final int MAX_SECOND = 60 * 10;
+  private final int MIN_BORDER_RANGE = 30;
+  private final int MAX_SECOND = 60 * 7;
   private final int AFTER_PVP_SECOND = 60 * 5;
   private final int AIR_LIMIT = 60 * 3;
   private final Vector VOID_BLOCK_RADIUS = new Vector(3, 3, 3);
-
   private final double speedRate = 1.25;
   private long previousTime;
   private double previousBorderSize;
-
-  // true は生きている、falseは観戦者(死んで観戦者で機能を統一)
-  public final HashMap<UUID, Triple<Boolean, Integer, ChatColor>> players = new HashMap<>();
-
   @Getter private boolean canPvP;
   private BossBar bossBar;
   private BukkitRunnable run;
   private boolean isFinalArea;
 
   @Getter private Mode mode;
-
-  public void setMode(Mode mode) {
-    this.mode = mode;
-    prefix.cast("<red>Modeが<u>" + mode.name() + "</u>に変わりました");
-    prefix.cast("<gray>ゲームをしたい人はもう一度参加ボタンを押してください");
-    runPlayers(
-        player -> {
-          GameSystem.initializePlayer(player);
-        });
-    players.clear();
-  }
 
   public SSGame() {
     super(
@@ -77,6 +63,14 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         Material.SPYGLASS,
         new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"),
         new SSListener());
+  }
+
+  public void setMode(Mode mode) {
+    this.mode = mode;
+    prefix.cast("<red>Modeが<u>" + mode.name() + "</u>に変わりました");
+    prefix.cast("<gray>ゲームをしたい人はもう一度参加ボタンを押してください");
+    runPlayers(player -> GameSystem.initializePlayer(player));
+    players.clear();
   }
 
   public final void leavePlayer(final Player player) {
@@ -214,10 +208,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                       1,
                       1));
         }
-        runPlayers(
-            p -> {
-              Util.title(p, "<red><u>" + rest + "</u>秒後に始まります", null);
-            });
+        runPlayers(p -> Util.title(p, "<red><u>" + rest + "</u>秒後に始まります", null));
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
     return true;
@@ -251,23 +242,17 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
 
           @Override
           public void run() {
-            if (second != -1) {
+            if (second > 0) {
               if (--second > 0) {
                 bossBar
                     .name(Util.mm("<red>PvP解禁まで<u>" + second + "</u>秒"))
                     .progress((float) second / (float) AFTER_PVP_SECOND);
                 if (second % 60 == 0) {
                   val message = Util.mm("<red>PvP解禁まで<u>" + second / 60 + "</u>分");
-                  runPlayers(
-                      p -> {
-                        prefix.send(p, message);
-                      });
+                  runPlayers(p -> prefix.send(p, message));
                 }
                 if (10 >= second) {
-                  runPlayers(
-                      p -> {
-                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
-                      });
+                  runPlayers(p -> p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1));
                 }
               } else {
                 canPvP = true;
@@ -275,7 +260,8 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                     p -> {
                       p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1, 1);
                       p.hideBossBar(bossBar);
-                      prefix.send(p, "<red>PvP解禁!!!");
+                      world.getWorldBorder().setSize(MIN_BORDER_RANGE, MAX_SECOND);
+                      prefix.send(p, "<red>PvP解禁!!!<gray>ボーダーが縮まります");
                     });
                 if (players.size() == 2) {
                   speedUpBorder();
@@ -297,11 +283,11 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                   if (!inCave && num == AIR_LIMIT) {
                     return;
                   }
-                  if (num > 0) {
-                    players.put(t, Triple.of(true, inCave ? --num : ++num, u.getThird()));
-                    return;
+                  players.put(
+                      t, Triple.of(true, Math.max(inCave ? --num : ++num, 0), u.getThird()));
+                  if (1 > num) {
+                    p.damage(1);
                   }
-                  p.setHealth(0);
                 });
             if (!isFinalArea && world.getWorldBorder().getSize() == MIN_BORDER_RANGE) {
               isFinalArea = true;
@@ -312,7 +298,6 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
           }
         };
     run.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
-    world.getWorldBorder().setSize(MIN_BORDER_RANGE, MAX_SECOND);
     world.setClearWeatherDuration(MAX_SECOND * 20);
     world.setTime(1000);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
@@ -356,7 +341,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                       try {
                         ComMiniPlugin.getGlowingEntities()
                             .setGlowing(Bukkit.getPlayer(entries.get(j).getKey()), current, color);
-                      } catch (ReflectiveOperationException e) {
+                      } catch (ReflectiveOperationException ignored) {
                       }
                     }
                   }
@@ -407,6 +392,9 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   }
 
   public void speedUpBorder() {
+    if (!isCanPvP()) {
+      return;
+    }
     if (isFinalArea) {
       return;
     }
@@ -443,13 +431,13 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     mode = Mode.FFA;
   }
 
-  public enum Mode {
-    FFA,
-    TEAM
-  }
-
   @Override
   public MenuHolder<ComMiniPlugin> createHelpMenu() {
     return new SSHelpMenu();
+  }
+
+  public enum Mode {
+    FFA,
+    TEAM
   }
 }

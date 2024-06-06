@@ -21,7 +21,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomItemsCommand extends CommandAPICommand {
 
-  private static final class CustomItemMenu extends ListMenu<String,CustomItemMenu> {
+  public CustomItemsCommand() {
+    super("customitems");
+    withPermission(CommandPermission.OP);
+    executesPlayer(
+        (sender, args) -> {
+          new CustomItemMenu().openInv(sender);
+        });
+  }
+
+
+  private static final class CustomItemMenu extends ListMenu<String, CustomItemMenu> {
     public CustomItemMenu() {
       super(
           "<green>CustomItems",
@@ -69,14 +79,5 @@ public class CustomItemsCommand extends CommandAPICommand {
                 .toList();
           });
     }
-  }
-
-  public CustomItemsCommand() {
-    super("customitems");
-    withPermission(CommandPermission.OP);
-    executesPlayer(
-        (sender, args) -> {
-          new CustomItemMenu().openInv(sender);
-        });
   }
 }
