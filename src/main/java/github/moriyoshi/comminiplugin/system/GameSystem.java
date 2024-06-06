@@ -120,5 +120,6 @@ public class GameSystem {
     p.setGameMode(GameMode.SURVIVAL);
     p.clearActivePotionEffects();
     p.setHealth(20);
+    p.playerListName(null);
   }
 }

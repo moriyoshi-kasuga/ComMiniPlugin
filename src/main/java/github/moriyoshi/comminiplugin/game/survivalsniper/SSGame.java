@@ -387,13 +387,6 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     if (run != null) {
       run.cancel();
     }
-    if (mode == Mode.TEAM) {
-      players.entrySet().stream()
-          .forEach(
-              entry -> {
-                Bukkit.getPlayer(entry.getKey()).playerListName(null);
-              });
-    }
     players.clear();
   }
 

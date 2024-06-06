@@ -27,7 +27,11 @@ public interface WinnerTypeGame extends InterfaceGame {
             getPrefix()
                 .send(
                     p,
-                    winner.decorate(TextDecoration.UNDERLINED).append(Util.mm("<white>が勝ちました"))));
+                    winner
+                        .decorate(TextDecoration.UNDERLINED)
+                        .append(
+                            Util.mm("<white>が勝ちました")
+                                .decoration(TextDecoration.UNDERLINED, false))));
     new BukkitRunnable() {
 
       @Override
