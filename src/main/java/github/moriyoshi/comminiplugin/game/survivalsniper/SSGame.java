@@ -387,30 +387,13 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     if (run != null) {
       run.cancel();
     }
-    // TODO: 別ワールドいくさいにロードされるからそれですでに glow が消えてる説がある
-    // if (mode == Mode.TEAM) {
-    //   players.entrySet().stream()
-    //       .filter(entry -> entry.getValue().getThird() != null)
-    //       .collect(Collectors.groupingBy(entry -> entry.getValue().getThird()))
-    //       .forEach(
-    //           (color, entries) -> {
-    //             val size = entries.size();
-    //             for (int i = 0; i < size; i++) {
-    //               Player current = Bukkit.getPlayer(entries.get(i).getKey());
-    //               current.playerListName(null);
-    //               for (int j = 0; j < size; j++) {
-    //                 if (i != j) {
-    //                   try {
-    //                     ComMiniPlugin.getGlowingEntities()
-    //                         .unsetGlowing(Bukkit.getPlayer(entries.get(j).getKey()), current);
-    //                   } catch (ReflectiveOperationException e) {
-    //                     e.printStackTrace();
-    //                   }
-    //                 }
-    //               }
-    //             }
-    //           });
-    // }
+    if (mode == Mode.TEAM) {
+      players.entrySet().stream()
+          .forEach(
+              entry -> {
+                Bukkit.getPlayer(entry.getKey()).playerListName(null);
+              });
+    }
     players.clear();
   }
 

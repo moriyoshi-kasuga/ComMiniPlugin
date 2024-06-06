@@ -5,7 +5,6 @@ import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
 import github.moriyoshi.comminiplugin.util.Util;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -28,9 +27,7 @@ public interface WinnerTypeGame extends InterfaceGame {
             getPrefix()
                 .send(
                     p,
-                    Util.mm("<red>")
-                        .append(winner.style(Style.style(TextDecoration.UNDERLINED)))
-                        .append(Util.mm("が勝ちました"))));
+                    winner.decorate(TextDecoration.UNDERLINED).append(Util.mm("<white>が勝ちました"))));
     new BukkitRunnable() {
 
       @Override
