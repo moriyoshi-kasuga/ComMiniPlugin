@@ -7,6 +7,8 @@ import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Optional;
+
+import lombok.Getter;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TreasureChest extends CustomModelBlock {
 
+  @Getter
   private final int level;
 
   public TreasureChest(Block block, BlockFace face, int level) {

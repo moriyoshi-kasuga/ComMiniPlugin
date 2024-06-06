@@ -40,7 +40,7 @@ public class MagicMirrorItem extends CustomItem {
     Optional.ofNullable(GameSystem.getGame(BRGame.class).getField())
         .ifPresentOrElse(
             field -> {
-              itemUse();
+              useItemAmount();
               if (new Random().nextBoolean()) {
                 player.getInventory().addItem(field.getLevel4().random().getFirst());
               } else {

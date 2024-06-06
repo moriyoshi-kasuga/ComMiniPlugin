@@ -37,7 +37,7 @@ public class AllOrNothingItem extends CustomItem {
     if (e.getAction().isLeftClick()) {
       return;
     }
-    itemUse();
+    useItemAmount();
     val player = e.getPlayer();
     val random = new Random();
     List<PotionEffectType> types = new ArrayList<>();

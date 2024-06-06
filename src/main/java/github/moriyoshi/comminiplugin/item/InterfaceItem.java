@@ -211,7 +211,7 @@ public interface InterfaceItem {
    */
   default void damageByEntity(final EntityDamageByEntityEvent e, final Player player) {}
 
-  default void itemUse() {
+  default void useItemAmount() {
     getItem().setAmount(getItem().getAmount() - 1);
   }
 }

@@ -37,7 +37,7 @@ public class SSEscapeDeep extends CustomItem {
       return;
     }
     p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_HURT, 8, 1);
-    itemUse();
+    useItemAmount();
     BukkitUtil.disableMove(p, 100);
   }
 }

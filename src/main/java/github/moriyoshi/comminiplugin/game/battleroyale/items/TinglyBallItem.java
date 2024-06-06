@@ -36,7 +36,7 @@ public class TinglyBallItem extends CustomItem {
     if (e.getAction().isLeftClick()) {
       return;
     }
-    itemUse();
+    useItemAmount();
     val player = e.getPlayer();
     val projectile =
         player.launchProjectile(

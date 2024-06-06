@@ -36,7 +36,7 @@ public class HKPRItem extends CustomItem {
       Messages.GAME_NOT_START.send(player);
       return;
     }
-    itemUse();
+    useItemAmount();
     val game = GameSystem.getGame(BRGame.class);
     val loc = player.getLocation();
     Bukkit.getOnlinePlayers().stream()

@@ -48,7 +48,7 @@ public interface CooldownItem extends InterfaceItem {
   @Override
   default void heldItem(Player player) {
     player.sendActionBar(
-        Util.mm(inCooldown() ? getHasCooldownMessage(getCooldown()) : getReadyMessage()));
+        Util.mm(inCooldown() ? getHasCooldownMessage(getCooldown()) : getCooldownReadyMessage()));
   }
 
   /**
@@ -59,11 +59,11 @@ public interface CooldownItem extends InterfaceItem {
    */
   @NotNull
   default String getHasCooldownMessage(int cooldown) {
-    return "<red>Now on %.1f cooldown".formatted((double) cooldown / 20.0);
+    return "<red>cooldown: %.1f".formatted((double) cooldown / 20.0);
   }
 
   @NotNull
-  default String getReadyMessage() {
+  default String getCooldownReadyMessage() {
     return "<green>READY";
   }
 

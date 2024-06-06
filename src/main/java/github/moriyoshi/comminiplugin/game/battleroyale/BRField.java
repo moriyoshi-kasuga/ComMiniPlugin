@@ -10,6 +10,7 @@ import github.moriyoshi.comminiplugin.game.battleroyale.items.InvisibleCloakItem
 import github.moriyoshi.comminiplugin.game.battleroyale.items.MagicMirrorItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.PhoenixFeatherItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.RecallClockItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.ScannerCompassItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.ShockWaveItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.SpeedBootsItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.StormBringerItem;
@@ -313,8 +314,7 @@ public class BRField {
                     .add(new Entry(10, () -> new MagicMirrorItem().getItem()))
                     .add(new Entry(10, () -> new HKPRItem().getItem()))
                     .add(new Entry(10, () -> new ItemStack(Material.TOTEM_OF_UNDYING)))
-                    // TODO: 実装したら追加
-                    // .add(new Entry(10, () -> new ScannerCompassItem().getItem()))
+                    .add(new Entry(10, () -> new ScannerCompassItem().getItem()))
                     .add(new Entry(10, () -> new PhoenixFeatherItem().getItem()))
                     .add(new Entry(10, () -> new StormBringerItem().getItem()))
                     .add(new Entry(10, () -> new ItemStack(Material.ENCHANTED_GOLDEN_APPLE)))

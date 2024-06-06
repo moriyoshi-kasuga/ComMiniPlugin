@@ -7,19 +7,21 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-public class CurryBreadItem extends CustomItem {
-  public CurryBreadItem() {
+public class HealRingItem extends CustomItem {
+  public HealRingItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
-            .name("<#8B4513>カレーパン")
-            .lore("<gray>体力を3ハート回復")
-            .customModelData(17)
+            .name("<green>治癒の腕輪")
+            .lore("<gray>使用すると、しばらく体力自動回復が付与される")
+            .customModelData(25)
             .build());
   }
 
-  public CurryBreadItem(@NotNull ItemStack item) {
+  public HealRingItem(@NotNull ItemStack item) {
     super(item);
   }
 
@@ -30,12 +32,7 @@ public class CurryBreadItem extends CustomItem {
     }
     useItemAmount();
     val player = e.getPlayer();
-    player.heal(3);
-    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);
-  }
-
-  @Override
-  public boolean canStack() {
-    return true;
+    player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 20, 0));
+    player.getWorld().playSound(player.getLocation(), Sound.BLOCK_TRIAL_SPAWNER_OPEN_SHUTTER, 1, 1);
   }
 }

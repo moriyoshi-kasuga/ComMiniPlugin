@@ -34,7 +34,7 @@ public class PhoenixFeatherItem extends CustomItem implements PlayerCooldownItem
     if (inCooldown(player.getUniqueId())) {
       return;
     }
-    itemUse();
+    useItemAmount();
     setCooldown(90 * 20, player.getUniqueId());
     player.heal(300);
     val loc = e.getPlayer().getLocation();

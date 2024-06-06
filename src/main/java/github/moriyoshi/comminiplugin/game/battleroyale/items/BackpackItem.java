@@ -28,7 +28,7 @@ public class BackpackItem extends CustomItem {
     if (e.getAction().isLeftClick()) {
       return;
     }
-    itemUse();
+    useItemAmount();
     val inv = e.getPlayer().getInventory();
     for (int row = 3; row >= 0; row--) {
       for (int column = 0; column < 9; column++) {

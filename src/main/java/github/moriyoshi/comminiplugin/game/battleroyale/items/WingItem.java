@@ -61,7 +61,7 @@ public class WingItem extends CustomItem {
     if (e.getAction().isLeftClick()) {
       return;
     }
-    itemUse();
+    useItemAmount();
     val player = e.getPlayer();
     JumpPadBlock.setVelocity(player, player.getVelocity().setY(2), JUMP_STATE.FREE);
     setWing(player);

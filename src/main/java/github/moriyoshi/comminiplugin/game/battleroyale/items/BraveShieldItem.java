@@ -37,7 +37,7 @@ public class BraveShieldItem extends CustomItem implements CooldownItem {
     }
     val rest = (double) getCooldown() / 10.0 - e.getDamage();
     if (0 >= rest) {
-      itemUse();
+      useItemAmount();
       player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 2, 1);
       return;
     }

@@ -33,7 +33,7 @@ public class ShockWaveItem extends CustomItem {
     val player = e.getPlayer();
     val loc = player.getLocation();
     val world = loc.getWorld();
-    itemUse();
+    useItemAmount();
     if (e.getAction().isLeftClick()) {
       val vec = loc.toVector();
       loc.getNearbyPlayers(15, p -> !player.equals(p))
