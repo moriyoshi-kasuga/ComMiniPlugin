@@ -21,13 +21,13 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
+public class ListMenu<T, Impl extends ListMenu<T, Impl>> extends PageMenu<ComMiniPlugin> {
   protected final ItemStack goToFirstPage =
       new ItemBuilder(Material.ENDER_PEARL).name("<green>最初のページにもどる").build();
   protected final String title;
   protected final List<T> rewards;
   protected final int rewardStartIndex, rewardEndIndex;
-  protected final Function<T, MenuButton<MenuHolder<ComMiniPlugin>>> function;
+  protected Function<T, MenuButton<MenuHolder<ComMiniPlugin>>> function;
 
   public ListMenu(
       String title,
@@ -44,6 +44,11 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
         function);
   }
 
+  public ListMenu(String title, int pageSize, List<T> rewards) {
+    this(
+        ComMiniPlugin.getPlugin(), title, pageSize, rewards, 0, Math.min(rewards.size(), pageSize));
+  }
+
   public ListMenu(
       ComMiniPlugin plugin,
       String title,
@@ -58,6 +63,20 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
     this.rewardStartIndex = rewardStartIndex;
     this.rewardEndIndex = rewardEndIndex;
     this.function = function;
+  }
+
+  public ListMenu(
+      ComMiniPlugin plugin,
+      String title,
+      int pageSize,
+      List<T> rewards,
+      int rewardStartIndex,
+      int rewardEndIndex) {
+    super(plugin, new MenuHolder<>(plugin, pageSize), title, null, null);
+    this.title = title;
+    this.rewards = rewards;
+    this.rewardStartIndex = rewardStartIndex;
+    this.rewardEndIndex = rewardEndIndex;
   }
 
   @SuppressWarnings("unchecked")
@@ -120,12 +139,12 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
     return Optional.empty();
   }
 
-  public ListMenu<T> getNewRewadsMenu(List<T> list) {
+  public Impl getNewRewadsMenu(List<T> list) {
     return getNewMenu(list, 0, Math.min(list.size(), getPageSize()));
   }
 
   @NotNull
-  public Optional<Supplier<ListMenu<T>>> getDefaultMenu() {
+  public Optional<Supplier<Impl>> getDefaultMenu() {
     return Optional.empty();
   }
 
@@ -138,7 +157,7 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
   }
 
   @SuppressWarnings("unchecked")
-  public ListMenu<T> getNewMenu(List<T> list, int rewardStartIndex, int rewardEndIndex) {
+  public Impl getNewMenu(List<T> list, int rewardStartIndex, int rewardEndIndex) {
     try {
       val constructor =
           getClass()
@@ -151,8 +170,18 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
                   int.class,
                   Function.class);
       constructor.setAccessible(true);
-      return constructor.newInstance(
-          getPlugin(), title, getPageSize(), list, rewardStartIndex, rewardEndIndex, function);
+      final Impl newMenu =
+          (Impl)
+              constructor.newInstance(
+                  getPlugin(),
+                  title,
+                  getPageSize(),
+                  list,
+                  rewardStartIndex,
+                  rewardEndIndex,
+                  function);
+      newMenu.toNew((Impl) this);
+      return newMenu;
     } catch (InstantiationException
         | IllegalAccessException
         | IllegalArgumentException
@@ -165,7 +194,7 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
   }
 
   @Override
-  public Optional<Supplier<ListMenu<T>>> getNextPageMenu() {
+  public Optional<Supplier<Impl>> getNextPageMenu() {
     // there is a next page if the current range upper bound is smaller than the end
     // of the list
     if (rewardEndIndex < rewards.size()) {
@@ -181,7 +210,7 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
   }
 
   @Override
-  public Optional<Supplier<ListMenu<T>>> getPreviousPageMenu() {
+  public Optional<Supplier<Impl>> getPreviousPageMenu() {
     // there is a previous page if we didn't start 0
     if (rewardStartIndex > 0) {
       return Optional.of(
@@ -194,4 +223,6 @@ public class ListMenu<T> extends PageMenu<ComMiniPlugin> {
       return Optional.empty();
     }
   }
+
+  public void toNew(Impl old) {}
 }

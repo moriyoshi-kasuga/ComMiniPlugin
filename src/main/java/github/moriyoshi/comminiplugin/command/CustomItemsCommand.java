@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomItemsCommand extends CommandAPICommand {
 
-  private static final class CustomItemMenu extends ListMenu<String> {
+  private static final class CustomItemMenu extends ListMenu<String,CustomItemMenu> {
     public CustomItemMenu() {
       super(
           "<green>CustomItems",
@@ -55,7 +55,7 @@ public class CustomItemsCommand extends CommandAPICommand {
     }
 
     @Override
-    public @NotNull Optional<Supplier<ListMenu<String>>> getDefaultMenu() {
+    public @NotNull Optional<Supplier<CustomItemMenu>> getDefaultMenu() {
       return Optional.of(CustomItemMenu::new);
     }
 

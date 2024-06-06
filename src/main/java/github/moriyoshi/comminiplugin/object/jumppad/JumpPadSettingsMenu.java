@@ -8,7 +8,7 @@ import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectItemButton;
-import github.moriyoshi.comminiplugin.dependencies.ui.button.ToggleButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.SwitchButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ItemInputMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ListMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
@@ -32,7 +32,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
@@ -45,25 +44,18 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
     super(ComMiniPlugin.getPlugin(), 27, "<red>Settings Jump Pad");
     setButton(
         26,
-        new ToggleButton<>(
+        new SwitchButton<>(
             new ItemBuilder(Material.NETHER_STAR)
                 .name("<green>繋がっているジャンプパッド全てに適用中")
                 .lore("<gray>クリックで切り替え")
                 .build(),
+            new ItemBuilder(Material.NETHER_STAR)
+                .name("<red>個別に適用中")
+                .lore("<gray>クリックで切り替え")
+                .build(),
             isIncludeLinked) {
-
           @Override
-          protected ItemStack enable(ItemStack stack) {
-            return new ItemBuilder(getIcon()).name("<green>繋がっているジャンプパッド全てに適用中").build();
-          }
-
-          @Override
-          protected ItemStack disable(ItemStack stack) {
-            return new ItemBuilder(getIcon()).name("<red>個別に適用中").build();
-          }
-
-          @Override
-          public void afterToggle(MenuHolder<?> menuHolder, InventoryClickEvent event) {
+          public void afterChange(MenuHolder<?> holder, InventoryClickEvent event) {
             isIncludeLinked = !isIncludeLinked;
           }
         });
@@ -96,9 +88,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                               },
                               isIncludeLinked);
                         },
-                        (item, e) ->
-                            e.getWhoClicked()
-                                .openInventory(JumpPadSettingsMenu.this.getInventory()))
+                        (item, e) -> JumpPadSettingsMenu.this.openInv(e.getWhoClicked()))
                     .getInventory()));
 
     setButton(
@@ -323,7 +313,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
     setConsumer(jumpPadBlock, jumppadConsumer, isIncludeLinked);
   }
 
-  public static final class SelectSound extends ListMenu<Sound> {
+  public static final class SelectSound extends ListMenu<Sound, SelectSound> {
 
     private JumpPadBlock jumpPadBlock;
     private boolean isIncludeLinked;
@@ -363,7 +353,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
     }
 
     @Override
-    public @NotNull Optional<Supplier<ListMenu<Sound>>> getDefaultMenu() {
+    public @NotNull Optional<Supplier<SelectSound>> getDefaultMenu() {
       return Optional.of(() -> new SelectSound(jumpPadBlock, isIncludeLinked));
     }
 

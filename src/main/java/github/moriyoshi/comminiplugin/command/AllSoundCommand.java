@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
+import github.moriyoshi.comminiplugin.dependencies.ui.button.SwitchButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ListMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
@@ -66,13 +67,13 @@ public class AllSoundCommand extends CommandAPICommand {
     };
   }
 
-  public static final class AllSoundMenu extends ListMenu<Sound> {
+  public static final class AllSoundMenu extends ListMenu<Sound, AllSoundMenu> {
+
+    private boolean isSelf = true;
 
     public AllSoundMenu() {
-      super(
-          "<green>Sounds",
-          45,
-          Arrays.asList(Sound.values()),
+      super("<green>Sounds", 45, Arrays.asList(Sound.values()));
+      this.function =
           (sound) -> {
             val m = getMaterial(sound);
             return new ItemButton<>(
@@ -85,10 +86,14 @@ public class AllSoundCommand extends CommandAPICommand {
                   @NotNull final MenuHolder<ComMiniPlugin> holder,
                   @NotNull final InventoryClickEvent event) {
                 val p = ((Player) event.getWhoClicked());
-                p.playSound(event.getWhoClicked().getLocation(), sound, 1, 1);
+                if (isSelf) {
+                  p.playSound(event.getWhoClicked().getLocation(), sound, 1, 1);
+                } else {
+                  p.getWorld().playSound(event.getWhoClicked().getLocation(), sound, 1, 1);
+                }
               }
             };
-          });
+          };
     }
 
     public AllSoundMenu(
@@ -105,18 +110,35 @@ public class AllSoundCommand extends CommandAPICommand {
     @Override
     public void onOpen(org.bukkit.event.inventory.InventoryOpenEvent event) {
       setButton(
-          49,
+          48,
           new ItemButton<>(new ItemBuilder(Material.BUCKET).name("<gray>音を消す").build()) {
             @Override
             public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent e) {
               e.getWhoClicked().stopSound(SoundStop.all());
             }
           });
+      setButton(
+          50,
+          new SwitchButton<>(
+              new ItemBuilder(Material.NETHER_STAR)
+                  .name("<red>自分のみに聞かせています")
+                  .lore("<gray>クリックで切り替え")
+                  .build(),
+              new ItemBuilder(Material.NETHER_STAR)
+                  .name("<green>近くのプレイヤーに聞かせています")
+                  .lore("<gray>クリックで切り替え")
+                  .build(),
+              isSelf) {
+            @Override
+            public void afterChange(MenuHolder<?> holder, InventoryClickEvent event) {
+              isSelf = !isSelf;
+            }
+          });
       super.onOpen(event);
     }
 
     @Override
-    public @NotNull Optional<Supplier<ListMenu<Sound>>> getDefaultMenu() {
+    public @NotNull Optional<Supplier<AllSoundMenu>> getDefaultMenu() {
       return Optional.of(AllSoundMenu::new);
     }
 
@@ -129,6 +151,11 @@ public class AllSoundCommand extends CommandAPICommand {
                 .filter(sound -> sound.name().contains(upper))
                 .toList();
           });
+    }
+
+    @Override
+    public void toNew(AllSoundMenu old) {
+      this.isSelf = old.isSelf;
     }
   }
 
