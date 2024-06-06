@@ -12,15 +12,15 @@ public class Entry {
   public final double weight;
   public final BooleanSupplier condition;
 
-  @Getter private boolean isDuplicate = false;
+  @Getter private boolean isDuplicatable = false;
 
-  public Entry setDuplicate(boolean isDuplicate) {
-    this.isDuplicate = isDuplicate;
+  public Entry setDuplicatable(boolean isDuplicatable) {
+    this.isDuplicatable = isDuplicatable;
     return this;
   }
 
   public Entry enableDuplicate() {
-    this.isDuplicate = true;
+    this.isDuplicatable = true;
     return this;
   }
 

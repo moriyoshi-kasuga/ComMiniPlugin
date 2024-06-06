@@ -72,7 +72,7 @@ public class Pool {
     entries.forEach(entry -> random.add(entry.weight, entry));
     for (int i = 0; i < (rolls + bonusRolls.apply(r)); i++) {
       val entry = random.next();
-      if (!entry.isDuplicate()) {
+      if (!entry.isDuplicatable()) {
         random.remove(entry);
       }
       val item = entry.supplier.get();
