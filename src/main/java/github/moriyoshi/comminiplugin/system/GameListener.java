@@ -103,14 +103,19 @@ public class GameListener implements Listener {
         .filter(
             player ->
                 !player.equals(p) && ComMiniPlayer.getPlayer(player.getUniqueId()).isJoinGame())
-        .forEach(
-            player -> ((CraftPlayer) p).getHandle().connection.send(packet));
+        .forEach(player -> ((CraftPlayer) p).getHandle().connection.send(packet));
     if (GameSystem.isIn()
         && GameSystem.getGame().isGamePlayer(p, PlayerJoinEvent.class)
         && GameSystem.getGame().listener.join(e)) {
       return;
     }
-    GameSystem.initializePlayer(p);
+    new BukkitRunnable() {
+
+      @Override
+      public void run() {
+        GameSystem.initializePlayer(e.getPlayer());
+      }
+    }.runTask(ComMiniPlugin.getPlugin());
   }
 
   @EventHandler
@@ -157,9 +162,8 @@ public class GameListener implements Listener {
     }
 
     if (GameSystem.isStarted()
-        && (!(e.getDamager() instanceof Player player) || isGamePlayer(player,
-        EntityDamageByEntityEvent.class
-    ))) {
+        && (!(e.getDamager() instanceof Player player)
+            || isGamePlayer(player, EntityDamageByEntityEvent.class))) {
       GameSystem.getGame().listener.damageByEntity(e);
       return;
     }

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.val;
 import net.wesjd.anvilgui.AnvilGUI.ResponseAction;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -29,6 +30,19 @@ public class TestItem extends CustomItem {
   @Override
   public void interact(PlayerInteractEvent e) {
     e.setCancelled(true);
+    val player = e.getPlayer();
+    Bukkit.getOnlinePlayers()
+        .forEach(
+            p -> {
+              if (p.equals(player)) {
+                return;
+              }
+              try {
+                ComMiniPlugin.getGlowingEntities().setGlowing(e.getPlayer(), p);
+              } catch (ReflectiveOperationException e1) {
+                e1.printStackTrace();
+              }
+            });
   }
 
   private void treasure(PlayerInteractEvent e) {

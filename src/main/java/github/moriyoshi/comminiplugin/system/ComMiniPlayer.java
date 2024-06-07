@@ -86,8 +86,7 @@ public final class ComMiniPlayer extends JsonAPI {
   }
 
   public void setHideNameTag(final boolean isHideNameTag) {
-    val player = Bukkit.getOfflinePlayer(this.uuid);
-    val name = player.getName();
+    val name = Bukkit.getOfflinePlayer(this.uuid).getName();
     if (name == null) {
       return;
     }

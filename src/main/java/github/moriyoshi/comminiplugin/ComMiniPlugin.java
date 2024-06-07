@@ -129,9 +129,7 @@ public final class ComMiniPlugin extends JavaPlugin {
   @Override
   public void onDisable() {
     ComMiniPlayer.save();
-    if (GameSystem.isIn()) {
-      GameSystem.finalGame();
-    }
+    GameSystem.finalGame();
     CustomBlockData.getInstance().saveFile();
     CommandAPI.onDisable();
     LocationsCommands.getManager().saveFile();
