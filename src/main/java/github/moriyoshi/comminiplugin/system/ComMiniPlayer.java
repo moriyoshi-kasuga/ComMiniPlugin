@@ -46,12 +46,9 @@ public final class ComMiniPlayer extends JsonAPI {
   }
 
   public static void gameInitialize() {
-    final Scoreboard score = Bukkit.getScoreboardManager().getMainScoreboard();
+    final Scoreboard score = Bukkit.getScoreboardManager().getNewScoreboard();
 
-    Team t = score.getTeam("hidenametag");
-    if (t == null) {
-      t = score.registerNewTeam("hidenametag");
-    }
+    val t = score.registerNewTeam("commini_hidenametag");
     t.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
     hidenametag = t;
   }

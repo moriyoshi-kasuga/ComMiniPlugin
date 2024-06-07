@@ -69,7 +69,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     this.mode = mode;
     prefix.cast("<red>Modeが<u>" + mode.name() + "</u>に変わりました");
     prefix.cast("<gray>ゲームをしたい人はもう一度参加ボタンを押してください");
-    runPlayers(player -> GameSystem.initializePlayer(player));
+    runPlayers(GameSystem::initializePlayer);
     players.clear();
   }
 
@@ -371,6 +371,19 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     }
     if (run != null) {
       run.cancel();
+    }
+    if (mode == Mode.TEAM) {
+      val keys = players.keySet().stream().map(Bukkit::getPlayer).toList();
+      for (val current : keys) {
+        for (val another : keys) {
+          if (!current.equals(another)) {
+            try {
+              ComMiniPlugin.getGlowingEntities().unsetGlowing(another, current);
+            } catch (ReflectiveOperationException ignored) {
+            }
+          }
+        }
+      }
     }
     players.clear();
   }

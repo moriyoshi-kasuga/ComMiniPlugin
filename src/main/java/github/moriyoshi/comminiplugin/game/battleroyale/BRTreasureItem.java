@@ -76,7 +76,7 @@ public class BRTreasureItem extends CustomItem {
               player,
               "<red>treasure values: "
                   + values.stream()
-                      .map(p -> String.valueOf(p.getFirst()) + "lv")
+                      .map(p -> p.getFirst() + "lv")
                       .collect(Collectors.joining(",")));
           return;
         }

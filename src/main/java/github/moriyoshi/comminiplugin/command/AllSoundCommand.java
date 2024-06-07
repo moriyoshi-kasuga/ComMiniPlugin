@@ -24,20 +24,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class AllSoundCommand extends CommandAPICommand {
 
-  public AllSoundCommand() {
-    super("allsound");
-    executesPlayer(
-        (p, args) -> {
-          new AllSoundMenu().openInv(p);
-        });
-  }
-
   // TODO: もっとちゃんとアイテム適用するようにする
   public static Material getMaterial(final Sound sound) {
     final String name = sound.name();
     val materials = Arrays.asList(Material.values());
     val split = new ArrayList<>(Arrays.asList(name.split("_")));
-    val finalName = split.get(1).toLowerCase();
+    val finalName = split.getFirst().toLowerCase();
     return switch (split.removeFirst()) {
       case "AMBIENT" -> Material.STONE;
       case "BLOCK" -> {
@@ -165,5 +157,13 @@ public class AllSoundCommand extends CommandAPICommand {
     public void toNew(AllSoundMenu old) {
       this.isSelf = old.isSelf;
     }
+  }
+
+  public AllSoundCommand() {
+    super("allsound");
+    executesPlayer(
+        (p, args) -> {
+          new AllSoundMenu().openInv(p);
+        });
   }
 }

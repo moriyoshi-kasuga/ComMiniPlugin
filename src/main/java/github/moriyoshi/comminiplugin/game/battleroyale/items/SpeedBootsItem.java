@@ -50,15 +50,6 @@ public class SpeedBootsItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
-    if (e.getAction().isLeftClick()) {
-      return;
-    }
-    if (inCooldown()) {
-    }
-  }
-
-  @Override
   public void shiftItem(PlayerToggleSneakEvent e, @Nullable EquipmentSlot equipmentSlot) {
     if (!e.isSneaking()) {
       return;

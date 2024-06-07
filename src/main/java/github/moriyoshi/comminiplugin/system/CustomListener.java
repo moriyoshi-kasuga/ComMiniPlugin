@@ -200,8 +200,7 @@ public class CustomListener implements Listener {
     val customs =
         items.stream()
             .filter(item -> !(item == null || item.isEmpty()))
-            .map(
-                item -> CustomItem.getCustomItem(item))
+            .map(CustomItem::getCustomItem)
             .filter(Objects::nonNull)
             .toList();
     if (customs.isEmpty()) {

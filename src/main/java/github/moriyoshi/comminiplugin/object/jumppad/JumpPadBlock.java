@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class JumpPadBlock extends CustomBlock {
 
-  private static Map<UUID, Entity> fallingBlocks = new HashMap<>();
+  private static final Map<UUID, Entity> fallingBlocks = new HashMap<>();
   private BukkitRunnable task;
   @Getter @Setter private float angel = 30;
   @Getter @Setter private float direction = -1;
@@ -130,11 +130,7 @@ public class JumpPadBlock extends CustomBlock {
                 });
     ClientboundRemoveEntitiesPacket packet =
         new ClientboundRemoveEntitiesPacket(falling.getEntityId());
-    Bukkit.getOnlinePlayers()
-        .forEach(
-            p -> {
-              ((CraftPlayer) p).getHandle().connection.send(packet);
-            });
+    Bukkit.getOnlinePlayers().forEach(p -> ((CraftPlayer) p).getHandle().connection.send(packet));
 
     fallingBlocks.put(player.getUniqueId(), falling);
     switch (state) {

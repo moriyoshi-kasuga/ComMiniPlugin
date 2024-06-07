@@ -246,7 +246,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         BORDERE_CONTRACTION_TIME,
         signal -> {
           switch (signal) {
-            case SIGNAL.MIN min -> {
+            case SIGNAL.MIN ignored -> {
               new BukkitRunnable() {
 
                 private int temp = BORDERE_BEFORE_MOVE_TIME + 1;
@@ -269,7 +269,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
                 }
               }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
             }
-            case SIGNAL.END end -> {
+            case SIGNAL.END ignored -> {
               new BukkitRunnable() {
 
                 private int temp = BORDERE_INTERVAL + 1;

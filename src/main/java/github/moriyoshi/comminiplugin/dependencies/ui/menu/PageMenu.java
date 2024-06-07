@@ -854,48 +854,6 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P>
                 }
               });
     }
-    // //genius algorithm to delegate drags to the page. does not work unfortunately
-    // because craftbukkit does not
-    // // allow changing the slots for dragged items.
-    // //cancel dragging over the bottom 9 slots of the top inventory - put the
-    // items back onto the cursor
-    // int myPageSize = getPage().getInventory().getSize();
-    // Iterator<Integer> slotIterator = newItems.keySet().stream().filter(i -> i >=
-    // myPageSize && i < myPageSize + 9).iterator();
-    // while (slotIterator.hasNext()) {
-    // Integer slot = slotIterator.next();
-    // ItemStack needsToGoBackToCursor = newItems.remove(slot);
-    // if (newCursor == null) newCursor = needsToGoBackToCursor;
-    // if (newCursor != null) newCursor.setAmount(newCursor.getAmount() +
-    // needsToGoBackToCursor.getAmount()); //assume same Material and ItemMeta
-    // }
-    //
-    // dragEvent.setCursor(newCursor);
-    //
-    // final Map<Integer, ItemStack> proxyItems =
-    // newItems.entrySet().stream().map(entry -> {
-    // Integer slot = entry.getKey();
-    // ItemStack item = entry.getValue();
-    //
-    // //pretend control buttons don't exist in the proxyEvent
-    // //everything in the bottom inventory moves 9 indices up
-    // if (slot > myPageSize) slot = slot - 9;
-    // return Map.entry(slot, item);
-    // }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    // boolean cancel = dragEvent.isCancelled();
-    //
-    // final InventoryDragEvent proxyEvent = new InventoryDragEvent(proxyView,
-    // newCursor, oldCursor, right, proxyItems);
-    //
-    // getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
-    // dragEvent.setCancelled(proxyEvent.isCancelled());
-    //
-    // dragEvent.setCursor(proxyEvent.getCursor());
-    // newItems.clear();
-    // proxyEvent.getNewItems().forEach((slot, item) -> {
-    // if (slot > myPageSize) slot += 9; //skip the page control buttons
-    // newItems.put(slot, item);
-    // });
 
     updateView();
   }

@@ -44,7 +44,7 @@ public class GameListener implements Listener {
       new HashMap<>();
   private static final Map<UUID, BiConsumer<Projectile, EntityDamageByEntityEvent>>
       projectileDamageMap = new HashMap<>();
-  private static Map<UUID, Location> disableMoveLocation = new HashMap<>();
+  private static final Map<UUID, Location> disableMoveLocation = new HashMap<>();
 
   private GameListener() {
     new BukkitRunnable() {

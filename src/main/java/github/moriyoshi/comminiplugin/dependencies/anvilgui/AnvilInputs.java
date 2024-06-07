@@ -34,7 +34,7 @@ public class AnvilInputs {
       @NotNull BiFunction<T, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
     return getInput(
         plugin,
-        title, toClazz::apply,
+        title, toClazz,
         (s, state) -> Collections.emptyList(),
         func);
   }

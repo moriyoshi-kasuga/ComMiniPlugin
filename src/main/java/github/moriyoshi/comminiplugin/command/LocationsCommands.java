@@ -40,7 +40,6 @@ public class LocationsCommands extends JsonAPI {
             dataElement, new TypeToken<Map<String, Location>>() {}.getType());
   }
 
-
   private static class PutLocCommand extends CommandAPICommand {
     public PutLocCommand() {
       super("putloc");
@@ -59,7 +58,6 @@ public class LocationsCommands extends JsonAPI {
     }
   }
 
-
   private static class MvLocCommand extends CommandAPICommand {
     @SuppressWarnings("unchecked")
     public MvLocCommand() {
@@ -75,7 +73,7 @@ public class LocationsCommands extends JsonAPI {
       withOptionalArguments(new EntitySelectorArgument.ManyPlayers("players"));
       executesPlayer(
           (p, args) -> {
-            val loc = getManager().locations.get(args.get("name"));
+            val loc = getManager().locations.get((String) args.get("name"));
             if (loc == null) {
               ComMiniPrefix.SYSTEM.send(p, "<red>その名前のlocはありません");
               return;
@@ -88,7 +86,6 @@ public class LocationsCommands extends JsonAPI {
           });
     }
   }
-
 
   private static class DelLocCommand extends CommandAPICommand {
     public DelLocCommand() {
@@ -103,13 +100,12 @@ public class LocationsCommands extends JsonAPI {
                               () -> getManager().locations.keySet().toArray(String[]::new)))));
       executesPlayer(
           (p, args) -> {
-            if (getManager().locations.remove(args.get("name")) == null) {
+            if (getManager().locations.remove((String) args.get("name")) == null) {
               ComMiniPrefix.SYSTEM.send(p, "<red>その名前のlocはありません");
             }
           });
     }
   }
-
 
   private static class ListLocCommand extends CommandAPICommand {
     public ListLocCommand() {

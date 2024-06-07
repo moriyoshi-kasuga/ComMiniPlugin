@@ -54,33 +54,28 @@ public class ScannerCompassItem extends CustomItem implements CoolityItem {
               useItemDurability();
               setCooldown(10 * 20);
               val base = player.getLocation();
-              val first = field.getTreasure().getLocations().keySet().stream().filter(loc -> {
-                return CustomBlock.isCustomBlock(loc, TreasureChest.class);
-              }).min((l1, l2) -> {
-                val loc1 = l1.distanceSquared(base);
-                val loc2 = l2.distanceSquared(base);
-                if (loc1 == loc2) {
-                  return 0;
-                } else if (loc1 < loc2) {
-                  return -1;
-                } else {
-                  return 1;
-                }
-              });
+              val first =
+                  field.getTreasure().getLocations().keySet().stream()
+                      .filter(loc -> CustomBlock.isCustomBlock(loc, TreasureChest.class))
+                      .min(
+                          (l1, l2) -> {
+                            val loc1 = l1.distanceSquared(base);
+                            val loc2 = l2.distanceSquared(base);
+                            return Double.compare(loc1, loc2);
+                          });
               first.ifPresentOrElse(
-                  loc -> new ItemBuilder(getItem())
-                      .customModelData(
-                          CustomBlock.getCustomBlock(loc, TreasureChest.class).getLevel())
-                      .changeMeta(
-                          (Consumer<CompassMeta>)
-                              meta -> {
-                                meta.setLodestone(loc);
-                                meta.setLodestoneTracked(false);
-                              }),
-                  () -> GameSystem.getGame(BRGame.class).prefix.send(player, "<red>宝箱が見つかりません")
-              );
+                  loc ->
+                      new ItemBuilder(getItem())
+                          .customModelData(
+                              CustomBlock.getCustomBlock(loc, TreasureChest.class).getLevel())
+                          .changeMeta(
+                              (Consumer<CompassMeta>)
+                                  meta -> {
+                                    meta.setLodestone(loc);
+                                    meta.setLodestoneTracked(false);
+                                  }),
+                  () -> GameSystem.getGame(BRGame.class).prefix.send(player, "<red>宝箱が見つかりません"));
             },
-            () -> Messages.GAME_NOT_START.send(player)
-        );
+            () -> Messages.GAME_NOT_START.send(player));
   }
 }

@@ -28,26 +28,20 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("deprecation")
 public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>>> {
 
-  private int level = 1;
+  private final int level = 1;
 
   public TreasureLocation(String name) {
     super(ComMiniPlugin.getPlugin(), "br/treasure", name);
-    getLocations()
-        .keySet()
-        .forEach(
-            loc -> loc.getBlock().setType(Material.BEDROCK));
+    getLocations().keySet().forEach(loc -> loc.getBlock().setType(Material.BEDROCK));
   }
 
   @Override
   public List<Pair<Integer, Integer>> loadLocData(JsonElement element) {
     return element.getAsJsonArray().asList().stream()
         .map(
-            e -> {
-              final Pair<Integer, Integer> value =
-                  ComMiniPlugin.gson.fromJson(
-                      e, new TypeToken<Pair<Integer, Integer>>() {}.getType());
-              return value;
-            })
+            e ->
+                ComMiniPlugin.gson.<Pair<Integer, Integer>>fromJson(
+                    e, new TypeToken<Pair<Integer, Integer>>() {}.getType()))
         .toList();
   }
 
@@ -107,7 +101,7 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
   }
 
   private Optional<List<Pair<Integer, Integer>>> checkData(List<Pair<Integer, Integer>> list) {
-    val keys = list.stream().map(p -> p.getFirst()).toList();
+    val keys = list.stream().map(Pair::getFirst).toList();
     if (Collections.max(keys) > 5) {
       return Optional.empty();
     }
@@ -120,7 +114,7 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
   @Override
   public ChatColor getColor(Location location) {
     return switch (Collections.max(
-        getLocations().get(location).stream().map(p -> p.getFirst()).toList())) {
+        getLocations().get(location).stream().map(Pair::getFirst).toList())) {
       case 5 -> ChatColor.DARK_PURPLE;
       case 4 -> ChatColor.GREEN;
       case 3 -> ChatColor.AQUA;

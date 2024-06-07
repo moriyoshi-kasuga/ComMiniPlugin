@@ -39,18 +39,14 @@ public class HKPRItem extends CustomItem {
     useItemAmount();
     val game = GameSystem.getGame(BRGame.class);
     val loc = player.getLocation();
-    Bukkit.getOnlinePlayers().stream().filter(p -> !player.equals(p) && game.isPlayingPlayer(p))
-        .min((p1, p2) -> {
-          val loc1 = p1.getLocation().distanceSquared(loc);
-          val loc2 = p2.getLocation().distanceSquared(loc);
-          if (loc1 == loc2) {
-            return 0;
-          } else if (loc1 < loc2) {
-            return -1;
-          } else {
-            return 1;
-          }
-        })
+    Bukkit.getOnlinePlayers().stream()
+        .filter(p -> !player.equals(p) && game.isPlayingPlayer(p))
+        .min(
+            (p1, p2) -> {
+              val loc1 = p1.getLocation().distanceSquared(loc);
+              val loc2 = p2.getLocation().distanceSquared(loc);
+              return Double.compare(loc1, loc2);
+            })
         .ifPresentOrElse(
             p -> {
               player.teleport(p.getLocation());
@@ -58,7 +54,6 @@ public class HKPRItem extends CustomItem {
               p.teleport(loc);
               game.prefix.send(p, "<yellow>HKPR で 他のプレイヤーと入れ替わりました!");
             },
-            () -> game.prefix.send(player, "<red>他にプレイヤーはいません")
-        );
+            () -> game.prefix.send(player, "<red>他にプレイヤーはいません"));
   }
 }
