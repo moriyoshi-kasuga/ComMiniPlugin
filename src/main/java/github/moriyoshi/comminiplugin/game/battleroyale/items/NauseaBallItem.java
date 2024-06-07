@@ -2,7 +2,6 @@ package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.GameListener;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
 import org.bukkit.Color;
@@ -16,18 +15,18 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class TinglyBallItem extends CustomItem {
+public class NauseaBallItem extends CustomItem {
 
-  public TinglyBallItem() {
+  public NauseaBallItem() {
     this(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
-            .name("<yellow>ビリビリ玉")
-            .lore("<gray>あたった敵が2秒間動けなくなる", "<red>自分に当たらないように注意!")
-            .customModelData(12)
+            .name("<#8BD376>酔玉(よいだま)")
+            .lore("<gray>あたった敵は20秒間吐き気状態になる", "<red>自分に当たらないように注意!")
+            .customModelData(27)
             .build());
   }
 
-  public TinglyBallItem(@NotNull ItemStack item) {
+  public NauseaBallItem(@NotNull ItemStack item) {
     super(item);
   }
 
@@ -42,15 +41,14 @@ public class TinglyBallItem extends CustomItem {
         player.launchProjectile(
             Snowball.class,
             player.getLocation().getDirection().multiply(3),
-            snowball -> snowball.setItem(
-                new ItemBuilder(Material.PHANTOM_MEMBRANE).customModelData(12).build())
-        );
+            snowball ->
+                snowball.setItem(
+                    new ItemBuilder(Material.PHANTOM_MEMBRANE).customModelData(27).build()));
     GameListener.addProjectileHitListener(
         projectile.getUniqueId(),
         (entity, event) -> {
           val loc = entity.getLocation();
-          loc.getWorld()
-              .playSound(loc, Sound.ENTITY_FIREWORK_ROCKET_BLAST, SoundCategory.MASTER, 3, 1);
+          loc.getWorld().playSound(loc, Sound.BLOCK_SCULK_VEIN_STEP, SoundCategory.MASTER, 3, 1);
           loc.getWorld()
               .spawnParticle(
                   Particle.DUST,
@@ -60,11 +58,12 @@ public class TinglyBallItem extends CustomItem {
                   1.5,
                   1.5,
                   1,
-                  new Particle.DustOptions(Color.fromRGB(0xF9F451), 4),
+                  new Particle.DustOptions(Color.fromRGB(0x8BD376), 4),
                   true);
+          val nause =
+              new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.NAUSEA, 20, 0);
           loc.getNearbyPlayers(3, p -> p.getGameMode() != GameMode.SPECTATOR)
-              .forEach(
-                  p -> BukkitUtil.disableMove(p, 40));
+              .forEach(p -> p.addPotionEffect(nause));
         });
   }
 
