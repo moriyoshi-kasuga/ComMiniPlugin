@@ -6,13 +6,17 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.Util;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
 import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.block.data.type.Gate;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -20,14 +24,13 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
-import org.bukkit.util.Vector;
+import org.bukkit.util.RayTraceResult;
 
 public class SSSniper extends CustomItem implements CooldownItem {
 
   private static final Component DEFAULT_NAME = Util.mm("<blue>スナイパー");
-  private static final Vector EYE_SIZE = new Vector(0.3, 0.3, 0.3);
-  private static final Vector BULLET_SIZE = new Vector(0.1, 0.1, 0.1);
-  private static final int MAX_LENGTH = 1000;
+  private static final double NEW_BULLET_SIZE = 0.1;
+  private static final int MAX_LENGTH = 100;
   private static final int DEFAULT_COOLDOWN_TICK = 40;
 
   public SSSniper() {
@@ -47,76 +50,90 @@ public class SSSniper extends CustomItem implements CooldownItem {
   @Override
   public void swapToOffHand(final PlayerSwapHandItemsEvent e) {
     e.setCancelled(true);
-    val p = e.getPlayer();
-    val eyeLoc = p.getEyeLocation();
+    val player = e.getPlayer();
+    val eyeLoc = player.getEyeLocation();
     if (inCooldown()) {
-      p.playSound(eyeLoc, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
+      player.playSound(eyeLoc, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
       return;
     }
-    val optBullet = SSBullet.getFirstBullet(p);
+    val optBullet = SSBullet.getFirstBullet(player);
     if (optBullet.isEmpty()) {
-      p.playSound(eyeLoc, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
+      player.playSound(eyeLoc, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
       return;
     }
     val bullet = optBullet.get();
-    bullet.use(p);
+    bullet.use(player);
     setCooldown(DEFAULT_COOLDOWN_TICK);
     val world = eyeLoc.getWorld();
-    val vec = eyeLoc.getDirection().normalize().multiply(0.1);
-    val loc = eyeLoc.clone();
-    val already = new HashMap<LivingEntity, Boolean>();
-    for (int i = 1; i < MAX_LENGTH; i += 1) {
-      loc.add(vec);
-      val v = loc.toVector();
-      val block = loc.getBlock();
-      if (block.isCollidable() && block.getBoundingBox().contains(v)) {
+    val eyeVec = eyeLoc.toVector();
+
+    double effectRange = -1;
+    RayTraceResult result;
+    val already = new HashSet<UUID>();
+    while ((result =
+            world.rayTrace(
+                eyeLoc,
+                eyeLoc.getDirection(),
+                MAX_LENGTH,
+                FluidCollisionMode.NEVER,
+                true,
+                NEW_BULLET_SIZE,
+                entity -> {
+                  if (entity.equals(player)) {
+                    return false;
+                  }
+                  if (entity instanceof org.bukkit.entity.Minecart
+                      || entity instanceof org.bukkit.entity.Boat) {
+                    entity.remove();
+                    return false;
+                  }
+                  if (entity instanceof ArmorStand) {
+                    return false;
+                  }
+                  if (entity instanceof LivingEntity && !already.contains(entity.getUniqueId())) {
+                    return true;
+                  }
+                  return false;
+                },
+                block -> {
+                  if (block.getBlockData() instanceof Gate gate) {
+                    return !gate.isOpen();
+                  }
+                  return true;
+                }))
+        != null) {
+      if (result.getHitBlock() != null) {
+        effectRange = Math.max(effectRange, eyeVec.distance(result.getHitPosition()));
         break;
       }
-      if (i % 5 == 0) {
-        world.spawnParticle(Particle.WAX_OFF, loc, 1, 0, 0, 0, 1, null, true);
+      LivingEntity entity = (LivingEntity) result.getHitEntity();
+      if (entity == null) {
+        break;
       }
-      loc.getNearbyEntities(1, 1, 1)
-          .forEach(
-              entity -> {
-                if (!p.equals(entity)
-                    && entity
-                        .getBoundingBox()
-                        .overlaps(v.clone().add(BULLET_SIZE), v.clone().subtract(BULLET_SIZE))) {
-                  if (!(entity instanceof final LivingEntity living)) {
-                    if (entity instanceof org.bukkit.entity.Minecart
-                        || entity instanceof org.bukkit.entity.Boat) {
-                      entity.remove();
-                    }
-                    return;
-                  }
-                  if (already.getOrDefault(living, false)) {
-                    return;
-                  }
-                  val eye = living.getEyeLocation().toVector();
-                  val min = eye.clone().subtract(EYE_SIZE);
-                  val max = eye.clone().add(EYE_SIZE);
-                  val isHeadShot = BoundingBox.of(min, max).contains(v);
-                  already.put(living, isHeadShot);
-                }
-              });
+      already.add(entity.getUniqueId());
+      val hit = result.getHitPosition();
+      val isHeadShot =
+          BoundingBox.of(hit, hit)
+              // HEAD SIZE
+              .expand(0.41, 0.3, 0.41)
+              .contains(entity.getEyeLocation().toVector());
+      entity.damage(isHeadShot ? bullet.getHeadShot() : bullet.getDamage(), player);
+      player.playSound(
+          eyeLoc,
+          isHeadShot ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP : Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE,
+          1,
+          1);
     }
-    already.forEach(
-        (entity, isHeadShot) -> {
-          entity.damage(isHeadShot ? bullet.getHeadShot() : bullet.getDamage(), p);
-          p.playSound(
-              eyeLoc,
-              isHeadShot
-                  ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP
-                  : Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE,
-              1,
-              1);
-        });
-    p.getInventory().setItemInMainHand(new ItemBuilder(getItem()).type(Material.CLOCK).build());
+    val dir = eyeLoc.getDirection().multiply(0.5);
+    for (int i = 1; i < (effectRange == -1 ? MAX_LENGTH : effectRange) * 2; i += 1) {
+      eyeLoc.add(dir);
+      world.spawnParticle(Particle.WAX_OFF, eyeLoc, 1, 0, 0, 0, 1, null, true);
+    }
+    new ItemBuilder(getItem()).type(Material.CLOCK);
   }
 
   @Override
   public void heldOfThis(final PlayerItemHeldEvent e) {
-    super.heldOfThis(e);
     final Player player = e.getPlayer();
     player.getWorld().playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_DIAMOND, 2, 1);
   }
