@@ -17,11 +17,11 @@ import github.moriyoshi.comminiplugin.dependencies.glowing.GlowingBlocks;
 import github.moriyoshi.comminiplugin.dependencies.glowing.GlowingEntities;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiListener;
 import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.CustomListener;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ReflectionUtil;
 import java.lang.reflect.InvocationTargetException;
 import lombok.Getter;
@@ -138,7 +138,7 @@ public final class ComMiniPlugin extends JavaPlugin {
     HandlerList.unregisterAll(GameListener.getInstance());
     HandlerList.unregisterAll(CustomListener.getInstance());
 
-    JumpPadBlock.clear();
+    BukkitUtil.clear();
 
     glowingEntities.disable();
     glowingBlocks.disable();

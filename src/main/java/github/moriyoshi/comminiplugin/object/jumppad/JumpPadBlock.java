@@ -5,36 +5,28 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.util.JumpState;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.tuple.Pair;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.UUID;
 import java.util.stream.IntStream;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public class JumpPadBlock extends CustomBlock {
 
-  private static final Map<UUID, Entity> fallingBlocks = new HashMap<>();
   private BukkitRunnable task;
   @Getter @Setter private float angel = 30;
   @Getter @Setter private float direction = -1;
@@ -42,7 +34,7 @@ public class JumpPadBlock extends CustomBlock {
   @Getter private Material material = Material.BEDROCK;
   @Getter @Setter private Sound sound = Sound.ENTITY_ENDER_DRAGON_FLAP;
   @Getter @Setter private Particle particle = Particle.HAPPY_VILLAGER;
-  @Getter @Setter private JUMP_STATE state = JUMP_STATE.DOWN;
+  @Getter @Setter private JumpState state = JumpState.DOWN;
 
   public JumpPadBlock(Block block, Player player) {
     super(block, player);
@@ -87,7 +79,7 @@ public class JumpPadBlock extends CustomBlock {
       this.particle = Particle.valueOf(data.get("particle").getAsString());
     }
     this.state =
-        JUMP_STATE.valueOf(
+        JumpState.valueOf(
             Objects.requireNonNullElse(data.get("state"), new JsonPrimitive("DOWN")).getAsString());
     spawn();
   }
@@ -95,93 +87,6 @@ public class JumpPadBlock extends CustomBlock {
   public JumpPadBlock(Block block) {
     super(block);
     spawn();
-  }
-
-  public static void clear() {
-    fallingBlocks
-        .values()
-        .forEach(
-            falling -> {
-              if (!falling.isDead()) {
-                falling.remove();
-              }
-            });
-    fallingBlocks.clear();
-  }
-
-  public static void setVelocity(Player player, Vector velocity, JUMP_STATE state) {
-    val uuid = player.getUniqueId();
-    val temp = fallingBlocks.remove(uuid);
-    if (temp != null) {
-      temp.remove();
-    }
-    val loc = player.getLocation();
-    val falling =
-        loc.getWorld()
-            .spawn(
-                loc,
-                Snowball.class,
-                entity -> {
-                  entity.setInvisible(true);
-                  entity.setInvulnerable(true);
-                  entity.setSilent(true);
-                  entity.setGravity(true);
-                  entity.setVelocity(velocity);
-                });
-    ClientboundRemoveEntitiesPacket packet =
-        new ClientboundRemoveEntitiesPacket(falling.getEntityId());
-    Bukkit.getOnlinePlayers().forEach(p -> ((CraftPlayer) p).getHandle().connection.send(packet));
-
-    fallingBlocks.put(player.getUniqueId(), falling);
-    switch (state) {
-      case FREE -> {
-        new BukkitRunnable() {
-
-          private int rest = 3;
-
-          @Override
-          public void run() {
-            if (falling.isDead() || 0 >= --rest) {
-              falling.remove();
-              fallingBlocks.remove(uuid);
-              this.cancel();
-              return;
-            }
-            player.setVelocity(falling.getVelocity());
-          }
-        }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
-      }
-      case DOWN -> {
-        new BukkitRunnable() {
-
-          @Override
-          public void run() {
-            if (falling.isDead() || 0 >= falling.getVelocity().getY()) {
-              falling.remove();
-              fallingBlocks.remove(uuid);
-              this.cancel();
-              return;
-            }
-            player.setVelocity(falling.getVelocity());
-          }
-        }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
-      }
-      case FIXED -> {
-        new BukkitRunnable() {
-
-          @Override
-          public void run() {
-            if (falling.isDead()) {
-              falling.remove();
-              fallingBlocks.remove(uuid);
-              this.cancel();
-              return;
-            }
-            player.setVelocity(falling.getVelocity());
-          }
-        }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
-      }
-    }
   }
 
   public void setMaterial(Material material) {
@@ -218,7 +123,7 @@ public class JumpPadBlock extends CustomBlock {
   @Override
   public void walk(PlayerMoveEvent e) {
     val player = e.getPlayer();
-    if (fallingBlocks.containsKey(player.getUniqueId())) {
+    if (BukkitUtil.isFalling(player.getUniqueId())) {
       return;
     }
     val launchLocation = e.getTo().clone();
@@ -227,7 +132,8 @@ public class JumpPadBlock extends CustomBlock {
     if (direction != -1.0) {
       launchLocation.setYaw(direction);
     }
-    setVelocity(player, launchLocation.getDirection().normalize().multiply(power / 16f), state);
+    BukkitUtil.setVelocity(
+        player, launchLocation.getDirection().normalize().multiply(power / 16f), state);
   }
 
   private void spawn() {
@@ -249,11 +155,5 @@ public class JumpPadBlock extends CustomBlock {
   @Override
   public void clearData() {
     this.task.cancel();
-  }
-
-  public enum JUMP_STATE {
-    FIXED,
-    DOWN,
-    FREE,
   }
 }

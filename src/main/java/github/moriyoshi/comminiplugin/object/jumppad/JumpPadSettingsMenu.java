@@ -13,6 +13,7 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.ItemInputMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ListMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.JumpState;
 import github.moriyoshi.comminiplugin.util.tuple.Pair;
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
 import java.util.Collections;
@@ -257,7 +258,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                         (value, state) -> {
                           try {
                             setConsumer(
-                                block -> block.setState(JumpPadBlock.JUMP_STATE.valueOf(value)),
+                                block -> block.setState(JumpState.valueOf(value)),
                                 isIncludeLinked);
                             return List.of(
                                 AnvilGUI.ResponseAction.openInventory(

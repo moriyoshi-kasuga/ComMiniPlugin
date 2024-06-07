@@ -2,9 +2,9 @@ package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.item.CooldownItem;
 import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
-import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock.JUMP_STATE;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.JumpState;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -37,7 +37,7 @@ public class UpgradeWingItem extends CustomItem implements CooldownItem {
     val player = e.getPlayer();
     val loc = player.getLocation();
     loc.setPitch(-30);
-    JumpPadBlock.setVelocity(player, loc.getDirection().multiply(2).setY(2), JUMP_STATE.FREE);
+    BukkitUtil.setVelocity(player, loc.getDirection().multiply(2).setY(2), JumpState.FREE);
     WingItem.setWing(player);
   }
 }

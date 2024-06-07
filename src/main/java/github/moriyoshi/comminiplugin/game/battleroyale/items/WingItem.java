@@ -3,9 +3,9 @@ package github.moriyoshi.comminiplugin.game.battleroyale.items;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
-import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
-import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock.JUMP_STATE;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.JumpState;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ public class WingItem extends CustomItem {
     }
     useItemAmount();
     val player = e.getPlayer();
-    JumpPadBlock.setVelocity(player, player.getVelocity().setY(2), JUMP_STATE.FREE);
+    BukkitUtil.setVelocity(player, player.getVelocity().setY(2), JumpState.FREE);
     setWing(player);
   }
 

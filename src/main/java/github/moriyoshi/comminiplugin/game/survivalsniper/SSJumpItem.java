@@ -4,10 +4,9 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.item.CooldownItem;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
-import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
-import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock.JUMP_STATE;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.JumpState;
 import github.moriyoshi.comminiplugin.util.Util;
 import lombok.val;
 import net.kyori.adventure.text.Component;
@@ -55,7 +54,7 @@ public class SSJumpItem extends CustomItem implements CooldownItem {
     p.getWorld().playSound(loc, Sound.ITEM_ARMOR_EQUIP_LEATHER, 2, 1);
     setCooldown(DEFAULT_COOLDOWN_TICK);
     p.setFallDistance(0);
-    JumpPadBlock.setVelocity(p, loc.getDirection().multiply(MULTIPLY), JUMP_STATE.FREE);
+    BukkitUtil.setVelocity(p, loc.getDirection().multiply(MULTIPLY), JumpState.FREE);
     new ItemBuilder(getItem()).type(Material.CLOCK);
     new BukkitRunnable() {
 
@@ -90,3 +89,4 @@ public class SSJumpItem extends CustomItem implements CooldownItem {
     return false;
   }
 }
+
