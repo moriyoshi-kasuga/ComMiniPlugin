@@ -2,11 +2,11 @@ package github.moriyoshi.comminiplugin.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
-import dev.jorel.commandapi.arguments.BlockStateArgument;
 import dev.jorel.commandapi.arguments.EnchantmentArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
+import dev.jorel.commandapi.arguments.ItemStackArgument;
 import github.moriyoshi.comminiplugin.util.FormatterUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import org.bukkit.Material;
-import org.bukkit.block.BlockState;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -270,13 +269,13 @@ public class ItemEditCommand extends CommandAPICommand {
                         })));
     withSubcommand(
         new CommandAPICommand("type")
-            .withArguments(new BlockStateArgument("material"))
+            .withArguments(new ItemStackArgument("material"))
             .executesPlayer(
                 (sender, args) -> {
                   itemEdit(
                       sender,
                       builder -> {
-                        final Material material = ((BlockState) args.get("material")).getType();
+                        final Material material = ((ItemStack) args.get("material")).getType();
                         IE.send(
                             sender, FormatterUtil.format(TYPE, Map.of("type", material.name())));
                         return builder.type(material);
