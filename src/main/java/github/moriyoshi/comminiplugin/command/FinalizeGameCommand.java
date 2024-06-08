@@ -3,7 +3,7 @@ package github.moriyoshi.comminiplugin.command;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
 
 public class FinalizeGameCommand extends CommandAPICommand {
 

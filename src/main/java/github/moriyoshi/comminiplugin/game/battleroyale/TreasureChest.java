@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomModelBlock;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Optional;
 import lombok.Getter;
@@ -14,7 +14,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -29,11 +28,6 @@ public class TreasureChest extends CustomModelBlock {
     super(block, face);
     this.level = level;
     spawn();
-  }
-
-  @Override
-  public void interact(PlayerInteractEvent e) {
-    e.setCancelled(false);
   }
 
   @Override

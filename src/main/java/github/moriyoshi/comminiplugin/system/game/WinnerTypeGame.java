@@ -1,7 +1,6 @@
-package github.moriyoshi.comminiplugin.system.gametype;
+package github.moriyoshi.comminiplugin.system.game;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
 import github.moriyoshi.comminiplugin.util.Util;
 import net.kyori.adventure.text.Component;

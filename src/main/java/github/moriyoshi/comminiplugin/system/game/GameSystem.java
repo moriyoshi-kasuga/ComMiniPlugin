@@ -1,29 +1,25 @@
-package github.moriyoshi.comminiplugin.system;
+package github.moriyoshi.comminiplugin.system.game;
 
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRGame;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSGame;
-import github.moriyoshi.comminiplugin.object.MenuItem;
 import java.util.HashMap;
 import java.util.List;
 import lombok.Getter;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 public class GameSystem {
 
-  public static final HashMap<String, AbstractGame> games =
-      new HashMap<>() {
-        {
-          List.of(
-                  // ALl Game
-                  new SSGame(), new BRGame()
-                  // End
-                  )
-              .forEach(g -> put(g.id, g));
-        }
-      };
+  static final HashMap<String, AbstractGame> games = new HashMap<>();
+
+  public static void load() {
+    List.of(
+            // ALl Game
+            new SSGame(), new BRGame()
+            // End
+            )
+        .forEach(g -> games.put(g.id, g));
+  }
 
   @Getter private static AbstractGame game = null;
 
@@ -104,22 +100,5 @@ public class GameSystem {
 
   public static boolean isStarted(Class<? extends AbstractGame> clazz) {
     return isIn() && game.isStarted() && clazz.isAssignableFrom(game.getClass());
-  }
-
-  /**
-   * サーバー参加時やロビーに返す時、ゲーム終了時に使えるメゾット
-   *
-   * @param p target player
-   */
-  public static void initializePlayer(Player p) {
-    ComMiniPlayer.getPlayer(p.getUniqueId()).initialize();
-    p.getInventory().clear();
-    p.getInventory().addItem(new MenuItem().getItem());
-    p.setExperienceLevelAndProgress(0);
-    p.teleport(ComMiniWorld.LOBBY);
-    p.setGameMode(GameMode.SURVIVAL);
-    p.clearActivePotionEffects();
-    p.setHealth(20);
-    p.playerListName(null);
   }
 }

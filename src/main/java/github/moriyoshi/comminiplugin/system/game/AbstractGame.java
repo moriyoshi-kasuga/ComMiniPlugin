@@ -1,7 +1,11 @@
-package github.moriyoshi.comminiplugin.system;
+package github.moriyoshi.comminiplugin.system.game;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
+import github.moriyoshi.comminiplugin.system.InterfaceGame;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
+import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -17,10 +21,11 @@ public abstract class AbstractGame implements InterfaceGame {
   public final String description;
   public final Material material;
   @Getter public final PrefixUtil prefix;
-  final AbstractGameListener<?> listener;
+  public final AbstractGameListener<?> listener;
   @Getter protected World world;
   @Getter protected Location lobby;
   @Getter private boolean isStarted = false;
+  @Getter private final IdentifierKey key;
 
   public AbstractGame(
       final String id,
@@ -35,6 +40,7 @@ public abstract class AbstractGame implements InterfaceGame {
     this.material = material;
     this.prefix = prefix;
     this.listener = listener;
+    this.key = new IdentifierKey("game-" + id, null);
     this.fieldInitialize(true);
   }
 
@@ -47,16 +53,18 @@ public abstract class AbstractGame implements InterfaceGame {
       return false;
     }
     hidePlayer();
+    runPlayers(p -> ComMiniPlayer.getPlayer(p.getUniqueId()).setJoinGameIdentifier(getKey()));
     isStarted = true;
     ComMiniPlugin.getPlugin().registerEvent(listener);
     return true;
   }
 
+  @Override
   public final void finishGame() {
     isStarted = false;
     HandlerList.unregisterAll(listener);
     showPlayer();
-    runPlayers(GameSystem::initializePlayer);
+    runPlayers(BukkitUtil::initializePlayer);
     innerFinishGame();
     fieldInitialize(false);
   }

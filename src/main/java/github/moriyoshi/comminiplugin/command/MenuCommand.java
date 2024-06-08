@@ -6,7 +6,7 @@ import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.buttons.AddSpecButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameHelpMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;

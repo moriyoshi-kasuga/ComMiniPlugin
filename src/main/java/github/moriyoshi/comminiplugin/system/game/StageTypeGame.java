@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system.gametype;
+package github.moriyoshi.comminiplugin.system.game;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;

@@ -2,7 +2,7 @@ package github.moriyoshi.comminiplugin.game.battleroyale;
 
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.stream.Collectors;
 import lombok.val;

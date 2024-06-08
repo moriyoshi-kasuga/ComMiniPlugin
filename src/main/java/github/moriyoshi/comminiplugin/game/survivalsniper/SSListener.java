@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import github.moriyoshi.comminiplugin.system.AbstractGameListener;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.game.AbstractGameListener;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.util.Util;
 import github.moriyoshi.comminiplugin.util.tuple.Triple;
 import java.util.Optional;
@@ -107,29 +107,27 @@ public class SSListener implements AbstractGameListener<SSGame> {
   }
 
   @Override
-  public void damageByEntity(final EntityDamageByEntityEvent e) {
-    if (e.getEntity() instanceof Player entity && e.getDamager() instanceof final Player attacker) {
-      val game = getGame();
-      if (!game.isCanPvP()) {
-        game.prefix.send(attacker, "<red>まだPvPはできません");
-        e.setCancelled(true);
-        return;
-      }
-      ChatColor color1 =
-          Optional.ofNullable(game.players.get(entity.getUniqueId()))
-              .map(Triple::getThird)
-              .orElse(null);
-      val color2 = game.players.get(attacker.getUniqueId()).getThird();
-      if (color2 != null && color1 == color2) {
-        e.setCancelled(true);
-        return;
-      }
+  public void damageByEntity(EntityDamageByEntityEvent e, Player attacker, Player victim) {
+    val game = getGame();
+    if (!game.isCanPvP()) {
+      getGame().prefix.send(attacker, "<red>まだPvPはできません");
+      e.setCancelled(true);
+      return;
+    }
+    ChatColor color1 =
+        Optional.ofNullable(game.players.get(victim.getUniqueId()))
+            .map(Triple::getThird)
+            .orElse(null);
+    val color2 = game.players.get(attacker.getUniqueId()).getThird();
+    if (color2 != null && color1 == color2) {
+      e.setCancelled(true);
+      return;
+    }
 
-      val main = attacker.getInventory().getItemInMainHand().getType();
-      if (EnchantmentTarget.TOOL.includes(main)
-          && (main.name().contains("STONE") || main.name().contains("WOODEN"))) {
-        e.setCancelled(true);
-      }
+    val main = attacker.getInventory().getItemInMainHand().getType();
+    if (EnchantmentTarget.TOOL.includes(main)
+        && (main.name().contains("STONE") || main.name().contains("WOODEN"))) {
+      e.setCancelled(true);
     }
   }
 

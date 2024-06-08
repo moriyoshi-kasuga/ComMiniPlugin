@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.item;
 
+import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import github.moriyoshi.comminiplugin.util.Util;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface DurabilityItem extends InterfaceItem {
 
-  Map<CustomItemKey, Integer> DURABILITY = new HashMap<>();
+  Map<IdentifierKey, Integer> DURABILITY = new HashMap<>();
 
   default int getDurability() {
     return Optional.ofNullable(DURABILITY.get(getItemKey()))

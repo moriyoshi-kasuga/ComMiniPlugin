@@ -4,6 +4,10 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.block.CustomBlock;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
+import github.moriyoshi.comminiplugin.system.minigame.AbstractMiniGame;
+import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.NMSUtil;
 import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
 import java.util.HashMap;
@@ -16,9 +20,9 @@ import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -36,6 +40,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 public class GameListener implements Listener {
 
@@ -73,8 +78,8 @@ public class GameListener implements Listener {
     return INSTANCE;
   }
 
-  public static boolean isGamePlayer(Player p, Class<? extends Event> clazz) {
-    return GameSystem.isStarted() && GameSystem.getGame().isGamePlayer(p, clazz);
+  public static boolean isGamePlayer(Player p) {
+    return GameSystem.isStarted() && GameSystem.getGame().isGamePlayer(p);
   }
 
   public static boolean isDebugPlayer(Player p) {
@@ -91,6 +96,15 @@ public class GameListener implements Listener {
     projectileDamageMap.put(id, l);
   }
 
+  public Optional<AbstractMiniGame> getMiniGameOptional(UUID uuid) {
+    return Optional.ofNullable(
+        MiniGameSystem.getMiniGame(ComMiniPlayer.getPlayer(uuid).getJoinGameIdentifier()));
+  }
+
+  public AbstractMiniGame getMiniGame(UUID uuid) {
+    return MiniGameSystem.getMiniGame(ComMiniPlayer.getPlayer(uuid).getJoinGameIdentifier());
+  }
+
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
@@ -98,42 +112,58 @@ public class GameListener implements Listener {
       ResourcePackUtil.updateComMiniResoucePack(p);
     }
     NMSUtil.sendPlayerHidePackt(
-        player -> !player.equals(p) && ComMiniPlayer.getPlayer(player.getUniqueId()).isJoinGame(),
+        player ->
+            !player.equals(p)
+                && ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameIdentifier() != null,
         List.of(p.getUniqueId()));
     if (GameSystem.isIn()
-        && GameSystem.getGame().isGamePlayer(p, PlayerJoinEvent.class)
+        && GameSystem.getGame().isGamePlayer(p)
         && GameSystem.getGame().listener.join(e)) {
+      return;
+    }
+    val minigame = getMiniGame(p.getUniqueId());
+    if (minigame != null) {
+      minigame.listener.join(e);
       return;
     }
     new BukkitRunnable() {
 
       @Override
       public void run() {
-        GameSystem.initializePlayer(e.getPlayer());
+        BukkitUtil.initializePlayer(e.getPlayer());
       }
     }.runTask(ComMiniPlugin.getPlugin());
   }
 
   @EventHandler
   public void quit(PlayerQuitEvent e) {
-    if (GameSystem.isIn()
-        && GameSystem.getGame().isGamePlayer(e.getPlayer(), PlayerQuitEvent.class)) {
+    val p = e.getPlayer();
+    if (GameSystem.isIn() && GameSystem.getGame().isGamePlayer(p)) {
       GameSystem.getGame().listener.quit(e);
+      return;
     }
+    getMiniGameOptional(p.getUniqueId()).ifPresent(minigame -> minigame.listener.quit(e));
   }
 
   @EventHandler
   public void death(PlayerDeathEvent e) {
     e.setCancelled(true);
-    if (isGamePlayer(e.getPlayer(), PlayerDeathEvent.class)) {
+    val p = e.getPlayer();
+    if (isGamePlayer(p)) {
       GameSystem.getGame().listener.death(e);
+      return;
+    }
+
+    val minigame = getMiniGame(p.getUniqueId());
+    if (minigame != null) {
+      minigame.listener.death(e);
       return;
     }
     new BukkitRunnable() {
 
       @Override
       public void run() {
-        GameSystem.initializePlayer(e.getPlayer());
+        BukkitUtil.initializePlayer(e.getPlayer());
       }
     }.runTask(ComMiniPlugin.getPlugin());
   }
@@ -144,10 +174,24 @@ public class GameListener implements Listener {
       if (e.getCause().equals(DamageCause.FALL)) {
         e.setCancelled(true);
       }
-      if (GameSystem.isStarted() && isGamePlayer(player, EntityDamageEvent.class)) {
+      if (GameSystem.isStarted() && isGamePlayer(player)) {
         GameSystem.getGame().listener.damage(e, player);
+        return;
       }
+      getMiniGameOptional(player.getUniqueId())
+          .ifPresent(minigame -> minigame.listener.damage(e, player));
     }
+  }
+
+  @Nullable
+  public static Player getEntityToPlayer(Entity entity) {
+    if (entity instanceof Player p) {
+      return p;
+    } else if (entity instanceof final Projectile projectile
+        && projectile.getShooter() instanceof Player p) {
+      return p;
+    }
+    return null;
   }
 
   @EventHandler
@@ -155,58 +199,58 @@ public class GameListener implements Listener {
     if (e.getDamager() instanceof Projectile projectile) {
       Optional.ofNullable(projectileDamageMap.remove(projectile.getUniqueId()))
           .ifPresent(consumer -> consumer.accept(projectile, e));
-    }
-
-    if (GameSystem.isStarted()
-        && (!(e.getDamager() instanceof Player player)
-            || isGamePlayer(player, EntityDamageByEntityEvent.class))) {
-      GameSystem.getGame().listener.damageByEntity(e);
       return;
     }
 
-    if (e.getDamager() instanceof Player attacker) {
-      if (isDebugPlayer(attacker)) {
+    val attacker = getEntityToPlayer(e.getDamager());
+    val victim = e.getEntity() instanceof Player p ? p : null;
+
+    if (attacker != null && victim != null) {
+      val game = GameSystem.getGame();
+      if (GameSystem.isStarted() && game.isGamePlayer(attacker) && game.isGamePlayer(victim)) {
+        game.listener.damageByEntity(e, attacker, victim);
         return;
       }
-      if (attacker.getGameMode() != GameMode.CREATIVE) {
-        e.setCancelled(true);
+      val minigame = getMiniGame(attacker.getUniqueId());
+      if (minigame != null && minigame.isGamePlayer(attacker) && minigame.isGamePlayer(victim)) {
+        minigame.listener.damageByEntity(e, attacker, victim);
+        return;
       }
     }
-    if (e.getDamager() instanceof Projectile projectile
-        && projectile.getShooter() instanceof Player attacker) {
-      if (isDebugPlayer(attacker)) {
-        return;
-      }
-      if (attacker.getGameMode() != GameMode.CREATIVE) {
-        e.setCancelled(true);
-      }
+    if (attacker != null && isCancelLobbyPlayer(attacker)) {
+      e.setCancelled(true);
     }
   }
 
   @EventHandler
   public void blockBreak(BlockBreakEvent e) {
-    if (isGamePlayer(e.getPlayer(), BlockBreakEvent.class)) {
+    val p = e.getPlayer();
+    if (isGamePlayer(p)) {
       GameSystem.getGame().listener.blockBreak(e);
       return;
     }
-    if (isDebugPlayer(e.getPlayer())) {
+    val minigame = getMiniGame(p.getUniqueId());
+    if (minigame != null) {
+      minigame.listener.blockBreak(e);
       return;
     }
-    if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+    if (isCancelLobbyPlayer(p)) {
       e.setCancelled(true);
     }
   }
 
   @EventHandler
   public void blockPlace(BlockPlaceEvent e) {
-    if (isGamePlayer(e.getPlayer(), BlockPlaceEvent.class)) {
+    val p = e.getPlayer();
+    if (isGamePlayer(e.getPlayer())) {
       GameSystem.getGame().listener.blockPlace(e);
       return;
     }
-    if (isDebugPlayer(e.getPlayer())) {
-      return;
+    val minigame = getMiniGame(p.getUniqueId());
+    if (minigame != null) {
+      minigame.listener.blockPlace(e);
     }
-    if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+    if (isCancelLobbyPlayer(p)) {
       e.setCancelled(true);
     }
   }
@@ -287,5 +331,12 @@ public class GameListener implements Listener {
               }
               projectileHitMap.remove(entity.getUniqueId());
             });
+  }
+
+  public boolean isCancelLobbyPlayer(Player player) {
+    if (isDebugPlayer(player)) {
+      return false;
+    }
+    return player.getGameMode() != GameMode.CREATIVE;
   }
 }

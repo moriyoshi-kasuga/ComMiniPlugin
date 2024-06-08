@@ -5,12 +5,14 @@ import com.google.gson.JsonObject;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.api.JsonAPI;
 import github.moriyoshi.comminiplugin.system.player.InterfaceGamePlayer;
+import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -29,7 +31,7 @@ public final class ComMiniPlayer extends JsonAPI {
   @Getter @Setter private boolean canFoodRegain;
   @Getter @Setter private boolean isDebug = false;
   @Getter @Setter private boolean shouldLoadResourcePack;
-  @Getter @Setter private boolean isJoinGame;
+  @Getter @Setter @Nullable private IdentifierKey joinGameIdentifier;
   private JsonObject datas;
 
   private ComMiniPlayer(final UUID uuid) {
@@ -66,7 +68,7 @@ public final class ComMiniPlayer extends JsonAPI {
   public void initialize() {
     this.isHunger = false;
     this.canFoodRegain = true;
-    this.isJoinGame = false;
+    this.joinGameIdentifier = null;
     val name = Bukkit.getOfflinePlayer(this.uuid).getName();
     if (name == null) {
       return;

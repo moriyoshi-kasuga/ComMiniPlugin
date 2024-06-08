@@ -20,7 +20,8 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.CustomListener;
 import github.moriyoshi.comminiplugin.system.GameListener;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
+import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ReflectionUtil;
 import java.lang.reflect.InvocationTargetException;
@@ -124,12 +125,15 @@ public final class ComMiniPlugin extends JavaPlugin {
 
     CustomBlockData.getInstance();
     ComMiniPlayer.gameInitialize();
+    GameSystem.load();
+    MiniGameSystem.load();
   }
 
   @Override
   public void onDisable() {
     ComMiniPlayer.save();
     GameSystem.finalGame();
+    MiniGameSystem.clear();
     CustomBlockData.getInstance().saveFile();
     CommandAPI.onDisable();
     LocationsCommands.getManager().saveFile();

@@ -147,7 +147,6 @@ public class CustomListener implements Listener {
     if (block == null) {
       return false;
     }
-    e.setCancelled(true);
     block.interact(e);
     return true;
   }

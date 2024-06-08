@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.item;
 
+import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import java.util.UUID;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
@@ -67,8 +68,8 @@ public interface InterfaceItem {
    * その時は {code {@link #getItemKey(Player)}} を使用してください
    */
   @NotNull
-  default CustomItemKey getItemKey() {
-    return new CustomItemKey(getIdentifier(), getUniqueId());
+  default IdentifierKey getItemKey() {
+    return new IdentifierKey(getIdentifier(), getUniqueId());
   }
 
   /**
@@ -78,8 +79,8 @@ public interface InterfaceItem {
    * @param player get by palyer's uuid
    */
   @NotNull
-  default CustomItemKey getItemKey(final Player player) {
-    return new CustomItemKey(getIdentifier(), player.getUniqueId());
+  default IdentifierKey getItemKey(final Player player) {
+    return new IdentifierKey(getIdentifier(), player.getUniqueId());
   }
 
   /**
@@ -89,8 +90,8 @@ public interface InterfaceItem {
    * @param uuid uuid
    */
   @NotNull
-  default CustomItemKey getItemKey(@NonNull final UUID uuid) {
-    return new CustomItemKey(getIdentifier(), uuid);
+  default IdentifierKey getItemKey(@NonNull final UUID uuid) {
+    return new IdentifierKey(getIdentifier(), uuid);
   }
 
   /**

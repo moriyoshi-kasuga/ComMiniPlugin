@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.system.menu;
 
 import github.moriyoshi.comminiplugin.constant.Messages;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.InventoryHolder;

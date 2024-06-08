@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.item;
 
+import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import github.moriyoshi.comminiplugin.util.Util;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface CooldownItem extends InterfaceItem {
 
-  Map<CustomItemKey, Integer> COOLDOWN = new HashMap<>();
+  Map<IdentifierKey, Integer> COOLDOWN = new HashMap<>();
 
   default int getCooldown() {
     return Optional.ofNullable(COOLDOWN.get(getItemKey()))

@@ -3,7 +3,7 @@ package github.moriyoshi.comminiplugin.game.battleroyale.items;
 import github.moriyoshi.comminiplugin.constant.Messages;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRGame;
 import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import lombok.val;
 import org.bukkit.Bukkit;

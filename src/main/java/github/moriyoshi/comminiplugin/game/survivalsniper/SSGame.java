@@ -3,10 +3,9 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
-import github.moriyoshi.comminiplugin.system.AbstractGame;
+import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
-import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.system.gametype.WinnerTypeGame;
+import github.moriyoshi.comminiplugin.system.game.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
@@ -69,7 +68,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     this.mode = mode;
     prefix.cast("<red>Modeが<u>" + mode.name() + "</u>に変わりました");
     prefix.cast("<gray>ゲームをしたい人はもう一度参加ボタンを押してください");
-    runPlayers(GameSystem::initializePlayer);
+    runPlayers(BukkitUtil::initializePlayer);
     players.clear();
   }
 
@@ -85,7 +84,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             .customItemFlag(CustomItemFlag.DISABLE_MOVE_INV, true)
             .build();
     player.getInventory().removeItem(item);
-    GameSystem.initializePlayer(player);
+    BukkitUtil.initializePlayer(player);
     val isPlayer = players.remove(uuid).getFirst();
     prefix.cast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
   }

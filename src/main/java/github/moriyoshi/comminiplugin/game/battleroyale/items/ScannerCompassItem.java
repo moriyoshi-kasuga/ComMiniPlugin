@@ -6,7 +6,7 @@ import github.moriyoshi.comminiplugin.game.battleroyale.BRGame;
 import github.moriyoshi.comminiplugin.game.battleroyale.TreasureChest;
 import github.moriyoshi.comminiplugin.item.CoolityItem;
 import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Optional;
 import java.util.function.Consumer;

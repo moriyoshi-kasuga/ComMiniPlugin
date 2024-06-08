@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.item;
 
+import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import github.moriyoshi.comminiplugin.util.Util;
 import github.moriyoshi.comminiplugin.util.tuple.Triple;
 import java.util.HashMap;
@@ -13,10 +14,10 @@ import org.jetbrains.annotations.NotNull;
 
 public interface PlayerCooldownItem extends InterfaceItem {
 
-  Map<CustomItemKey, Triple<Integer, Boolean, Optional<Consumer<UUID>>>> COOLDOWN = new HashMap<>();
+  Map<IdentifierKey, Triple<Integer, Boolean, Optional<Consumer<UUID>>>> COOLDOWN = new HashMap<>();
 
   static void allCountDown() {
-    for (Map.Entry<CustomItemKey, Triple<Integer, Boolean, Optional<Consumer<UUID>>>> entry : COOLDOWN.entrySet()) {
+    for (Map.Entry<IdentifierKey, Triple<Integer, Boolean, Optional<Consumer<UUID>>>> entry : COOLDOWN.entrySet()) {
       val triple = entry.getValue();
       if (!triple.getSecond()) {
         continue;

@@ -4,7 +4,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSGame.Mode;
-import github.moriyoshi.comminiplugin.system.IGetGame;
+import github.moriyoshi.comminiplugin.system.game.IGetGame;
 import github.moriyoshi.comminiplugin.system.buttons.GameStartButton;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;

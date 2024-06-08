@@ -19,7 +19,7 @@ import github.moriyoshi.comminiplugin.game.battleroyale.items.UpgradeWingItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.VampireBowItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.VampireSwordItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
-import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.loot.Entry;
 import github.moriyoshi.comminiplugin.system.loot.LootTable;
 import github.moriyoshi.comminiplugin.system.loot.Pool;

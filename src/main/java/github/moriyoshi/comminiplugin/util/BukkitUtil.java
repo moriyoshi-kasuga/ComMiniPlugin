@@ -1,6 +1,9 @@
 package github.moriyoshi.comminiplugin.util;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
+import github.moriyoshi.comminiplugin.object.MenuItem;
+import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import io.papermc.paper.entity.TeleportFlag;
 import java.util.HashMap;
@@ -10,6 +13,7 @@ import java.util.Random;
 import java.util.UUID;
 import lombok.val;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -117,10 +121,6 @@ public final class BukkitUtil {
   public static void setVelocity(
       final Player player, final Vector velocity, final JumpState state) {
     val uuid = player.getUniqueId();
-    val temp = fallingBlocks.remove(uuid);
-    if (temp != null) {
-      temp.remove();
-    }
     val loc = player.getLocation();
     val falling =
         loc.getWorld()
@@ -141,55 +141,72 @@ public final class BukkitUtil {
         });
     NMSUtil.sendEntityRemovePacket(falling.getEntityId());
 
-    fallingBlocks.put(player.getUniqueId(), falling);
-    switch (state) {
-      case FREE -> {
-        new BukkitRunnable() {
-
-          private int rest = 3;
-
-          @Override
-          public void run() {
-            if (falling.isDead() || 0 >= --rest) {
-              falling.remove();
-              fallingBlocks.remove(uuid);
-              this.cancel();
-              return;
-            }
-            player.setVelocity(falling.getVelocity());
-          }
-        }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
-      }
-      case DOWN -> {
-        new BukkitRunnable() {
-
-          @Override
-          public void run() {
-            if (falling.isDead() || 0 >= falling.getVelocity().getY()) {
-              falling.remove();
-              fallingBlocks.remove(uuid);
-              this.cancel();
-              return;
-            }
-            player.setVelocity(falling.getVelocity());
-          }
-        }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
-      }
-      case FIXED -> {
-        new BukkitRunnable() {
-
-          @Override
-          public void run() {
-            if (falling.isDead()) {
-              falling.remove();
-              fallingBlocks.remove(uuid);
-              this.cancel();
-              return;
-            }
-            player.setVelocity(falling.getVelocity());
-          }
-        }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
-      }
+    val temp = fallingBlocks.put(player.getUniqueId(), falling);
+    if (temp != null) {
+      temp.remove();
     }
+    switch (state) {
+      case FREE ->
+          new BukkitRunnable() {
+
+            private int rest = 3;
+
+            @Override
+            public void run() {
+              if (falling.isDead() || 0 >= --rest) {
+                falling.remove();
+                fallingBlocks.remove(uuid);
+                this.cancel();
+                return;
+              }
+              player.setVelocity(falling.getVelocity());
+            }
+          }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
+      case DOWN ->
+          new BukkitRunnable() {
+
+            @Override
+            public void run() {
+              if (falling.isDead() || 0 >= falling.getVelocity().getY()) {
+                falling.remove();
+                fallingBlocks.remove(uuid);
+                this.cancel();
+                return;
+              }
+              player.setVelocity(falling.getVelocity());
+            }
+          }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
+      case FIXED ->
+          new BukkitRunnable() {
+
+            @Override
+            public void run() {
+              if (falling.isDead()) {
+                falling.remove();
+                fallingBlocks.remove(uuid);
+                this.cancel();
+                return;
+              }
+              player.setVelocity(falling.getVelocity());
+            }
+          }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
+    }
+  }
+
+  /**
+   * サーバー参加時やロビーに返す時、ゲーム終了時に使えるメゾット
+   *
+   * @param p target player
+   */
+  public static void initializePlayer(Player p) {
+    ComMiniPlayer.getPlayer(p.getUniqueId()).initialize();
+    p.getInventory().clear();
+    p.getInventory().addItem(new MenuItem().getItem());
+    p.setExperienceLevelAndProgress(0);
+    p.teleport(ComMiniWorld.LOBBY);
+    p.setGameMode(GameMode.SURVIVAL);
+    p.clearActivePotionEffects();
+    p.setHealth(20);
+    p.playerListName(null);
   }
 }

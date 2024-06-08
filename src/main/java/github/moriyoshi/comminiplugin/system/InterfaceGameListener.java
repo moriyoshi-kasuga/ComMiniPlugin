@@ -10,7 +10,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public interface AbstractGameListener<T extends AbstractGame> extends Listener, IGetGame<T> {
+public interface InterfaceGameListener extends Listener {
 
   /**
    * プレイヤーがサーバーに入ったら呼び出されます (すべてゲームのプレイヤーだけです) (このメゾットはゲーム開始前でも呼ばれます,initialize時からです)
@@ -37,16 +37,19 @@ public interface AbstractGameListener<T extends AbstractGame> extends Listener, 
   default void death(final PlayerDeathEvent e) {}
 
   /**
+   * プレイヤーがダメージを受けた時です (すべてゲームのプレイヤーだけです)
+   *
    * @param e event
    */
   default void damage(final EntityDamageEvent e, final Player player) {}
 
   /**
-   * Entity 同士の攻撃です instanceof Player を忘れずに
+   * どちらもゲームプレイヤーです
    *
    * @param e event
    */
-  default void damageByEntity(final EntityDamageByEntityEvent e) {}
+  default void damageByEntity(
+      final EntityDamageByEntityEvent e, final Player attacker, final Player victim) {}
 
   /**
    * ブロックを壊したらこのイベントに来ます (すべてゲームのプレイヤーだけです)

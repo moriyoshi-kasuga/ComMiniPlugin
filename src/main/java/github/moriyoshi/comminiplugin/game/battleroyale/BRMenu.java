@@ -3,7 +3,7 @@ package github.moriyoshi.comminiplugin.game.battleroyale;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.IGetGame;
+import github.moriyoshi.comminiplugin.system.game.IGetGame;
 import github.moriyoshi.comminiplugin.system.buttons.HotbarSlotButton;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
