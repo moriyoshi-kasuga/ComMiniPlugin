@@ -26,6 +26,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -224,6 +225,16 @@ public class GameListener implements Listener {
       }
   }
 
+  @EventHandler
+  public void effectEvent(EntityPotionEffectEvent e) {
+    if (e.getEntity() instanceof Player player && e.getNewEffect() == null) {
+      val effect = e.getOldEffect();
+      if (effect.getType().equals(PotionEffectType.SLOWNESS) && effect.getAmplifier() == 138) {
+        disableMoveLocation.remove(player.getUniqueId());
+      }
+    }
+  }
+
   @SuppressWarnings("deprecation")
   @EventHandler
   public void move(PlayerMoveEvent e) {
@@ -237,17 +248,6 @@ public class GameListener implements Listener {
           }
           loc = e.getTo();
           disableMoveLocation.put(p.getUniqueId(), loc);
-          if (!effect.isInfinite()) {
-            new BukkitRunnable() {
-
-              private final UUID uuid = p.getUniqueId();
-
-              @Override
-              public void run() {
-                disableMoveLocation.remove(uuid);
-              }
-            }.runTaskLaterAsynchronously(ComMiniPlugin.getPlugin(), effect.getDuration());
-          }
         }
         Location to = e.getTo();
         loc.setYaw(to.getYaw());
@@ -277,8 +277,15 @@ public class GameListener implements Listener {
 
   @EventHandler
   public void projectileHit(ProjectileHitEvent e) {
-    val entity = e.getEntity();
-    Optional.ofNullable(projectileHitMap.remove(entity.getUniqueId()))
-        .ifPresent(consumer -> consumer.accept(entity, e));
+    Optional.ofNullable(projectileHitMap.get(e.getEntity().getUniqueId()))
+        .ifPresent(
+            consumer -> {
+              val entity = e.getEntity();
+              consumer.accept(entity, e);
+              if (e.isCancelled() && e.getHitEntity() != null) {
+                return;
+              }
+              projectileHitMap.remove(entity.getUniqueId());
+            });
   }
 }

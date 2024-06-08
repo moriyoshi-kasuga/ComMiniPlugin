@@ -29,7 +29,7 @@ import org.bukkit.util.RayTraceResult;
 public class SSSniper extends CustomItem implements CooldownItem {
 
   private static final Component DEFAULT_NAME = Util.mm("<blue>スナイパー");
-  private static final double NEW_BULLET_SIZE = 0.1;
+  private static final double BULLET_SIZE = 0.1;
   private static final int MAX_LENGTH = 100;
   private static final int DEFAULT_COOLDOWN_TICK = 40;
 
@@ -77,7 +77,7 @@ public class SSSniper extends CustomItem implements CooldownItem {
                 MAX_LENGTH,
                 FluidCollisionMode.NEVER,
                 true,
-                NEW_BULLET_SIZE,
+                BULLET_SIZE,
                 entity -> {
                   if (entity.equals(player)) {
                     return false;

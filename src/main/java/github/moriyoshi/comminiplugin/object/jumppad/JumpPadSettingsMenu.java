@@ -82,9 +82,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                                 e.getWhoClicked(), "<red>please input block material (ignore air)");
                             return;
                           }
-                          setConsumer(
-                              block -> block.setMaterial(material),
-                              isIncludeLinked);
+                          setConsumer(block -> block.setMaterial(material), isIncludeLinked);
                         },
                         (item, e) -> JumpPadSettingsMenu.this.openInv(e.getWhoClicked()))
                     .getInventory()));
@@ -258,7 +256,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                         (value, state) -> {
                           try {
                             setConsumer(
-                                block -> block.setState(JumpState.valueOf(value)),
+                                block -> block.setState(JumpState.valueOf(value.toUpperCase())),
                                 isIncludeLinked);
                             return List.of(
                                 AnvilGUI.ResponseAction.openInventory(

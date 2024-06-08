@@ -61,7 +61,8 @@ public class NauseaBallItem extends CustomItem {
                   new Particle.DustOptions(Color.fromRGB(0x8BD376), 4),
                   true);
           val nause =
-              new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.NAUSEA, 20, 0);
+              new org.bukkit.potion.PotionEffect(
+                  org.bukkit.potion.PotionEffectType.NAUSEA, 20 * 20, 0);
           loc.getNearbyPlayers(3, p -> p.getGameMode() != GameMode.SPECTATOR)
               .forEach(p -> p.addPotionEffect(nause));
         });

@@ -1,6 +1,7 @@
 package github.moriyoshi.comminiplugin.util;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.system.GameListener;
 import io.papermc.paper.entity.TeleportFlag;
 import java.util.HashMap;
 import java.util.List;
@@ -113,7 +114,8 @@ public final class BukkitUtil {
     return fallingBlocks.containsKey(uuid);
   }
 
-  public static void setVelocity(final Player player, final Vector velocity, final JumpState state) {
+  public static void setVelocity(
+      final Player player, final Vector velocity, final JumpState state) {
     val uuid = player.getUniqueId();
     val temp = fallingBlocks.remove(uuid);
     if (temp != null) {
@@ -132,6 +134,11 @@ public final class BukkitUtil {
                   entity.setGravity(true);
                   entity.setVelocity(velocity);
                 });
+    GameListener.addProjectileHitListener(
+        falling.getUniqueId(),
+        (projectile, event) -> {
+          event.setCancelled(true);
+        });
     NMSUtil.sendEntityRemovePacket(falling.getEntityId());
 
     fallingBlocks.put(player.getUniqueId(), falling);
