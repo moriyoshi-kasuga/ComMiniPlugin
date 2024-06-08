@@ -14,13 +14,15 @@ import org.bukkit.Sound;
 import org.bukkit.block.data.type.Gate;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 
 public class LFFAGun extends CustomItem implements CooldownItem {
-  private final int MAX_LENGTH = 20;
+  private final int MAX_LENGTH = 40;
   private final double BULLET_SIZE = 0.1;
 
   public LFFAGun() {
@@ -30,7 +32,7 @@ public class LFFAGun extends CustomItem implements CooldownItem {
             .customItemFlag(CustomItemFlag.DISABLE_ITEM_SPAWN, true)
             .customItemFlag(CustomItemFlag.DISABLE_MOVE_INV, true)
             .name("<red>ハンドガン")
-            .customModelData(1)
+            .customModelData(28)
             .build());
   }
 
@@ -39,15 +41,17 @@ public class LFFAGun extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
-    e.setCancelled(true);
-    val player = e.getPlayer();
+  public void damageEntity(EntityDamageByEntityEvent e, Player player) {
+    spawn(player);
+  }
+
+  private void spawn(Player player) {
     val eyeLoc = player.getEyeLocation();
     if (inCooldown()) {
       player.playSound(eyeLoc, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
       return;
     }
-    setCooldown(60);
+    setCooldown(10);
     val world = eyeLoc.getWorld();
     val eyeVec = eyeLoc.toVector();
 
@@ -101,7 +105,7 @@ public class LFFAGun extends CustomItem implements CooldownItem {
               // HEAD SIZE
               .expand(0.41, 0.3, 0.41)
               .contains(entity.getEyeLocation().toVector());
-      entity.damage(isHeadShot ? 8 : 5);
+      entity.damage(isHeadShot ? 8 : 5, player);
       player.playSound(
           eyeLoc,
           isHeadShot ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP : Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE,
@@ -114,6 +118,15 @@ public class LFFAGun extends CustomItem implements CooldownItem {
       world.spawnParticle(Particle.WAX_OFF, eyeLoc, 1, 0, 0, 0, 1, null, true);
     }
     new ItemBuilder(getItem()).type(Material.CLOCK);
+  }
+
+  @Override
+  public void interact(PlayerInteractEvent e) {
+    e.setCancelled(true);
+    if (e.getAction().isRightClick()) {
+      return;
+    }
+    spawn(e.getPlayer());
   }
 
   @Override

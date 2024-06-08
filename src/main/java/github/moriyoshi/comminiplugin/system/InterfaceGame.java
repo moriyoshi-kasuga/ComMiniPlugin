@@ -43,6 +43,10 @@ public interface InterfaceGame extends HasKey {
             });
   }
 
+  default void sendPlayers(final Object message) {
+    getPlayers().forEach(p -> getPrefix().send(p, message));
+  }
+
   @SuppressWarnings("unchecked")
   default List<Player> getPlayers() {
     return (List<Player>) Bukkit.getOnlinePlayers().stream().filter(this::isGamePlayer).toList();
@@ -77,5 +81,14 @@ public interface InterfaceGame extends HasKey {
             .map(NMSUtil::getServerPlayer)
             .toList();
     NMSUtil.sendNMSPlayerShowPackt(getPlayers(), list);
+  }
+
+  default void setPlayerJoinGameIdentifier(final Player player) {
+    ComMiniPlayer.getPlayer(player.getUniqueId()).setJoinGameIdentifier(getKey());
+  }
+
+
+  default void setPlayerJoinGameIdentifier(final UUID uuid) {
+    ComMiniPlayer.getPlayer(uuid).setJoinGameIdentifier(getKey());
   }
 }

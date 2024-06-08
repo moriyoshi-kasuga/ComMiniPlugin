@@ -4,8 +4,6 @@ import github.moriyoshi.comminiplugin.minigame.lobby_ffa.LFFAMiniGame;
 import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,12 +11,7 @@ public class MiniGameSystem {
   static final HashMap<IdentifierKey, AbstractMiniGame> minigames = new HashMap<>();
 
   public static void load() {
-    List.of(
-            // ALl Game
-            new LFFAMiniGame()
-            // End
-            )
-        .forEach(g -> minigames.put(g.getKey(), g));
+    new LFFAMiniGame();
   }
 
   public static void clear() {
@@ -45,10 +38,11 @@ public class MiniGameSystem {
 
   @NotNull
   public static <T extends AbstractMiniGame> T getUniqueMiniGame(String id, Class<T> t) {
-    return minigames.entrySet().stream()
-        .filter(x -> x.getKey().identifier().equals("minigame-" + id))
-        .findFirst()
-        .map(t::cast)
-        .orElseThrow();
+    return t.cast(
+        minigames.entrySet().stream()
+            .filter(x -> x.getKey().identifier().equals("minigame-" + id))
+            .findFirst()
+            .orElseThrow()
+            .getValue());
   }
 }

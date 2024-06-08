@@ -36,6 +36,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 
 public final class ComMiniPlugin extends JavaPlugin {
 
@@ -81,12 +83,15 @@ public final class ComMiniPlugin extends JavaPlugin {
     registerEvent(guiListener = GuiListener.getInstance());
     registerEvent(GameListener.getInstance());
     registerEvent(CustomListener.getInstance());
-    val reflectionsObject = new Reflections("github.moriyoshi.comminiplugin.object");
-    val reflectionsGame = new Reflections("github.moriyoshi.comminiplugin.game");
-    CustomItem.registers(reflectionsObject);
-    CustomItem.registers(reflectionsGame);
-    CustomBlock.registers(reflectionsObject);
-    CustomBlock.registers(reflectionsGame);
+    Reflections reflections =
+        new Reflections(
+            new ConfigurationBuilder()
+                .forPackage("github.moriyoshi.comminiplugin")
+                .filterInputsBy(
+                    new FilterBuilder()
+                        .excludePackage("github.moriyoshi.comminiplugin.dependencies")));
+    CustomItem.registers(reflections);
+    CustomBlock.registers(reflections);
     val commands = new Reflections("github.moriyoshi.comminiplugin.command");
     ReflectionUtil.forEachAllClass(
         commands,
@@ -134,8 +139,8 @@ public final class ComMiniPlugin extends JavaPlugin {
     ComMiniPlayer.save();
     GameSystem.finalGame();
     MiniGameSystem.clear();
-    CustomBlockData.getInstance().saveFile();
     CommandAPI.onDisable();
+    CustomBlockData.getInstance().saveFile();
     LocationsCommands.getManager().saveFile();
 
     HandlerList.unregisterAll(guiListener);

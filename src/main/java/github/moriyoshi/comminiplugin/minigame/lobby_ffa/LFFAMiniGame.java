@@ -1,11 +1,12 @@
 package github.moriyoshi.comminiplugin.minigame.lobby_ffa;
 
+import github.moriyoshi.comminiplugin.object.LeaveMiniGameItem;
+import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.minigame.AbstractMiniGame;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
-import lombok.val;
-
 import java.util.Map;
 import java.util.UUID;
+import lombok.val;
 import org.bukkit.entity.Player;
 
 public class LFFAMiniGame extends AbstractMiniGame {
@@ -22,11 +23,20 @@ public class LFFAMiniGame extends AbstractMiniGame {
     return players.containsKey(player.getUniqueId());
   }
 
+  public int incrementKill(Player player) {
+    val kill = players.get(player.getUniqueId()) + 1;
+    players.put(player.getUniqueId(), kill);
+    return kill;
+  }
+
   public void addPlayer(Player player) {
-    players.put(player.getUniqueId(), 0);
+    val uuid = player.getUniqueId();
+    players.put(uuid, 0);
+    ComMiniPlayer.getPlayer(uuid).setCanFoodRegain(false).setJoinGameIdentifier(getKey());
     val inv = player.getInventory();
-    inv.setItem(0, new LFFAGun().getItem());
     inv.clear();
+    inv.setItem(0, new LFFAGun().getItem());
+    inv.setItem(8, new LeaveMiniGameItem().getItem());
   }
 
   @Override
@@ -35,5 +45,10 @@ public class LFFAMiniGame extends AbstractMiniGame {
   @Override
   protected void innerFinishGame() {
     players.clear();
+  }
+
+  @Override
+  public void leavePlayer(Player player) {
+    players.remove(player.getUniqueId());
   }
 }

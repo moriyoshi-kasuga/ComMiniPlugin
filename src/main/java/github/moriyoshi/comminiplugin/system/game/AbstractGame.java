@@ -2,7 +2,6 @@ package github.moriyoshi.comminiplugin.system.game;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.IdentifierKey;
@@ -53,7 +52,7 @@ public abstract class AbstractGame implements InterfaceGame {
       return false;
     }
     hidePlayer();
-    runPlayers(p -> ComMiniPlayer.getPlayer(p.getUniqueId()).setJoinGameIdentifier(getKey()));
+    runPlayers(this::setPlayerJoinGameIdentifier);
     isStarted = true;
     ComMiniPlugin.getPlugin().registerEvent(listener);
     return true;

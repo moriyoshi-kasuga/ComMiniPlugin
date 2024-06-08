@@ -1,7 +1,6 @@
 package github.moriyoshi.comminiplugin.system.minigame;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.IdentifierKey;
@@ -11,6 +10,7 @@ import java.util.function.Function;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
 public abstract class AbstractMiniGame implements InterfaceGame {
@@ -36,7 +36,7 @@ public abstract class AbstractMiniGame implements InterfaceGame {
   public final void startGame() {
     hidePlayer();
     ComMiniPlugin.getPlugin().registerEvent(listener);
-    runPlayers(p -> ComMiniPlayer.getPlayer(p.getUniqueId()).setJoinGameIdentifier(getKey()));
+    runPlayers(this::setPlayerJoinGameIdentifier);
     innerStartGame();
   }
 
@@ -52,4 +52,6 @@ public abstract class AbstractMiniGame implements InterfaceGame {
   protected abstract void innerStartGame();
 
   protected abstract void innerFinishGame();
+
+  public abstract void leavePlayer(Player player);
 }

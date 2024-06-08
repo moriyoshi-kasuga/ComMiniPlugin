@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.api.JsonAPI;
+import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import github.moriyoshi.comminiplugin.system.player.InterfaceGamePlayer;
 import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +16,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.Scoreboard;
@@ -27,11 +29,33 @@ public final class ComMiniPlayer extends JsonAPI {
   private final UUID uuid;
   private final Map<Class<? extends InterfaceGamePlayer>, InterfaceGamePlayer> gamePlayerDatas =
       new HashMap<>();
-  @Getter @Setter private boolean isHunger;
-  @Getter @Setter private boolean canFoodRegain;
-  @Getter @Setter private boolean isDebug = false;
-  @Getter @Setter private boolean shouldLoadResourcePack;
-  @Getter @Setter @Nullable private IdentifierKey joinGameIdentifier;
+
+  @Accessors(chain = true)
+  @Getter
+  @Setter
+  private boolean isHunger;
+
+  @Accessors(chain = true)
+  @Getter
+  @Setter
+  private boolean canFoodRegain;
+
+  @Accessors(chain = true)
+  @Getter
+  @Setter
+  private boolean isDebug = false;
+
+  @Accessors(chain = true)
+  @Getter
+  @Setter
+  private boolean shouldLoadResourcePack;
+
+  @Accessors(chain = true)
+  @Getter
+  @Setter
+  @Nullable
+  private IdentifierKey joinGameIdentifier;
+
   private JsonObject datas;
 
   private ComMiniPlayer(final UUID uuid) {
@@ -68,6 +92,9 @@ public final class ComMiniPlayer extends JsonAPI {
   public void initialize() {
     this.isHunger = false;
     this.canFoodRegain = true;
+    if (joinGameIdentifier != null && joinGameIdentifier.identifier().startsWith("minigame-")) {
+      MiniGameSystem.getMiniGame(joinGameIdentifier).leavePlayer(Bukkit.getPlayer(uuid));
+    }
     this.joinGameIdentifier = null;
     val name = Bukkit.getOfflinePlayer(this.uuid).getName();
     if (name == null) {

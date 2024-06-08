@@ -22,6 +22,8 @@ public abstract class JsonAPI extends FileAPI<JsonElement> {
     super(plugin, path, name);
   }
 
+  private boolean correct = false;
+
   /**
    * @return ファイルの拡張子
    */
@@ -44,11 +46,15 @@ public abstract class JsonAPI extends FileAPI<JsonElement> {
     } catch (IOException ignored) {
       generateLoadData(new JsonObject());
     }
+    correct = true;
   }
 
   /** データをファイルに保存 */
   @Override
   public void saveFile() {
+    if (!correct) {
+      return;
+    }
     try (Writer writer = new FileWriter(file)) {
       val obj = generateSaveData();
       ComMiniPlugin.gson.toJson(obj, writer);

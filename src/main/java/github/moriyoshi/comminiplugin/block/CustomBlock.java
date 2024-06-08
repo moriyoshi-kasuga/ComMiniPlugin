@@ -3,7 +3,6 @@ package github.moriyoshi.comminiplugin.block;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.util.ReflectionUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +40,7 @@ public abstract class CustomBlock {
    */
   public CustomBlock(Block block) {
     if (blocks.containsKey(block.getLocation())) {
-      throw new RuntimeException("このBlockはすでにCustomBlockです");
+      throw new RuntimeException("このBlockはすでにCustomBlockです (" + block.getLocation() + ")");
     }
     block.setType(getOriginMaterial());
     blocks.put(block.getLocation(), this);
@@ -80,11 +79,20 @@ public abstract class CustomBlock {
   }
 
   public static void registers(final Reflections reflections) {
-    ReflectionUtil.forEachAllClass(
+    github.moriyoshi.comminiplugin.util.ReflectionUtil.forEachAllClass(
         reflections,
         CustomBlock.class,
         block -> {
-          ComMiniPrefix.SYSTEM.logDebug("<aqua>REGISTER BLOCK " + block.getSimpleName());
+          val id = block.getSimpleName();
+          if (CustomBlock.customBlocks.containsKey(id)) {
+            throw new IllegalArgumentException(
+                id
+                    + "のカスタムアイテムがかぶっています、"
+                    + block.getName()
+                    + " >>==<< "
+                    + CustomBlock.customBlocks.get(id).getName());
+          }
+          ComMiniPrefix.SYSTEM.logDebug("<aqua>REGISTER BLOCK " + id);
           customBlocks.put(block.getSimpleName(), block);
         });
   }
@@ -172,9 +180,6 @@ public abstract class CustomBlock {
   }
 
   static void loadCustomBlock(String identifier, Location location, JsonElement element) {
-    if (!isRegister(identifier)) {
-      throw new IllegalArgumentException(identifier + "のCustomBlockは登録されていません");
-    }
     try {
       CustomBlock.customBlocks
           .get(identifier)

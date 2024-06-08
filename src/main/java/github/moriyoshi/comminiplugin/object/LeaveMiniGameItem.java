@@ -1,8 +1,8 @@
 package github.moriyoshi.comminiplugin.object;
 
-import github.moriyoshi.comminiplugin.command.MenuCommand;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -10,18 +10,20 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class MenuItem extends CustomItem {
+public class LeaveMiniGameItem extends CustomItem {
 
-  public MenuItem() {
+  public LeaveMiniGameItem() {
     this(
-        new ItemBuilder(Material.BOOK)
-            .name("<red>Menu")
+        new ItemBuilder(Material.ENDER_EYE)
+            .name("<red>Leave MiniGame")
             .glow()
             .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
+            .customItemFlag(CustomItemFlag.DISABLE_MOVE_INV, true)
+            .customItemFlag(CustomItemFlag.DISABLE_ITEM_SPAWN, true)
             .build());
   }
 
-  public MenuItem(@NotNull final ItemStack item) {
+  public LeaveMiniGameItem(@NotNull final ItemStack item) {
     super(item);
   }
 
@@ -31,7 +33,7 @@ public class MenuItem extends CustomItem {
     if (e.getAction().isLeftClick()) {
       return;
     }
-    MenuCommand.open(e.getPlayer());
+    BukkitUtil.initializePlayer(e.getPlayer());
   }
 
   @Override
