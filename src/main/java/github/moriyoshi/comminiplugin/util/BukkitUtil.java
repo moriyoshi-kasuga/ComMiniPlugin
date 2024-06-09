@@ -199,14 +199,18 @@ public final class BukkitUtil {
    * @param p target player
    */
   public static void initializePlayer(Player p) {
-    ComMiniPlayer.getPlayer(p.getUniqueId()).initialize();
-    p.getInventory().clear();
+    initializeGamePlayer(p);
     p.getInventory().addItem(new MenuItem().getItem());
-    p.setExperienceLevelAndProgress(0);
     p.teleport(ComMiniWorld.LOBBY);
+    p.playerListName(null);
+  }
+
+  public static void initializeGamePlayer(Player p) {
+    p.getInventory().clear();
     p.setGameMode(GameMode.SURVIVAL);
     p.clearActivePotionEffects();
     p.setHealth(20);
-    p.playerListName(null);
+    p.setExperienceLevelAndProgress(0);
+    ComMiniPlayer.getPlayer(p.getUniqueId()).initialize();
   }
 }
