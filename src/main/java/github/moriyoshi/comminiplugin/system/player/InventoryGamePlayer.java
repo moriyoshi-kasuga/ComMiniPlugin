@@ -4,16 +4,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.system.slot.HotbarSlot;
+import github.moriyoshi.comminiplugin.system.slot.InventorySlot;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public interface HotbarGamePlayer {
+public interface InventoryGamePlayer {
 
-  default <T extends HotbarSlot> T getHotbarSlot(Class<T> clazz, @Nullable JsonElement element) {
+  default <T extends InventorySlot> T getInventorySlot(
+      Class<T> clazz, @Nullable JsonElement element) {
 
     if (element == null || element.isJsonNull()) {
       try {
@@ -43,16 +44,16 @@ public interface HotbarGamePlayer {
       e.printStackTrace();
     }
 
-    throw new IllegalArgumentException("Hotbar element is not valid");
+    throw new IllegalArgumentException("Inventory element is not valid");
   }
 
-  HotbarSlot getHotbarSlot();
+  InventorySlot getInventorySlot();
 
-  default JsonElement getHotbarSlotJson(HotbarSlot slot) {
+  default JsonElement getInventorySlotJson(InventorySlot slot) {
     return ComMiniPlugin.gson.toJsonTree(slot);
   }
 
-  default String getHotbarJsonPath() {
-    return "hotbar";
+  default String getInventorySlotPath() {
+    return "inventory";
   }
 }

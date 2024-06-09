@@ -148,7 +148,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
             val gamePlayer = ComMiniPlayer.getPlayer(uuid);
             gamePlayer.setHideNameTag(true);
             gamePlayer.setCanFoodRegain(false);
-            gamePlayer.getGamePlayerData(BRPlayer.class).getHotbar().setItems(inv);
+            gamePlayer.getGamePlayerData(BRPlayer.class).getHotbarSlot().setItems(inv);
             for (int i = 9; i < 36; i++) {
               inv.setItem(i, barrier);
             }

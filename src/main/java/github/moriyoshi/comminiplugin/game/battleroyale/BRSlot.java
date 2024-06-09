@@ -1,10 +1,8 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
-import github.moriyoshi.comminiplugin.system.hotbar.HotbarSlot;
+import github.moriyoshi.comminiplugin.system.slot.HotbarSlot;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Collection;
-import java.util.List;
-import java.util.function.Supplier;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,16 +17,12 @@ public class BRSlot extends HotbarSlot {
   }
 
   @Override
-  protected List<Supplier<ItemStack>> getDefaults() {
-    return generate(
-        () -> new ItemBuilder(Material.BOW).unbreakable(true).build(),
-        () -> new ItemBuilder(Material.CROSSBOW).unbreakable(true).build(),
-        () -> new ItemBuilder(Material.ARROW).amount(20).build(),
-        () -> null,
-        () -> null,
-        () -> null,
-        () -> null,
-        () -> null,
-        () -> null);
+  protected ItemStack apply(int slot) {
+    return switch (slot) {
+      case 0 -> new ItemBuilder(Material.BOW).unbreakable(true).build();
+      case 1 -> new ItemBuilder(Material.CROSSBOW).unbreakable(true).build();
+      case 2 -> new ItemBuilder(Material.ARROW).amount(20).build();
+      default -> null;
+    };
   }
 }

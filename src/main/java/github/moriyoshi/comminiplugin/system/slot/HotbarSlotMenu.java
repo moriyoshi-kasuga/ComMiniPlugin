@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system.hotbar;
+package github.moriyoshi.comminiplugin.system.slot;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
@@ -17,7 +17,7 @@ public final class HotbarSlotMenu extends MenuHolder<ComMiniPlugin> {
   private int swapSlot = -1;
 
   public HotbarSlotMenu(final HotbarSlot slots) {
-    super(ComMiniPlugin.getPlugin(), 27, "<blue>インベントリーのカスタマイズ");
+    super(ComMiniPlugin.getPlugin(), 27, "<blue>ホットバーのカスタマイズ");
     this.slots = slots;
     set();
     for (int i = 9; i < 27; i++) {
@@ -39,21 +39,21 @@ public final class HotbarSlotMenu extends MenuHolder<ComMiniPlugin> {
   }
 
   private void set() {
-    var i = 0;
-    for (val item : slots.toItemStacks()) {
+    val iter = slots.toItemStacks().listIterator();
+    while (iter.hasNext()) {
+      val i = iter.nextIndex();
       setButton(
           i,
-          new ItemButton<>(item) {
+          new ItemButton<>(iter.next()) {
 
             @Override
             public void onClick(
                 @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
               if (holder.getInventory().equals(event.getClickedInventory())) {
-                update(((Player) event.getWhoClicked()), event.getSlot());
+                update(((Player) event.getWhoClicked()), i);
               }
             }
           });
-      i++;
     }
   }
 }

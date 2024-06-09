@@ -318,7 +318,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
           val gamePlayer = ComMiniPlayer.getPlayer(uuid);
           gamePlayer.setHunger(true);
           gamePlayer.setHideNameTag(true);
-          gamePlayer.getGamePlayerData(SSPlayer.class).getHotbar().setItems(inv);
+          gamePlayer.getGamePlayerData(SSPlayer.class).getInventorySlot().setItems(inv);
           p.setSaturation(6);
           p.setGameMode(GameMode.SURVIVAL);
           if (!BukkitUtil.randomTeleport(p, loc, (MAX_RADIUS_RANGE / 2) - 10)) {

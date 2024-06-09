@@ -9,17 +9,17 @@ import lombok.val;
 @Getter
 public class BRPlayer implements InterfaceGamePlayer, HotbarGamePlayer {
 
-  private BRSlot hotbar;
+  private BRSlot hotbarSlot;
 
   @Override
   public JsonObject generateSaveData() {
     val object = new JsonObject();
-    object.add(getHotBarPath(), getHotBarJson(hotbar));
+    object.add(getHotbarJsonPath(), getHotbarSlotJson(hotbarSlot));
     return object;
   }
 
   @Override
   public void generateLoadData(JsonObject object) {
-    this.hotbar = getHotBar(BRSlot.class, object.get(getHotBarPath()));
+    this.hotbarSlot = getHotbarSlot(BRSlot.class, object.get(getHotbarJsonPath()));
   }
 }
