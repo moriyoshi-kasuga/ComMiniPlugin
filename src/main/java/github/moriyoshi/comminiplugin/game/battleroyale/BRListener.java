@@ -59,6 +59,7 @@ public class BRListener implements AbstractGameListener<BRGame> {
 
   @Override
   public void death(PlayerDeathEvent e) {
+    deathSound(e);
     val p = e.getPlayer();
     p.setGameMode(GameMode.SPECTATOR);
     val game = getGame();

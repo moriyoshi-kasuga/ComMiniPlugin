@@ -47,7 +47,7 @@ public class AllOrNothingItem extends CustomItem {
       color = Color.fromRGB(0x898883);
       types.add(PotionEffectType.SLOWNESS);
       types.add(PotionEffectType.WEAKNESS);
-      types.add(PotionEffectType.BLINDNESS);
+      types.add(PotionEffectType.DARKNESS);
       types.add(PotionEffectType.GLOWING);
       sound = Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE;
     } else {

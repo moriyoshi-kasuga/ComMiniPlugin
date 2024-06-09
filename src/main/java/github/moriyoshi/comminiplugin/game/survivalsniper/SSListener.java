@@ -68,6 +68,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
 
   @Override
   public void death(final PlayerDeathEvent e) {
+    deathSound(e);
     final SSGame game = getGame();
     val p = e.getPlayer();
     val uuid = p.getUniqueId();

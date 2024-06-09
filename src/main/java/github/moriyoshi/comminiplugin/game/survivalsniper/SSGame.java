@@ -3,8 +3,8 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
-import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
+import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.system.game.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
@@ -164,7 +164,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   }
 
   @Override
-  public boolean innerStartGame(final Player player) {
+  public boolean predicateGame(final Player player) {
     if (mode == Mode.FFA) {
       if (2 > players.values().stream().filter(Triple::getFirst).toList().size()) {
         prefix.send(player, "<red>二人以上でしかプレイできません");
@@ -180,6 +180,11 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         return false;
       }
     }
+    return true;
+  }
+
+  @Override
+  public void innerStartGame() {
     new BukkitRunnable() {
 
       private int rest = 11;
@@ -210,7 +215,6 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         runPlayers(p -> Util.title(p, "<red><u>" + rest + "</u>秒後に始まります", null));
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
-    return true;
   }
 
   private void start() {

@@ -48,11 +48,16 @@ public abstract class AbstractGame implements InterfaceGame {
   public abstract MenuHolder<ComMiniPlugin> createGameMenu(Player player);
 
   public final boolean startGame(final Player player) {
-    if (!innerStartGame(player)) {
+    if (!predicateGame(player)) {
       return false;
     }
     hidePlayer();
-    runPlayers(this::setPlayerJoinGameIdentifier);
+    runPlayers(
+        p -> {
+          BukkitUtil.initializeGamePlayer(p);
+          setPlayerJoinGameIdentifier(p);
+        });
+    innerStartGame();
     isStarted = true;
     ComMiniPlugin.getPlugin().registerEvent(listener);
     return true;
@@ -70,7 +75,9 @@ public abstract class AbstractGame implements InterfaceGame {
 
   protected abstract void fieldInitialize(boolean isCreatingInstance);
 
-  protected abstract boolean innerStartGame(Player player);
+  protected abstract void innerStartGame();
+
+  protected abstract boolean predicateGame(Player player);
 
   protected abstract void innerFinishGame();
 

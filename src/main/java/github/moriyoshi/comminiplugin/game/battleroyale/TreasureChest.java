@@ -9,6 +9,7 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.val;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -20,13 +21,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class TreasureChest extends CustomModelBlock {
 
-  @Getter
-  private final int level;
+  @Getter private final int level;
   private BukkitRunnable task;
 
   public TreasureChest(Block block, BlockFace face, int level) {
     super(block, face);
     this.level = level;
+    display.setGlowing(true);
+    display.setGlowColorOverride(Color.fromRGB(0xCF2424));
+    display.setViewRange((float) 0.15);
     spawn();
   }
 
@@ -87,7 +90,7 @@ public class TreasureChest extends CustomModelBlock {
                       }
                     }
                   };
-              this.task.runTaskTimer(ComMiniPlugin.getPlugin(), 5L, 5L);
+              this.task.runTaskTimer(ComMiniPlugin.getPlugin(), 20L, 20L);
             });
   }
 }

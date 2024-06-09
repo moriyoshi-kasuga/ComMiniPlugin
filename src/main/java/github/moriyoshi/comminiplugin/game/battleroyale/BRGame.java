@@ -6,8 +6,8 @@ import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRField.SIGNAL;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
-import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
+import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.game.WinnerTypeGame;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
@@ -119,7 +119,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   }
 
   @Override
-  protected boolean innerStartGame(final Player player) {
+  protected boolean predicateGame(final Player player) {
     if (2 > players.values().stream().filter(v -> v).toList().size()) {
       prefix.send(player, "<red>二人以上でしかプレイできません");
       return false;
@@ -128,6 +128,11 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
       prefix.send(player, "<red>フィールドを選択してください");
       return false;
     }
+    return true;
+  }
+
+  @Override
+  protected void innerStartGame() {
     field.initialize();
 
     bossBar =
@@ -236,7 +241,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
             .progress((float) time / (float) START_DROP);
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
-    return true;
   }
 
   public void startContractionBorder() {

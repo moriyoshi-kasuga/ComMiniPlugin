@@ -75,9 +75,7 @@ public class BRTreasureItem extends CustomItem {
           ComMiniPrefix.SYSTEM.send(
               player,
               "<red>treasure values: "
-                  + values.stream()
-                      .map(p -> p.getFirst() + "lv")
-                      .collect(Collectors.joining(",")));
+                  + values.stream().map(p -> p.getFirst() + "lv").collect(Collectors.joining(",")));
           return;
         }
         ComMiniPrefix.SYSTEM.send(
@@ -90,6 +88,11 @@ public class BRTreasureItem extends CustomItem {
       }
       treasure.addLocation(block.getLocation(), player);
     }
+  }
+
+  @Override
+  public boolean canStack() {
+    return true;
   }
 
   @Override

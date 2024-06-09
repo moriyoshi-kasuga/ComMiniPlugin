@@ -4,8 +4,8 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSGame.Mode;
+import github.moriyoshi.comminiplugin.system.buttons.InventorySlotButton;
 import github.moriyoshi.comminiplugin.system.game.IGetGame;
-import github.moriyoshi.comminiplugin.system.buttons.HotbarSlotButton;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.Util;
@@ -53,14 +53,13 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
             getGame().leavePlayer((Player) event.getWhoClicked());
           }
         });
-    setButton(4, new HotbarSlotButton(SSPlayer.class));
+    setButton(4, new InventorySlotButton(SSPlayer.class));
   }
 
   private ItemButton<?> createTeamButton(ChatColor color) {
     val list =
         getGame().players.entrySet().stream()
-            .filter(
-                entry -> entry.getValue().getThird() == color)
+            .filter(entry -> entry.getValue().getThird() == color)
             .map(entry -> "<gray> " + Bukkit.getOfflinePlayer(entry.getKey()).getName())
             .collect(Collectors.toCollection(ArrayList::new));
     if (list.isEmpty()) {

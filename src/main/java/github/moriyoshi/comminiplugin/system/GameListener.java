@@ -116,16 +116,6 @@ public class GameListener implements Listener {
             !player.equals(p)
                 && ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameIdentifier() != null,
         List.of(p.getUniqueId()));
-    if (GameSystem.isIn()
-        && GameSystem.getGame().isGamePlayer(p)
-        && GameSystem.getGame().listener.join(e)) {
-      return;
-    }
-    val minigame = getMiniGame(p.getUniqueId());
-    if (minigame != null) {
-      minigame.listener.join(e);
-      return;
-    }
     new BukkitRunnable() {
 
       @Override
@@ -197,9 +187,10 @@ public class GameListener implements Listener {
   @EventHandler
   public void damageByEntity(EntityDamageByEntityEvent e) {
     if (e.getDamager() instanceof Projectile projectile) {
-      Optional.ofNullable(projectileDamageMap.remove(projectile.getUniqueId()))
-          .ifPresent(consumer -> consumer.accept(projectile, e));
-      return;
+      val consumer = projectileDamageMap.remove(projectile.getUniqueId());
+      if (consumer != null) {
+        consumer.accept(projectile, e);
+      }
     }
 
     val attacker = getEntityToPlayer(e.getDamager());
@@ -212,7 +203,10 @@ public class GameListener implements Listener {
         return;
       }
       val minigame = getMiniGame(attacker.getUniqueId());
-      if (minigame != null && minigame.isGamePlayer(attacker) && minigame.isGamePlayer(victim)) {
+      if (minigame != null
+          && minigame == getMiniGame(victim.getUniqueId())
+          && minigame.isGamePlayer(attacker)
+          && minigame.isGamePlayer(victim)) {
         minigame.listener.damageByEntity(e, attacker, victim);
         return;
       }

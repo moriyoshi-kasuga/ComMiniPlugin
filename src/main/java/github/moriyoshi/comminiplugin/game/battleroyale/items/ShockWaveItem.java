@@ -1,12 +1,14 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.JumpState;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -29,12 +31,15 @@ public class ShockWaveItem extends CustomItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
-    val player = e.getPlayer();
+  public void damageEntity(EntityDamageByEntityEvent e, Player player) {
+    spawn(player, true);
+  }
+
+  private void spawn(Player player, boolean isLeftClick) {
     val loc = player.getLocation();
     val world = loc.getWorld();
     useItemAmount();
-    if (e.getAction().isLeftClick()) {
+    if (isLeftClick) {
       val vec = loc.toVector();
       loc.getNearbyPlayers(15, p -> !player.equals(p))
           .forEach(
@@ -52,7 +57,13 @@ public class ShockWaveItem extends CustomItem {
   }
 
   @Override
+  public void interact(PlayerInteractEvent e) {
+    spawn(e.getPlayer(), e.getAction().isLeftClick());
+  }
+
+  @Override
   public boolean canStack() {
     return true;
   }
 }
+

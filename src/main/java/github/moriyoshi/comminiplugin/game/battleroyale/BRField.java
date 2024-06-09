@@ -397,7 +397,6 @@ public class BRField {
           {
             add(
                 new Pool(1, 0, 2)
-                    .add(new Entry(10, () -> new ItemStack(Material.ENDER_PEARL)))
                     .add(new Entry(10, () -> new VampireBowItem().getItem()))
                     .add(new Entry(10, () -> new RecallClockItem().getItem()))
                     .add(new Entry(10, () -> new InvisibleCloakItem().getItem()))

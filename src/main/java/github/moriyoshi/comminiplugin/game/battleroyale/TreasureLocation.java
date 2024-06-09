@@ -133,6 +133,7 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
               pairs.forEach(pair -> random.add(pair.getSecond(), pair.getFirst()));
               val value = random.next();
               if (value == 0) {
+                loc.getBlock().setType(Material.AIR);
                 return;
               }
               new TreasureChest(
