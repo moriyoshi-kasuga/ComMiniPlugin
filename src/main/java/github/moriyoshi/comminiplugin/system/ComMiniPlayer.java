@@ -25,6 +25,7 @@ import org.bukkit.scoreboard.Team;
 public final class ComMiniPlayer extends JsonAPI {
 
   private static final HashMap<UUID, ComMiniPlayer> players = new HashMap<>();
+  private static Scoreboard scoreboard;
   private static Team hidenametag;
   private final UUID uuid;
   private final Map<Class<? extends InterfaceGamePlayer>, InterfaceGamePlayer> gamePlayerDatas =
@@ -72,11 +73,9 @@ public final class ComMiniPlayer extends JsonAPI {
   }
 
   public static void gameInitialize() {
-    final Scoreboard score = Bukkit.getScoreboardManager().getNewScoreboard();
-
-    val t = score.registerNewTeam("commini_hidenametag");
-    t.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-    hidenametag = t;
+    scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+    hidenametag = scoreboard.registerNewTeam("commini_hidenametag");
+    hidenametag.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
   }
 
   public static ComMiniPlayer getPlayer(final UUID uuid) {
@@ -96,26 +95,28 @@ public final class ComMiniPlayer extends JsonAPI {
       MiniGameSystem.getMiniGame(joinGameIdentifier).leavePlayer(Bukkit.getPlayer(uuid));
     }
     this.joinGameIdentifier = null;
-    val name = Bukkit.getOfflinePlayer(this.uuid).getName();
-    if (name == null) {
+    val player = Bukkit.getPlayer(uuid);
+    if (player == null) {
       return;
     }
-    hidenametag.removeEntry(name);
+    hidenametag.removeEntry(player.getName());
   }
 
   public boolean isHideNameTag() {
-    val name = Bukkit.getOfflinePlayer(this.uuid).getName();
-    if (name == null) {
+    val player = Bukkit.getPlayer(uuid);
+    if (player == null) {
       return false;
     }
-    return hidenametag.hasEntry(name);
+    return hidenametag.hasEntry(player.getName());
   }
 
   public void setHideNameTag(final boolean isHideNameTag) {
-    val name = Bukkit.getOfflinePlayer(this.uuid).getName();
-    if (name == null) {
+    val player = Bukkit.getPlayer(uuid);
+    if (player == null) {
       return;
     }
+    player.setScoreboard(scoreboard);
+    val name = player.getName();
     if (isHideNameTag) {
       hidenametag.addEntry(name);
     } else {
