@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.system;
 
+import lombok.val;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -7,20 +8,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public interface InterfaceGameListener extends Listener {
-
-  /**
-   * プレイヤーがサーバーに入ったら呼び出されます (すべてゲームのプレイヤーだけです) (このメゾットはゲーム開始前でも呼ばれます,initialize時からです)
-   *
-   * @param e event
-   * @return false で そのプレイヤーを初期化します(とくに処理がない場合にfalseを返してロビーにテレポなどをします)
-   */
-  default boolean join(final PlayerJoinEvent e) {
-    return false;
-  }
 
   /**
    * プレイヤーがサーバーから抜けたら呼び出されます (すべてゲームのプレイヤーだけです) (このメゾットはゲーム開始前でも呼ばれます,initialize時からです)
@@ -35,6 +25,20 @@ public interface InterfaceGameListener extends Listener {
    * @param e event
    */
   default void death(final PlayerDeathEvent e) {}
+
+  default void deathSound(final PlayerDeathEvent event) {
+    if (event.getDeathSound() != null && event.getDeathSoundCategory() != null) {
+      val victim = event.getPlayer();
+      victim
+          .getWorld()
+          .playSound(
+              victim.getLocation(),
+              event.getDeathSound(),
+              event.getDeathSoundCategory(),
+              event.getDeathSoundVolume(),
+              event.getDeathSoundPitch());
+    }
+  }
 
   /**
    * プレイヤーがダメージを受けた時です (すべてゲームのプレイヤーだけです)
