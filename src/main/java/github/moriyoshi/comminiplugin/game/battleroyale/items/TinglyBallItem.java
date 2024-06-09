@@ -14,6 +14,8 @@ import org.bukkit.SoundCategory;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 public class TinglyBallItem extends CustomItem {
@@ -42,9 +44,9 @@ public class TinglyBallItem extends CustomItem {
         player.launchProjectile(
             Snowball.class,
             player.getLocation().getDirection().multiply(3),
-            snowball -> snowball.setItem(
-                new ItemBuilder(Material.PHANTOM_MEMBRANE).customModelData(12).build())
-        );
+            snowball ->
+                snowball.setItem(
+                    new ItemBuilder(Material.PHANTOM_MEMBRANE).customModelData(12).build()));
     GameListener.addProjectileHitListener(
         projectile.getUniqueId(),
         (entity, event) -> {
@@ -64,7 +66,11 @@ public class TinglyBallItem extends CustomItem {
                   true);
           loc.getNearbyPlayers(3, p -> p.getGameMode() != GameMode.SPECTATOR)
               .forEach(
-                  p -> BukkitUtil.disableMove(p, 40));
+                  p -> {
+                    BukkitUtil.disableMove(p, 40);
+                    p.addPotionEffect(
+                        new PotionEffect(PotionEffectType.BLINDNESS, 3 * 20, 0, true, false));
+                  });
         });
   }
 
