@@ -6,8 +6,10 @@ import github.moriyoshi.comminiplugin.game.battleroyale.items.BackpackItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.BraveShieldItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.CurryBreadItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.HKPRItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.HealRingItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.InvisibleCloakItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.MagicMirrorItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.NauseaBallItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.PhoenixFeatherItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.RecallClockItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.ScannerCompassItem;
@@ -37,6 +39,8 @@ import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -159,8 +163,11 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool(1, 0, 2)
+                new Pool(1, 0, 3)
                     .add(new Entry(10, () -> new CurryBreadItem().getItem()))
+                    .add(new Entry(10, () -> new HealRingItem().getItem()))
+                    .add(new Entry(10, () -> new NauseaBallItem().getItem()))
+                    .add(new Entry(10, () -> new TinglyBallItem().getItem()))
                     .add(
                         new Entry(
                             10,
@@ -184,7 +191,54 @@ public class BRField {
                                 new ItemBuilder(Material.POTION)
                                     .changeMeta(
                                         (Consumer<PotionMeta>)
-                                            meta -> meta.setBasePotionType(PotionType.REGENERATION))
+                                            meta -> {
+                                              meta.addCustomEffect(
+                                                  new PotionEffect(
+                                                      PotionEffectType.SPEED, 30 * 20, 0),
+                                                  true);
+                                            })
+                                    .build()))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.POTION)
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> meta.setBasePotionType(PotionType.NIGHT_VISION))
+                                    .build()))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.SPLASH_POTION)
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> meta.setBasePotionType(PotionType.HEALING))
+                                    .build()))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.SPLASH_POTION)
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> meta.setBasePotionType(PotionType.WATER))
+                                    .build()))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.POTION)
+                                    .name("<red>!Regeneration!")
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> {
+                                              meta.addCustomEffect(
+                                                  new PotionEffect(
+                                                      PotionEffectType.REGENERATION, 30 * 20, 0),
+                                                  true);
+                                            })
                                     .build()))
                     .add(new Entry(10, () -> new ItemStack(Material.SPECTRAL_ARROW)))
                     .add(
@@ -204,8 +258,7 @@ public class BRField {
                                     .changeMeta(
                                         (Consumer<PotionMeta>)
                                             meta -> meta.setBasePotionType(PotionType.POISON))
-                                    .build()))
-                    .add(new Entry(10, () -> new TinglyBallItem().getItem())));
+                                    .build())));
             add(new Pool().add(new Entry(arrows::next)));
           }
         });
@@ -221,6 +274,31 @@ public class BRField {
                     .add(new Entry(10, () -> new ShockWaveItem().getItem()))
                     .add(new Entry(10, () -> new TinglyBallItem().getItem()))
                     .add(new Entry(10, () -> new ItemStack(Material.SPYGLASS)))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.SPLASH_POTION)
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta ->
+                                                meta.setBasePotionType(PotionType.STRONG_HEALING))
+                                    .build()))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.SPLASH_POTION)
+                                    .name("<red>!POWER!")
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> {
+                                              meta.addCustomEffect(
+                                                  new PotionEffect(
+                                                      PotionEffectType.STRENGTH, 30 * 20, 0),
+                                                  true);
+                                            })
+                                    .build()))
                     .add(
                         new Entry(
                             10,
@@ -265,6 +343,36 @@ public class BRField {
                             () ->
                                 new ItemBuilder(Material.FIREWORK_ROCKET)
                                     .changeMeta((Consumer<FireworkMeta>) meta -> meta.setPower(3))
+                                    .build()))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.SPLASH_POTION)
+                                    .name("<green>!POISON!")
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> {
+                                              meta.addCustomEffect(
+                                                  new PotionEffect(
+                                                      PotionEffectType.POISON, 10 * 20, 0),
+                                                  true);
+                                            })
+                                    .build()))
+                    .add(
+                        new Entry(
+                            10,
+                            () ->
+                                new ItemBuilder(Material.SPLASH_POTION)
+                                    .name("<gray>!WEAKNESS!")
+                                    .changeMeta(
+                                        (Consumer<PotionMeta>)
+                                            meta -> {
+                                              meta.addCustomEffect(
+                                                  new PotionEffect(
+                                                      PotionEffectType.WEAKNESS, 10 * 20, 0),
+                                                  true);
+                                            })
                                     .build()))
                     .add(
                         new Entry(
