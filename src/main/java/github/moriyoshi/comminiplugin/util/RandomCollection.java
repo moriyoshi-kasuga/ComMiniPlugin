@@ -1,13 +1,15 @@
 package github.moriyoshi.comminiplugin.util;
 
-import java.util.NavigableMap;
+import github.moriyoshi.comminiplugin.util.tuple.Pair;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-import java.util.TreeMap;
+import lombok.val;
 
 public class RandomCollection<E> {
-  private final NavigableMap<Double, E> map = new TreeMap<>();
+  private final List<Pair<Double, E>> list = new ArrayList<>();
   private final Random random;
-  private double total = 0;
+  private double total = 0.0;
 
   public RandomCollection() {
     this(new Random());
@@ -19,17 +21,30 @@ public class RandomCollection<E> {
 
   public RandomCollection<E> add(double weight, E result) {
     if (weight <= 0) return this;
+    list.add(Pair.of(weight, result));
     total += weight;
-    map.put(total, result);
     return this;
   }
 
   public E next() {
     double value = random.nextDouble() * total;
-    return map.higherEntry(value).getValue();
+    for (val pair : list) {
+      value -= pair.getFirst();
+      if (value < 0) return pair.getSecond();
+    }
+    return list.get(list.size() - 1).getSecond();
   }
 
   public boolean remove(E e) {
-    return map.values().remove(e);
+    val iter = list.iterator();
+    while (iter.hasNext()) {
+      val pair = iter.next();
+      if (pair.getSecond().equals(e)) {
+        total -= pair.getFirst();
+        iter.remove();
+        return true;
+      }
+    }
+    return false;
   }
 }
