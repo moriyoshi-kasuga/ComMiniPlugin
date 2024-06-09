@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import org.bukkit.plugin.Plugin;
 
@@ -22,7 +24,7 @@ public abstract class JsonAPI extends FileAPI<JsonElement> {
     super(plugin, path, name);
   }
 
-  private boolean correct = false;
+  @Setter @Getter private boolean correct;
 
   /**
    * @return ファイルの拡張子
@@ -35,6 +37,7 @@ public abstract class JsonAPI extends FileAPI<JsonElement> {
   /** ファイルからデータの読み込み */
   @Override
   public void loadData() {
+    setCorrect(false);
     try {
       FileReader fileReader = new FileReader(file);
       if (file.length() == 0) {
@@ -46,20 +49,19 @@ public abstract class JsonAPI extends FileAPI<JsonElement> {
     } catch (IOException ignored) {
       generateLoadData(new JsonObject());
     }
-    correct = true;
+    setCorrect(true);
   }
 
   /** データをファイルに保存 */
   @Override
   public void saveFile() {
-    if (!correct) {
-      return;
-    }
-    try (Writer writer = new FileWriter(file)) {
-      val obj = generateSaveData();
-      ComMiniPlugin.gson.toJson(obj, writer);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    if (isCorrect()) {
+      try (Writer writer = new FileWriter(file)) {
+        val obj = generateSaveData();
+        ComMiniPlugin.gson.toJson(obj, writer);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 
