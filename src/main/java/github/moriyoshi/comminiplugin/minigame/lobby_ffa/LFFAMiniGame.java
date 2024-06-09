@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.minigame.lobby_ffa;
 import github.moriyoshi.comminiplugin.object.LeaveMiniGameItem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.minigame.AbstractMiniGame;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import java.util.Map;
 import java.util.UUID;
@@ -32,9 +33,12 @@ public class LFFAMiniGame extends AbstractMiniGame {
   public void addPlayer(Player player) {
     val uuid = player.getUniqueId();
     players.put(uuid, 0);
-    ComMiniPlayer.getPlayer(uuid).setCanFoodRegain(false).setJoinGameIdentifier(getKey());
+    BukkitUtil.initializeGamePlayer(player);
+    ComMiniPlayer.getPlayer(uuid)
+        .setCanFoodRegain(false)
+        .setJoinGameIdentifier(getKey())
+        .setHideNameTag(true);
     val inv = player.getInventory();
-    inv.clear();
     inv.setItem(0, new LFFAGun().getItem());
     inv.setItem(8, new LeaveMiniGameItem().getItem());
   }

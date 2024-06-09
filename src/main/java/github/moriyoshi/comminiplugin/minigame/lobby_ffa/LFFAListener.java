@@ -28,6 +28,7 @@ public class LFFAListener implements AbstractMiniGameListener<LFFAMiniGame> {
 
   @Override
   public void death(PlayerDeathEvent e) {
+    deathSound(e);
     val attacker = e.getDamageSource().getDirectEntity();
     if (attacker instanceof Player player) {
       val kill = getMiniGame().incrementKill(player);
@@ -40,8 +41,8 @@ public class LFFAListener implements AbstractMiniGameListener<LFFAMiniGame> {
                   + "! <gold><b>"
                   + kill
                   + " KILL STREAK!");
-      player.heal(2);
-      getMiniGame().prefix.send(player, "<green>+2HP (1 heart)");
+      player.heal(10);
+      getMiniGame().prefix.send(player, "<green>half healed by kill streak!");
     }
     new BukkitRunnable() {
 

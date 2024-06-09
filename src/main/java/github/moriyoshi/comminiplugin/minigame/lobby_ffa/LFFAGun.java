@@ -122,20 +122,15 @@ public class LFFAGun extends CustomItem implements CooldownItem {
 
   @Override
   public void interact(PlayerInteractEvent e) {
-    e.setCancelled(true);
     if (e.getAction().isRightClick()) {
       return;
     }
+    e.setCancelled(true);
     spawn(e.getPlayer());
   }
 
   @Override
   public void endCountDown() {
     new ItemBuilder(getItem()).type(Material.PHANTOM_MEMBRANE);
-  }
-
-  @Override
-  public boolean canShowing() {
-    return false;
   }
 }
