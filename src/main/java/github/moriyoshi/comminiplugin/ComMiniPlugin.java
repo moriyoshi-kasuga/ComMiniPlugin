@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.tr7zw.changeme.nbtapi.NBTContainer;
+import dev.jorel.commandapi.AbstractCommandAPICommand;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -31,7 +32,6 @@ import org.bukkit.Location;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -89,45 +89,11 @@ public final class ComMiniPlugin extends JavaPlugin {
                 .forPackage("github.moriyoshi.comminiplugin")
                 .filterInputsBy(
                     new FilterBuilder()
-                        .excludePackage("github.moriyoshi.comminiplugin.dependencies")));
+                        .excludePackage("github.moriyoshi.comminiplugin.dependencies")
+                        .excludePackage("github.moriyoshi.comminiplugin.system")));
     CustomItem.registers(reflections);
     CustomBlock.registers(reflections);
-    val commands = new Reflections("github.moriyoshi.comminiplugin.command");
-    ReflectionUtil.forEachAllClass(
-        commands,
-        CommandAPICommand.class,
-        command -> {
-          try {
-            val constructor = command.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            registerCommand(constructor.newInstance());
-          } catch (InstantiationException
-              | IllegalAccessException
-              | IllegalArgumentException
-              | InvocationTargetException
-              | NoSuchMethodException
-              | SecurityException e) {
-            e.printStackTrace();
-          }
-        });
-    ReflectionUtil.forEachAllClass(
-        commands,
-        CommandTree.class,
-        command -> {
-          try {
-            val constructor = command.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            registerCommand(constructor.newInstance());
-          } catch (InstantiationException
-              | IllegalAccessException
-              | IllegalArgumentException
-              | InvocationTargetException
-              | NoSuchMethodException
-              | SecurityException e) {
-            e.printStackTrace();
-          }
-        });
-
+    registerCommand(new Reflections("github.moriyoshi.comminiplugin.command"));
     CustomBlockData.getInstance();
     ComMiniPlayer.gameInitialize();
     GameSystem.load();
@@ -140,37 +106,38 @@ public final class ComMiniPlugin extends JavaPlugin {
     GameSystem.finalGame();
     MiniGameSystem.clear();
     CommandAPI.onDisable();
+
     CustomBlockData.getInstance().saveFile();
     LocationsCommands.getManager().saveFile();
 
-    HandlerList.unregisterAll(guiListener);
-    HandlerList.unregisterAll(GameListener.getInstance());
-    HandlerList.unregisterAll(CustomListener.getInstance());
-
     BukkitUtil.clear();
-
     glowingEntities.disable();
     glowingBlocks.disable();
   }
 
-  /**
-   * {@link CommandAPICommand} を登録するメゾット
-   *
-   * @param commandAPICommand instance
-   */
-  public void registerCommand(final CommandAPICommand commandAPICommand) {
-    commandAPICommand.register();
-    ComMiniPrefix.SYSTEM.logDebug("<yellow>REGISTER COMMAND " + commandAPICommand.getName());
-  }
-
-  /**
-   * {@link CommandTree} を登録するメゾット
-   *
-   * @param commandTree instance
-   */
-  public void registerCommand(final CommandTree commandTree) {
-    commandTree.register();
-    ComMiniPrefix.SYSTEM.logDebug("<yellow>REGISTER COMMAND " + commandTree.getName());
+  public void registerCommand(final Reflections reflection) {
+    ReflectionUtil.forEachAllClass(
+        reflection,
+        AbstractCommandAPICommand.class,
+        command -> {
+          if (command.equals(CommandAPICommand.class) || command.equals(CommandTree.class)) {
+            return;
+          }
+          try {
+            val constructor = command.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            val instance = constructor.newInstance();
+            instance.register();
+            ComMiniPrefix.SYSTEM.logDebug("<yellow>REGISTER COMMAND " + instance.getName());
+          } catch (InstantiationException
+              | IllegalAccessException
+              | IllegalArgumentException
+              | InvocationTargetException
+              | NoSuchMethodException
+              | SecurityException e) {
+            e.printStackTrace();
+          }
+        });
   }
 
   /**
