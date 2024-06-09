@@ -73,13 +73,17 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                         (item, e) -> {
                           if (item == null || item.isEmpty()) {
                             ComMiniPrefix.SYSTEM.send(
-                                e.getWhoClicked(), "<red>please input block material (ignore air)");
+                                e.getWhoClicked(),
+                                "<red>please input block material (ignore air,structor void if you"
+                                    + " want to use it.)");
                             return;
                           }
                           val material = item.getType();
                           if (material.isEmpty() || !material.isBlock()) {
                             ComMiniPrefix.SYSTEM.send(
-                                e.getWhoClicked(), "<red>please input block material (ignore air)");
+                                e.getWhoClicked(),
+                                "<red>please input block material (ignore air,structor void if you"
+                                    + " want to use it.)");
                             return;
                           }
                           setConsumer(block -> block.setMaterial(material), isIncludeLinked);

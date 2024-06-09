@@ -10,6 +10,7 @@ import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +26,7 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
         new ItemBuilder(game.material)
             .name(game.name)
             .lore(game.description)
+            .flags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
             .addLore("", "<gray>クリックでゲームメニューを開く")
             .build());
   }

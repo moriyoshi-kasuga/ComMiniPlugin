@@ -6,8 +6,6 @@ import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
 import github.moriyoshi.comminiplugin.game.battleroyale.TreasureChest;
 import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.minigame.lobby_ffa.LFFAMiniGame;
-import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +29,7 @@ public class TestItem extends CustomItem {
   @Override
   public void interact(PlayerInteractEvent e) {
     e.setCancelled(true);
-    MiniGameSystem.getUniqueMiniGame("LFFA", LFFAMiniGame.class).addPlayer(e.getPlayer());
+    treasure(e);
   }
 
   private void treasure(PlayerInteractEvent e) {
