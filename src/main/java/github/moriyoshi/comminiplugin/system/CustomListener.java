@@ -190,34 +190,25 @@ public class CustomListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void inventoryClick(final InventoryClickEvent e) {
     val items = Arrays.asList(e.getCursor(), e.getCurrentItem());
+    val typeFlag =
+        switch (e.getView().getTopInventory().getType()) {
+          case CRAFTING, WORKBENCH -> false;
+          default -> true;
+        };
     for (val item : items) {
       if (ItemBuilder.getCustomItemFlag(item, CustomItemFlag.DISABLE_MOVE_INV).orElse(false)) {
         e.setCancelled(true);
         return;
       }
+      if (typeFlag
+          && ItemBuilder.getCustomItemFlag(item, CustomItemFlag.DISABLE_MOVE_OTHER_INV)
+              .orElse(false)) {
+        e.setCancelled(true);
+        return;
+      }
     }
-    val customs =
-        items.stream()
-            .filter(item -> !(item == null || item.isEmpty()))
-            .map(CustomItem::getCustomItem)
-            .filter(Objects::nonNull)
-            .toList();
-    if (customs.isEmpty()) {
-      return;
-    }
-    if (customs.stream()
-        .anyMatch(
-            i -> {
-              val type = e.getView().getTopInventory().getType();
-              return switch (type) {
-                case CRAFTING, WORKBENCH -> false;
-                default -> !i.canMoveOtherInv(e);
-              };
-            })) {
-      e.setCancelled(true);
-      return;
-    }
-    for (val customItem : customs) {
+    for (val customItem :
+        items.stream().map(CustomItem::getCustomItem).filter(Objects::nonNull).toList()) {
       customItem.clickItem(e);
       if (e.isCancelled()) {
         return;

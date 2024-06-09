@@ -5,7 +5,6 @@ import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -34,10 +33,5 @@ public class LeaveMiniGameItem extends CustomItem {
       return;
     }
     BukkitUtil.initializePlayer(e.getPlayer());
-  }
-
-  @Override
-  public boolean canMoveOtherInv(final InventoryClickEvent e) {
-    return false;
   }
 }

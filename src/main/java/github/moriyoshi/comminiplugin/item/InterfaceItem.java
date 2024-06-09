@@ -50,10 +50,6 @@ public interface InterfaceItem {
     return false;
   }
 
-  default boolean canMoveOtherInv(final InventoryClickEvent e) {
-    return true;
-  }
-
   /**
    * {@code CustomItemsCommand } に載せるかどうか?
    *

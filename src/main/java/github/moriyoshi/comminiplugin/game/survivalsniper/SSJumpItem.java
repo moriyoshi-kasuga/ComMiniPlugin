@@ -12,7 +12,6 @@ import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,6 +32,7 @@ public class SSJumpItem extends CustomItem implements CooldownItem {
             .lore(DESCRIPTION)
             .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
             .customItemFlag(CustomItemFlag.DISABLE_ITEM_SPAWN, true)
+            .customItemFlag(CustomItemFlag.DISABLE_MOVE_OTHER_INV, true)
             .build());
   }
 
@@ -83,10 +83,4 @@ public class SSJumpItem extends CustomItem implements CooldownItem {
   public void endCountDown() {
     new ItemBuilder(getItem()).type(Material.PHANTOM_MEMBRANE);
   }
-
-  @Override
-  public boolean canMoveOtherInv(final InventoryClickEvent e) {
-    return false;
-  }
 }
-

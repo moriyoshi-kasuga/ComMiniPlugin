@@ -115,7 +115,7 @@ public class LFFAGun extends CustomItem implements CooldownItem {
     val dir = eyeLoc.getDirection().multiply(0.5);
     for (int i = 1; i < (effectRange == -1 ? MAX_LENGTH : effectRange) * 2; i += 1) {
       eyeLoc.add(dir);
-      world.spawnParticle(Particle.WAX_OFF, eyeLoc, 1, 0, 0, 0, 1, null, true);
+      world.spawnParticle(Particle.ASH, eyeLoc, 1, 0, 0, 0, 1, null, true);
     }
     new ItemBuilder(getItem()).type(Material.CLOCK);
   }

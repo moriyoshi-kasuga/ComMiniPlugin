@@ -5,7 +5,6 @@ import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +17,8 @@ public class MenuItem extends CustomItem {
             .name("<red>Menu")
             .glow()
             .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
+            .customItemFlag(CustomItemFlag.DISABLE_ITEM_SPAWN, true)
+            .customItemFlag(CustomItemFlag.DISABLE_MOVE_OTHER_INV, true)
             .build());
   }
 
@@ -32,10 +33,5 @@ public class MenuItem extends CustomItem {
       return;
     }
     MenuCommand.open(e.getPlayer());
-  }
-
-  @Override
-  public boolean canMoveOtherInv(final InventoryClickEvent e) {
-    return false;
   }
 }
