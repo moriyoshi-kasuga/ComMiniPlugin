@@ -27,7 +27,6 @@ public final class ResourcePackUtil {
   public static String getComMiniResourcePackHash() {
     String hash;
     try {
-      System.setProperty("http.keepAlive", "false");
       HttpURLConnection connection =
           (HttpURLConnection)
               new URI(
@@ -60,8 +59,6 @@ public final class ResourcePackUtil {
     } catch (Exception ex) {
       ex.printStackTrace();
       hash = "2849ace6aa689a8c610907a41c03537310949294";
-    } finally {
-      System.setProperty("http.keepAlive", "true");
     }
     return hash;
   }
