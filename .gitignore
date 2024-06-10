@@ -125,5 +125,6 @@ Makefile
 bin/
 
 #utilties
-copy.sh
 .factorypath
+ComMiniServer/
+backups/

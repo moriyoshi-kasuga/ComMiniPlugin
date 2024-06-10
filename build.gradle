@@ -88,25 +88,13 @@ tasks.register('copyPlugin') {
     dependsOn reobfJar
     doLast {
         if (file("./build/libs/ComMiniPlugin-${version}.jar").exists()) {
-            if (file('./copy.bat').exists()) {
-                exec {
-                    workingDir '.'
-                    executable './copy.bat'
-                    args "${version}"
-                }
-            } else {
-                if (file('./copy.sh').exists()) {
-                    exec {
-                        workingDir '.'
-                        executable './copy.sh'
-                        args "${version}"
-                    }
-                } else {
-                    println("not found bat and sh file")
-                }
+            exec {
+                workingDir '.'
+                executable './run.sh'
+                args "${version}"
             }
         } else {
-            println("please build")
+            println("Once again, please.")
         }
     }
 }
@@ -116,25 +104,13 @@ tasks.register('runPlugin') {
     dependsOn reobfJar
     doLast {
         if (file("./build/libs/ComMiniPlugin-${version}.jar").exists()) {
-            if (file('./copy.bat').exists()) {
-                exec {
-                    workingDir '.'
-                    executable './copy.bat'
-                    args "${version}", '--server'
-                }
-            } else {
-                if (file('./copy.sh').exists()) {
-                    exec {
-                        workingDir '.'
-                        executable './copy.sh'
-                        args "${version}", '--server'
-                    }
-                } else {
-                    println("not found bat and sh file")
-                }
+            exec {
+                workingDir '.'
+                executable './run.sh'
+                args "${version}", 'run'
             }
         } else {
-            println("please build")
+            println("Once again, please.")
         }
     }
 }

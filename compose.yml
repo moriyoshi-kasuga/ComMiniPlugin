@@ -1,0 +1,21 @@
+services:
+  mc:
+    image: itzg/minecraft-server
+    tty: true
+    stdin_open: true
+    container_name: mc
+    ports:
+      - "25565:25565"
+      - "24454:24454"
+    environment:
+      EULA: "TRUE"
+      TYPE: PAPER
+      MEMORY: 4G
+      TZ: Asia/Tokyo
+      ALLOW_FLIGHT: true
+      DIFFICULTY: normal
+      VIEW_DISTANCE: 16
+      SPAWN_PROTECTION: 0
+      ENABLE_COMMAND_BLOCK: true
+    volumes:
+      - ./ComMiniServer:/data
