@@ -26,7 +26,7 @@ public class PhoenixFeatherItem extends CustomItem implements PlayerCooldownItem
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e) {
     val player = e.getPlayer();
     if (e.getAction().isLeftClick()) {
       return;

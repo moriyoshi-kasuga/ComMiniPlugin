@@ -26,7 +26,7 @@ public class SSEscapeDeep extends CustomItem {
   }
 
   @Override
-  public void interact(final PlayerInteractEvent e) {
+  public void interactMainHand(final PlayerInteractEvent e) {
     if (e.getAction().isLeftClick()) {
       e.setCancelled(false);
       return;

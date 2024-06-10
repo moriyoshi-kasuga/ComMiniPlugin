@@ -27,7 +27,7 @@ public class TestItem extends CustomItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e) {
     e.setCancelled(true);
     treasure(e);
   }

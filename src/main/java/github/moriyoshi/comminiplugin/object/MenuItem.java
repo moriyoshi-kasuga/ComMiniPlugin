@@ -27,7 +27,7 @@ public class MenuItem extends CustomItem {
   }
 
   @Override
-  public void interact(final PlayerInteractEvent e) {
+  public void interactMainHand(final PlayerInteractEvent e) {
     e.setCancelled(true);
     if (e.getAction().isLeftClick()) {
       return;

@@ -114,7 +114,11 @@ public class CustomListener implements Listener {
       customBlockInteract(e);
       return;
     }
-    custom.interact(e);
+    if (e.getHand() == EquipmentSlot.OFF_HAND) {
+      custom.interactOffHand(e);
+    } else {
+      custom.interactMainHand(e);
+    }
     if (e.useInteractedBlock() != Result.DENY) {
       customBlockInteract(e);
     }
@@ -147,7 +151,11 @@ public class CustomListener implements Listener {
     if (block == null) {
       return false;
     }
-    block.interact(e);
+    if (e.getHand() == EquipmentSlot.OFF_HAND) {
+      block.interactOffHand(e);
+    } else {
+      block.interactMainHand(e);
+    }
     return true;
   }
 

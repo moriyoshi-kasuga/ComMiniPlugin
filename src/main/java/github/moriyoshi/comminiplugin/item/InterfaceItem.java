@@ -98,9 +98,7 @@ public interface InterfaceItem {
   @NotNull
   ItemStack getItem();
 
-  /**
-   * アイテムを持っている間だけ1tickごとにする処理です
-   */
+  /** アイテムを持っている間だけ1tickごとにする処理です */
   default void heldItem(final Player player) {}
 
   /**
@@ -173,7 +171,14 @@ public interface InterfaceItem {
    *
    * @param e event
    */
-  default void interact(final PlayerInteractEvent e) {}
+  default void interactMainHand(final PlayerInteractEvent e) {}
+
+  /**
+   * デフォルトではeventはキャンセルされますが {@code e.setCancelled(false)} をすることでキャンセルするのを防げます
+   *
+   * @param e event
+   */
+  default void interactOffHand(final PlayerInteractEvent e) {}
 
   /**
    * ほかのアイテムからこのカスタムアイテムにswapした時の処理

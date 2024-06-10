@@ -61,7 +61,7 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e) {
     if (e.getAction().isLeftClick()) {
       e.setCancelled(true);
       return;

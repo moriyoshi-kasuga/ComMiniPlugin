@@ -36,7 +36,7 @@ public class BRTreasureItem extends CustomItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e) {
     e.setCancelled(true);
     val player = e.getPlayer();
     if (!GameSystem.isIn(BRGame.class)) {

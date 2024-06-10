@@ -223,7 +223,14 @@ public abstract class CustomBlock {
    *
    * @param e event
    */
-  public void interact(PlayerInteractEvent e) {}
+  public void interactMainHand(PlayerInteractEvent e) {}
+  
+  /**
+   * default cancelled please {@code e.setCancelled(false);}
+   *
+   * @param e event
+   */
+  public void interactOffHand(PlayerInteractEvent e) {}
 
   /**
    * default cancelled please {@code e.setCancelled(false);}

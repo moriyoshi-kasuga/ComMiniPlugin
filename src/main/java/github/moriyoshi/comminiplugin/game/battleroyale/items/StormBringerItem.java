@@ -28,7 +28,7 @@ public class StormBringerItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e) {
     if (e.getAction().isLeftClick()) {
       return;
     }

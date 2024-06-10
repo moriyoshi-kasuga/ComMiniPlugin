@@ -29,7 +29,7 @@ public class JumpPadItem extends CustomItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e) {
     e.setCancelled(true);
     val player = e.getPlayer();
     val block = e.getClickedBlock();

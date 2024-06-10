@@ -41,7 +41,7 @@ public class SSJumpItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void interact(final PlayerInteractEvent e) {
+  public void interactMainHand(final PlayerInteractEvent e) {
     if (e.getAction().isLeftClick()) {
       return;
     }

@@ -27,11 +27,16 @@ public class LeaveMiniGameItem extends CustomItem {
   }
 
   @Override
-  public void interact(final PlayerInteractEvent e) {
+  public void interactMainHand(final PlayerInteractEvent e) {
     e.setCancelled(true);
     if (e.getAction().isLeftClick()) {
       return;
     }
     BukkitUtil.initializePlayer(e.getPlayer());
+  }
+
+  @Override
+  public boolean canShowing() {
+    return false;
   }
 }

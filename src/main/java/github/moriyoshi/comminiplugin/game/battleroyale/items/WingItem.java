@@ -57,7 +57,7 @@ public class WingItem extends CustomItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e) {
     if (e.getAction().isLeftClick()) {
       return;
     }

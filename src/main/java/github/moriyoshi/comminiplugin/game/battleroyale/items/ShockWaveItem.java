@@ -57,7 +57,7 @@ public class ShockWaveItem extends CustomItem {
   }
 
   @Override
-  public void interact(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e) {
     spawn(e.getPlayer(), e.getAction().isLeftClick());
   }
 
