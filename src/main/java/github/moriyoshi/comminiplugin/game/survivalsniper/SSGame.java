@@ -78,6 +78,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
       prefix.send(player, "<red>あなたはゲームに参加していません");
       return;
     }
+    showPlayer(player);
     val item =
         new ItemBuilder(Material.SPYGLASS)
             .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
@@ -104,6 +105,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     players.put(player.getUniqueId(), Triple.of(isPlayer, isPlayer ? AIR_LIMIT : -1, color));
     player.teleport(lobby);
     player.getInventory().addItem(item);
+    hidePlayer(player);
     if (isPlayer) {
       if (color == null) {
         prefix.cast(player.getName() + "が<blue>参加します");
@@ -455,5 +457,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   public enum Mode {
     FFA,
     TEAM
+    // TODO: 普通に一つのファイルにして abstract method　を実装しよう
+    // 直書きだとめんどくさい
   }
 }

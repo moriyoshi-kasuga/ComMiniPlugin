@@ -34,7 +34,6 @@ public abstract class AbstractMiniGame implements InterfaceGame {
   }
 
   public final void startGame() {
-    hidePlayer();
     ComMiniPlugin.getPlugin().registerEvent(listener);
     runPlayers(this::setPlayerJoinGameIdentifier);
     innerStartGame();
@@ -42,7 +41,6 @@ public abstract class AbstractMiniGame implements InterfaceGame {
 
   @Override
   public final void finishGame() {
-    showPlayer();
     HandlerList.unregisterAll(listener);
     runPlayers(BukkitUtil::initializePlayer);
     innerFinishGame();

@@ -4,14 +4,14 @@ import github.moriyoshi.comminiplugin.util.HasKey;
 import github.moriyoshi.comminiplugin.util.NMSUtil;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,6 +57,26 @@ public interface InterfaceGame extends HasKey {
     return (Stream<Player>) Bukkit.getOnlinePlayers().stream().filter(this::isGamePlayer);
   }
 
+  @SuppressWarnings("unchecked")
+  default List<Player> getNonGamePlayers() {
+    return (List<Player>) Bukkit.getOnlinePlayers().stream().filter(p -> !isGamePlayer(p)).toList();
+  }
+
+  @SuppressWarnings("unchecked")
+  default Stream<Player> getNonGamePlayersStream() {
+    return (Stream<Player>) Bukkit.getOnlinePlayers().stream().filter(p -> !isGamePlayer(p));
+  }
+
+  /**
+   * get game players and not game players
+   *
+   * @return true is game players, false is not game players
+   */
+  default Map<Boolean, List<Player>> getAllPlayers() {
+    return Bukkit.getOnlinePlayers().stream()
+        .collect(Collectors.partitioningBy(this::isGamePlayer));
+  }
+
   default void teleportLobby(final Player player) {
     player.teleport(getLobby());
   }
@@ -65,28 +85,44 @@ public interface InterfaceGame extends HasKey {
 
   PrefixUtil getPrefix();
 
-  default void hidePlayer() {
-    final List<UUID> list =
-        Bukkit.getOnlinePlayers().stream()
-            .filter(p -> !isGamePlayer(p))
-            .map(Entity::getUniqueId)
-            .toList();
-    NMSUtil.sendPlayerHidePackt(getPlayers(), list);
+  default void hidePlayers() {
+    NMSUtil.sendPlayerHidePackt(
+        getPlayers(), getNonGamePlayersStream().map(Player::getUniqueId).toList());
   }
 
-  default void showPlayer() {
-    val list =
-        Bukkit.getOnlinePlayers().stream()
-            .filter(p -> !isGamePlayer(p))
+  /**
+   * 個別にゲームプレイヤーではない人を隠します
+   *
+   * @param player target
+   */
+  default void hidePlayer(final Player player) {
+    NMSUtil.sendPlayerHidePackt(
+        player,
+        getNonGamePlayersStream().filter(p -> !p.equals(player)).map(Player::getUniqueId).toList());
+  }
+
+  default void showPlayers() {
+    NMSUtil.sendNMSPlayerShowPackt(
+        getPlayers(), getNonGamePlayersStream().map(NMSUtil::getServerPlayer).toList());
+  }
+
+  /**
+   * 個別にゲームプレイヤーではない人を表示します
+   *
+   * @param player target
+   */
+  default void showPlayer(final Player player) {
+    NMSUtil.sendNMSPlayerShowPackt(
+        player,
+        getNonGamePlayersStream()
+            .filter(p -> !p.equals(player))
             .map(NMSUtil::getServerPlayer)
-            .toList();
-    NMSUtil.sendNMSPlayerShowPackt(getPlayers(), list);
+            .toList());
   }
 
   default void setPlayerJoinGameIdentifier(final Player player) {
     ComMiniPlayer.getPlayer(player.getUniqueId()).setJoinGameIdentifier(getKey());
   }
-
 
   default void setPlayerJoinGameIdentifier(final UUID uuid) {
     ComMiniPlayer.getPlayer(uuid).setJoinGameIdentifier(getKey());

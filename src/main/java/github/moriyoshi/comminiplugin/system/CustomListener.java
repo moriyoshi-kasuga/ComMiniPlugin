@@ -162,6 +162,7 @@ public class CustomListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void swapItem(final PlayerItemHeldEvent e) {
     val player = e.getPlayer();
+    player.setVisibleByDefault(false);
     val inventory = player.getInventory();
     val previousItem = inventory.getItem(e.getPreviousSlot());
     val newItem = inventory.getItem(e.getNewSlot());

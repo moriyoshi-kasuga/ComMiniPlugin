@@ -51,7 +51,7 @@ public abstract class AbstractGame implements InterfaceGame {
     if (!predicateGame(player)) {
       return false;
     }
-    hidePlayer();
+    hidePlayers();
     runPlayers(
         p -> {
           BukkitUtil.initializeGamePlayer(p);
@@ -67,7 +67,7 @@ public abstract class AbstractGame implements InterfaceGame {
   public final void finishGame() {
     isStarted = false;
     HandlerList.unregisterAll(listener);
-    showPlayer();
+    showPlayers();
     runPlayers(BukkitUtil::initializePlayer);
     innerFinishGame();
     fieldInitialize(false);
