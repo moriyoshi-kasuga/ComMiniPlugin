@@ -63,7 +63,7 @@ public class BRField {
     this.treasure = new TreasureLocation(name);
     this.arrows =
         new RandomCollection<ItemStack>()
-            .add(300, null)
+            // .add(300, null)
             .add(50, new ItemBuilder(Material.ARROW).amount(3).build())
             .add(30, new ItemBuilder(Material.ARROW).amount(5).build())
             .add(10, new ItemBuilder(Material.ARROW).amount(7).build())

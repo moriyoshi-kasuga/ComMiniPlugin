@@ -6,7 +6,6 @@ import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
-import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.buttons.AddSpecButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameHelpMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
@@ -33,14 +32,13 @@ public class MenuCommand extends CommandAPICommand {
   }
 
   public static boolean open(final Player p) {
-    if (GameSystem.isStarted() && GameSystem.getGame().isGamePlayer(p)) {
+    if (ComMiniPlayer.getPlayer(p.getUniqueId()).getJoinGameIdentifier() != null) {
       ComMiniPrefix.MAIN.send(p, "<red>あなたはmenuを開けません");
       return false;
     }
     new InnerMenu().openInv(p);
     return true;
   }
-
 
   private static class InnerMenu extends MenuHolder<ComMiniPlugin> {
 
@@ -84,6 +82,16 @@ public class MenuCommand extends CommandAPICommand {
               who.removeResourcePacks(ResourcePackUtil.buildComMiniResourcePack());
             }
           });
+    }
+
+    @Override
+    public void onClick(InventoryClickEvent event) {
+      val p = event.getWhoClicked();
+      if (ComMiniPlayer.getPlayer(p.getUniqueId()).getJoinGameIdentifier() != null) {
+        ComMiniPrefix.MAIN.send(p, "<red>あなたはmenuを開けません");
+        return;
+      }
+      super.onClick(event);
     }
 
     @Override

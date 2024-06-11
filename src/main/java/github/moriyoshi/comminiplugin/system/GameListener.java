@@ -113,17 +113,18 @@ public class GameListener implements Listener {
     return MiniGameSystem.getMiniGame(ComMiniPlayer.getPlayer(uuid).getJoinGameIdentifier());
   }
 
+  @SuppressWarnings("unchecked")
   @EventHandler
   public void join(PlayerJoinEvent e) {
     var p = e.getPlayer();
     if (ComMiniPlayer.getPlayer(p.getUniqueId()).isShouldLoadResourcePack()) {
       ResourcePackUtil.updateComMiniResoucePack(p);
     }
-    NMSUtil.sendPlayerHidePackt(
-        player ->
-            !player.equals(p)
-                && ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameIdentifier() != null,
-        List.of(p.getUniqueId()));
+    // NMSUtil.sendPlayerHidePackt(
+    //     player ->
+    //         !player.equals(p)
+    //             && ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameIdentifier() != null,
+    //     List.of(p.getUniqueId()));
     new BukkitRunnable() {
 
       @Override

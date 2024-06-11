@@ -50,6 +50,9 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
       @Override
       public void run() {
         val item = getInventoryCustomItem(player.getInventory(), key);
+        if (item == null) {
+          return;
+        }
         if (!datas.containsKey(key)) {
           new ItemBuilder(item.getItem())
               .name("<light_purple>リコールクロノ<gray>:<red>turn back the clock");

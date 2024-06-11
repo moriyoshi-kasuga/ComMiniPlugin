@@ -84,7 +84,8 @@ public class TreasureChest extends CustomModelBlock {
                     @Override
                     public void run() {
                       if (getBlock().getState() instanceof Chest chest) {
-                        if (chest.getInventory().isEmpty()) {
+                        val inv = chest.getInventory();
+                        if (inv.isEmpty() && inv.getViewers().size() == 0) {
                           remove();
                         }
                       }

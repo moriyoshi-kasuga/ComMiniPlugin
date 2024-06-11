@@ -66,9 +66,6 @@ public final class ComMiniPlugin extends JavaPlugin {
         .type(WorldType.FLAT)
         .generateStructures(false)
         .createWorld();
-
-    new WorldCreator("SkiResort").environment(Environment.NORMAL).createWorld();
-    new WorldCreator("Fantacy").environment(Environment.NORMAL).createWorld();
   }
 
   @Override

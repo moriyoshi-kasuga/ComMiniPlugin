@@ -1,10 +1,11 @@
 package github.moriyoshi.comminiplugin.util;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URLConnection;
+import lombok.val;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackRequest;
@@ -25,39 +26,22 @@ public final class ResourcePackUtil {
   }
 
   public static String getComMiniResourcePackHash() {
-    String hash;
     try {
-      HttpURLConnection connection =
-          (HttpURLConnection)
-              new URI(
-                      "https://raw.githubusercontent.com/moriyoshi-kasuga/ComMiniResoucePack/hash/hash.txt")
-                  .toURL()
-                  .openConnection();
-      connection.setRequestMethod("GET");
-      connection.setConnectTimeout(10000);
-      connection.setReadTimeout(10000);
-      connection.setDoInput(true);
-      connection.setUseCaches(false);
+      val url =
+          URI.create(
+                  "https://raw.githubusercontent.com/moriyoshi-kasuga/ComMiniResoucePack/hash/hash.txt")
+              .toURL();
 
-      connection.setRequestProperty("Cache-Control", "no-cache, no-store, must-revalidate");
-      connection.setRequestProperty("Pragma", "no-cache");
-      connection.setRequestProperty("Expires", "0");
+      URLConnection conn = url.openConnection();
 
-      connection.connect();
-      InputStream in = connection.getInputStream();
-      final InputStreamReader inReader = new InputStreamReader(in);
-      final BufferedReader bufReader = new BufferedReader(inReader);
-      hash = bufReader.readLine();
+      BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-      connection.disconnect();
-      bufReader.close();
-      inReader.close();
-      in.close();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-      hash = "2849ace6aa689a8c610907a41c03537310949294";
+      String hash = br.readLine();
+      br.close();
+      return hash;
+    } catch (IOException e) {
+      return "2849ace6aa689a8c610907a41c03537310949294";
     }
-    return hash;
   }
 
   public static ResourcePackInfo buildComMiniResourcePack() {

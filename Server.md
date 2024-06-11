@@ -9,3 +9,9 @@ entity-tracking-range:
   display: 100
   other: 100
 ```
+
+bukkit.yml の `connection-throttle` を `-1` に変えてください
+
+```
+  connection-throttle: -1
+```
