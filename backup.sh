@@ -3,7 +3,7 @@
 mkdir -p ./backups
 
 ## ファイル数管理
-while [ "$(find ./backups ! -path ./backups | wc -l)" -gt 1 ]; do
+while [ "$(find ./backups ! -path ./backups | wc -l)" -gt 30 ]; do
 	rm -r "$(find ./backups ! -path ./backups | head -1)"
 done
 

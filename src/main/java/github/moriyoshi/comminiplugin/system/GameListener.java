@@ -53,7 +53,6 @@ public class GameListener implements Listener {
 
   private GameListener() {
     new BukkitRunnable() {
-      private String oldHash = ResourcePackUtil.getComMiniResourcePackHash();
 
       @Override
       public void run() {
@@ -65,13 +64,22 @@ public class GameListener implements Listener {
                     p.setFoodLevel(20);
                   }
                 });
+      }
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 20, 20);
+
+    new BukkitRunnable() {
+
+      private String oldHash = ResourcePackUtil.getComMiniResourcePackHash();
+
+      @Override
+      public void run() {
         val newHash = ResourcePackUtil.getComMiniResourcePackHash();
         if (!oldHash.equalsIgnoreCase(newHash)) {
           oldHash = newHash;
           ComMiniPrefix.MAIN.cast("<red>リソースパックの更新があります!<gray>メニューから更新してください");
         }
       }
-    }.runTaskTimer(ComMiniPlugin.getPlugin(), 20, 20);
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 20 * 5, 20 * 5);
   }
 
   public static GameListener getInstance() {

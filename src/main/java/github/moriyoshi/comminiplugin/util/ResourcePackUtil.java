@@ -30,18 +30,15 @@ public final class ResourcePackUtil {
       HttpURLConnection connection =
           (HttpURLConnection)
               new URI(
-                      "https://raw.githubusercontent.com/moriyoshi-kasuga/ComMiniResoucePack/hash/hash.txt"
-                          + "?_="
-                          + System.currentTimeMillis())
+                      "https://raw.githubusercontent.com/moriyoshi-kasuga/ComMiniResoucePack/hash/hash.txt")
                   .toURL()
                   .openConnection();
       connection.setRequestMethod("GET");
-      connection.setConnectTimeout(1000);
-      connection.setReadTimeout(1000);
+      connection.setConnectTimeout(10000);
+      connection.setReadTimeout(10000);
       connection.setDoInput(true);
       connection.setUseCaches(false);
 
-      // キャッシュ無効化のためのヘッダーを追加
       connection.setRequestProperty("Cache-Control", "no-cache, no-store, must-revalidate");
       connection.setRequestProperty("Pragma", "no-cache");
       connection.setRequestProperty("Expires", "0");
