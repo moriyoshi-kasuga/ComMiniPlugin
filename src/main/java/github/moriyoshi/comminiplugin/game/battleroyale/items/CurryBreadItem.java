@@ -30,7 +30,7 @@ public class CurryBreadItem extends CustomItem {
     }
     useItemAmount();
     val player = e.getPlayer();
-    player.heal(3);
+    player.heal(6);
     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);
   }
 

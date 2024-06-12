@@ -19,6 +19,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class BRListener implements AbstractGameListener<BRGame> {
 
@@ -65,6 +67,7 @@ public class BRListener implements AbstractGameListener<BRGame> {
     val game = getGame();
     game.runPlayers(pl -> Util.send(pl, e.deathMessage()));
     game.players.put(p.getUniqueId(), false);
+    p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
     reducePlayer(p);
   }
 
@@ -72,6 +75,22 @@ public class BRListener implements AbstractGameListener<BRGame> {
   public void damage(EntityDamageEvent e, Player player) {
     if (e.getCause().equals(DamageCause.FLY_INTO_WALL)) {
       e.setCancelled(true);
+      return;
+    }
+  }
+
+  @EventHandler
+  public void onEntityDamage(PlayerTeleportEvent event) {
+    Player player = event.getPlayer();
+
+    if (!getGame().isGamePlayer(player)) {
+      return;
+    }
+
+    if (event.getCause() == TeleportCause.ENDER_PEARL) {
+      event.setCancelled(true);
+
+      player.teleport(event.getTo());
     }
   }
 
@@ -85,7 +104,17 @@ public class BRListener implements AbstractGameListener<BRGame> {
 
   private void reducePlayer(final Player p) {
     val game = getGame();
-    p.getInventory().clear();
+    val loc = p.getLocation();
+    val world = p.getWorld();
+    val inv = p.getInventory();
+    inv.forEach(
+        i -> {
+          if (i == null || i.isEmpty()) {
+            return;
+          }
+          world.dropItemNaturally(loc, i);
+        });
+    inv.clear();
     val alives = game.players.entrySet().stream().filter(Entry::getValue).toList();
     if (alives.size() != 1) {
       game.teleportLobby(p);

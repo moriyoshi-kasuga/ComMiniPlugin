@@ -54,12 +54,12 @@ public abstract class AbstractGame implements InterfaceGame {
     }
     // TODO: 普通に minigame でもこれを適用しよう
     hidePlayers();
-    val stream = getPlayersStream();
+    val list = getPlayers();
     runPlayers(
         p -> {
           BukkitUtil.initializeGamePlayer(p);
           setPlayerJoinGameIdentifier(p);
-          stream.forEach(
+          list.forEach(
               s -> {
                 p.showPlayer(ComMiniPlugin.getPlugin(), s);
               });
@@ -98,7 +98,12 @@ public abstract class AbstractGame implements InterfaceGame {
 
   public final boolean addSpec(Player player) {
     if (innerAddSpec(player)) {
-      showPlayer(player);
+      getPlayersStream()
+          .forEach(
+              shower -> {
+                player.showPlayer(ComMiniPlugin.getPlugin(), shower);
+                shower.showPlayer(ComMiniPlugin.getPlugin(), player);
+              });
       return true;
     }
     return false;

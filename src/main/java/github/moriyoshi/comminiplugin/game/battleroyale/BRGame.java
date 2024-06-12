@@ -198,7 +198,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
           new BukkitRunnable() {
 
-            private int temp = BORDERE_INTERVAL + 1;
+            private int temp = 100 + 1;
 
             @Override
             public void run() {
@@ -213,7 +213,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
               }
               bossBar
                   .name(Util.mm("<aqua>ボーダー停止中: 起動まで<u>" + temp + "</u>秒"))
-                  .progress((float) temp / (float) BORDERE_INTERVAL);
+                  .progress((float) temp / 100);
             }
           }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
 
