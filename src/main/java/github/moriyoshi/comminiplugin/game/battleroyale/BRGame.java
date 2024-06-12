@@ -143,6 +143,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
         new ItemBuilder(Material.BARRIER)
             .name("<red>Barrier")
             .customItemFlag(CustomItemFlag.DISABLE_MOVE_INV, true)
+            .customItemFlag(CustomItemFlag.DISABLE_ITEM_SPAWN, true)
             .build();
     runPlayers(
         p -> {

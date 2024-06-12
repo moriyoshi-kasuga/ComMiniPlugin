@@ -113,6 +113,8 @@ public class BRListener implements AbstractGameListener<BRGame> {
             return;
           }
           world.dropItemNaturally(loc, i);
+          // TODO: ここでドロップしたアイテムのクールダウンをリセットする
+          // あと playerCooldownItem をもう一度書き直す
         });
     inv.clear();
     val alives = game.players.entrySet().stream().filter(Entry::getValue).toList();
