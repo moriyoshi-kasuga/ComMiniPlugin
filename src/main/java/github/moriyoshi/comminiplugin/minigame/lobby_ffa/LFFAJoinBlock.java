@@ -29,7 +29,7 @@ public class LFFAJoinBlock extends JumpPadBlock {
     if (BukkitUtil.isFalling(player.getUniqueId())) {
       return;
     }
-    super.walk(e);
     MiniGameSystem.getUniqueMiniGame("LFFA", LFFAMiniGame.class).addPlayer(player);
+    super.walk(e);
   }
 }

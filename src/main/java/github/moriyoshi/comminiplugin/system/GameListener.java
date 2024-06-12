@@ -122,6 +122,9 @@ public class GameListener implements Listener {
     Bukkit.getOnlinePlayers().stream()
         .filter(
             player -> {
+              if (player.equals(p)) {
+                return false;
+              }
               val id = ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameIdentifier();
               return id == null || id.identifier().startsWith("minigame-");
             })

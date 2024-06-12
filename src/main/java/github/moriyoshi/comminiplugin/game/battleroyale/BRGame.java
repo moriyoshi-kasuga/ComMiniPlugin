@@ -94,7 +94,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   }
 
   @Override
-  public boolean addSpec(final Player player) {
+  public boolean innerAddSpec(final Player player) {
     val uuid = player.getUniqueId();
     players.put(uuid, false);
     player.setGameMode(GameMode.SPECTATOR);
@@ -154,7 +154,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
             gamePlayer.setHideNameTag(true);
             gamePlayer.setCanFoodRegain(false);
             gamePlayer.getGamePlayerData(BRPlayer.class).getHotbarSlot().setItems(inv);
-            for (int i = 9; i < 36; i++) {
+            for (int i = 9; i < 27; i++) {
               inv.setItem(i, barrier);
             }
             p.setGameMode(GameMode.SURVIVAL);
@@ -196,7 +196,26 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
             }
           }
 
-          startContractionBorder();
+          new BukkitRunnable() {
+
+            private int temp = BORDERE_INTERVAL + 1;
+
+            @Override
+            public void run() {
+              if (!GameSystem.isIn()) {
+                this.cancel();
+                return;
+              }
+              if (0 >= --temp) {
+                startContractionBorder();
+                this.cancel();
+                return;
+              }
+              bossBar
+                  .name(Util.mm("<aqua>ボーダー停止中: 起動まで<u>" + temp + "</u>秒"))
+                  .progress((float) temp / (float) BORDERE_INTERVAL);
+            }
+          }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
 
           new BukkitRunnable() {
 

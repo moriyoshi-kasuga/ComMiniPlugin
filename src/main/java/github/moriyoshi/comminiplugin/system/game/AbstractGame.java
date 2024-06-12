@@ -53,10 +53,15 @@ public abstract class AbstractGame implements InterfaceGame {
       return false;
     }
     hidePlayers();
+    val stream = getPlayersStream();
     runPlayers(
         p -> {
           BukkitUtil.initializeGamePlayer(p);
           setPlayerJoinGameIdentifier(p);
+          stream.forEach(
+              s -> {
+                p.showPlayer(ComMiniPlugin.getPlugin(), s);
+              });
         });
     innerStartGame();
     isStarted = true;
@@ -88,7 +93,15 @@ public abstract class AbstractGame implements InterfaceGame {
    * @param player 観戦させたい人
    * @return true で参加させ、false で観戦不可能
    */
-  public abstract boolean addSpec(Player player);
+  protected abstract boolean innerAddSpec(Player player);
+
+  public final boolean addSpec(Player player) {
+    if (innerAddSpec(player)) {
+      showPlayer(player);
+      return true;
+    }
+    return false;
+  }
 
   /**
    * ゲームの初期化

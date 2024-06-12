@@ -14,7 +14,7 @@ public class BackpackItem extends CustomItem {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
             .name("<#8B4513>バックパック")
-            .lore("<gray>使用するとインベントリーを一つ拡張します。")
+            .lore("<gray>使用するとインベントリーを一列拡張します。")
             .customModelData(15)
             .build());
   }
@@ -30,7 +30,7 @@ public class BackpackItem extends CustomItem {
     }
     useItemAmount();
     val inv = e.getPlayer().getInventory();
-    for (int row = 3; row >= 0; row--) {
+    for (int row = 2; row >= 0; row--) {
       for (int column = 0; column < 9; column++) {
         val slot = row * 9 + column;
         val item = inv.getItem(slot);

@@ -6,6 +6,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.api.JsonAPI;
 import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import github.moriyoshi.comminiplugin.system.player.InterfaceGamePlayer;
+import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -76,6 +77,7 @@ public final class ComMiniPlayer extends JsonAPI {
     scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
     hidenametag = scoreboard.registerNewTeam("commini_hidenametag");
     hidenametag.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+    hidenametag.setCanSeeFriendlyInvisibles(false);
   }
 
   public static ComMiniPlayer getPlayer(final UUID uuid) {
@@ -100,6 +102,7 @@ public final class ComMiniPlayer extends JsonAPI {
       return;
     }
     hidenametag.removeEntry(player.getName());
+    BukkitUtil.removeFalling(uuid);
   }
 
   public boolean isHideNameTag() {

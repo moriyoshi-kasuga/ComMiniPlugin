@@ -163,7 +163,7 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool(1, 0, 3)
+                new Pool(2, 1, 3)
                     .add(new Entry(10, () -> new CurryBreadItem().getItem()))
                     .add(new Entry(10, () -> new HealRingItem().getItem()))
                     .add(new Entry(10, () -> new NauseaBallItem().getItem()))
@@ -269,11 +269,10 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool(1, 0, 2)
+                new Pool(2, 0, 3)
                     .add(new Entry(10, () -> new CurryBreadItem().getItem()))
                     .add(new Entry(10, () -> new ShockWaveItem().getItem()))
                     .add(new Entry(10, () -> new TinglyBallItem().getItem()))
-                    .add(new Entry(10, () -> new ItemStack(Material.SPYGLASS)))
                     .add(
                         new Entry(
                             10,
@@ -330,7 +329,7 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool(1, 0, 2)
+                new Pool(2, 0, 2)
                     .add(new Entry(10, () -> new BackpackItem().getItem()))
                     .add(new Entry(10, () -> new ShockWaveItem().getItem()))
                     .add(new Entry(10, () -> new SpeedBootsItem().getItem()))
@@ -396,7 +395,7 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool(1, 0, 2)
+                new Pool(1, 0, 3)
                     .add(new Entry(10, () -> new VampireBowItem().getItem()))
                     .add(new Entry(10, () -> new RecallClockItem().getItem()))
                     .add(new Entry(10, () -> new InvisibleCloakItem().getItem()))

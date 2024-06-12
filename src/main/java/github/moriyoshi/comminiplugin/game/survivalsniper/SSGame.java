@@ -399,7 +399,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   }
 
   @Override
-  public boolean addSpec(final Player player) {
+  public boolean innerAddSpec(final Player player) {
     val uuid = player.getUniqueId();
     players.put(uuid, Triple.of(false, -1, null));
     player.setGameMode(GameMode.SPECTATOR);

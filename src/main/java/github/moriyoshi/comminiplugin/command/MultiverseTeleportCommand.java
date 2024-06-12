@@ -1,6 +1,7 @@
 package github.moriyoshi.comminiplugin.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.LocationArgument;
 import dev.jorel.commandapi.arguments.WorldArgument;
@@ -14,6 +15,7 @@ public class MultiverseTeleportCommand extends CommandAPICommand {
 
   public MultiverseTeleportCommand() {
     super("mvtp");
+    withPermission(CommandPermission.OP);
     withArguments(new WorldArgument("world"));
     withOptionalArguments(new EntitySelectorArgument.ManyPlayers("player"));
     withOptionalArguments(new LocationArgument("location"));

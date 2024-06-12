@@ -114,6 +114,13 @@ public final class BukkitUtil {
     fallingBlocks.clear();
   }
 
+  public static void removeFalling(final UUID uuid) {
+    val temp = fallingBlocks.get(uuid);
+    if (temp != null) {
+      temp.remove();
+    }
+  }
+
   public static boolean isFalling(final UUID uuid) {
     return fallingBlocks.containsKey(uuid);
   }
