@@ -7,6 +7,7 @@ import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import lombok.Getter;
+import lombok.val;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -98,4 +99,58 @@ public abstract class AbstractGame implements InterfaceGame {
   public abstract boolean initializeGame(Player player);
 
   public abstract MenuHolder<ComMiniPlugin> createHelpMenu();
+
+  public void hidePlayers() {
+    val hiders = getNonGamePlayers();
+    getPlayers()
+        .forEach(
+            player -> {
+              hiders.forEach(
+                  hider -> {
+                    player.hidePlayer(ComMiniPlugin.getPlugin(), hider);
+                    hider.hidePlayer(ComMiniPlugin.getPlugin(), player);
+                  });
+            });
+  }
+
+  /**
+   * 個別にゲームプレイヤーではない人を隠します
+   *
+   * @param player target
+   */
+  public void hidePlayer(final Player player) {
+    getNonGamePlayersStream()
+        .forEach(
+            hider -> {
+              player.hidePlayer(ComMiniPlugin.getPlugin(), hider);
+              hider.hidePlayer(ComMiniPlugin.getPlugin(), player);
+            });
+  }
+
+  public void showPlayers() {
+    val showers = getNonGamePlayers();
+    getPlayers()
+        .forEach(
+            player -> {
+              showers.forEach(
+                  shower -> {
+                    player.showPlayer(ComMiniPlugin.getPlugin(), shower);
+                    shower.showPlayer(ComMiniPlugin.getPlugin(), player);
+                  });
+            });
+  }
+
+  /**
+   * 個別にゲームプレイヤーではない人を表示します
+   *
+   * @param player target
+   */
+  public void showPlayer(final Player player) {
+    getNonGamePlayersStream()
+        .forEach(
+            shower -> {
+              player.showPlayer(ComMiniPlugin.getPlugin(), shower);
+              shower.showPlayer(ComMiniPlugin.getPlugin(), player);
+            });
+  }
 }

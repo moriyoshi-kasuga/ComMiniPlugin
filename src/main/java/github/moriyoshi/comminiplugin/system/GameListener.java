@@ -8,7 +8,6 @@ import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.minigame.AbstractMiniGame;
 import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import github.moriyoshi.comminiplugin.util.NMSUtil;
 import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
 import java.util.HashMap;
 import java.util.List;
@@ -113,25 +112,24 @@ public class GameListener implements Listener {
     return MiniGameSystem.getMiniGame(ComMiniPlayer.getPlayer(uuid).getJoinGameIdentifier());
   }
 
-  @SuppressWarnings("unchecked")
   @EventHandler
   public void join(PlayerJoinEvent e) {
-    var p = e.getPlayer();
+    val p = e.getPlayer();
+    BukkitUtil.initializePlayer(p);
     if (ComMiniPlayer.getPlayer(p.getUniqueId()).isShouldLoadResourcePack()) {
       ResourcePackUtil.updateComMiniResoucePack(p);
     }
-    // NMSUtil.sendPlayerHidePackt(
-    //     player ->
-    //         !player.equals(p)
-    //             && ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameIdentifier() != null,
-    //     List.of(p.getUniqueId()));
-    new BukkitRunnable() {
-
-      @Override
-      public void run() {
-        BukkitUtil.initializePlayer(e.getPlayer());
-      }
-    }.runTask(ComMiniPlugin.getPlugin());
+    Bukkit.getOnlinePlayers().stream()
+        .filter(
+            player -> {
+              val id = ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameIdentifier();
+              return id == null || id.identifier().startsWith("minigame-");
+            })
+        .forEach(
+            player -> {
+              p.showPlayer(ComMiniPlugin.getPlugin(), player);
+              player.showPlayer(ComMiniPlugin.getPlugin(), p);
+            });
   }
 
   @EventHandler

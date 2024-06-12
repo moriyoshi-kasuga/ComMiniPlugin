@@ -5,7 +5,7 @@ services:
     stdin_open: true
     container_name: mc
     ports:
-      - "25565:25565"
+      - "25566:25565"
     environment:
       EULA: "TRUE"
       TYPE: PAPER
@@ -13,9 +13,23 @@ services:
       TZ: Asia/Tokyo
       ALLOW_FLIGHT: true
       DIFFICULTY: normal
-      VIEW_DISTANCE: 16
       SPAWN_PROTECTION: 0
+      JVM_OPTS: "-XX:MaxRAMPercentage=75"
       ENABLE_COMMAND_BLOCK: true
       VERSION: 1.20.6
+      ONLINE_MODE: FALSE
     volumes:
-      - ./ComMiniServer:/data
+      - ./server:/data
+  proxy:
+    image: itzg/bungeecord
+    container_name: velocity
+    ports:
+      - "25565:25577"
+    volumes:
+      - ./velocity:/server
+    environment:
+      TYPE: VELOCITY
+    restart: always
+
+volumes:
+  proxy:

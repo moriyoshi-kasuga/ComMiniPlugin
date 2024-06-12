@@ -1,7 +1,6 @@
 package github.moriyoshi.comminiplugin.system;
 
 import github.moriyoshi.comminiplugin.util.HasKey;
-import github.moriyoshi.comminiplugin.util.NMSUtil;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import java.util.List;
 import java.util.Map;
@@ -84,41 +83,6 @@ public interface InterfaceGame extends HasKey {
   void finishGame();
 
   PrefixUtil getPrefix();
-
-  default void hidePlayers() {
-    NMSUtil.sendPlayerHidePackt(
-        getPlayers(), getNonGamePlayersStream().map(Player::getUniqueId).toList());
-  }
-
-  /**
-   * 個別にゲームプレイヤーではない人を隠します
-   *
-   * @param player target
-   */
-  default void hidePlayer(final Player player) {
-    NMSUtil.sendPlayerHidePackt(
-        player,
-        getNonGamePlayersStream().filter(p -> !p.equals(player)).map(Player::getUniqueId).toList());
-  }
-
-  default void showPlayers() {
-    NMSUtil.sendNMSPlayerShowPackt(
-        getPlayers(), getNonGamePlayersStream().map(NMSUtil::getServerPlayer).toList());
-  }
-
-  /**
-   * 個別にゲームプレイヤーではない人を表示します
-   *
-   * @param player target
-   */
-  default void showPlayer(final Player player) {
-    NMSUtil.sendNMSPlayerShowPackt(
-        player,
-        getNonGamePlayersStream()
-            .filter(p -> !p.equals(player))
-            .map(NMSUtil::getServerPlayer)
-            .toList());
-  }
 
   default void setPlayerJoinGameIdentifier(final Player player) {
     ComMiniPlayer.getPlayer(player.getUniqueId()).setJoinGameIdentifier(getKey());

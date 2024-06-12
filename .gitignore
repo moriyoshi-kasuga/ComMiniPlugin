@@ -126,5 +126,6 @@ bin/
 
 #utilties
 .factorypath
-ComMiniServer/
+server/
 backups/
+velocity/

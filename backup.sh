@@ -11,6 +11,6 @@ date=$(date "+%Y-%m-%d-%H-%M")
 mkdir -p ./backups/"${date}"/plugins
 array=("lobby" "game" "plugins/ComMiniPlugin")
 for text in "${array[@]}"; do
-	echo "info: tar -czf ./backups/${date}/${text}.tar.gz ./ComMiniServer/${text}"
-	tar -czf ./backups/"${date}"/"${text}".tar.gz ./ComMiniServer/"${text}"
+	echo "info: tar -czf ./backups/${date}/${text}.tar.gz ./server/${text}"
+	tar -czf ./backups/"${date}"/"${text}".tar.gz ./server/"${text}"
 done

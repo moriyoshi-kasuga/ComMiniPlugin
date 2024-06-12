@@ -15,3 +15,5 @@ bukkit.yml の `connection-throttle` を `-1` に変えてください
 ```
   connection-throttle: -1
 ```
+
+paper-global.yml の `velocity` の enabled を true にして secret を velocity/forwarding.secret の値にしてください

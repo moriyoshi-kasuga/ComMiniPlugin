@@ -23,7 +23,7 @@ import org.bukkit.util.RayTraceResult;
 
 public class LFFAGun extends CustomItem implements CooldownItem {
   private final int MAX_LENGTH = 40;
-  private final double BULLET_SIZE = 0.15;
+  private final double BULLET_SIZE = 0.1;
 
   public LFFAGun() {
     this(
