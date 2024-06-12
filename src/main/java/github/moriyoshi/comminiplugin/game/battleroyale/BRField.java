@@ -164,6 +164,8 @@ public class BRField {
           {
             add(
                 new Pool(2, 1, 3)
+                    // TODO: entry アイテム 数も 1~3 までとかで
+                    // TODO: itembuilder static method で potion 作るやつ追加しよう (というかそこらへんの便利追加する、firework
                     .add(new Entry(10, () -> new CurryBreadItem().getItem()))
                     .add(new Entry(10, () -> new HealRingItem().getItem()))
                     .add(new Entry(10, () -> new NauseaBallItem().getItem()))

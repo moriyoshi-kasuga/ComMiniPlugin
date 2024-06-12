@@ -52,6 +52,7 @@ public abstract class AbstractGame implements InterfaceGame {
     if (!predicateGame(player)) {
       return false;
     }
+    // TODO: 普通に minigame でもこれを適用しよう
     hidePlayers();
     val stream = getPlayersStream();
     runPlayers(

@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class RecallClockItem extends CustomItem implements CooldownItem {
 
+  // TODO: ここ double は hp で、あとは effect
   private static Map<UUID, Pair<Location, Double>> datas = new HashMap<>();
 
   public RecallClockItem() {
