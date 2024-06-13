@@ -126,7 +126,7 @@ public class GameListener implements Listener {
                 return false;
               }
               val id = ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameIdentifier();
-              return id == null || id.identifier().startsWith("minigame-");
+              return id == null || id.isMiniGameKey();
             })
         .forEach(
             player -> {

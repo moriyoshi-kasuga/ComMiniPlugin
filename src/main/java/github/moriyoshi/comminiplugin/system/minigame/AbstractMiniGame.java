@@ -1,6 +1,7 @@
 package github.moriyoshi.comminiplugin.system.minigame;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.system.AbstractGameKey.MiniGameKey;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.IdentifierKey;
@@ -20,7 +21,7 @@ public abstract class AbstractMiniGame implements InterfaceGame {
   public final AbstractMiniGameListener<?> listener;
   @Getter protected World world;
   @Getter protected Location lobby;
-  @Getter public final IdentifierKey key;
+  @Getter public final MiniGameKey key;
 
   public AbstractMiniGame(
       final String id,
@@ -28,7 +29,7 @@ public abstract class AbstractMiniGame implements InterfaceGame {
       final Function<IdentifierKey, AbstractMiniGameListener<?>> func) {
     this.id = id;
     this.prefix = prefix;
-    this.key = new IdentifierKey("minigame-" + id, UUID.randomUUID());
+    this.key = new MiniGameKey(id, UUID.randomUUID());
     this.listener = func.apply(key);
     MiniGameSystem.register(getKey(), this);
   }

@@ -4,6 +4,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.AllOrNothingItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.BackpackItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.BraveShieldItem;
+import github.moriyoshi.comminiplugin.game.battleroyale.items.CowBallItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.CurryBreadItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.HKPRItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.HealRingItem;
@@ -53,13 +54,33 @@ public class BRField {
   private final int max_radius_range;
   private final int min_border_range;
   @Getter private final TreasureLocation treasure;
+  @Getter private final int border_first_before_move_time;
+  @Getter private final int border_interval;
+  @Getter private final int border_contraction_time;
+  @Getter private final int border_contraction_size;
+  @Getter private final int border_before_move_time;
 
-  public BRField(String name, Location lobby, int max_radius_range, int min_border_range) {
+  public BRField(
+      String name,
+      Location lobby,
+      int max_radius_range,
+      int min_border_range,
+      int border_first_before_move_time,
+      int border_interval,
+      int border_contraction_time,
+      int border_contraction_size,
+      int border_before_move_time) {
     this.name = name;
     this.world = lobby.getWorld();
     this.lobby = lobby;
     this.max_radius_range = max_radius_range;
     this.min_border_range = min_border_range;
+    this.border_first_before_move_time = border_first_before_move_time;
+    this.border_interval = border_interval;
+    this.border_contraction_time = border_contraction_time;
+    this.border_contraction_size = border_contraction_size;
+    this.border_before_move_time = border_before_move_time;
+
     this.treasure = new TreasureLocation(name);
     this.arrows =
         new RandomCollection<ItemStack>()
@@ -402,6 +423,7 @@ public class BRField {
                 new Pool(1, 0, 2)
                     .add(new Entry(10, () -> new VampireBowItem().getItem()))
                     .add(new Entry(10, () -> new RecallClockItem().getItem()))
+                    .add(new Entry(10, () -> new CowBallItem().getItem()))
                     .add(new Entry(10, () -> new InvisibleCloakItem().getItem()))
                     .add(new Entry(10, () -> new HKPRItem().getItem()))
                     .add(new Entry(10, () -> new WingItem().getItem()))

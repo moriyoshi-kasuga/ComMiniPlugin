@@ -37,11 +37,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
   public final HashMap<UUID, Boolean> players = new HashMap<>();
 
-  private final int BORDERE_INTERVAL = 60;
   private final int START_DROP = 15;
-  private final int BORDERE_CONTRACTION_TIME = 50;
-  private final int BORDERE_CONTRACTION_SIZE = 70;
-  private final int BORDERE_BEFORE_MOVE_TIME = 10;
 
   private final List<Sequence<Integer, Integer, Material, BlockData>> lobbyBlocks =
       new ArrayList<>();
@@ -105,7 +101,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   }
 
   public boolean isPlayingPlayer(Player player) {
-    return players.get(player.getUniqueId());
+    return players.containsKey(player.getUniqueId()) && players.get(player.getUniqueId());
   }
 
   @Override
@@ -202,7 +198,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
           new BukkitRunnable() {
 
-            private int temp = 100 + 1;
+            private int temp = field.getBorder_first_before_move_time() + 1;
 
             @Override
             public void run() {
@@ -217,7 +213,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
               }
               bossBar
                   .name(Util.mm("<aqua>ボーダー停止中: 起動まで<u>" + temp + "</u>秒"))
-                  .progress((float) temp / 100);
+                  .progress((float) temp / field.getBorder_first_before_move_time());
             }
           }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
 
@@ -269,14 +265,14 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   public void startContractionBorder() {
     field.startContraction(
         field.getLobby(),
-        BORDERE_CONTRACTION_SIZE,
-        BORDERE_CONTRACTION_TIME,
+        field.getBorder_contraction_size(),
+        field.getBorder_contraction_time(),
         signal -> {
           switch (signal) {
             case SIGNAL.MIN ignored -> {
               new BukkitRunnable() {
 
-                private int temp = BORDERE_BEFORE_MOVE_TIME + 1;
+                private int temp = field.getBorder_before_move_time() + 1;
 
                 @Override
                 public void run() {
@@ -292,14 +288,14 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
                   }
                   bossBar
                       .name(Util.mm("<yellow>ボーダー最小サイズ: 動くまで<u>" + temp + "</u>秒"))
-                      .progress((float) temp / (float) BORDERE_BEFORE_MOVE_TIME);
+                      .progress((float) temp / (float) field.getBorder_before_move_time());
                 }
               }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
             }
             case SIGNAL.END ignored -> {
               new BukkitRunnable() {
 
-                private int temp = BORDERE_INTERVAL + 1;
+                private int temp = field.getBorder_interval() + 1;
 
                 @Override
                 public void run() {
@@ -314,14 +310,14 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
                   }
                   bossBar
                       .name(Util.mm("<aqua>ボーダー停止中: 起動まで<u>" + temp + "</u>秒"))
-                      .progress((float) temp / (float) BORDERE_INTERVAL);
+                      .progress((float) temp / (float) field.getBorder_interval());
                 }
               }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
             }
             case SIGNAL.NONE none -> {
               bossBar
                   .name(Util.mm("<red>ボーダー収縮残り: <u>" + none.restTime() + "</u>秒"))
-                  .progress((float) none.restTime() / (float) BORDERE_CONTRACTION_TIME);
+                  .progress((float) none.restTime() / (float) field.getBorder_contraction_time());
             }
           }
         });

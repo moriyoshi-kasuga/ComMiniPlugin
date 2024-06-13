@@ -7,7 +7,6 @@ import github.moriyoshi.comminiplugin.api.JsonAPI;
 import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import github.moriyoshi.comminiplugin.system.player.InterfaceGamePlayer;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +55,7 @@ public final class ComMiniPlayer extends JsonAPI {
   @Getter
   @Setter
   @Nullable
-  private IdentifierKey joinGameIdentifier;
+  private AbstractGameKey joinGameIdentifier;
 
   private JsonObject datas;
 
@@ -93,7 +92,7 @@ public final class ComMiniPlayer extends JsonAPI {
   public void initialize() {
     this.isHunger = false;
     this.canFoodRegain = true;
-    if (joinGameIdentifier != null && joinGameIdentifier.identifier().startsWith("minigame-")) {
+    if (joinGameIdentifier != null && joinGameIdentifier.isMiniGameKey()) {
       MiniGameSystem.getMiniGame(joinGameIdentifier).leavePlayer(Bukkit.getPlayer(uuid));
     }
     this.joinGameIdentifier = null;

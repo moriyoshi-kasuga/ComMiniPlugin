@@ -40,7 +40,7 @@ public class MiniGameSystem {
   public static <T extends AbstractMiniGame> T getUniqueMiniGame(String id, Class<T> t) {
     return t.cast(
         minigames.entrySet().stream()
-            .filter(x -> x.getKey().identifier().equals("minigame-" + id))
+            .filter(x -> x.getKey().getIdentifier().equals("minigame-" + id))
             .findFirst()
             .orElseThrow()
             .getValue());

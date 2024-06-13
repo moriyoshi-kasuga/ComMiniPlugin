@@ -1,6 +1,5 @@
 package github.moriyoshi.comminiplugin.system;
 
-import github.moriyoshi.comminiplugin.util.HasKey;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-public interface InterfaceGame extends HasKey {
+public interface InterfaceGame extends HasGameKey {
 
   /** このゲームのワールド */
   @Nullable

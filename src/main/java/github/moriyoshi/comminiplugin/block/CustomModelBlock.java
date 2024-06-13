@@ -89,9 +89,7 @@ public abstract class CustomModelBlock extends CustomBlock {
 
   @Override
   public void clearData() {
-    if (!display.isDead()) {
-      display.remove();
-    }
+    display.remove();
   }
 
   public abstract ItemStack getItem();

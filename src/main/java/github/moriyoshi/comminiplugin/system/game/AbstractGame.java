@@ -2,9 +2,9 @@ package github.moriyoshi.comminiplugin.system.game;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.system.AbstractGameKey.GameKey;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import github.moriyoshi.comminiplugin.util.IdentifierKey;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import lombok.Getter;
 import lombok.val;
@@ -25,7 +25,7 @@ public abstract class AbstractGame implements InterfaceGame {
   @Getter protected World world;
   @Getter protected Location lobby;
   @Getter private boolean isStarted = false;
-  @Getter private final IdentifierKey key;
+  @Getter private final GameKey key;
 
   public AbstractGame(
       final String id,
@@ -40,7 +40,7 @@ public abstract class AbstractGame implements InterfaceGame {
     this.material = material;
     this.prefix = prefix;
     this.listener = listener;
-    this.key = new IdentifierKey("game-" + id, null);
+    this.key = new GameKey(id);
     this.fieldInitialize(true);
   }
 

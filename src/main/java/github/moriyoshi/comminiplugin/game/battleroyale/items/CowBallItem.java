@@ -21,7 +21,7 @@ public class CowBallItem extends CustomItem {
     this(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
             .name("<white>牛玉")
-            .lore("<gray>当たったプレイヤーのエフェクトをすべて消します(ビリビリ玉も無効加できるよ)")
+            .lore("<gray>当たったプレイヤーのエフェクトをすべて消します", "<gray>(ビリビリ玉も無効加できるよ)")
             .customModelData(29)
             .build());
   }
@@ -43,7 +43,7 @@ public class CowBallItem extends CustomItem {
             player.getLocation().getDirection().multiply(3),
             snowball ->
                 snowball.setItem(
-                    new ItemBuilder(Material.PHANTOM_MEMBRANE).customModelData(27).build()));
+                    new ItemBuilder(Material.PHANTOM_MEMBRANE).customModelData(29).build()));
     GameListener.addProjectileHitListener(
         projectile.getUniqueId(),
         (entity, event) -> {

@@ -25,7 +25,7 @@ public interface PlayerCooldownItem extends InterfaceItem {
       var num = triple.getFirst();
       if (0 >= --num) {
         COOLDOWN.remove(entry.getKey());
-        triple.getThird().ifPresent(consumer -> consumer.accept(entry.getKey().uuid()));
+        triple.getThird().ifPresent(consumer -> consumer.accept(entry.getKey().getUuid()));
         return;
       }
       COOLDOWN.put(entry.getKey(), Triple.of(num, true, triple.getThird()));

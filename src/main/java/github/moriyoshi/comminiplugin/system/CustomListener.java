@@ -276,7 +276,15 @@ public class CustomListener implements Listener {
       val item = player.getInventory().getItemInMainHand();
       val custom = CustomItem.getCustomItem(item);
       if (custom != null) {
-        custom.damageByEntity(e, player);
+        custom.damageByEntityMainHand(e, player);
+        if (e.isCancelled()) {
+          return;
+        }
+      }
+      val off = player.getInventory().getItemInMainHand();
+      val offCustom = CustomItem.getCustomItem(off);
+      if (offCustom != null) {
+        offCustom.damageByEntityOffHand(e, player);
       }
     }
   }

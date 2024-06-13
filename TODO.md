@@ -8,10 +8,6 @@
 
 - 途中のボーダー狭くなる時に中心位置をずらして最終安置をずらす
 
-### items
-
-- 牛玉
-
 ## survival sniper
 
 - add random mode

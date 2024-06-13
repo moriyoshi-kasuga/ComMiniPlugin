@@ -26,8 +26,7 @@ public class BraveShieldItem extends CustomItem implements CooldownItem {
     super(item);
   }
 
-  @Override
-  public void damageByEntity(EntityDamageByEntityEvent e, Player player) {
+  private void spanw(EntityDamageByEntityEvent e, Player player) {
     if (!inCooldown()) {
       setCooldown(200);
       return;
@@ -44,6 +43,16 @@ public class BraveShieldItem extends CustomItem implements CooldownItem {
     e.setDamage(0);
     player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BLOCK, 2, 1);
     setCooldown((int) rest * 10);
+  }
+
+  @Override
+  public void damageByEntityMainHand(EntityDamageByEntityEvent e, Player player) {
+    spanw(e, player);
+  }
+
+  @Override
+  public void damageByEntityOffHand(EntityDamageByEntityEvent e, Player player) {
+    spanw(e, player);
   }
 
   @Override

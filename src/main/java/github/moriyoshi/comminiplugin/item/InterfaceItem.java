@@ -204,12 +204,20 @@ public interface InterfaceItem {
   default void damageEntity(final EntityDamageByEntityEvent e, final Player player) {}
 
   /**
-   * このアイテムを手に持っているプレイヤーが攻撃されたら呼ばれます
+   * このアイテムを手に持っているプレイヤーが攻撃されたら呼ばれます (mainhand)
    *
    * @param e event
    * @param player player
    */
-  default void damageByEntity(final EntityDamageByEntityEvent e, final Player player) {}
+  default void damageByEntityMainHand(final EntityDamageByEntityEvent e, final Player player) {}
+
+  /**
+   * このアイテムを手に持っているプレイヤーが攻撃されたら呼ばれます (offhand)
+   *
+   * @param e event
+   * @param player player
+   */
+  default void damageByEntityOffHand(final EntityDamageByEntityEvent e, final Player player) {}
 
   default void useItemAmount() {
     getItem().setAmount(getItem().getAmount() - 1);
