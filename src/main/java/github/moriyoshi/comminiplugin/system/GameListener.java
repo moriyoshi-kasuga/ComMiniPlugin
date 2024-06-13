@@ -114,7 +114,7 @@ public class GameListener implements Listener {
     return MiniGameSystem.getMiniGame(ComMiniPlayer.getPlayer(uuid).getJoinGameIdentifier());
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void join(PlayerJoinEvent e) {
     val p = e.getPlayer();
     BukkitUtil.initializePlayer(p);
@@ -137,7 +137,7 @@ public class GameListener implements Listener {
             });
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void quit(PlayerQuitEvent e) {
     val p = e.getPlayer();
     if (GameSystem.isIn() && GameSystem.getGame().isGamePlayer(p)) {
@@ -147,7 +147,7 @@ public class GameListener implements Listener {
     getMiniGameOptional(p.getUniqueId()).ifPresent(minigame -> minigame.listener.quit(e));
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void death(PlayerDeathEvent e) {
     e.setCancelled(true);
     val p = e.getPlayer();
@@ -170,7 +170,7 @@ public class GameListener implements Listener {
     }.runTask(ComMiniPlugin.getPlugin());
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void damage(EntityDamageEvent e) {
     if (e.getEntity() instanceof Player player) {
       if (e.getCause().equals(DamageCause.FALL)) {
@@ -196,7 +196,7 @@ public class GameListener implements Listener {
     return null;
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void damageByEntity(EntityDamageByEntityEvent e) {
     if (e.getDamager() instanceof Projectile projectile) {
       val consumer = projectileDamageMap.remove(projectile.getUniqueId());
@@ -228,7 +228,7 @@ public class GameListener implements Listener {
     }
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void blockBreak(BlockBreakEvent e) {
     val p = e.getPlayer();
     if (isGamePlayer(p)) {
@@ -245,7 +245,7 @@ public class GameListener implements Listener {
     }
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void blockPlace(BlockPlaceEvent e) {
     val p = e.getPlayer();
     if (isGamePlayer(e.getPlayer())) {
@@ -262,7 +262,7 @@ public class GameListener implements Listener {
   }
 
   @SuppressWarnings("deprecation")
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void jump(PlayerJumpEvent e) {
     var p = e.getPlayer();
     if (!p.isOnGround()) {
@@ -275,7 +275,7 @@ public class GameListener implements Listener {
       }
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void effectEvent(EntityPotionEffectEvent e) {
     if (e.getEntity() instanceof Player player && e.getNewEffect() == null) {
       val effect = e.getOldEffect();
@@ -285,7 +285,7 @@ public class GameListener implements Listener {
     }
   }
 
-  @EventHandler(priority = EventPriority.HIGHEST)
+  @EventHandler(priority = EventPriority.LOW)
   public void teleport(PlayerTeleportEvent e) {
     var p = e.getPlayer();
     for (val effect : p.getActivePotionEffects()) {
@@ -297,7 +297,7 @@ public class GameListener implements Listener {
   }
 
   @SuppressWarnings("deprecation")
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void move(PlayerMoveEvent e) {
     var p = e.getPlayer();
     for (val effect : p.getActivePotionEffects()) {
@@ -326,7 +326,7 @@ public class GameListener implements Listener {
     }
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void regain(EntityRegainHealthEvent e) {
     if (!(e.getEntity() instanceof Player p)) {
       return;
@@ -337,7 +337,7 @@ public class GameListener implements Listener {
     }
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void projectileHit(ProjectileHitEvent e) {
     Optional.ofNullable(projectileHitMap.get(e.getEntity().getUniqueId()))
         .ifPresent(

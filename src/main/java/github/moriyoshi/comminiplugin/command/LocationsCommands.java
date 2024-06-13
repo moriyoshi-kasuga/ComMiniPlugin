@@ -12,7 +12,6 @@ import github.moriyoshi.comminiplugin.api.JsonAPI;
 import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import lombok.Getter;
 import lombok.val;
 import org.bukkit.Location;
@@ -47,10 +46,7 @@ public class LocationsCommands extends JsonAPI {
       withArguments(
           new StringArgument("name")
               .replaceSuggestions(
-                  ArgumentSuggestions.stringsAsync(
-                      info ->
-                          CompletableFuture.supplyAsync(
-                              () -> getManager().locations.keySet().toArray(String[]::new)))));
+                  ArgumentSuggestions.stringCollection(info -> getManager().locations.keySet())));
       executesPlayer(
           (p, args) -> {
             getManager().locations.put((String) args.get("name"), p.getLocation());
@@ -66,10 +62,7 @@ public class LocationsCommands extends JsonAPI {
       withArguments(
           new StringArgument("name")
               .replaceSuggestions(
-                  ArgumentSuggestions.stringsAsync(
-                      info ->
-                          CompletableFuture.supplyAsync(
-                              () -> getManager().locations.keySet().toArray(String[]::new)))));
+                  ArgumentSuggestions.stringCollection(info -> getManager().locations.keySet())));
       withOptionalArguments(new EntitySelectorArgument.ManyPlayers("players"));
       executesPlayer(
           (p, args) -> {
@@ -94,10 +87,7 @@ public class LocationsCommands extends JsonAPI {
       withArguments(
           new StringArgument("name")
               .replaceSuggestions(
-                  ArgumentSuggestions.stringsAsync(
-                      info ->
-                          CompletableFuture.supplyAsync(
-                              () -> getManager().locations.keySet().toArray(String[]::new)))));
+                  ArgumentSuggestions.stringCollection(info -> getManager().locations.keySet())));
       executesPlayer(
           (p, args) -> {
             if (getManager().locations.remove((String) args.get("name")) == null) {

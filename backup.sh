@@ -8,6 +8,7 @@ while [ "$(find ./backups ! -path ./backups | wc -l)" -gt 30 ]; do
 done
 
 date=$(date "+%Y-%m-%d-%H-%M")
+rm -r ./backups/"${date}" 2>/dev/null
 mkdir -p ./backups/"${date}"/plugins
 array=("lobby" "game" "plugins/ComMiniPlugin")
 for text in "${array[@]}"; do

@@ -26,6 +26,8 @@ import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ReflectionUtil;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.val;
 import org.bukkit.Location;
@@ -54,6 +56,8 @@ public final class ComMiniPlugin extends JavaPlugin {
 
   @Getter private static GlowingEntities glowingEntities;
   @Getter private static GlowingBlocks glowingBlocks;
+
+  private static Set<String> commands = new HashSet<>();
 
   public void loadWorlds() {
     new WorldCreator("lobby")
@@ -95,6 +99,7 @@ public final class ComMiniPlugin extends JavaPlugin {
     ComMiniPlayer.gameInitialize();
     GameSystem.load();
     MiniGameSystem.load();
+    ComMiniPrefix.SYSTEM.cast("<red>プラグインをロードしました。");
   }
 
   @Override
@@ -102,14 +107,21 @@ public final class ComMiniPlugin extends JavaPlugin {
     ComMiniPlayer.save();
     GameSystem.finalGame();
     MiniGameSystem.clear();
-    CommandAPI.onDisable();
 
     CustomBlockData.getInstance().saveFile();
     LocationsCommands.getManager().saveFile();
 
+    commands.forEach(
+        command -> {
+          ComMiniPrefix.SYSTEM.cast("<gray>UNREGISTER COMMAND " + command);
+          CommandAPI.unregister(command);
+        });
+    CommandAPI.onDisable();
+
     BukkitUtil.clear();
     glowingEntities.disable();
     glowingBlocks.disable();
+    ComMiniPrefix.SYSTEM.cast("<red>プラグインをアンロードしました。");
   }
 
   public void registerCommand(final Reflections reflection) {
@@ -126,6 +138,7 @@ public final class ComMiniPlugin extends JavaPlugin {
             val instance = constructor.newInstance();
             instance.register();
             ComMiniPrefix.SYSTEM.logDebug("<yellow>REGISTER COMMAND " + instance.getName());
+            commands.add(instance.getName());
           } catch (InstantiationException
               | IllegalAccessException
               | IllegalArgumentException
