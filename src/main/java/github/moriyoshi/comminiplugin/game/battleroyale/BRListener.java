@@ -1,5 +1,7 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
+import github.moriyoshi.comminiplugin.item.CooldownItem;
+import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.game.AbstractGameListener;
 import github.moriyoshi.comminiplugin.util.Util;
 import java.util.Map.Entry;
@@ -113,8 +115,10 @@ public class BRListener implements AbstractGameListener<BRGame> {
             return;
           }
           world.dropItemNaturally(loc, i);
-          // TODO: ここでドロップしたアイテムのクールダウンをリセットする
-          // あと playerCooldownItem をもう一度書き直す
+          val custom = CustomItem.getCustomItem(i);
+          if (custom != null && custom instanceof CooldownItem cooldown) {
+            cooldown.removeCooldown();
+          }
         });
     inv.clear();
     val alives = game.players.entrySet().stream().filter(Entry::getValue).toList();

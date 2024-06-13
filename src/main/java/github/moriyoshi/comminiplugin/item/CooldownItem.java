@@ -28,6 +28,11 @@ public interface CooldownItem extends InterfaceItem {
     return COOLDOWN.containsKey(getItemKey());
   }
 
+  default void removeCooldown() {
+    COOLDOWN.remove(getItemKey());
+    endCountDown();
+  }
+
   /**
    * 数字を1減らします
    *
