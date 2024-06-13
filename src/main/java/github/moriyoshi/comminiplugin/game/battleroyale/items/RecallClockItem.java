@@ -5,8 +5,9 @@ import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.item.CooldownItem;
 import github.moriyoshi.comminiplugin.item.CustomItem;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.tuple.Pair;
+import github.moriyoshi.comminiplugin.util.tuple.Triple;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.val;
@@ -19,13 +20,14 @@ import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 public class RecallClockItem extends CustomItem implements CooldownItem {
 
-  // TODO: ここ double は hp で、あとは effect
-  private static Map<UUID, Pair<Location, Double>> datas = new HashMap<>();
+  private static Map<UUID, Triple<Location, Double, List<PotionEffect>>> datas = new HashMap<>();
 
   public RecallClockItem() {
     super(
@@ -47,6 +49,13 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
       private final Location loc = player.getLocation();
       private final double health = player.getHealth();
       private final UUID key = getUniqueId();
+      private final List<PotionEffect> effects =
+          player.getActivePotionEffects().stream()
+              .filter(
+                  potion ->
+                      !(potion.getType().equals(PotionEffectType.SLOWNESS)
+                          && potion.getAmplifier() == 138))
+              .toList();
 
       @Override
       public void run() {
@@ -59,7 +68,7 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
               .name("<light_purple>リコールクロノ<gray>:<red>turn back the clock");
           player.playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
         }
-        datas.put(key, Pair.of(loc, health));
+        datas.put(key, Triple.of(loc, health, effects));
       }
     }.runTaskLater(ComMiniPlugin.getPlugin(), 15 * 20);
   }
@@ -95,6 +104,8 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
     world.playSound(player.getLocation(), Sound.BLOCK_CONDUIT_ACTIVATE, SoundCategory.MASTER, 1, 1);
     player.teleport(loc);
     player.setHealth(pair.getSecond());
+    player.clearActivePotionEffects();
+    player.addPotionEffects(pair.getThird());
     world.spawnParticle(
         Particle.DUST,
         loc,
