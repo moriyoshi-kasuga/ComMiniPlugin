@@ -14,14 +14,6 @@ public class Entry {
 
   @Getter private boolean isDuplicatable = false;
 
-  public Entry(double weight) {
-    this(weight, () -> null);
-  }
-
-  public Entry(@NonNull Supplier<ItemStack> supplier) {
-    this(1, supplier);
-  }
-
   public Entry(double weight, @NonNull Supplier<ItemStack> supplier) {
     this(weight, supplier, () -> true);
   }
@@ -31,10 +23,6 @@ public class Entry {
     this.weight = weight;
     this.supplier = supplier;
     this.condition = condition;
-  }
-
-  public Entry(@NonNull Supplier<ItemStack> supplier, @NonNull BooleanSupplier condition) {
-    this(1, supplier, condition);
   }
 
   public Entry setDuplicatable(boolean isDuplicatable) {

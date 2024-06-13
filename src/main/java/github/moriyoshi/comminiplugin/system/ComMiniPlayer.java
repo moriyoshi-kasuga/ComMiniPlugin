@@ -113,10 +113,10 @@ public final class ComMiniPlayer extends JsonAPI {
     return hidenametag.hasEntry(player.getName());
   }
 
-  public void setHideNameTag(final boolean isHideNameTag) {
+  public ComMiniPlayer setHideNameTag(final boolean isHideNameTag) {
     val player = Bukkit.getPlayer(uuid);
     if (player == null) {
-      return;
+      return this;
     }
     player.setScoreboard(scoreboard);
     val name = player.getName();
@@ -125,6 +125,7 @@ public final class ComMiniPlayer extends JsonAPI {
     } else {
       hidenametag.removeEntry(name);
     }
+    return this;
   }
 
   @SuppressWarnings("unchecked")

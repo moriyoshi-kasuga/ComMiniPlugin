@@ -37,9 +37,16 @@ public class Pool {
     this.bonusRolls = (r) -> bonusRolls.getAsInt();
   }
 
-  public Pool(int rolls, int origin, int bound) {
+  /**
+   * origin 以上、 below 以下の範囲
+   *
+   * @param rolls default
+   * @param origin origin
+   * @param below below
+   */
+  public Pool(int rolls, int origin, int below) {
     this.rolls = rolls;
-    this.bonusRolls = (r) -> r.nextInt(origin, bound);
+    this.bonusRolls = (r) -> r.nextInt(origin, below + 1);
   }
 
   public Pool(int rolls, Function<Random, Integer> bonusRolls) {

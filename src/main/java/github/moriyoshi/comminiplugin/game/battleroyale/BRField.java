@@ -117,6 +117,7 @@ public class BRField {
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
   }
 
+  // TODO: apex みたいに安置の中心がずれて最終安置がずれるようにする
   public void startContraction(Location center, double size, int time, Consumer<SIGNAL> task) {
     val border = world.getWorldBorder();
     border.setCenter(center);
@@ -163,7 +164,7 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool(2, 1, 3)
+                new Pool(3, 0, 3)
                     // TODO: entry アイテム 数も 1~3 までとかで
                     // TODO: itembuilder static method で potion 作るやつ追加しよう (というかそこらへんの便利追加する、firework
                     .add(new Entry(10, () -> new CurryBreadItem().getItem()))
@@ -191,6 +192,7 @@ public class BRField {
                             10,
                             () ->
                                 new ItemBuilder(Material.POTION)
+                                    .name("<aqua>!SPEED!")
                                     .changeMeta(
                                         (Consumer<PotionMeta>)
                                             meta -> {
@@ -261,7 +263,7 @@ public class BRField {
                                         (Consumer<PotionMeta>)
                                             meta -> meta.setBasePotionType(PotionType.POISON))
                                     .build())));
-            add(new Pool().add(new Entry(arrows::next)));
+            add(new Pool().add(new Entry(1, arrows::next)));
           }
         });
   }
@@ -321,7 +323,7 @@ public class BRField {
                     .add(new Entry(3, () -> new ItemStack(Material.LEATHER_CHESTPLATE)))
                     .add(new Entry(3, () -> new ItemStack(Material.LEATHER_LEGGINGS)))
                     .add(new Entry(5, () -> new SpeedBootsItem().getItem())));
-            add(new Pool().add(new Entry(arrows::next)));
+            add(new Pool().add(new Entry(1, arrows::next)));
           }
         });
   }
@@ -387,7 +389,7 @@ public class BRField {
                     .add(new Entry(5, () -> new BackpackItem().getItem()))
                     .add(new Entry(5, () -> new RecallClockItem().getItem()))
                     .add(new Entry(5, () -> new VampireBowItem().getItem())));
-            add(new Pool().add(new Entry(arrows::next)));
+            add(new Pool().add(new Entry(1, arrows::next)));
           }
         });
   }
@@ -397,14 +399,13 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool(1, 0, 3)
+                new Pool(1, 0, 2)
                     .add(new Entry(10, () -> new VampireBowItem().getItem()))
                     .add(new Entry(10, () -> new RecallClockItem().getItem()))
                     .add(new Entry(10, () -> new InvisibleCloakItem().getItem()))
                     .add(new Entry(10, () -> new HKPRItem().getItem()))
                     .add(new Entry(10, () -> new WingItem().getItem()))
                     .add(new Entry(10, () -> new ItemStack(Material.ENDER_PEARL)))
-                    .add(new Entry(10, () -> new ItemStack(Material.TIPPED_ARROW)))
                     .add(new Entry(5, () -> new PhoenixFeatherItem().getItem()))
                     .add(new Entry(5, () -> new VampireSwordItem().getItem()))
                     .add(new Entry(5, () -> new UpgradeWingItem().getItem())));
@@ -417,7 +418,7 @@ public class BRField {
         new ArrayList<>() {
           {
             add(
-                new Pool(1, 0, 2)
+                new Pool(1, 0, 1)
                     .add(new Entry(5, () -> new ItemStack(Material.ENDER_PEARL)))
                     .add(new Entry(10, () -> new MagicMirrorItem().getItem()))
                     .add(new Entry(10, () -> new HKPRItem().getItem()))
