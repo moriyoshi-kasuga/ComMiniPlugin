@@ -79,7 +79,7 @@ tasks {
         }
     }
     named<ShadowJar>("shadowJar") {
-        mergeServiceFiles()
+        configurations = listOf(project.configurations.shadow.get())
 
         relocates.forEach { (originalPackage, relocatedPackage) ->
             relocate(
