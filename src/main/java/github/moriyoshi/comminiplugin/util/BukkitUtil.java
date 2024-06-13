@@ -140,13 +140,13 @@ public final class BukkitUtil {
                   entity.setSilent(true);
                   entity.setGravity(true);
                   entity.setVelocity(velocity);
+                  entity.setVisibleByDefault(false);
                 });
     GameListener.addProjectileHitListener(
         falling.getUniqueId(),
         (projectile, event) -> {
           event.setCancelled(true);
         });
-    NMSUtil.sendEntityRemovePacket(falling.getEntityId());
 
     val temp = fallingBlocks.put(player.getUniqueId(), falling);
     if (temp != null) {

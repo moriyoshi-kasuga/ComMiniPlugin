@@ -23,6 +23,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -37,6 +38,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
@@ -283,11 +285,22 @@ public class GameListener implements Listener {
     }
   }
 
+  @EventHandler(priority = EventPriority.HIGHEST)
+  public void teleport(PlayerTeleportEvent e) {
+    var p = e.getPlayer();
+    for (val effect : p.getActivePotionEffects()) {
+      if (effect.getType().equals(PotionEffectType.SLOWNESS) && effect.getAmplifier() == 138) {
+        disableMoveLocation.put(p.getUniqueId(), p.getLocation());
+        return;
+      }
+    }
+  }
+
   @SuppressWarnings("deprecation")
   @EventHandler
   public void move(PlayerMoveEvent e) {
     var p = e.getPlayer();
-    for (val effect : p.getActivePotionEffects())
+    for (val effect : p.getActivePotionEffects()) {
       if (effect.getType().equals(PotionEffectType.SLOWNESS) && effect.getAmplifier() == 138) {
         Location loc = disableMoveLocation.get(p.getUniqueId());
         if (loc == null) {
@@ -303,6 +316,7 @@ public class GameListener implements Listener {
         e.setTo(loc);
         return;
       }
+    }
     val to = e.getTo().clone();
     for (val loc : List.of(to, to.clone().subtract(0, 0.1, 0))) {
       if (CustomBlock.isCustomBlock(loc)) {
