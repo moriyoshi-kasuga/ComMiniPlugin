@@ -10,7 +10,7 @@ import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ItemBuilder;
 import github.moriyoshi.comminiplugin.util.PrefixUtil;
 import github.moriyoshi.comminiplugin.util.Util;
-import github.moriyoshi.comminiplugin.util.tuple.Triple;
+import github.moriyoshi.comminiplugin.util.tuple.Pair;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -36,8 +36,7 @@ import org.bukkit.util.Vector;
 @SuppressWarnings("deprecation")
 public class SSGame extends AbstractGame implements WinnerTypeGame {
 
-  // true は生きている、falseは観戦者(死んで観戦者で機能を統一)
-  public final HashMap<UUID, Triple<Boolean, Integer, ChatColor>> players = new HashMap<>();
+  public final HashMap<UUID, Pair<Integer, ChatColor>> players = new HashMap<>();
   private final int MAX_RADIUS_RANGE = 600;
   private final int MIN_BORDER_RANGE = 30;
   private final int MAX_SECOND = 60 * 7;
@@ -86,13 +85,13 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             .build();
     player.getInventory().removeItem(item);
     BukkitUtil.initializePlayer(player);
-    val isPlayer = players.remove(uuid).getFirst();
+    val isPlayer = players.remove(uuid).getFirst() != -1;
     prefix.cast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
   }
 
   public final void joinPlayer(final Player player, final boolean isPlayer, final ChatColor color) {
     val prev = players.get(player.getUniqueId());
-    if (prev != null && prev.getFirst() == isPlayer && prev.getThird() == color) {
+    if (prev != null && (prev.getFirst() != -1) == isPlayer && prev.getSecond() == color) {
       prefix.send(player, "<red>抜けるには抜けるボタンを押してください");
       return;
     }
@@ -102,7 +101,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             .customItemFlag(CustomItemFlag.DISABLE_MOVE_INV, true)
             .build();
     player.getInventory().removeItem(item);
-    players.put(player.getUniqueId(), Triple.of(isPlayer, isPlayer ? AIR_LIMIT : -1, color));
+    players.put(player.getUniqueId(), Pair.of(isPlayer ? AIR_LIMIT : -1, color));
     player.teleport(lobby);
     player.getInventory().addItem(item);
     hidePlayer(player);
@@ -168,15 +167,15 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   @Override
   public boolean predicateGame(final Player player) {
     if (mode == Mode.FFA) {
-      if (2 > players.values().stream().filter(Triple::getFirst).toList().size()) {
+      if (2 > players.values().stream().filter(pair -> pair.getFirst() != -1).toList().size()) {
         prefix.send(player, "<red>二人以上でしかプレイできません");
         return false;
       }
     } else {
       if (2
           > players.values().stream()
-              .filter(value -> value.getThird() != null)
-              .collect(Collectors.groupingBy(Triple::getThird))
+              .filter(value -> value.getSecond() != null)
+              .collect(Collectors.groupingBy(Pair::getSecond))
               .size()) {
         prefix.send(player, "<red>二チーム以上でしかプレイできません");
         return false;
@@ -275,22 +274,22 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             }
             players.forEach(
                 (t, u) -> {
-                  if (!u.getFirst()) {
+                  int num = u.getFirst();
+                  if (num == -1) {
                     return;
                   }
                   final Player p = Bukkit.getPlayer(t);
                   if (p == null) {
                     return;
                   }
-                  int num = u.getSecond();
                   p.sendActionBar(Util.mm("酸素: " + num + " /" + AIR_LIMIT));
                   final boolean inCave = 7 > p.getLocation().getBlock().getLightFromSky();
                   if (!inCave && num == AIR_LIMIT) {
                     return;
                   }
-                  players.put(
-                      t, Triple.of(true, Math.max(inCave ? --num : ++num, 0), u.getThird()));
-                  if (1 > num) {
+                  val recent = Math.max(inCave ? --num : ++num, 0);
+                  players.put(t, Pair.of(recent, u.getSecond()));
+                  if (recent == 0) {
                     p.damage(1);
                   }
                 });
@@ -315,7 +314,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
           Util.title(p, "<blue>サバイバルスナイパー", "<red>スタート");
           val inv = p.getInventory();
           inv.clear();
-          if (!players.get(uuid).getFirst()) {
+          if (players.get(uuid).getFirst() == -1) {
             p.setGameMode(GameMode.SPECTATOR);
             p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
             teleportLobby(p);
@@ -335,8 +334,8 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         });
     if (mode == Mode.TEAM) {
       players.entrySet().stream()
-          .filter(entry -> entry.getValue().getThird() != null)
-          .collect(Collectors.groupingBy(entry -> entry.getValue().getThird()))
+          .filter(entry -> entry.getValue().getSecond() != null)
+          .collect(Collectors.groupingBy(entry -> entry.getValue().getSecond()))
           .forEach(
               (color, entries) -> {
                 val size = entries.size();
@@ -403,7 +402,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   @Override
   public boolean innerAddSpec(final Player player) {
     val uuid = player.getUniqueId();
-    players.put(uuid, Triple.of(false, -1, null));
+    players.put(uuid, Pair.of(-1, null));
     player.setGameMode(GameMode.SPECTATOR);
     player.getInventory().clear();
     player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
@@ -459,7 +458,5 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   public enum Mode {
     FFA,
     TEAM
-    // TODO: 普通に一つのファイルにして abstract method　を実装しよう
-    // 直書きだとめんどくさい
   }
 }

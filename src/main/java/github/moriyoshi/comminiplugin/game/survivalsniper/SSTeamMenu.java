@@ -59,7 +59,7 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
   private ItemButton<?> createTeamButton(ChatColor color) {
     val list =
         getGame().players.entrySet().stream()
-            .filter(entry -> entry.getValue().getThird() == color)
+            .filter(entry -> entry.getValue().getSecond() == color)
             .map(entry -> "<gray> " + Bukkit.getOfflinePlayer(entry.getKey()).getName())
             .collect(Collectors.toCollection(ArrayList::new));
     if (list.isEmpty()) {

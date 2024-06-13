@@ -3,7 +3,7 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 import github.moriyoshi.comminiplugin.system.game.AbstractGameListener;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.util.Util;
-import github.moriyoshi.comminiplugin.util.tuple.Triple;
+import github.moriyoshi.comminiplugin.util.tuple.Pair;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.val;
@@ -43,8 +43,8 @@ public class SSListener implements AbstractGameListener<SSGame> {
   @Override
   public void quit(final PlayerQuitEvent e) {
     val p = e.getPlayer();
-    val flag = getGame().players.remove(p.getUniqueId()).getFirst();
-    if (!flag) {
+    val flag = getGame().players.remove(p.getUniqueId()).getFirst() == -1;
+    if (flag) {
       return;
     }
     if (getGame().isStarted()) {
@@ -72,12 +72,12 @@ public class SSListener implements AbstractGameListener<SSGame> {
     final SSGame game = getGame();
     val p = e.getPlayer();
     val uuid = p.getUniqueId();
-    if (game.players.get(uuid).getSecond() == 0) {
+    if (game.players.get(uuid).getFirst() == 0) {
       e.deathMessage(Util.mm(p.getName() + "は洞窟で酸素がなくなった..."));
     }
     p.setGameMode(GameMode.SPECTATOR);
     game.runPlayers(pl -> Util.send(pl, e.deathMessage()));
-    game.players.put(uuid, Triple.of(false, -1, null));
+    game.players.put(uuid, Pair.of(-1, null));
     p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
     reducePlayer(p);
   }
@@ -117,9 +117,9 @@ public class SSListener implements AbstractGameListener<SSGame> {
     }
     ChatColor color1 =
         Optional.ofNullable(game.players.get(victim.getUniqueId()))
-            .map(Triple::getThird)
+            .map(Pair::getSecond)
             .orElse(null);
-    val color2 = game.players.get(attacker.getUniqueId()).getThird();
+    val color2 = game.players.get(attacker.getUniqueId()).getSecond();
     if (color2 != null && color1 == color2) {
       e.setCancelled(true);
       return;
@@ -165,7 +165,9 @@ public class SSListener implements AbstractGameListener<SSGame> {
     inv.clear();
     if (getGame().getMode() == SSGame.Mode.FFA) {
       val alives =
-          game.players.entrySet().stream().filter(entry -> entry.getValue().getFirst()).toList();
+          game.players.entrySet().stream()
+              .filter(entry -> entry.getValue().getFirst() != -1)
+              .toList();
       if (alives.size() != 1) {
         if (alives.size() == 2) {
           game.speedUpBorder();
@@ -177,8 +179,8 @@ public class SSListener implements AbstractGameListener<SSGame> {
     } else {
       val alives =
           game.players.entrySet().stream()
-              .filter(entry -> entry.getValue().getThird() != null)
-              .collect(Collectors.groupingBy(entry -> entry.getValue().getThird()));
+              .filter(entry -> entry.getValue().getSecond() != null)
+              .collect(Collectors.groupingBy(entry -> entry.getValue().getSecond()));
       if (alives.isEmpty()) {
         getGame().prefix.cast("<red>エラーです。残りのプレイヤーが0人です");
         GameSystem.finalGame();
