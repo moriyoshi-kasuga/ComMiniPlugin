@@ -1,9 +1,11 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
 
 plugins {
     id("java")
     id("io.github.goooler.shadow") version "8.1.7"
     id("io.papermc.paperweight.userdev") version "1.7.1"
+    id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.1.1"
 }
 
 group = "github.moriyoshi"
@@ -119,4 +121,11 @@ tasks.register("runPlugin") {
             println("Once again, please.")
         }
     }
+}
+
+bukkitPluginYaml {
+  main = "github.moriyoshi.comminiplugin.ComMiniPlugin"
+  load = BukkitPluginYaml.PluginLoadOrder.POSTWORLD
+  authors.add("moriyoshi-kasuga")
+  apiVersion = "1.20.6"
 }
