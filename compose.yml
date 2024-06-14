@@ -5,7 +5,7 @@ services:
     stdin_open: true
     container_name: mc
     ports:
-      - "25566:25565"
+      - "7777:25565"
     environment:
       EULA: "TRUE"
       TYPE: PAPER
@@ -20,16 +20,16 @@ services:
       ONLINE_MODE: FALSE
     volumes:
       - ./server:/data
-  proxy:
-    image: itzg/bungeecord
-    container_name: velocity
-    ports:
-      - "25565:25577"
-    volumes:
-      - ./velocity:/server
-    environment:
-      TYPE: VELOCITY
-    restart: always
-
-volumes:
-  proxy:
+#   proxy:
+#     image: itzg/bungeecord
+#     container_name: velocity
+#     ports:
+#       - "25565:25577"
+#     volumes:
+#       - ./velocity:/server
+#     environment:
+#       TYPE: VELOCITY
+#     restart: always
+#
+# volumes:
+#   proxy:
