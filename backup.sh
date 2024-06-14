@@ -12,6 +12,8 @@ rm -r ./backups/"${date}" 2>/dev/null
 mkdir -p ./backups/"${date}"/plugins
 array=("lobby" "game" "plugins/ComMiniPlugin")
 for text in "${array[@]}"; do
-	echo "info: tar -czf ./backups/${date}/${text}.tar.gz ./server/${text}"
-	tar -czf ./backups/"${date}"/"${text}".tar.gz ./server/"${text}"
+	dir="$(dirname ./server/"${text}")"
+	file="$(basename "${text}")"
+	echo "tar -czf ./backups/""${date}""/""${text}"".tar.gz -C ""${dir}"" ./""${file}"""
+	tar -czf ./backups/"${date}"/"${text}".tar.gz -C "${dir}" ./"${file}"
 done
