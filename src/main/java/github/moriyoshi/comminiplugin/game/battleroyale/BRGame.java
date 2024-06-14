@@ -27,6 +27,9 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -41,6 +44,9 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
   private final List<Sequence<Integer, Integer, Material, BlockData>> lobbyBlocks =
       new ArrayList<>();
+
+  private final AttributeModifier resistance =
+      new AttributeModifier("br", 15, Operation.ADD_NUMBER);
 
   private BossBar bossBar;
 
@@ -90,14 +96,18 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   }
 
   @Override
-  public boolean innerAddSpec(final Player player) {
+  protected boolean predicateSpec(Player player) {
+    return true;
+  }
+
+  @Override
+  public void innerAddSpec(final Player player) {
     val uuid = player.getUniqueId();
     players.put(uuid, false);
     player.setGameMode(GameMode.SPECTATOR);
     player.getInventory().clear();
     player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
     teleportLobby(player);
-    return true;
   }
 
   public boolean isPlayingPlayer(Player player) {
@@ -158,7 +168,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
               inv.setItem(i, barrier);
             }
             p.setGameMode(GameMode.SURVIVAL);
-            p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, -1, 0, true, false));
+            p.getAttribute(Attribute.GENERIC_ARMOR).addTransientModifier(resistance);
           } else {
             p.setGameMode(GameMode.SPECTATOR);
             p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
@@ -338,6 +348,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     if (bossBar != null) {
       runPlayers(p -> p.hideBossBar(bossBar));
     }
+    runPlayers(p -> p.getAttribute(Attribute.GENERIC_ARMOR).removeModifier(resistance));
     lobbyBlocks.clear();
     isCanPvP = false;
     players.clear();

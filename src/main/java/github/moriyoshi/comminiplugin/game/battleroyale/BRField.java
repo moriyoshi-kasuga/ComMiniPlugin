@@ -37,6 +37,7 @@ import lombok.val;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -94,6 +95,9 @@ public class BRField {
 
   public void initialize() {
     treasure.clearPlayer();
+    world
+        .getNearbyEntitiesByType(Item.class, lobby, (double) max_radius_range / 2, 400)
+        .forEach(Item::remove);
     val border = world.getWorldBorder();
     border.setCenter(lobby);
     border.setSize(max_radius_range);
@@ -180,18 +184,20 @@ public class BRField {
     treasure.saveFile();
   }
 
+  protected Pool getLevel1MainPool() {
+    return new Pool(3, 0, 3);
+  }
+
   public LootTable getLevel1() {
     return new LootTable(
         new ArrayList<>() {
           {
             add(
-                new Pool(3, 0, 3)
-                    // TODO: entry アイテム 数も 1~3 までとかで
-                    // TODO: itembuilder static method で potion 作るやつ追加しよう (というかそこらへんの便利追加する、firework
+                getLevel1MainPool()
                     .add(new Entry(10, () -> new CurryBreadItem().getItem()))
                     .add(new Entry(10, () -> new HealRingItem().getItem()))
-                    .add(new Entry(10, () -> new NauseaBallItem().getItem()))
-                    .add(new Entry(10, () -> new TinglyBallItem().getItem()))
+                    .add(new Entry(10, () -> new NauseaBallItem().getItem()).setItemRolls(1, 2))
+                    .add(new Entry(10, () -> new TinglyBallItem().getItem()).setItemRolls(1, 2))
                     .add(
                         new Entry(
                             10,
@@ -289,15 +295,19 @@ public class BRField {
         });
   }
 
+  protected Pool getLevel2MainPool() {
+    return new Pool(2, 0, 3);
+  }
+
   public LootTable getLevel2() {
     return new LootTable(
         new ArrayList<>() {
           {
             add(
-                new Pool(2, 0, 3)
+                getLevel2MainPool()
                     .add(new Entry(10, () -> new CurryBreadItem().getItem()))
                     .add(new Entry(10, () -> new ShockWaveItem().getItem()))
-                    .add(new Entry(10, () -> new TinglyBallItem().getItem()))
+                    .add(new Entry(10, () -> new TinglyBallItem().getItem()).setItemRolls(1, 3))
                     .add(
                         new Entry(
                             10,
@@ -349,12 +359,16 @@ public class BRField {
         });
   }
 
+  protected Pool getLevel3MainPool() {
+    return new Pool(2, 0, 2);
+  }
+
   public LootTable getLevel3() {
     return new LootTable(
         new ArrayList<>() {
           {
             add(
-                new Pool(2, 0, 2)
+                getLevel3MainPool()
                     .add(new Entry(10, () -> new BackpackItem().getItem()))
                     .add(new Entry(10, () -> new ShockWaveItem().getItem()))
                     .add(new Entry(10, () -> new SpeedBootsItem().getItem()))
@@ -415,15 +429,19 @@ public class BRField {
         });
   }
 
+  protected Pool getLevel4MainPool() {
+    return new Pool(1, 0, 2);
+  }
+
   public LootTable getLevel4() {
     return new LootTable(
         new ArrayList<>() {
           {
             add(
-                new Pool(1, 0, 2)
+                getLevel4MainPool()
                     .add(new Entry(10, () -> new VampireBowItem().getItem()))
                     .add(new Entry(10, () -> new RecallClockItem().getItem()))
-                    .add(new Entry(10, () -> new CowBallItem().getItem()))
+                    .add(new Entry(10, () -> new CowBallItem().getItem()).setItemRolls(1, 2))
                     .add(new Entry(10, () -> new InvisibleCloakItem().getItem()))
                     .add(new Entry(10, () -> new HKPRItem().getItem()))
                     .add(new Entry(10, () -> new WingItem().getItem()))
@@ -435,12 +453,16 @@ public class BRField {
         });
   }
 
+  protected Pool getLevel5MainPool() {
+    return new Pool(1, 0, 1);
+  }
+
   public LootTable getLevel5() {
     return new LootTable(
         new ArrayList<>() {
           {
             add(
-                new Pool(1, 0, 1)
+                getLevel5MainPool()
                     .add(new Entry(5, () -> new ItemStack(Material.ENDER_PEARL)))
                     .add(new Entry(10, () -> new MagicMirrorItem().getItem()))
                     .add(new Entry(10, () -> new HKPRItem().getItem()))

@@ -210,6 +210,7 @@ public final class BukkitUtil {
     p.getInventory().addItem(new MenuItem().getItem());
     p.teleport(ComMiniWorld.LOBBY);
     p.playerListName(null);
+    p.setArrowsInBody(0);
   }
 
   public static void initializeGamePlayer(Player p) {

@@ -400,14 +400,18 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   }
 
   @Override
-  public boolean innerAddSpec(final Player player) {
+  protected boolean predicateSpec(Player player) {
+    return true;
+  }
+
+  @Override
+  public void innerAddSpec(final Player player) {
     val uuid = player.getUniqueId();
     players.put(uuid, Pair.of(-1, null));
     player.setGameMode(GameMode.SPECTATOR);
     player.getInventory().clear();
     player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
     teleportLobby(player);
-    return true;
   }
 
   public void speedUpBorder() {

@@ -83,6 +83,12 @@ public class Pool {
       }
       val item = entry.supplier.get();
       if (item != null && !item.isEmpty() && entry.condition.getAsBoolean()) {
+        if (entry.getItemRolls() != null) {
+          item.setAmount(entry.getItemRolls().apply(r));
+          if (item.isEmpty()) {
+            continue;
+          }
+        }
         list.add(item);
       }
     }

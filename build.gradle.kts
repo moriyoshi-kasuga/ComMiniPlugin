@@ -3,6 +3,7 @@ import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
 
 plugins {
     id("java")
+    id("eclipse")
     id("io.github.goooler.shadow") version "8.1.7"
     id("io.papermc.paperweight.userdev") version "1.7.1"
     id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.1.1"

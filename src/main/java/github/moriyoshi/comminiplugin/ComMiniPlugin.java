@@ -113,7 +113,7 @@ public final class ComMiniPlugin extends JavaPlugin {
 
     commands.forEach(
         command -> {
-          ComMiniPrefix.SYSTEM.cast("<gray>UNREGISTER COMMAND " + command);
+          ComMiniPrefix.SYSTEM.logDebug("<gray>UNREGISTER COMMAND " + command);
           CommandAPI.unregister(command);
         });
     CommandAPI.onDisable();

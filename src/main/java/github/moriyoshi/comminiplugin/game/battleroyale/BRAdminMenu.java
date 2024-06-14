@@ -49,8 +49,8 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin>
                 new BRField(
                     "facility",
                     new Location(ComMiniWorld.GAME_WORLD, 10000.5, 16, 100000.5),
-                    50,
-                    10,
+                    100,
+                    20,
                     30,
                     10,
                     10,

@@ -93,16 +93,19 @@ public abstract class AbstractGame implements InterfaceGame {
    * @param player 観戦させたい人
    * @return true で参加させ、false で観戦不可能
    */
-  protected abstract boolean innerAddSpec(Player player);
+  protected abstract void innerAddSpec(Player player);
+
+  protected abstract boolean predicateSpec(Player player);
 
   public final boolean addSpec(Player player) {
-    if (innerAddSpec(player)) {
+    if (predicateSpec(player)) {
       getPlayersStream()
           .forEach(
               shower -> {
                 player.showPlayer(ComMiniPlugin.getPlugin(), shower);
                 shower.showPlayer(ComMiniPlugin.getPlugin(), player);
               });
+      innerAddSpec(player);
       return true;
     }
     return false;

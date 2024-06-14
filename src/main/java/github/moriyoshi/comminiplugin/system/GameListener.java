@@ -285,12 +285,12 @@ public class GameListener implements Listener {
     }
   }
 
-  @EventHandler(priority = EventPriority.LOW)
+  @EventHandler(priority = EventPriority.HIGHEST)
   public void teleport(PlayerTeleportEvent e) {
     var p = e.getPlayer();
     for (val effect : p.getActivePotionEffects()) {
       if (effect.getType().equals(PotionEffectType.SLOWNESS) && effect.getAmplifier() == 138) {
-        disableMoveLocation.put(p.getUniqueId(), p.getLocation());
+        disableMoveLocation.remove(p.getUniqueId());
         return;
       }
     }
@@ -307,8 +307,8 @@ public class GameListener implements Listener {
           if (!p.isOnGround()) {
             return;
           }
-          loc = e.getTo();
           disableMoveLocation.put(p.getUniqueId(), loc);
+          return;
         }
         Location to = e.getTo();
         loc.setYaw(to.getYaw());

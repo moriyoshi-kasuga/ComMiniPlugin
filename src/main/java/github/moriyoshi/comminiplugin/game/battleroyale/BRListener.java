@@ -49,15 +49,20 @@ public class BRListener implements AbstractGameListener<BRGame> {
   }
 
   @EventHandler
-  public void tp(final PlayerTeleportEvent e) {
-    val p = e.getPlayer();
-    if (!getGame().isGamePlayer(p)) {
+  public void tp(final PlayerTeleportEvent event) {
+    val player = event.getPlayer();
+    if (!getGame().isGamePlayer(player)) {
       return;
     }
-    if (e.getCause().equals(TeleportCause.SPECTATE)
-        && !getGame().getLobby().getWorld().getWorldBorder().isInside(e.getTo())) {
-      getGame().prefix.send(p, "<red>範囲外にスペクテイターのテレポートは使えません");
-      e.setCancelled(true);
+    if (event.getCause() == TeleportCause.ENDER_PEARL) {
+      event.setCancelled(true);
+      player.teleport(event.getTo());
+      return;
+    }
+    if (event.getCause().equals(TeleportCause.SPECTATE)
+        && !getGame().getLobby().getWorld().getWorldBorder().isInside(event.getTo())) {
+      getGame().prefix.send(player, "<red>範囲外にスペクテイターのテレポートは使えません");
+      event.setCancelled(true);
     }
   }
 
@@ -78,21 +83,6 @@ public class BRListener implements AbstractGameListener<BRGame> {
     if (e.getCause().equals(DamageCause.FLY_INTO_WALL)) {
       e.setCancelled(true);
       return;
-    }
-  }
-
-  @EventHandler
-  public void onEntityDamage(PlayerTeleportEvent event) {
-    Player player = event.getPlayer();
-
-    if (!getGame().isGamePlayer(player)) {
-      return;
-    }
-
-    if (event.getCause() == TeleportCause.ENDER_PEARL) {
-      event.setCancelled(true);
-
-      player.teleport(event.getTo());
     }
   }
 
