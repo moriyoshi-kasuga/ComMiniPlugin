@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
 import github.moriyoshi.comminiplugin.system.slot.HotbarSlot;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.Collection;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

@@ -7,8 +7,8 @@ import github.moriyoshi.comminiplugin.game.survivalsniper.SSGame.Mode;
 import github.moriyoshi.comminiplugin.system.buttons.InventorySlotButton;
 import github.moriyoshi.comminiplugin.system.game.IGetGame;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -83,6 +83,6 @@ public class SSFFAMenu extends MenuHolder<ComMiniPlugin>
     if (getGame().getMode() == Mode.FFA) {
       return null;
     }
-    return Util.mm("<red>モードが変わりました、もう一度メニューを開いてください");
+    return BukkitUtil.mm("<red>モードが変わりました、もう一度メニューを開いてください");
   }
 }

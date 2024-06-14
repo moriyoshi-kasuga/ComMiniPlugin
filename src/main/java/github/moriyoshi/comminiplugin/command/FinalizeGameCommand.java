@@ -2,7 +2,7 @@ package github.moriyoshi.comminiplugin.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
 
 public class FinalizeGameCommand extends CommandAPICommand {
@@ -13,7 +13,7 @@ public class FinalizeGameCommand extends CommandAPICommand {
     executesPlayer(
         (p, args) -> {
           if (!GameSystem.finalGame()) {
-            ComMiniPrefix.MAIN.send(p, "<red>現在ゲームは開催されていません");
+            ComMiniPlugin.MAIN.send(p, "<red>現在ゲームは開催されていません");
           }
         });
   }

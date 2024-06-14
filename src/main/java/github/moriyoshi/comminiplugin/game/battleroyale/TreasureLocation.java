@@ -3,12 +3,13 @@ package github.moriyoshi.comminiplugin.game.battleroyale;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonElement;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.api.BlockInputsAPI;
-import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.lib.BlockInputsAPI;
+import github.moriyoshi.comminiplugin.lib.PluginLib;
+import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import github.moriyoshi.comminiplugin.util.RandomCollection;
-import github.moriyoshi.comminiplugin.util.tuple.Pair;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.RandomCollection;
+import github.moriyoshi.comminiplugin.lib.tuple.Pair;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -40,14 +41,14 @@ public class TreasureLocation extends BlockInputsAPI<List<Pair<Integer, Integer>
     return element.getAsJsonArray().asList().stream()
         .map(
             e ->
-                ComMiniPlugin.gson.<Pair<Integer, Integer>>fromJson(
+                PluginLib.gson.<Pair<Integer, Integer>>fromJson(
                     e, new TypeToken<Pair<Integer, Integer>>() {}.getType()))
         .toList();
   }
 
   @Override
   public JsonElement saveLocData(List<Pair<Integer, Integer>> data) {
-    return ComMiniPlugin.gson.toJsonTree(data);
+    return PluginLib.gson.toJsonTree(data);
   }
 
   @Override

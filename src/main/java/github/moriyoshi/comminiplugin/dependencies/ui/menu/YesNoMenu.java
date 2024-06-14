@@ -3,8 +3,8 @@ package github.moriyoshi.comminiplugin.dependencies.ui.menu;
 import github.moriyoshi.comminiplugin.dependencies.ui.GuiInventoryHolder;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import java.util.Optional;
 import java.util.function.Consumer;
 import org.bukkit.Material;
@@ -148,7 +148,7 @@ public class YesNoMenu<P extends Plugin> extends MenuHolder<P> {
               getPlugin(),
               () -> {
                 event.getPlayer().openInventory(getInventory());
-                Util.send(event.getPlayer(), "<red>このインベントリーを閉じることはできるません<gray>(noボタンを押して閉じてください)");
+                BukkitUtil.send(event.getPlayer(), "<red>このインベントリーを閉じることはできるません<gray>(noボタンを押して閉じてください)");
               });
     }
   }

@@ -7,8 +7,8 @@ import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ListMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,10 +30,11 @@ public class CustomItemsCommand extends CommandAPICommand {
         });
   }
 
-
-  private static final class CustomItemMenu extends ListMenu<String, CustomItemMenu> {
+  private static final class CustomItemMenu
+      extends ListMenu<ComMiniPlugin, String, CustomItemMenu> {
     public CustomItemMenu() {
       super(
+          ComMiniPlugin.getPlugin(),
           "<green>CustomItems",
           45,
           new ArrayList<>(CustomItem.canShowingRegisters.keySet()),

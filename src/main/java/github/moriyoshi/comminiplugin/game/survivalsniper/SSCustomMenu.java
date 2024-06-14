@@ -4,7 +4,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.val;

@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
 import github.moriyoshi.comminiplugin.object.jumppad.JumpPadItem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
@@ -28,7 +28,7 @@ public class UsefulCommands {
             final ComMiniPlayer player = ComMiniPlayer.getPlayer(sender.getUniqueId());
             val flag = !player.isDebug();
             player.setDebug(flag);
-            ComMiniPrefix.SYSTEM.send(sender, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
+            ComMiniPlugin.SYSTEM.send(sender, flag ? "<red>Debug Enabled" : "<green>Debug Disable");
           });
     }
   }

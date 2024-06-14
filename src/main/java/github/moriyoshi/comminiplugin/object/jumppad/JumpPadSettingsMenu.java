@@ -1,9 +1,8 @@
 package github.moriyoshi.comminiplugin.object.jumppad;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.block.CustomBlock;
+import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.command.AllSoundCommand;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
@@ -12,9 +11,9 @@ import github.moriyoshi.comminiplugin.dependencies.ui.button.SwitchButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ItemInputMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ListMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.JumpState;
-import github.moriyoshi.comminiplugin.util.tuple.Pair;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.JumpState;
+import github.moriyoshi.comminiplugin.lib.tuple.Pair;
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
 import java.util.Collections;
 import java.util.HashSet;
@@ -72,7 +71,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                         "<red>please input block material",
                         (item, e) -> {
                           if (item == null || item.isEmpty()) {
-                            ComMiniPrefix.SYSTEM.send(
+                            ComMiniPlugin.SYSTEM.send(
                                 e.getWhoClicked(),
                                 "<red>please input block material (ignore air,structor void if you"
                                     + " want to use it.)");
@@ -80,7 +79,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                           }
                           val material = item.getType();
                           if (material.isEmpty() || !material.isBlock()) {
-                            ComMiniPrefix.SYSTEM.send(
+                            ComMiniPlugin.SYSTEM.send(
                                 e.getWhoClicked(),
                                 "<red>please input block material (ignore air,structor void if you"
                                     + " want to use it.)");
@@ -313,13 +312,14 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
     setConsumer(jumpPadBlock, jumppadConsumer, isIncludeLinked);
   }
 
-  public static final class SelectSound extends ListMenu<Sound, SelectSound> {
+  public static final class SelectSound extends ListMenu<ComMiniPlugin,Sound, SelectSound> {
 
     private JumpPadBlock jumpPadBlock;
     private boolean isIncludeLinked;
 
     public SelectSound(JumpPadBlock jumpPadBlock, boolean isIncludeLinked) {
       super(
+          ComMiniPlugin.getPlugin(),
           "<red>select sound",
           45,
           Stream.of(Sound.values()).toList(),

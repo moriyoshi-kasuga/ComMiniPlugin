@@ -7,7 +7,7 @@ import github.moriyoshi.comminiplugin.game.survivalsniper.SSGame.Mode;
 import github.moriyoshi.comminiplugin.system.game.IGetGame;
 import github.moriyoshi.comminiplugin.system.buttons.GameStartButton;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;

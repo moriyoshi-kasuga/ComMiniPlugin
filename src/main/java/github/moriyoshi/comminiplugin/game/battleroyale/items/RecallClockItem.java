@@ -1,11 +1,10 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.item.CooldownItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.tuple.Triple;
+import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.tuple.Triple;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +17,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -27,7 +27,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class RecallClockItem extends CustomItem implements CooldownItem {
 
-  private static Map<UUID, Triple<Location, Double, List<PotionEffect>>> datas = new HashMap<>();
+  private static final Map<UUID, Triple<Location, Double, List<PotionEffect>>> datas =
+      new HashMap<>();
 
   public RecallClockItem() {
     super(
@@ -74,6 +75,11 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
   }
 
   @Override
+  public void dropItem(PlayerDropItemEvent e) {
+    datas.remove(getUniqueId());
+  }
+
+  @Override
   public void interactMainHand(PlayerInteractEvent e) {
     if (e.getAction().isLeftClick()) {
       e.setCancelled(true);
@@ -85,7 +91,7 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
     val player = e.getPlayer();
     val pair = datas.get(getUniqueId());
     if (pair == null) {
-      ComMiniPrefix.MAIN.send(player, "<red>15秒前の記憶はありません");
+      ComMiniPlugin.MAIN.send(player, "<red>15秒前の記憶はありません");
       return;
     }
     val loc = pair.getFirst();

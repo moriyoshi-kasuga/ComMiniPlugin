@@ -7,7 +7,7 @@ import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.SwitchButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ListMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,12 +67,12 @@ public class AllSoundCommand extends CommandAPICommand {
     };
   }
 
-  public static final class AllSoundMenu extends ListMenu<Sound, AllSoundMenu> {
+  public static final class AllSoundMenu extends ListMenu<ComMiniPlugin, Sound, AllSoundMenu> {
 
     private boolean isSelf = true;
 
     public AllSoundMenu() {
-      super("<green>Sounds", 45, Arrays.asList(Sound.values()));
+      super(ComMiniPlugin.getPlugin(), "<green>Sounds", 45, Arrays.asList(Sound.values()));
       this.function =
           (sound) -> {
             val m = getMaterial(sound);

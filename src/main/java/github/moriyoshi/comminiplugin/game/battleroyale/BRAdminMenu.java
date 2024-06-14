@@ -1,7 +1,6 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
@@ -9,7 +8,7 @@ import github.moriyoshi.comminiplugin.system.buttons.GameStartButton;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.game.IGetGame;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.Optional;
 import java.util.function.Supplier;
 import lombok.val;
@@ -65,11 +64,11 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin>
                 .ifPresentOrElse(
                     field -> {
                       field.getTreasure().addPlayer((Player) event.getWhoClicked());
-                      ComMiniPrefix.SYSTEM.send(event.getWhoClicked(), "<green>宝箱設定開始しました");
+                      ComMiniPlugin.SYSTEM.send(event.getWhoClicked(), "<green>宝箱設定開始しました");
                       event.getWhoClicked().getInventory().addItem(new BRTreasureItem().getItem());
                     },
                     () ->
-                        ComMiniPrefix.SYSTEM.send(
+                        ComMiniPlugin.SYSTEM.send(
                             event.getWhoClicked(), "<red>宝箱を配置するフィールドを設定してから実行してください"));
           }
         });
@@ -82,10 +81,10 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin>
                 .ifPresentOrElse(
                     field -> {
                       field.getTreasure().removePlayer((Player) event.getWhoClicked());
-                      ComMiniPrefix.SYSTEM.send(event.getWhoClicked(), "<red>宝箱設定終了しました");
+                      ComMiniPlugin.SYSTEM.send(event.getWhoClicked(), "<red>宝箱設定終了しました");
                     },
                     () ->
-                        ComMiniPrefix.SYSTEM.send(
+                        ComMiniPlugin.SYSTEM.send(
                             event.getWhoClicked(), "<red>宝箱を配置するフィールドを設定してから実行してください"));
           }
         });

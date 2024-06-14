@@ -3,7 +3,7 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;

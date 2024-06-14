@@ -7,10 +7,10 @@ import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.ItemStackArgument;
-import github.moriyoshi.comminiplugin.util.FormatterUtil;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.PrefixUtil;
-import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.lib.FormatterUtil;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.PrefixUtil;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,7 @@ import org.bukkit.inventory.meta.Damageable;
 
 public class ItemEditCommand extends CommandAPICommand {
 
-  private static final PrefixUtil IE = new PrefixUtil(Util.mm("<gold>[<aqua>IE<gold>] "));
+  private static final PrefixUtil IE = new PrefixUtil(BukkitUtil.mm("<gold>[<aqua>IE<gold>] "));
 
   private static final String HASITEM = "<red>アイテムを手に持ってください";
   private static final String RENAME = "<green>名前を<reset>[ <reset>{name}<reset> ]<green>にしました";
@@ -110,7 +110,7 @@ public class ItemEditCommand extends CommandAPICommand {
                       sender,
                       builder -> {
                         IE.send(sender, FormatterUtil.format(ADDLORE, Map.of("name", s)));
-                        return builder.addLore(Util.mm(s));
+                        return builder.addLore(BukkitUtil.mm(s));
                       });
                 }));
     withSubcommand(
@@ -126,7 +126,7 @@ public class ItemEditCommand extends CommandAPICommand {
                         final String s = objects.get(1).toString();
                         IE.send(
                             player, FormatterUtil.format(SETLORE, Map.of("lore", i, "name", s)));
-                        return builder.setLore(i - 1, Util.mm(s));
+                        return builder.setLore(i - 1, BukkitUtil.mm(s));
                       });
                 }));
     withSubcommand(
@@ -149,7 +149,7 @@ public class ItemEditCommand extends CommandAPICommand {
                         final String s = objects.get(1).toString();
                         IE.send(
                             player, FormatterUtil.format(INSERTLORE, Map.of("lore", i, "name", s)));
-                        return builder.insertLore(i - 1, Util.mm(s));
+                        return builder.insertLore(i - 1, BukkitUtil.mm(s));
                       });
                 }));
     withSubcommand(
@@ -163,7 +163,7 @@ public class ItemEditCommand extends CommandAPICommand {
                       builder -> {
                         final String s = args.get(0).toString();
                         IE.send(sender, FormatterUtil.format(RENAME, Map.of("name", s)));
-                        return builder.name(Util.mm(s));
+                        return builder.name(BukkitUtil.mm(s));
                       });
                 }));
     withSubcommand(

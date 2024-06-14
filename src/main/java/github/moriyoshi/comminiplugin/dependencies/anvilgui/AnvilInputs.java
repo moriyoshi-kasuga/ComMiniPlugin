@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.dependencies.anvilgui;
 
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +47,7 @@ public class AnvilInputs {
       @NotNull BiFunction<T, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
     return new AnvilGUI.Builder()
         .plugin(plugin)
-        .jsonTitle(JSONComponentSerializer.json().serialize(Util.mm(title)))
+        .jsonTitle(JSONComponentSerializer.json().serialize(BukkitUtil.mm(title)))
         .itemLeft(new ItemBuilder(Material.PAPER).name("").build())
         .onClick(
             (slot, state) -> {

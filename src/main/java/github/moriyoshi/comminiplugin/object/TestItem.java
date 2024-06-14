@@ -1,12 +1,11 @@
 package github.moriyoshi.comminiplugin.object;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.block.CustomBlock;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
 import github.moriyoshi.comminiplugin.game.battleroyale.TreasureChest;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.List;
 import java.util.Optional;
 import lombok.val;
@@ -37,19 +36,19 @@ public class TestItem extends CustomItem {
     val player = e.getPlayer();
     val block = player.getTargetBlockExact(10);
     if (block == null || block.isEmpty()) {
-      ComMiniPrefix.SYSTEM.send(player, "<red>please look at a target block");
+      ComMiniPlugin.SYSTEM.send(player, "<red>please look at a target block");
       return;
     }
     if (e.getAction().isLeftClick()) {
       if (!CustomBlock.isCustomBlock(block, TreasureChest.class)) {
-        ComMiniPrefix.SYSTEM.send(player, "<red>please look at a Treasure block");
+        ComMiniPlugin.SYSTEM.send(player, "<red>please look at a Treasure block");
         return;
       }
       CustomBlock.getCustomBlock(block).remove();
-      ComMiniPrefix.SYSTEM.send(player, "<green>successfully removed Treasure block");
+      ComMiniPlugin.SYSTEM.send(player, "<green>successfully removed Treasure block");
     } else {
       if (CustomBlock.isCustomBlock(block)) {
-        ComMiniPrefix.SYSTEM.send(player, "<red>already a custom block");
+        ComMiniPlugin.SYSTEM.send(player, "<red>already a custom block");
         return;
       }
       AnvilInputs.getInput(

@@ -1,6 +1,6 @@
 package github.moriyoshi.comminiplugin.system.loot;
 
-import github.moriyoshi.comminiplugin.util.RandomCollection;
+import github.moriyoshi.comminiplugin.lib.RandomCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;

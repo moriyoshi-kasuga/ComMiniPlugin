@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

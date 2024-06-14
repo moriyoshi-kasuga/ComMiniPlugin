@@ -1,11 +1,11 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import de.tr7zw.changeme.nbtapi.NBT;
-import github.moriyoshi.comminiplugin.item.CooldownItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.item.CustomItemFlag;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import java.util.HashSet;
 import java.util.UUID;
 import lombok.val;
@@ -27,7 +27,7 @@ import org.bukkit.util.RayTraceResult;
 
 public class SSSniper extends CustomItem implements CooldownItem {
 
-  private static final Component DEFAULT_NAME = Util.mm("<blue>スナイパー");
+  private static final Component DEFAULT_NAME = BukkitUtil.mm("<blue>スナイパー");
   private static final double BULLET_SIZE = 0.1;
   private static final int MAX_LENGTH = 100;
   private static final int DEFAULT_COOLDOWN_TICK = 40;
@@ -157,8 +157,8 @@ public class SSSniper extends CustomItem implements CooldownItem {
           .name(
               DEFAULT_NAME.append(
                   StringUtils.isEmpty(bullet)
-                      ? Util.mm("<gray>: <red>None")
-                      : Util.mm("<gray>: <white>" + bullet)));
+                      ? BukkitUtil.mm("<gray>: <red>None")
+                      : BukkitUtil.mm("<gray>: <white>" + bullet)));
       NBT.modify(
           item,
           nbt -> {

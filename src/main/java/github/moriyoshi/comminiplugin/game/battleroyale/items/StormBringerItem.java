@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.item.CooldownItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -38,7 +38,7 @@ public class StormBringerItem extends CustomItem implements CooldownItem {
     val player = e.getPlayer();
     val target = player.getTargetBlockExact(50);
     if (target == null || target.isEmpty()) {
-      ComMiniPrefix.MAIN.send(player, "<red>対象のブロックを見つけられません。");
+      ComMiniPlugin.MAIN.send(player, "<red>対象のブロックを見つけられません。");
       return;
     }
     setCooldown(1200);

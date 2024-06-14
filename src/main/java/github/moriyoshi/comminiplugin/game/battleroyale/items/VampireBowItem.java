@@ -1,10 +1,10 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
 import de.tr7zw.changeme.nbtapi.NBT;
-import github.moriyoshi.comminiplugin.item.CooldownItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.GameListener;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.List;
 import lombok.val;
 import org.bukkit.Material;

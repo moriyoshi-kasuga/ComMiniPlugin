@@ -1,8 +1,8 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import github.moriyoshi.comminiplugin.item.CustomItemFlag;
+import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.system.slot.InventorySlot;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.Collection;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

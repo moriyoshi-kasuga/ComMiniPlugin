@@ -1,12 +1,11 @@
 package github.moriyoshi.comminiplugin.system.buttons;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
 import github.moriyoshi.comminiplugin.constant.Messages;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -55,7 +54,7 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       return;
     }
     if (GameSystem.isStarted()) {
-      ComMiniPrefix.MAIN.send(player, "<red>GameMenuは開けません");
+      ComMiniPlugin.MAIN.send(player, "<red>GameMenuは開けません");
       return;
     }
     GameSystem.getGame().createGameMenu(player).openInv(player);

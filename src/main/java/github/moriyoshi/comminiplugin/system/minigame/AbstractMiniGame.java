@@ -3,9 +3,9 @@ package github.moriyoshi.comminiplugin.system.minigame;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.system.AbstractGameKey.MiniGameKey;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import github.moriyoshi.comminiplugin.util.IdentifierKey;
-import github.moriyoshi.comminiplugin.util.PrefixUtil;
+import github.moriyoshi.comminiplugin.system.MainGameSystem;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
+import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import java.util.UUID;
 import java.util.function.Function;
 import lombok.Getter;
@@ -43,7 +43,7 @@ public abstract class AbstractMiniGame implements InterfaceGame {
   @Override
   public final void finishGame() {
     HandlerList.unregisterAll(listener);
-    runPlayers(BukkitUtil::initializePlayer);
+    runPlayers(MainGameSystem::initializePlayer);
     innerFinishGame();
     MiniGameSystem.unregister(getKey());
   }

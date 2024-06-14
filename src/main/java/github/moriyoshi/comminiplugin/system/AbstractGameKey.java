@@ -1,6 +1,6 @@
 package github.moriyoshi.comminiplugin.system;
 
-import github.moriyoshi.comminiplugin.util.IdentifierKey;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import java.util.UUID;
 
 public sealed class AbstractGameKey extends IdentifierKey {

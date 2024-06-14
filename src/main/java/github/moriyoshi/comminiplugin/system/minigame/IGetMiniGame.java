@@ -1,6 +1,6 @@
 package github.moriyoshi.comminiplugin.system.minigame;
 
-import github.moriyoshi.comminiplugin.util.HasKey;
+import github.moriyoshi.comminiplugin.lib.HasKey;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 

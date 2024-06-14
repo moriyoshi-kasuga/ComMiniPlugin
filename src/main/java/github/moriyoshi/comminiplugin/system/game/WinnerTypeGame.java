@@ -2,7 +2,7 @@ package github.moriyoshi.comminiplugin.system.game;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
-import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,7 +29,7 @@ public interface WinnerTypeGame extends InterfaceGame {
                     winner
                         .decorate(TextDecoration.UNDERLINED)
                         .append(
-                            Util.mm("<white>が勝ちました")
+                            BukkitUtil.mm("<white>が勝ちました")
                                 .decoration(TextDecoration.UNDERLINED, false))));
     new BukkitRunnable() {
 

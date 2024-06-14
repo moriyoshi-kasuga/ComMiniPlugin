@@ -6,8 +6,8 @@ import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.Location2DArgument;
 import dev.jorel.commandapi.arguments.WorldArgument;
 import dev.jorel.commandapi.wrappers.Location2D;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import org.bukkit.World;
 
 public class RandomTeleport extends CommandAPICommand {
@@ -29,7 +29,7 @@ public class RandomTeleport extends CommandAPICommand {
               loc.getBlockZ(),
               (int) args.get("radius"),
               (int) args.getOrDefault("maxTry", 100))) {
-            ComMiniPrefix.MAIN.send(p, "<red>そのあたりにテレポートはできません(もしかしたら海などです)");
+            ComMiniPlugin.MAIN.send(p, "<red>そのあたりにテレポートはできません(もしかしたら海などです)");
           }
         });
   }

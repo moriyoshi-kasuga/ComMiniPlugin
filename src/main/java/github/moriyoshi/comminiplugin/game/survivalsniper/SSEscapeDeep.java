@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -33,7 +33,7 @@ public class SSEscapeDeep extends CustomItem {
     }
     val p = e.getPlayer();
     if (!BukkitUtil.randomTeleport(p, p.getLocation(), 10)) {
-      ComMiniPrefix.MAIN.send(p, "<red>ここの地上に脱出できません(海の可能性があります)");
+      ComMiniPlugin.MAIN.send(p, "<red>ここの地上に脱出できません(海の可能性があります)");
       return;
     }
     p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_HURT, 8, 1);

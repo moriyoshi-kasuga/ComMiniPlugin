@@ -1,19 +1,19 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.PrefixUtil;
+import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRField.SIGNAL;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
-import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.game.WinnerTypeGame;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.PrefixUtil;
-import github.moriyoshi.comminiplugin.util.Util;
-import github.moriyoshi.comminiplugin.util.tuple.Sequence;
+import github.moriyoshi.comminiplugin.lib.tuple.Sequence;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -143,7 +143,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
     bossBar =
         BossBar.bossBar(
-            Util.mm("<red>投下まで<u>20</u>秒"), 1f, BossBar.Color.RED, BossBar.Overlay.NOTCHED_10);
+            BukkitUtil.mm("<red>投下まで<u>20</u>秒"), 1f, BossBar.Color.RED, BossBar.Overlay.NOTCHED_10);
 
     val barrier =
         new ItemBuilder(Material.BARRIER)
@@ -222,7 +222,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
                 return;
               }
               bossBar
-                  .name(Util.mm("<aqua>ボーダー停止中: 起動まで<u>" + temp + "</u>秒"))
+                  .name(BukkitUtil.mm("<aqua>ボーダー停止中: 起動まで<u>" + temp + "</u>秒"))
                   .progress((float) temp / field.getBorder_first_before_move_time());
             }
           }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
@@ -266,7 +266,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
                       1));
         }
         bossBar
-            .name(Util.mm("<red>投下まで<u>" + time + "</u>秒"))
+            .name(BukkitUtil.mm("<red>投下まで<u>" + time + "</u>秒"))
             .progress((float) time / (float) START_DROP);
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
@@ -291,13 +291,13 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
                     return;
                   }
                   if (0 >= --temp) {
-                    bossBar.name(Util.mm("<red>動きまくります!")).progress(0f);
+                    bossBar.name(BukkitUtil.mm("<red>動きまくります!")).progress(0f);
                     field.startMove(20, 15, 10);
                     this.cancel();
                     return;
                   }
                   bossBar
-                      .name(Util.mm("<yellow>ボーダー最小サイズ: 動くまで<u>" + temp + "</u>秒"))
+                      .name(BukkitUtil.mm("<yellow>ボーダー最小サイズ: 動くまで<u>" + temp + "</u>秒"))
                       .progress((float) temp / (float) field.getBorder_before_move_time());
                 }
               }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
@@ -319,14 +319,14 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
                     return;
                   }
                   bossBar
-                      .name(Util.mm("<aqua>ボーダー停止中: 起動まで<u>" + temp + "</u>秒"))
+                      .name(BukkitUtil.mm("<aqua>ボーダー停止中: 起動まで<u>" + temp + "</u>秒"))
                       .progress((float) temp / (float) field.getBorder_interval());
                 }
               }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
             }
             case SIGNAL.NONE none -> {
               bossBar
-                  .name(Util.mm("<red>ボーダー収縮残り: <u>" + none.restTime() + "</u>秒"))
+                  .name(BukkitUtil.mm("<red>ボーダー収縮残り: <u>" + none.restTime() + "</u>秒"))
                   .progress((float) none.restTime() / (float) field.getBorder_contraction_time());
             }
           }

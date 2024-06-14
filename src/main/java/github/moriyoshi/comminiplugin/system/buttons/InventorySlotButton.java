@@ -8,7 +8,7 @@ import github.moriyoshi.comminiplugin.system.player.InterfaceGamePlayer;
 import github.moriyoshi.comminiplugin.system.player.InventoryGamePlayer;
 import github.moriyoshi.comminiplugin.system.slot.InventorySlot;
 import github.moriyoshi.comminiplugin.system.slot.InventorySlotMenu;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.function.BiFunction;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;

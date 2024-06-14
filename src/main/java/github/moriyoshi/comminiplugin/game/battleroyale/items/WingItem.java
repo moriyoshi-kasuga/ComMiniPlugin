@@ -1,11 +1,11 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.item.CustomItemFlag;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.JumpState;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.JumpState;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

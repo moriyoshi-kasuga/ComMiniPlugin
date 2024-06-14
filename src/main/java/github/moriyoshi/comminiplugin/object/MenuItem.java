@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.object;
 
 import github.moriyoshi.comminiplugin.command.MenuCommand;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.item.CustomItemFlag;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;

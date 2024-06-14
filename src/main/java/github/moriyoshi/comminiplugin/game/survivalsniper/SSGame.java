@@ -1,16 +1,17 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.PluginLib;
+import github.moriyoshi.comminiplugin.lib.PrefixUtil;
+import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
+import github.moriyoshi.comminiplugin.system.MainGameSystem;
 import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.system.game.WinnerTypeGame;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.PrefixUtil;
-import github.moriyoshi.comminiplugin.util.Util;
-import github.moriyoshi.comminiplugin.util.tuple.Pair;
+import github.moriyoshi.comminiplugin.lib.tuple.Pair;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -67,7 +68,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     this.mode = mode;
     prefix.cast("<red>Modeが<u>" + mode.name() + "</u>に変わりました");
     prefix.cast("<gray>ゲームをしたい人はもう一度参加ボタンを押してください");
-    runPlayers(BukkitUtil::initializePlayer);
+    runPlayers(MainGameSystem::initializePlayer);
     players.clear();
   }
 
@@ -84,7 +85,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             .customItemFlag(CustomItemFlag.DISABLE_MOVE_INV, true)
             .build();
     player.getInventory().removeItem(item);
-    BukkitUtil.initializePlayer(player);
+    MainGameSystem.initializePlayer(player);
     val isPlayer = players.remove(uuid).getFirst() != -1;
     prefix.cast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
   }
@@ -110,9 +111,9 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         prefix.cast(player.getName() + "が<blue>参加します");
       } else {
         prefix.cast(
-            Util.mm(player.getName() + "が<white>")
-                .append(Util.colorToComponent(color, color.name()))
-                .append(Util.mm("<gray>に<blue>参加します")));
+            BukkitUtil.mm(player.getName() + "が<white>")
+                .append(BukkitUtil.colorToComponent(color, color.name()))
+                .append(BukkitUtil.mm("<gray>に<blue>参加します")));
       }
     } else {
       prefix.cast(player.getName() + "が<gray>観戦します");
@@ -150,7 +151,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     val vec = lobby.toVector();
     val min = vec.clone().add(VOID_BLOCK_RADIUS);
     val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
-    Util.consoleCommand(
+    BukkitUtil.consoleCommand(
         String.format(
             "execute in %s run fill %s %s %s %s %s %s minecraft:barrier outline",
             "overworld",
@@ -197,7 +198,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
               p -> {
                 p.playSound(
                     p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1);
-                Util.title(p, "<red>スタート!", null);
+                BukkitUtil.title(p, "<red>スタート!", null);
               });
           start();
           this.cancel();
@@ -213,7 +214,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                       1,
                       1));
         }
-        runPlayers(p -> Util.title(p, "<red><u>" + rest + "</u>秒後に始まります", null));
+        runPlayers(p -> BukkitUtil.title(p, "<red><u>" + rest + "</u>秒後に始まります", null));
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
   }
@@ -222,7 +223,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     val vec = lobby.toVector();
     val min = vec.clone().add(VOID_BLOCK_RADIUS);
     val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
-    Util.consoleCommand(
+    BukkitUtil.consoleCommand(
         String.format(
             "execute in %s run fill %s %s %s %s %s %s minecraft:air replace minecraft:barrier",
             "overworld",
@@ -235,7 +236,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
 
     bossBar =
         BossBar.bossBar(
-            Util.mm("<red>PvP解禁まで<u>" + AFTER_PVP_SECOND + "</u>秒"),
+            BukkitUtil.mm("<red>PvP解禁まで<u>" + AFTER_PVP_SECOND + "</u>秒"),
             1f,
             BossBar.Color.RED,
             BossBar.Overlay.NOTCHED_10);
@@ -249,10 +250,10 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             if (second > 0) {
               if (--second > 0) {
                 bossBar
-                    .name(Util.mm("<red>PvP解禁まで<u>" + second + "</u>秒"))
+                    .name(BukkitUtil.mm("<red>PvP解禁まで<u>" + second + "</u>秒"))
                     .progress((float) second / (float) AFTER_PVP_SECOND);
                 if (second % 60 == 0) {
-                  val message = Util.mm("<red>PvP解禁まで<u>" + second / 60 + "</u>分");
+                  val message = BukkitUtil.mm("<red>PvP解禁まで<u>" + second / 60 + "</u>分");
                   runPlayers(p -> prefix.send(p, message));
                 }
                 if (10 >= second) {
@@ -282,7 +283,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                   if (p == null) {
                     return;
                   }
-                  p.sendActionBar(Util.mm("酸素: " + num + " /" + AIR_LIMIT));
+                  p.sendActionBar(BukkitUtil.mm("酸素: " + num + " /" + AIR_LIMIT));
                   final boolean inCave = 7 > p.getLocation().getBlock().getLightFromSky();
                   if (!inCave && num == AIR_LIMIT) {
                     return;
@@ -311,7 +312,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         p -> {
           val uuid = p.getUniqueId();
           p.showBossBar(bossBar);
-          Util.title(p, "<blue>サバイバルスナイパー", "<red>スタート");
+          BukkitUtil.title(p, "<blue>サバイバルスナイパー", "<red>スタート");
           val inv = p.getInventory();
           inv.clear();
           if (players.get(uuid).getFirst() == -1) {
@@ -341,11 +342,11 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                 val size = entries.size();
                 for (int i = 0; i < size; i++) {
                   val current = Bukkit.getPlayer(entries.get(i).getKey());
-                  current.playerListName(Util.colorToComponent(color, current.getName()));
+                  current.playerListName(BukkitUtil.colorToComponent(color, current.getName()));
                   for (int j = 0; j < size; j++) {
                     if (i != j) {
                       try {
-                        ComMiniPlugin.getGlowingEntities()
+                        PluginLib.getGlowingEntities()
                             .setGlowing(Bukkit.getPlayer(entries.get(j).getKey()), current, color);
                       } catch (ReflectiveOperationException ignored) {
                       }
@@ -361,7 +362,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     val vec = lobby.toVector();
     val min = vec.clone().add(VOID_BLOCK_RADIUS);
     val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
-    Util.consoleCommand(
+    BukkitUtil.consoleCommand(
         String.format(
             "execute in %s run fill %s %s %s %s %s %s minecraft:air replace minecraft:barrier",
             "overworld",
@@ -384,7 +385,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         for (val another : keys) {
           if (!current.equals(another)) {
             try {
-              ComMiniPlugin.getGlowingEntities().unsetGlowing(another, current);
+              PluginLib.getGlowingEntities().unsetGlowing(another, current);
             } catch (ReflectiveOperationException ignored) {
             }
           }

@@ -1,11 +1,10 @@
 package github.moriyoshi.comminiplugin.dependencies.ui.menu;
 
-import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectItemButton;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
@@ -19,44 +18,38 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-public class ListMenu<T, Impl extends ListMenu<T, Impl>> extends PageMenu<ComMiniPlugin> {
+public class ListMenu<P extends Plugin, T, Impl extends ListMenu<P, T, Impl>> extends PageMenu<P> {
   protected final ItemStack goToFirstPage =
       new ItemBuilder(Material.ENDER_PEARL).name("<green>最初のページにもどる").build();
   protected final String title;
   protected final List<T> rewards;
   protected final int rewardStartIndex, rewardEndIndex;
-  protected Function<T, MenuButton<MenuHolder<ComMiniPlugin>>> function;
+  protected Function<T, MenuButton<MenuHolder<P>>> function;
 
   public ListMenu(
+      P plugin,
       String title,
       int pageSize,
       List<T> rewards,
-      Function<T, MenuButton<MenuHolder<ComMiniPlugin>>> function) {
-    this(
-        ComMiniPlugin.getPlugin(),
-        title,
-        pageSize,
-        rewards,
-        0,
-        Math.min(rewards.size(), pageSize),
-        function);
+      Function<T, MenuButton<MenuHolder<P>>> function) {
+    this(plugin, title, pageSize, rewards, 0, Math.min(rewards.size(), pageSize), function);
   }
 
-  public ListMenu(String title, int pageSize, List<T> rewards) {
-    this(
-        ComMiniPlugin.getPlugin(), title, pageSize, rewards, 0, Math.min(rewards.size(), pageSize));
+  public ListMenu(P plugin, String title, int pageSize, List<T> rewards) {
+    this(plugin, title, pageSize, rewards, 0, Math.min(rewards.size(), pageSize));
   }
 
   public ListMenu(
-      ComMiniPlugin plugin,
+      P plugin,
       String title,
       int pageSize,
       List<T> rewards,
       int rewardStartIndex,
       int rewardEndIndex,
-      Function<T, MenuButton<MenuHolder<ComMiniPlugin>>> function) {
+      Function<T, MenuButton<MenuHolder<P>>> function) {
     super(plugin, new MenuHolder<>(plugin, pageSize), title, null, null);
     this.title = title;
     this.rewards = rewards;
@@ -66,7 +59,7 @@ public class ListMenu<T, Impl extends ListMenu<T, Impl>> extends PageMenu<ComMin
   }
 
   public ListMenu(
-      ComMiniPlugin plugin,
+      P plugin,
       String title,
       int pageSize,
       List<T> rewards,
@@ -81,10 +74,10 @@ public class ListMenu<T, Impl extends ListMenu<T, Impl>> extends PageMenu<ComMin
 
   @SuppressWarnings("unchecked")
   @Override
-  public MenuHolder<ComMiniPlugin> getPage() {
+  public MenuHolder<P> getPage() {
     // we know the GuiInventoryHolder of the page is always a MenuHolder since we
     // always create it ourselves
-    return (MenuHolder<ComMiniPlugin>) super.getPage();
+    return (MenuHolder<P>) super.getPage();
   }
 
   @Override
@@ -117,9 +110,9 @@ public class ListMenu<T, Impl extends ListMenu<T, Impl>> extends PageMenu<ComMin
                                               (s, completion) ->
                                                   List.of(
                                                       ResponseAction.openInventory(
-                                                          getNewRewadsMenu(func.apply(s))
+                                                          getNewRewardsMenu(func.apply(s))
                                                               .getInventory()))),
-                                          ComMiniPlugin.getPlugin(),
+                                          getPlugin(),
                                           state -> state.getPlayer().openInventory(getInventory()))
                                       .open((Player) event.getWhoClicked());
                                 }
@@ -139,7 +132,7 @@ public class ListMenu<T, Impl extends ListMenu<T, Impl>> extends PageMenu<ComMin
     return Optional.empty();
   }
 
-  public Impl getNewRewadsMenu(List<T> list) {
+  public Impl getNewRewardsMenu(List<T> list) {
     return getNewMenu(list, 0, Math.min(list.size(), getPageSize()));
   }
 
@@ -162,7 +155,7 @@ public class ListMenu<T, Impl extends ListMenu<T, Impl>> extends PageMenu<ComMin
       val constructor =
           getClass()
               .getDeclaredConstructor(
-                  ComMiniPlugin.class,
+                  getPlugin().getClass(),
                   String.class,
                   int.class,
                   List.class,

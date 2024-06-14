@@ -7,7 +7,7 @@ import github.moriyoshi.comminiplugin.dependencies.ui.button.MenuButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ResetButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.util.CachedSupplier;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;

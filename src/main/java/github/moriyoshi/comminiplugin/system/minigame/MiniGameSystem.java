@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.system.minigame;
 
 import github.moriyoshi.comminiplugin.minigame.lobby_ffa.LFFAMiniGame;
-import github.moriyoshi.comminiplugin.util.IdentifierKey;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.jetbrains.annotations.NotNull;

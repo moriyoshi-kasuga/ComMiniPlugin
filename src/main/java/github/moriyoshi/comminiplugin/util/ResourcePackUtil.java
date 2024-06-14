@@ -1,5 +1,6 @@
 package github.moriyoshi.comminiplugin.util;
 
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,11 +15,11 @@ public final class ResourcePackUtil {
 
   private ResourcePackUtil() {}
 
-  public static void updateComMiniResoucePack(Audience audience) {
+  public static void updateComMiniResourcePack(Audience audience) {
     final ResourcePackRequest request =
         ResourcePackRequest.resourcePackRequest()
             .packs(buildComMiniResourcePack())
-            .prompt(Util.mm("<red>Please download the resource pack!"))
+            .prompt(BukkitUtil.mm("<red>Please download the resource pack!"))
             .required(true)
             .build();
 

@@ -4,8 +4,8 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.AbstractGameKey.GameKey;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
-import github.moriyoshi.comminiplugin.util.PrefixUtil;
+import github.moriyoshi.comminiplugin.lib.PrefixUtil;
+import github.moriyoshi.comminiplugin.system.MainGameSystem;
 import lombok.Getter;
 import lombok.val;
 import org.bukkit.Location;
@@ -56,7 +56,7 @@ public abstract class AbstractGame implements InterfaceGame {
     val list = getPlayers();
     runPlayers(
         p -> {
-          BukkitUtil.initializeGamePlayer(p);
+          MainGameSystem.initializeGamePlayer(p);
           setPlayerJoinGameIdentifier(p);
           list.forEach(
               s -> {
@@ -74,7 +74,7 @@ public abstract class AbstractGame implements InterfaceGame {
     isStarted = false;
     HandlerList.unregisterAll(listener);
     showPlayers();
-    runPlayers(BukkitUtil::initializePlayer);
+    runPlayers(MainGameSystem::initializePlayer);
     innerFinishGame();
     fieldInitialize(false);
   }

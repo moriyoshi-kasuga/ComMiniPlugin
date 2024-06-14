@@ -1,6 +1,7 @@
 package github.moriyoshi.comminiplugin.constant;
 
-import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import java.util.Collection;
 import java.util.List;
 import net.kyori.adventure.text.Component;
@@ -15,15 +16,15 @@ public enum Messages {
   public final Component message;
 
   Messages(String message) {
-    this.message = Util.mm(message);
+    this.message = BukkitUtil.mm(message);
   }
 
   public void send(CommandSender sender) {
-    ComMiniPrefix.MAIN.send(sender, this.message);
+    ComMiniPlugin.MAIN.send(sender, this.message);
   }
 
   public void send(Collection<CommandSender> senders) {
-    senders.forEach(sender -> ComMiniPrefix.MAIN.send(sender, this.message));
+    senders.forEach(sender -> ComMiniPlugin.MAIN.send(sender, this.message));
   }
 
   public void send(CommandSender... senders) {

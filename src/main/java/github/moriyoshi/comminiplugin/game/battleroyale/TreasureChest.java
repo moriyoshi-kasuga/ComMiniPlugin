@@ -2,10 +2,9 @@ package github.moriyoshi.comminiplugin.game.battleroyale;
 
 import com.google.gson.JsonElement;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.block.CustomModelBlock;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.lib.block.CustomModelBlock;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.val;
@@ -35,7 +34,7 @@ public class TreasureChest extends CustomModelBlock {
 
   @Override
   public void blockBreak(BlockBreakEvent e) {
-    ComMiniPrefix.MAIN.send(e.getPlayer(), "<red>don't break me!");
+    ComMiniPlugin.MAIN.send(e.getPlayer(), "<red>don't break me!");
   }
 
   @Override

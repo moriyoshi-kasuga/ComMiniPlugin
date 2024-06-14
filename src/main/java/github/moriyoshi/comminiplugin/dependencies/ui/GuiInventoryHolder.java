@@ -2,8 +2,8 @@ package github.moriyoshi.comminiplugin.dependencies.ui;
 
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -66,7 +66,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
     this.guiListener = guiListener;
     this.plugin = plugin;
     this.inventory =
-        plugin.getServer().createInventory(this, type, Util.mm(title)); // implicit null check
+        plugin.getServer().createInventory(this, type, BukkitUtil.mm(title)); // implicit null check
 
     guiListener.registerGui(this, inventory); // implicit null check
   }
@@ -96,7 +96,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
     this.guiListener = guiListener;
     this.plugin = plugin;
     this.inventory =
-        plugin.getServer().createInventory(this, size, Util.mm(title)); // implicit null check
+        plugin.getServer().createInventory(this, size, BukkitUtil.mm(title)); // implicit null check
 
     guiListener.registerGui(this, inventory); // implicit null check
   }

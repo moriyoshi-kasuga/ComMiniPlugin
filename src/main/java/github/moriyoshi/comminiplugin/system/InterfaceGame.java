@@ -1,6 +1,6 @@
 package github.moriyoshi.comminiplugin.system;
 
-import github.moriyoshi.comminiplugin.util.PrefixUtil;
+import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

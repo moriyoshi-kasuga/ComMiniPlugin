@@ -38,7 +38,7 @@ public class NMSUtil {
   /**
    * predicate のプレイヤーにパケットを送ります
    *
-   * @param collection targets
+   * @param predicate targets
    * @param packet send packet
    */
   public static void sendPacket(final Predicate<Player> predicate, final Packet<?> packet) {

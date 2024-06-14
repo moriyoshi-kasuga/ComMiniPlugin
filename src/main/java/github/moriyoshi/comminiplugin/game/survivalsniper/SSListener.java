@@ -2,8 +2,8 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import github.moriyoshi.comminiplugin.system.game.AbstractGameListener;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
-import github.moriyoshi.comminiplugin.util.Util;
-import github.moriyoshi.comminiplugin.util.tuple.Pair;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.tuple.Pair;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.val;
@@ -73,10 +73,10 @@ public class SSListener implements AbstractGameListener<SSGame> {
     val p = e.getPlayer();
     val uuid = p.getUniqueId();
     if (game.players.get(uuid).getFirst() == 0) {
-      e.deathMessage(Util.mm(p.getName() + "は洞窟で酸素がなくなった..."));
+      e.deathMessage(BukkitUtil.mm(p.getName() + "は洞窟で酸素がなくなった..."));
     }
     p.setGameMode(GameMode.SPECTATOR);
-    game.runPlayers(pl -> Util.send(pl, e.deathMessage()));
+    game.runPlayers(pl -> BukkitUtil.send(pl, e.deathMessage()));
     game.players.put(uuid, Pair.of(-1, null));
     p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
     reducePlayer(p);
@@ -194,7 +194,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
         return;
       }
       alives.forEach(
-          (color, list) -> game.endGame(Util.colorToComponent(color, color.name() + " チーム")));
+          (color, list) -> game.endGame(BukkitUtil.colorToComponent(color, color.name() + " チーム")));
     }
   }
 }

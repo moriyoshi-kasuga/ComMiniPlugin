@@ -1,6 +1,6 @@
 package github.moriyoshi.comminiplugin.system.game;
 
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRGame;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSGame;
 import java.util.HashMap;
@@ -36,16 +36,16 @@ public class GameSystem {
    */
   public static boolean initializeGame(Player player, String gameName) {
     if (isIn()) {
-      ComMiniPrefix.SYSTEM.send(player, "<green>現在は <u>" + game.name + "<reset><green>が開催されています!");
+      ComMiniPlugin.SYSTEM.send(player, "<green>現在は <u>" + game.name + "<reset><green>が開催されています!");
       return false;
     }
     var temp = games.get(gameName);
     if (temp == null) {
-      ComMiniPrefix.SYSTEM.important("<red>" + gameName + "ゲームの識別子が正しくありません! 開発者に連絡してください。");
+      ComMiniPlugin.SYSTEM.important("<red>" + gameName + "ゲームの識別子が正しくありません! 開発者に連絡してください。");
       return false;
     }
     if (!temp.initializeGame(player)) {
-      ComMiniPrefix.SYSTEM.send(player, "<red>" + gameName + "を始められません、初期化条件が存在します!");
+      ComMiniPlugin.SYSTEM.send(player, "<red>" + gameName + "を始められません、初期化条件が存在します!");
       return false;
     }
     game = temp;
@@ -60,7 +60,7 @@ public class GameSystem {
    */
   public static void startGame(Player player) {
     if (!isIn()) {
-      ComMiniPrefix.SYSTEM.send(player, "<red>現在は何も開催されていません!");
+      ComMiniPlugin.SYSTEM.send(player, "<red>現在は何も開催されていません!");
     }
     if (isStarted()) {
       game.prefix.send(player, "<red>すでに始まっています!");

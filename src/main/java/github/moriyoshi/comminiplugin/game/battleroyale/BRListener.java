@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
-import github.moriyoshi.comminiplugin.item.CooldownItem;
-import github.moriyoshi.comminiplugin.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.game.AbstractGameListener;
-import github.moriyoshi.comminiplugin.util.Util;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import java.util.Map.Entry;
 import lombok.val;
 import org.bukkit.Bukkit;
@@ -72,7 +72,7 @@ public class BRListener implements AbstractGameListener<BRGame> {
     val p = e.getPlayer();
     p.setGameMode(GameMode.SPECTATOR);
     val game = getGame();
-    game.runPlayers(pl -> Util.send(pl, e.deathMessage()));
+    game.runPlayers(pl -> BukkitUtil.send(pl, e.deathMessage()));
     game.players.put(p.getUniqueId(), false);
     p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
     reducePlayer(p);

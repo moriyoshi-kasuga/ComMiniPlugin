@@ -1,8 +1,8 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import de.tr7zw.changeme.nbtapi.NBT;
-import github.moriyoshi.comminiplugin.item.CustomItem;
-import github.moriyoshi.comminiplugin.util.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;

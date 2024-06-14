@@ -2,12 +2,10 @@ package github.moriyoshi.comminiplugin.system;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.block.CustomBlock;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.minigame.AbstractMiniGame;
 import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
-import github.moriyoshi.comminiplugin.util.BukkitUtil;
 import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +75,7 @@ public class GameListener implements Listener {
         val newHash = ResourcePackUtil.getComMiniResourcePackHash();
         if (!oldHash.equalsIgnoreCase(newHash)) {
           oldHash = newHash;
-          ComMiniPrefix.MAIN.cast("<red>リソースパックの更新があります!<gray>メニューから更新してください");
+          ComMiniPlugin.MAIN.cast("<red>リソースパックの更新があります!<gray>メニューから更新してください");
         }
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 20 * 5, 20 * 5);
@@ -117,9 +115,9 @@ public class GameListener implements Listener {
   @EventHandler(priority = EventPriority.LOW)
   public void join(PlayerJoinEvent e) {
     val p = e.getPlayer();
-    BukkitUtil.initializePlayer(p);
+    MainGameSystem.initializePlayer(p);
     if (ComMiniPlayer.getPlayer(p.getUniqueId()).isShouldLoadResourcePack()) {
-      ResourcePackUtil.updateComMiniResoucePack(p);
+      ResourcePackUtil.updateComMiniResourcePack(p);
     }
     Bukkit.getOnlinePlayers().stream()
         .filter(
@@ -165,7 +163,7 @@ public class GameListener implements Listener {
 
       @Override
       public void run() {
-        BukkitUtil.initializePlayer(e.getPlayer());
+        MainGameSystem.initializePlayer(e.getPlayer());
       }
     }.runTask(ComMiniPlugin.getPlugin());
   }

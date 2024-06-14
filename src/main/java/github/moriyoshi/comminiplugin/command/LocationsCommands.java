@@ -8,8 +8,8 @@ import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.api.JsonAPI;
-import github.moriyoshi.comminiplugin.constant.ComMiniPrefix;
+import github.moriyoshi.comminiplugin.lib.JsonAPI;
+import github.moriyoshi.comminiplugin.lib.PluginLib;
 import java.util.Collection;
 import java.util.Map;
 import lombok.Getter;
@@ -29,13 +29,13 @@ public class LocationsCommands extends JsonAPI {
 
   @Override
   protected JsonElement generateSaveData() {
-    return ComMiniPlugin.gson.toJsonTree(locations);
+    return PluginLib.gson.toJsonTree(locations);
   }
 
   @Override
   protected void generateLoadData(JsonElement dataElement) {
     locations =
-        ComMiniPlugin.gson.fromJson(
+        PluginLib.gson.fromJson(
             dataElement, new TypeToken<Map<String, Location>>() {}.getType());
   }
 
@@ -68,7 +68,7 @@ public class LocationsCommands extends JsonAPI {
           (p, args) -> {
             val loc = getManager().locations.get((String) args.get("name"));
             if (loc == null) {
-              ComMiniPrefix.SYSTEM.send(p, "<red>その名前のlocはありません");
+              ComMiniPlugin.SYSTEM.send(p, "<red>その名前のlocはありません");
               return;
             }
             args.getOptional("players")
@@ -91,7 +91,7 @@ public class LocationsCommands extends JsonAPI {
       executesPlayer(
           (p, args) -> {
             if (getManager().locations.remove((String) args.get("name")) == null) {
-              ComMiniPrefix.SYSTEM.send(p, "<red>その名前のlocはありません");
+              ComMiniPlugin.SYSTEM.send(p, "<red>その名前のlocはありません");
             }
           });
     }
@@ -107,7 +107,7 @@ public class LocationsCommands extends JsonAPI {
                 .locations
                 .forEach(
                     (name, location) ->
-                        ComMiniPrefix.SYSTEM.send(
+                        ComMiniPlugin.SYSTEM.send(
                             p,
                             "<gray>"
                                 + name
