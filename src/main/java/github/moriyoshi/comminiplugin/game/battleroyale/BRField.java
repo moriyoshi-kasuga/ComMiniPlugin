@@ -22,12 +22,12 @@ import github.moriyoshi.comminiplugin.game.battleroyale.items.UpgradeWingItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.VampireBowItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.VampireSwordItem;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
+import github.moriyoshi.comminiplugin.lib.RandomCollection;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.loot.Entry;
 import github.moriyoshi.comminiplugin.system.loot.LootTable;
 import github.moriyoshi.comminiplugin.system.loot.Pool;
-import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import github.moriyoshi.comminiplugin.lib.RandomCollection;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
@@ -37,6 +37,7 @@ import lombok.val;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -45,6 +46,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BoundingBox;
 
 public class BRField {
 
@@ -60,6 +62,7 @@ public class BRField {
   @Getter private final int border_contraction_time;
   @Getter private final int border_contraction_size;
   @Getter private final int border_before_move_time;
+  private final BoundingBox box;
 
   public BRField(
       String name,
@@ -85,19 +88,17 @@ public class BRField {
     this.treasure = new TreasureLocation(name);
     this.arrows =
         new RandomCollection<ItemStack>()
-            // .add(300, null)
             .add(50, new ItemBuilder(Material.ARROW).amount(3).build())
             .add(30, new ItemBuilder(Material.ARROW).amount(5).build())
             .add(10, new ItemBuilder(Material.ARROW).amount(7).build())
             .add(7, new ItemBuilder(Material.ARROW).amount(10).build())
             .add(3, new ItemBuilder(Material.ARROW).amount(15).build());
+    this.box = BoundingBox.of(lobby, max_radius_range / 2, 400, max_radius_range / 2);
   }
 
   public void initialize() {
     treasure.clearPlayer();
-    world
-        .getNearbyEntitiesByType(Item.class, lobby, (double) max_radius_range / 2, 400)
-        .forEach(Item::remove);
+    world.getNearbyEntities(box, entity -> entity instanceof Item).forEach(Entity::remove);
     val border = world.getWorldBorder();
     border.setCenter(lobby);
     border.setSize(max_radius_range);
@@ -137,26 +138,48 @@ public class BRField {
           this.cancel();
           return;
         }
-        border.setCenter(center.add(moveX, 0, moveZ));
+        center.add(moveX, 0, moveZ);
+        if (box.contains(center.toVector())) {
+          border.setCenter(center);
+        } else {
+          startMove(maxRadius, minRadius, time);
+          this.cancel();
+        }
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
   }
 
-  // TODO: apex みたいに安置の中心がずれて最終安置がずれるようにする
-  public void startContraction(Location center, double size, int time, Consumer<SIGNAL> task) {
+  /**
+   * {@code size} を {@code time} 秒かけて収縮します
+   *
+   * @param size size
+   * @param time time
+   * @param task task
+   */
+  public void startContraction(double size, int time, Consumer<SIGNAL> task) {
     val border = world.getWorldBorder();
-    border.setCenter(center);
+    val random = new Random();
+    val center = border.getCenter();
+    val x = random.nextDouble(-size, size) / time / 40;
+    val z = random.nextDouble(-size, size) / time / 40;
     border.setSize(
-        min_border_range,
-        (long) ((border.getSize() - (double) min_border_range) / size * (double) time));
+        min_border_range, (long) ((border.getSize() - min_border_range) / (size / time)));
     new BukkitRunnable() {
 
       private int temp = time + 1;
+      private int tick = 0;
 
       @Override
       public void run() {
         if (!GameSystem.isIn()) {
           this.cancel();
+          return;
+        }
+        center.add(x, 0, z);
+        border.setCenter(center);
+        if (0 >= --tick) {
+          tick = 21;
+        } else {
           return;
         }
         if (0 >= --temp) {
@@ -173,12 +196,13 @@ public class BRField {
         }
         task.accept(new SIGNAL.NONE(temp));
       }
-    }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 1);
   }
 
   public void stop() {
     val border = world.getWorldBorder();
     border.reset();
+    world.getNearbyEntities(box, entity -> entity instanceof Item).forEach(Entity::remove);
     treasure.clearTreasures();
     treasure.clearPlayer();
     treasure.saveFile();
@@ -421,6 +445,7 @@ public class BRField {
                                         (Consumer<PotionMeta>)
                                             meta -> meta.setBasePotionType(PotionType.HEALING))
                                     .build()))
+                    .add(new Entry(5, () -> new CowBallItem().getItem()).setItemRolls(1, 2))
                     .add(new Entry(5, () -> new BackpackItem().getItem()))
                     .add(new Entry(5, () -> new RecallClockItem().getItem()))
                     .add(new Entry(5, () -> new VampireBowItem().getItem())));

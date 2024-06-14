@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.lib;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import io.papermc.paper.entity.TeleportFlag;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,19 @@ public class BukkitUtil {
   public static void send(final CommandSender sender, final Object str) {
     if (sender != null) {
       sender.sendMessage(BukkitUtil.mm(str));
+    }
+  }
+
+  /**
+   * send to sender
+   *
+   * @param sender sender
+   * @param str send text
+   */
+  public static void send(final CommandSender sender, final Object... objects) {
+    if (sender != null) {
+      sender.sendMessage(
+          mm(String.join(",", Arrays.stream(objects).map(String::valueOf).toList())));
     }
   }
 
@@ -197,17 +211,24 @@ public class BukkitUtil {
     Bukkit.broadcast(BukkitUtil.mm(str));
   }
 
+  public static void cast(final Object... objects) {
+    Bukkit.broadcast(
+        BukkitUtil.mm(
+            String.join(",", java.util.Arrays.stream(objects).map(String::valueOf).toList())));
+  }
+
   /**
    * send message to all op players
    *
    * @param str message
    */
   public static void important(final Object str) {
+    val message = mm(str);
     Bukkit.getOnlinePlayers()
         .forEach(
             (player) -> {
               if (player.isOp()) {
-                player.sendMessage(mm(str));
+                player.sendMessage(message);
               }
             });
   }

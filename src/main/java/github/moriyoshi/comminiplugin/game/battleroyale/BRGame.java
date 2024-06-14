@@ -1,19 +1,19 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.lib.BukkitUtil;
-import github.moriyoshi.comminiplugin.lib.PrefixUtil;
-import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
-import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRField.SIGNAL;
 import github.moriyoshi.comminiplugin.game.battleroyale.items.WingItem;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.PrefixUtil;
+import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.tuple.Sequence;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.game.WinnerTypeGame;
-import github.moriyoshi.comminiplugin.lib.tuple.Sequence;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +46,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
       new ArrayList<>();
 
   private final AttributeModifier resistance =
-      new AttributeModifier("br", 15, Operation.ADD_NUMBER);
+      new AttributeModifier("br", 20, Operation.ADD_NUMBER);
 
   private BossBar bossBar;
 
@@ -143,7 +143,10 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
     bossBar =
         BossBar.bossBar(
-            BukkitUtil.mm("<red>投下まで<u>20</u>秒"), 1f, BossBar.Color.RED, BossBar.Overlay.NOTCHED_10);
+            BukkitUtil.mm("<red>投下まで<u>20</u>秒"),
+            1f,
+            BossBar.Color.RED,
+            BossBar.Overlay.NOTCHED_10);
 
     val barrier =
         new ItemBuilder(Material.BARRIER)
@@ -274,7 +277,6 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
 
   public void startContractionBorder() {
     field.startContraction(
-        field.getLobby(),
         field.getBorder_contraction_size(),
         field.getBorder_contraction_time(),
         signal -> {
@@ -292,7 +294,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
                   }
                   if (0 >= --temp) {
                     bossBar.name(BukkitUtil.mm("<red>動きまくります!")).progress(0f);
-                    field.startMove(20, 15, 10);
+                    field.startMove(15, 10, 10);
                     this.cancel();
                     return;
                   }

@@ -4,10 +4,6 @@
 
 - commandapi, guilib, customitem, util, api, dependencies ,reflection をすべて書きただそうかな
 
-## battle royale
-
-- 途中のボーダー狭くなる時に中心位置をずらして最終安置をずらす
-
 ## survival sniper
 
 - add random mode

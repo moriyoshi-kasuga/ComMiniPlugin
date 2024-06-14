@@ -4,11 +4,11 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.buttons.GameStartButton;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.system.game.IGetGame;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
-import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.Optional;
 import java.util.function.Supplier;
 import lombok.val;
@@ -31,9 +31,9 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin>
             () ->
                 new BRField(
                     "biome",
-                    new Location(ComMiniWorld.GAME_WORLD, 1000.5, 60, 1000.5),
+                    new Location(ComMiniWorld.GAME_WORLD, 1000.5, 61, 1000.5),
                     400,
-                    50,
+                    70,
                     100,
                     60,
                     50,
@@ -47,7 +47,7 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin>
             () ->
                 new BRField(
                     "facility",
-                    new Location(ComMiniWorld.GAME_WORLD, 10000.5, 16, 100000.5),
+                    new Location(ComMiniWorld.GAME_WORLD, 10000.5, 17, 100000.5),
                     100,
                     20,
                     30,
