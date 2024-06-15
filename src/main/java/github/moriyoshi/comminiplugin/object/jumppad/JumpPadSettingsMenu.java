@@ -1,7 +1,6 @@
 package github.moriyoshi.comminiplugin.object.jumppad;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.command.AllSoundCommand;
 import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
@@ -11,8 +10,9 @@ import github.moriyoshi.comminiplugin.dependencies.ui.button.SwitchButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ItemInputMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.ListMenu;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.lib.JumpState;
+import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.lib.tuple.Pair;
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
 import java.util.Collections;
@@ -97,18 +97,10 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
             AnvilInputs.postClose(
-                    AnvilInputs.getInput(
+                    AnvilInputs.getFloat(
                         ComMiniPlugin.getPlugin(),
                         "<red>200 >= power >= 10",
-                        (str, state) -> {
-                          try {
-                            return Optional.of(Float.parseFloat(str))
-                                .filter(f -> 200 >= f && f >= 10);
-                          } catch (NumberFormatException e) {
-                            return Optional.empty();
-                          }
-                        },
-                        (str, state) -> Collections.emptyList(),
+                        f -> 200 >= f && f >= 10,
                         (value, state) -> {
                           setConsumer(block -> block.setPower(value), isIncludeLinked);
                           return List.of(
@@ -131,18 +123,10 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
             AnvilInputs.postClose(
-                    AnvilInputs.getInput(
+                    AnvilInputs.getFloat(
                         ComMiniPlugin.getPlugin(),
                         "<yellow>90 >= angle >= -90",
-                        (str, state) -> {
-                          try {
-                            return Optional.of(Float.parseFloat(str))
-                                .filter(f -> 90 >= f && f >= -90);
-                          } catch (NumberFormatException e) {
-                            return Optional.empty();
-                          }
-                        },
-                        (str, state) -> Collections.emptyList(),
+                        f -> 90 >= f && f >= -90,
                         (value, state) -> {
                           setConsumer(block -> block.setAngel(value), isIncludeLinked);
                           return List.of(
@@ -187,7 +171,6 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
                             return Optional.empty();
                           }
                         },
-                        (str, state) -> Collections.emptyList(),
                         (value, state) -> {
                           setConsumer(
                               block -> block.setParticle(value == Particle.BLOCK ? null : value),
@@ -218,18 +201,10 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
             AnvilInputs.postClose(
-                    AnvilInputs.getInput(
+                    AnvilInputs.getFloat(
                         ComMiniPlugin.getPlugin(),
                         "<dark_purple>360 >= direction >= -1",
-                        (str, state) -> {
-                          try {
-                            return Optional.of(Float.parseFloat(str))
-                                .filter(f -> 360 >= f && f >= -1);
-                          } catch (NumberFormatException e) {
-                            return Optional.empty();
-                          }
-                        },
-                        (str, state) -> Collections.emptyList(),
+                        f -> 360 >= f && f >= -1,
                         (value, state) -> {
                           setConsumer(block -> block.setDirection(value), isIncludeLinked);
                           return List.of(
@@ -312,7 +287,7 @@ public final class JumpPadSettingsMenu extends MenuHolder<ComMiniPlugin> {
     setConsumer(jumpPadBlock, jumppadConsumer, isIncludeLinked);
   }
 
-  public static final class SelectSound extends ListMenu<ComMiniPlugin,Sound, SelectSound> {
+  public static final class SelectSound extends ListMenu<ComMiniPlugin, Sound, SelectSound> {
 
     private JumpPadBlock jumpPadBlock;
     private boolean isIncludeLinked;

@@ -1,15 +1,14 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
-import github.moriyoshi.comminiplugin.system.game.AbstractGameListener;
-import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.lib.tuple.Pair;
+import github.moriyoshi.comminiplugin.system.game.AbstractGameListener;
+import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -26,8 +25,6 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 @SuppressWarnings("deprecation")
 public class SSListener implements AbstractGameListener<SSGame> {
@@ -75,10 +72,8 @@ public class SSListener implements AbstractGameListener<SSGame> {
     if (game.players.get(uuid).getFirst() == 0) {
       e.deathMessage(BukkitUtil.mm(p.getName() + "は洞窟で酸素がなくなった..."));
     }
-    p.setGameMode(GameMode.SPECTATOR);
     game.runPlayers(pl -> BukkitUtil.send(pl, e.deathMessage()));
-    game.players.put(uuid, Pair.of(-1, null));
-    p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
+    game.setSpec(p);
     reducePlayer(p);
   }
 
@@ -194,7 +189,8 @@ public class SSListener implements AbstractGameListener<SSGame> {
         return;
       }
       alives.forEach(
-          (color, list) -> game.endGame(BukkitUtil.colorToComponent(color, color.name() + " チーム")));
+          (color, list) ->
+              game.endGame("<#" + BukkitUtil.chatColorToHex(color) + ">" + color.name() + " チーム"));
     }
   }
 }

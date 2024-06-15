@@ -1,17 +1,17 @@
 package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.lib.PluginLib;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.lib.tuple.Pair;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.MainGameSystem;
 import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.system.game.WinnerTypeGame;
-import github.moriyoshi.comminiplugin.lib.tuple.Pair;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,7 +26,8 @@ import org.bukkit.HeightMap;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -42,7 +43,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   private final int MIN_BORDER_RANGE = 30;
   private final int MAX_SECOND = 60 * 7;
   private final int AFTER_PVP_SECOND = 60 * 5;
-  private final int AIR_LIMIT = 60 * 3;
+  public final int AIR_LIMIT = 60 * 3;
   private final Vector VOID_BLOCK_RADIUS = new Vector(3, 3, 3);
   private final double speedRate = 1.25;
   private long previousTime;
@@ -96,6 +97,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
       prefix.send(player, "<red>抜けるには抜けるボタンを押してください");
       return;
     }
+
     val item =
         new ItemBuilder(Material.SPYGLASS)
             .customItemFlag(CustomItemFlag.DISABLE_DROP, true)
@@ -103,7 +105,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             .build();
     player.getInventory().removeItem(item);
     players.put(player.getUniqueId(), Pair.of(isPlayer ? AIR_LIMIT : -1, color));
-    player.teleport(lobby);
+    teleportLobby(player);
     player.getInventory().addItem(item);
     hidePlayer(player);
     if (isPlayer) {
@@ -111,9 +113,12 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         prefix.cast(player.getName() + "が<blue>参加します");
       } else {
         prefix.cast(
-            BukkitUtil.mm(player.getName() + "が<white>")
-                .append(BukkitUtil.colorToComponent(color, color.name()))
-                .append(BukkitUtil.mm("<gray>に<blue>参加します")));
+            player.getName()
+                + "が<#"
+                + BukkitUtil.chatColorToHex(color)
+                + ">"
+                + color.name()
+                + "<gray>に<blue>参加します");
       }
     } else {
       prefix.cast(player.getName() + "が<gray>観戦します");
@@ -135,19 +140,32 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
 
   @Override
   public boolean initializeGame(final Player player) {
-    if (!player.getWorld().getName().equalsIgnoreCase("world")) {
-      prefix.send(player, "<red>オーバーワールドでのみ実行可能です");
+    if (!player.getWorld().equals(world)) {
+      prefix.send(player, "<red>オーバーワールドに入ってから実行してください");
       return false;
     }
-    val temp = player.getLocation().clone();
-    world = temp.getWorld();
-    lobby = world.getHighestBlockAt(temp).getLocation().add(new Vector(0, 50, 0));
+    lobby = world.getHighestBlockAt(player.getLocation()).getLocation().add(new Vector(0, 50, 0));
     world.getWorldBorder().setCenter(lobby);
     world.getWorldBorder().setSize(MAX_RADIUS_RANGE);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
     world.setClearWeatherDuration(0);
     world.setTime(1000);
-    clearMonster();
+    world
+        .getNearbyEntities(
+            world.getWorldBorder().getCenter(),
+            MAX_RADIUS_RANGE + 50,
+            320,
+            MAX_RADIUS_RANGE + 50,
+            entity -> entity instanceof Monster || entity instanceof Item)
+        .forEach(Entity::remove);
+
+    setBarrier();
+
+    return true;
+  }
+
+  private final void setBarrier() {
+
     val vec = lobby.toVector();
     val min = vec.clone().add(VOID_BLOCK_RADIUS);
     val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
@@ -161,8 +179,6 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             max.getBlockX(),
             max.getBlockY(),
             max.getBlockZ()));
-
-    return true;
   }
 
   @Override
@@ -220,19 +236,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   }
 
   private void start() {
-    val vec = lobby.toVector();
-    val min = vec.clone().add(VOID_BLOCK_RADIUS);
-    val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
-    BukkitUtil.consoleCommand(
-        String.format(
-            "execute in %s run fill %s %s %s %s %s %s minecraft:air replace minecraft:barrier",
-            "overworld",
-            min.getBlockX(),
-            min.getBlockY(),
-            min.getBlockZ(),
-            max.getBlockX(),
-            max.getBlockY(),
-            max.getBlockZ()));
+    removeBarrier();
 
     bossBar =
         BossBar.bossBar(
@@ -298,7 +302,14 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
               isFinalArea = true;
               runPlayers(p -> prefix.send(p, "<red>最終安置になりました！(これからはモブがわきません)"));
               world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-              clearMonster();
+              world
+                  .getNearbyEntities(
+                      world.getWorldBorder().getCenter(),
+                      MIN_BORDER_RANGE + 50,
+                      320,
+                      MIN_BORDER_RANGE + 50,
+                      (entity) -> entity instanceof Monster)
+                  .forEach(Entity::remove);
             }
           }
         };
@@ -306,7 +317,6 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     world.setClearWeatherDuration(MAX_SECOND * 20);
     world.setTime(1000);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
-    clearMonster();
     val loc = lobby.clone();
     runPlayers(
         p -> {
@@ -342,7 +352,9 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
                 val size = entries.size();
                 for (int i = 0; i < size; i++) {
                   val current = Bukkit.getPlayer(entries.get(i).getKey());
-                  current.playerListName(BukkitUtil.colorToComponent(color, current.getName()));
+                  current.playerListName(
+                      BukkitUtil.mm(
+                          "<#" + BukkitUtil.chatColorToHex(color) + ">" + current.getName()));
                   for (int j = 0; j < size; j++) {
                     if (i != j) {
                       try {
@@ -357,8 +369,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     }
   }
 
-  @Override
-  public void innerFinishGame() {
+  private final void removeBarrier() {
     val vec = lobby.toVector();
     val min = vec.clone().add(VOID_BLOCK_RADIUS);
     val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
@@ -372,6 +383,11 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             max.getBlockX(),
             max.getBlockY(),
             max.getBlockZ()));
+  }
+
+  @Override
+  public void innerFinishGame() {
+    removeBarrier();
     world.getWorldBorder().reset();
     if (bossBar != null) {
       runPlayers(p -> p.hideBossBar(bossBar));
@@ -407,12 +423,32 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
 
   @Override
   public void innerAddSpec(final Player player) {
-    val uuid = player.getUniqueId();
-    players.put(uuid, Pair.of(-1, null));
+    teleportLobby(player);
+    setSpec(player);
+  }
+
+  public void setSpec(final Player player) {
+    players.put(player.getUniqueId(), Pair.of(-1, null));
     player.setGameMode(GameMode.SPECTATOR);
     player.getInventory().clear();
     player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
-    teleportLobby(player);
+    players.forEach(
+        (uuid, pair) -> {
+          val target = Bukkit.getPlayer(uuid);
+          val color = pair.getSecond();
+          try {
+            if (color == null) {
+              if (pair.getFirst() == -1) {
+                PluginLib.getGlowingEntities().unsetGlowing(target, player);
+              } else {
+                PluginLib.getGlowingEntities().setGlowing(target, player, ChatColor.WHITE);
+              }
+            } else {
+              PluginLib.getGlowingEntities().setGlowing(target, player, color);
+            }
+          } catch (ReflectiveOperationException e) {
+          }
+        });
   }
 
   public void speedUpBorder() {
@@ -431,22 +467,11 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     runPlayers(p -> prefix.send(p, "<red>DANGER! ボーダーの速度が上がりました"));
   }
 
-  public void clearMonster() {
-    world
-        .getNearbyLivingEntities(
-            world.getWorldBorder().getCenter(),
-            MIN_BORDER_RANGE + 50,
-            320,
-            MIN_BORDER_RANGE + 50,
-            (entity) -> entity instanceof Monster)
-        .forEach(LivingEntity::remove);
-  }
-
   @Override
   protected void fieldInitialize(final boolean isCreatingInstance) {
     canPvP = false;
     lobby = null;
-    world = null;
+    world = Bukkit.getWorld("world");
     bossBar = null;
     run = null;
     isFinalArea = false;

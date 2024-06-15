@@ -4,11 +4,11 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.game.survivalsniper.SSGame.Mode;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.buttons.InventorySlotButton;
 import github.moriyoshi.comminiplugin.system.game.IGetGame;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
-import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import lombok.val;
@@ -67,7 +67,7 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
     }
     return new ItemButton<>(
         new ItemBuilder(Material.valueOf(color.name() + "_GLAZED_TERRACOTTA"))
-            .name(BukkitUtil.colorToComponent(color, color.name()).append(BukkitUtil.mm(" <white>チームに参加する")))
+            .name("<#" + BukkitUtil.chatColorToHex(color) + ">" + color.name() + " <white>チームに参加する")
             .lore("<gray>参加者リスト：")
             .addLore(list)
             .build()) {

@@ -2,6 +2,7 @@ package github.moriyoshi.comminiplugin.lib;
 
 import github.moriyoshi.comminiplugin.system.GameListener;
 import io.papermc.paper.entity.TeleportFlag;
+import java.awt.Color;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,7 +14,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.val;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -23,6 +23,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -35,6 +36,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** よく使うメゾットがある */
 @SuppressWarnings("deprecation")
@@ -163,8 +165,12 @@ public class BukkitUtil {
     return LegacyComponentSerializer.legacyAmpersand().serializeOrNull(str);
   }
 
-  public static Component colorToComponent(final ChatColor color, String text) {
-    return Component.text(text).color(TextColor.color(color.asBungee().getColor().getRGB()));
+  public static String chatColorToHex(final ChatColor color) {
+    return colorToHex(color.asBungee().getColor());
+  }
+
+  public static String colorToHex(final Color color) {
+    return Integer.toHexString(color.getRGB()).substring(2);
   }
 
   /**
@@ -270,21 +276,48 @@ public class BukkitUtil {
       final int bz,
       final int radius,
       final int maxTry) {
+    val block = randomTopBlock(world, bx, bz, radius, maxTry);
+    if (block == null) {
+      return false;
+    }
+    entity.teleport(
+        block.getLocation().add(0.5, 1, 0.5),
+        TeleportCause.PLUGIN,
+        TeleportFlag.Relative.YAW,
+        TeleportFlag.Relative.PITCH);
+    return true;
+  }
+
+  @Nullable
+  public static Block randomTopBlock(final Location center, final int radius) {
+    return randomTopBlock(center, radius, 100);
+  }
+
+  @Nullable
+  public static Block randomTopBlock(final Location center, final int radius, final int maxTry) {
+    return randomTopBlock(
+        center.getWorld(), center.getBlockX(), center.getBlockZ(), radius, maxTry);
+  }
+
+  @Nullable
+  public static Block randomTopBlock(
+      final World world, final int bx, final int bz, final int radius) {
+    return randomTopBlock(world, bx, bz, radius, 100);
+  }
+
+  @Nullable
+  public static Block randomTopBlock(
+      final World world, final int bx, final int bz, final int radius, final int maxTry) {
+    val random = new Random();
     for (int i = 0; i < maxTry; i++) {
-      val random = new Random();
-      val x = random.nextInt(-radius, radius);
-      val z = random.nextInt(-radius, radius);
-      val block = world.getHighestBlockAt(bx + x, bz + z, HeightMap.WORLD_SURFACE);
+      val x = random.nextInt(-radius, radius) + bx;
+      val z = random.nextInt(-radius, radius) + bz;
+      val block = world.getHighestBlockAt(x, z, HeightMap.WORLD_SURFACE);
       if (block.isSolid() && block.isCollidable()) {
-        entity.teleport(
-            block.getLocation().add(0.5, 1, 0.5),
-            TeleportCause.PLUGIN,
-            TeleportFlag.Relative.YAW,
-            TeleportFlag.Relative.PITCH);
-        return true;
+        return block;
       }
     }
-    return false;
+    return null;
   }
 
   public static void disableMove(final Player player, final int tick) {

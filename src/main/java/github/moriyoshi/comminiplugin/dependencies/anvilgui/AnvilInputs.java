@@ -1,12 +1,13 @@
 package github.moriyoshi.comminiplugin.dependencies.anvilgui;
 
-import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.wesjd.anvilgui.AnvilGUI;
 import net.wesjd.anvilgui.AnvilGUI.StateSnapshot;
@@ -23,8 +24,95 @@ public class AnvilInputs {
       @NotNull Plugin plugin,
       @NotNull Object title,
       @NotNull BiFunction<String, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
+    return getInput(plugin, title, (s, state) -> Optional.of(s), func);
+  }
+
+  public static AnvilGUI.Builder getFloat(
+      @NotNull Plugin plugin,
+      @NotNull Object title,
+      @NotNull BiFunction<Float, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
     return getInput(
-        plugin, title, (s, state) -> Optional.of(s), (s, state) -> Collections.emptyList(), func);
+        plugin,
+        title,
+        (s, state) -> {
+          try {
+            return Optional.of(Float.valueOf(s));
+          } catch (NumberFormatException e) {
+            return Optional.empty();
+          }
+        },
+        func);
+  }
+
+  public static AnvilGUI.Builder getFloat(
+      @NotNull Plugin plugin,
+      @NotNull Object title,
+      @NotNull Predicate<Float> predicate,
+      @NotNull BiFunction<Float, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
+    return getInput(
+        plugin,
+        title,
+        (s, state) -> {
+          try {
+            return Optional.of(Float.valueOf(s)).filter(predicate);
+          } catch (NumberFormatException e) {
+            return Optional.empty();
+          }
+        },
+        func);
+  }
+
+  public static AnvilGUI.Builder getInteger(
+      @NotNull Plugin plugin,
+      @NotNull Object title,
+      @NotNull BiFunction<Integer, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
+    return getInput(
+        plugin,
+        title,
+        (s, state) -> {
+          try {
+            return Optional.of(Integer.valueOf(s));
+          } catch (NumberFormatException e) {
+            return Optional.empty();
+          }
+        },
+        func);
+  }
+
+  public static AnvilGUI.Builder getInteger(
+      @NotNull Plugin plugin,
+      @NotNull Object title,
+      @NotNull Predicate<Integer> predicate,
+      @NotNull BiFunction<Integer, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
+    return getInput(
+        plugin,
+        title,
+        (s, state) -> {
+          try {
+            return Optional.of(Integer.valueOf(s)).filter(predicate);
+          } catch (NumberFormatException e) {
+            return Optional.empty();
+          }
+        },
+        func);
+  }
+
+  public static AnvilGUI.Builder getDouble(
+      @NotNull Plugin plugin,
+      @NotNull Object title,
+      @NotNull Predicate<Double> predicate,
+      @NotNull BiFunction<Double, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
+    return getInput(
+        plugin,
+        title,
+        (s, state) -> {
+          try {
+            return Optional.of(Double.valueOf(s)).filter(predicate);
+          } catch (NumberFormatException e) {
+            return Optional.empty();
+          }
+        },
+        func);
   }
 
   public static <T> AnvilGUI.Builder getInput(
@@ -32,11 +120,7 @@ public class AnvilInputs {
       @NotNull Object title,
       @NotNull BiFunction<String, StateSnapshot, Optional<T>> toClazz,
       @NotNull BiFunction<T, StateSnapshot, List<AnvilGUI.ResponseAction>> func) {
-    return getInput(
-        plugin,
-        title, toClazz,
-        (s, state) -> Collections.emptyList(),
-        func);
+    return getInput(plugin, title, toClazz, (s, state) -> Collections.emptyList(), func);
   }
 
   public static <T> AnvilGUI.Builder getInput(
