@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /** {key}をその値によって文字列をフォーマットする */
-public class FormatterUtil {
+public final class FormatterUtil {
 
   // {\w+} → \w+
   private static final Pattern pattern = Pattern.compile("\\{(\\w+)}");

@@ -2,6 +2,7 @@ package github.moriyoshi.comminiplugin.game.survivalsniper;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.lib.BukkitRandomUtil;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.lib.PluginLib;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
@@ -12,8 +13,11 @@ import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.MainGameSystem;
 import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.system.game.WinnerTypeGame;
+import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.val;
@@ -26,6 +30,7 @@ import org.bukkit.HeightMap;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Monster;
@@ -63,6 +68,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
         Material.SPYGLASS,
         new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"),
         new SSListener());
+    world = Bukkit.getWorld("world");
   }
 
   public void setMode(Mode mode) {
@@ -201,8 +207,16 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     return true;
   }
 
+  private final Queue<CompletableFuture<Block>> teleportBlocks = new ArrayDeque<>();
+
   @Override
   public void innerStartGame() {
+    val random = new BukkitRandomUtil(lobby, (MAX_RADIUS_RANGE / 2) - 10);
+    players.forEach(
+        (__, ___) -> {
+          teleportBlocks.offer(random.randomTopBlock());
+        });
+
     new BukkitRunnable() {
 
       private int rest = 11;
@@ -317,7 +331,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     world.setClearWeatherDuration(MAX_SECOND * 20);
     world.setTime(1000);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
-    val loc = lobby.clone();
+    val last = world.getHighestBlockAt(lobby, HeightMap.MOTION_BLOCKING).getLocation();
     runPlayers(
         p -> {
           val uuid = p.getUniqueId();
@@ -339,8 +353,15 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
               .setItems(inv);
           p.setSaturation(6);
           p.setGameMode(GameMode.SURVIVAL);
-          if (!BukkitUtil.randomTeleport(p, loc, (MAX_RADIUS_RANGE / 2) - 10)) {
-            p.teleport(world.getHighestBlockAt(loc, HeightMap.MOTION_BLOCKING).getLocation());
+          val future = teleportBlocks.poll();
+          if (future == null) {
+            p.teleport(last);
+            return;
+          }
+          if (future.isDone()) {
+            BukkitUtil.teleportOnTheBlock(future.join(), p);
+          } else {
+            future.cancel(true);
           }
         });
     if (mode == Mode.TEAM) {
@@ -471,13 +492,13 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   protected void fieldInitialize(final boolean isCreatingInstance) {
     canPvP = false;
     lobby = null;
-    world = Bukkit.getWorld("world");
     bossBar = null;
     run = null;
     isFinalArea = false;
     previousBorderSize = MAX_RADIUS_RANGE;
     previousTime = MAX_SECOND;
     mode = Mode.FFA;
+    teleportBlocks.clear();
   }
 
   @Override

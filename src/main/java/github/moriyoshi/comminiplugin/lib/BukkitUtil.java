@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.val;
@@ -20,9 +19,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.HeightMap;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
@@ -36,11 +32,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** よく使うメゾットがある */
 @SuppressWarnings("deprecation")
-public class BukkitUtil {
+public final class BukkitUtil {
 
   private BukkitUtil() {}
 
@@ -253,73 +248,6 @@ public class BukkitUtil {
         .toList();
   }
 
-  public static boolean randomTeleport(
-      final Entity entity, final Location center, final int radius) {
-    return randomTeleport(entity, center, radius, 100);
-  }
-
-  public static boolean randomTeleport(
-      final Entity entity, final Location center, final int radius, final int maxTry) {
-    return randomTeleport(
-        entity, center.getWorld(), center.getBlockX(), center.getBlockZ(), radius, maxTry);
-  }
-
-  public static boolean randomTeleport(
-      final Entity entity, final World world, final int bx, final int bz, final int radius) {
-    return randomTeleport(entity, world, bx, bz, radius, 100);
-  }
-
-  public static boolean randomTeleport(
-      final Entity entity,
-      final World world,
-      final int bx,
-      final int bz,
-      final int radius,
-      final int maxTry) {
-    val block = randomTopBlock(world, bx, bz, radius, maxTry);
-    if (block == null) {
-      return false;
-    }
-    entity.teleport(
-        block.getLocation().add(0.5, 1, 0.5),
-        TeleportCause.PLUGIN,
-        TeleportFlag.Relative.YAW,
-        TeleportFlag.Relative.PITCH);
-    return true;
-  }
-
-  @Nullable
-  public static Block randomTopBlock(final Location center, final int radius) {
-    return randomTopBlock(center, radius, 100);
-  }
-
-  @Nullable
-  public static Block randomTopBlock(final Location center, final int radius, final int maxTry) {
-    return randomTopBlock(
-        center.getWorld(), center.getBlockX(), center.getBlockZ(), radius, maxTry);
-  }
-
-  @Nullable
-  public static Block randomTopBlock(
-      final World world, final int bx, final int bz, final int radius) {
-    return randomTopBlock(world, bx, bz, radius, 100);
-  }
-
-  @Nullable
-  public static Block randomTopBlock(
-      final World world, final int bx, final int bz, final int radius, final int maxTry) {
-    val random = new Random();
-    for (int i = 0; i < maxTry; i++) {
-      val x = random.nextInt(-radius, radius) + bx;
-      val z = random.nextInt(-radius, radius) + bz;
-      val block = world.getHighestBlockAt(x, z, HeightMap.WORLD_SURFACE);
-      if (block.isSolid() && block.isCollidable()) {
-        return block;
-      }
-    }
-    return null;
-  }
-
   public static void disableMove(final Player player, final int tick) {
     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, tick, 138, true, false));
   }
@@ -434,5 +362,13 @@ public class BukkitUtil {
             }
           }.runTaskTimer(PluginLib.getPlugin(), 0, 1);
     }
+  }
+
+  public static Boolean teleportOnTheBlock(final Block block, final Entity entity) {
+    return entity.teleport(
+        block.getLocation().add(0.5, 1, 0.5),
+        TeleportCause.PLUGIN,
+        TeleportFlag.Relative.YAW,
+        TeleportFlag.Relative.PITCH);
   }
 }

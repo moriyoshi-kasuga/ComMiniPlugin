@@ -29,7 +29,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class CustomListener implements Listener {
+public final class CustomListener implements Listener {
 
   private static final CustomListener INSTANCE = new CustomListener();
 

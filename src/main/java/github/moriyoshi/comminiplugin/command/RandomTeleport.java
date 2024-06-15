@@ -7,7 +7,7 @@ import dev.jorel.commandapi.arguments.Location2DArgument;
 import dev.jorel.commandapi.arguments.WorldArgument;
 import dev.jorel.commandapi.wrappers.Location2D;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.BukkitRandomUtil;
 import org.bukkit.World;
 
 public class RandomTeleport extends CommandAPICommand {
@@ -18,19 +18,21 @@ public class RandomTeleport extends CommandAPICommand {
     withArguments(new WorldArgument("world"));
     withArguments(new Location2DArgument("loc"));
     withArguments(new IntegerArgument("radius", 1));
-    withOptionalArguments(new IntegerArgument("maxTry", 1));
     executesPlayer(
         (p, args) -> {
           final Location2D loc = (Location2D) args.get("loc");
-          if (!BukkitUtil.randomTeleport(
-              p,
-              (World) args.get("world"),
-              loc.getBlockX(),
-              loc.getBlockZ(),
-              (int) args.get("radius"),
-              (int) args.getOrDefault("maxTry", 100))) {
-            ComMiniPlugin.MAIN.send(p, "<red>そのあたりにテレポートはできません(もしかしたら海などです)");
-          }
+          new BukkitRandomUtil(
+                  (World) args.get("world"),
+                  loc.getBlockX(),
+                  loc.getBlockZ(),
+                  (int) args.get("radius"))
+              .randomTeleport(p)
+              .thenAccept(
+                  bool -> {
+                    if (!bool) {
+                      ComMiniPlugin.MAIN.send(p, "<red>そのあたりにテレポートはできません(もしかしたら海などです)");
+                    }
+                  });
         });
   }
 }
