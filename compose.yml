@@ -6,6 +6,8 @@ services:
     container_name: mc
     ports:
       - "7777:25565"
+    env_file:
+      - .env
     environment:
       EULA: "TRUE"
       TYPE: PAPER

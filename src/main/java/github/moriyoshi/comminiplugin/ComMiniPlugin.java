@@ -1,11 +1,11 @@
 package github.moriyoshi.comminiplugin;
 
+import github.moriyoshi.comminiplugin.command.LocationsCommands;
 import github.moriyoshi.comminiplugin.lib.InterfaceAPIPlugin;
 import github.moriyoshi.comminiplugin.lib.PluginLib;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
-import github.moriyoshi.comminiplugin.command.LocationsCommands;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
@@ -63,6 +63,7 @@ public final class ComMiniPlugin extends JavaPlugin implements InterfaceAPIPlugi
     ComMiniPlayer.gameInitialize();
     GameSystem.load();
     MiniGameSystem.load();
+
     SYSTEM.cast("<red>プラグインをロードしました。");
   }
 
