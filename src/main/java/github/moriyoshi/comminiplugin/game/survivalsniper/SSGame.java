@@ -15,7 +15,6 @@ import github.moriyoshi.comminiplugin.system.game.AbstractGame;
 import github.moriyoshi.comminiplugin.system.game.WinnerTypeGame;
 import java.util.ArrayDeque;
 import java.util.HashMap;
-import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -58,6 +57,10 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
   private BukkitRunnable run;
   private boolean isFinalArea;
 
+  private BukkitRandomUtil random;
+
+  private final ArrayDeque<CompletableFuture<Block>> teleportBlocks = new ArrayDeque<>();
+
   @Getter private Mode mode;
 
   public SSGame() {
@@ -95,6 +98,10 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     MainGameSystem.initializePlayer(player);
     val isPlayer = players.remove(uuid).getFirst() != -1;
     prefix.cast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
+    val temp = teleportBlocks.removeLast();
+    if (temp != null && !temp.isDone()) {
+      temp.cancel(true);
+    }
   }
 
   public final void joinPlayer(final Player player, final boolean isPlayer, final ChatColor color) {
@@ -103,6 +110,8 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
       prefix.send(player, "<red>抜けるには抜けるボタンを押してください");
       return;
     }
+
+    teleportBlocks.addLast(random.randomTopBlock());
 
     val item =
         new ItemBuilder(Material.SPYGLASS)
@@ -151,6 +160,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
       return false;
     }
     lobby = world.getHighestBlockAt(player.getLocation()).getLocation().add(new Vector(0, 50, 0));
+    random = new BukkitRandomUtil(lobby, (MAX_RADIUS_RANGE / 2) - 10).setMaxTry(500);
     world.getWorldBorder().setCenter(lobby);
     world.getWorldBorder().setSize(MAX_RADIUS_RANGE);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
@@ -207,15 +217,8 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     return true;
   }
 
-  private final Queue<CompletableFuture<Block>> teleportBlocks = new ArrayDeque<>();
-
   @Override
   public void innerStartGame() {
-    val random = new BukkitRandomUtil(lobby, (MAX_RADIUS_RANGE / 2) - 10);
-    players.forEach(
-        (__, ___) -> {
-          teleportBlocks.offer(random.randomTopBlock());
-        });
 
     new BukkitRunnable() {
 
@@ -353,7 +356,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
               .setItems(inv);
           p.setSaturation(6);
           p.setGameMode(GameMode.SURVIVAL);
-          val future = teleportBlocks.poll();
+          val future = teleportBlocks.removeFirst();
           if (future == null) {
             p.teleport(last);
             return;
@@ -364,6 +367,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             future.cancel(true);
           }
         });
+    teleportBlocks.clear();
     if (mode == Mode.TEAM) {
       players.entrySet().stream()
           .filter(entry -> entry.getValue().getSecond() != null)
@@ -498,7 +502,9 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     previousBorderSize = MAX_RADIUS_RANGE;
     previousTime = MAX_SECOND;
     mode = Mode.FFA;
-    teleportBlocks.clear();
+    if (!isCreatingInstance) {
+      teleportBlocks.clear();
+    }
   }
 
   @Override
