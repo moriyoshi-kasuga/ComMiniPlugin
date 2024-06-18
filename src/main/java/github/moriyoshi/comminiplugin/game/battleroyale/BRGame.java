@@ -107,7 +107,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
     player.setGameMode(GameMode.SPECTATOR);
     player.getInventory().clear();
     player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
-    teleportLobby(player);
+    player.teleport(getLobby());
   }
 
   public boolean isPlayingPlayer(Player player) {
@@ -177,7 +177,7 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
             p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
           }
           p.showBossBar(bossBar);
-          teleportLobby(p);
+          p.teleport(getLobby());
         });
 
     field.getTreasure().setTreasures();
@@ -375,5 +375,11 @@ public class BRGame extends AbstractGame implements WinnerTypeGame {
   @Override
   public MenuHolder<ComMiniPlugin> createHelpMenu() {
     return new BRHelpMenu();
+  }
+
+  @Override
+  public void leavePlayer(Player player) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'leavePlayer'");
   }
 }

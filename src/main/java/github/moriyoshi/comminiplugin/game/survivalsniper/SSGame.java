@@ -82,6 +82,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
     players.clear();
   }
 
+  @Override
   public final void leavePlayer(final Player player) {
     val uuid = player.getUniqueId();
     if (!players.containsKey(uuid)) {
@@ -120,7 +121,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
             .build();
     player.getInventory().removeItem(item);
     players.put(player.getUniqueId(), Pair.of(isPlayer ? AIR_LIMIT : -1, color));
-    teleportLobby(player);
+    player.teleport(getLobby());
     player.getInventory().addItem(item);
     hidePlayer(player);
     if (isPlayer) {
@@ -345,7 +346,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
           if (players.get(uuid).getFirst() == -1) {
             p.setGameMode(GameMode.SPECTATOR);
             p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
-            teleportLobby(p);
+            p.teleport(getLobby());
             return;
           }
           ComMiniPlayer.getPlayer(uuid)
@@ -448,7 +449,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
 
   @Override
   public void innerAddSpec(final Player player) {
-    teleportLobby(player);
+    player.teleport(getLobby());
     setSpec(player);
   }
 

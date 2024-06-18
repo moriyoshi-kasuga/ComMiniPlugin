@@ -4,7 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
-import github.moriyoshi.comminiplugin.lib.FileAPI.HashUUID;
+import github.moriyoshi.comminiplugin.lib.HashUUID;
 import github.moriyoshi.comminiplugin.lib.PluginLib;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

@@ -31,14 +31,19 @@ public interface InterfaceGame extends HasGameKey {
    */
   boolean isGamePlayer(Player player);
 
+  void finishGame();
+
+  PrefixUtil getPrefix();
+
+  void leavePlayer(Player player);
+
+  /**
+   * 全てのゲームプレイヤーに対して {@link Consumer} を適用します
+   *
+   * @param consumer consumer
+   */
   default void runPlayers(final Consumer<Player> consumer) {
-    Bukkit.getOnlinePlayers()
-        .forEach(
-            p -> {
-              if (isGamePlayer(p)) {
-                consumer.accept(p);
-              }
-            });
+    getPlayers().forEach(consumer::accept);
   }
 
   default void sendPlayers(final Object message) {
@@ -46,22 +51,12 @@ public interface InterfaceGame extends HasGameKey {
   }
 
   @SuppressWarnings("unchecked")
-  default List<Player> getPlayers() {
-    return (List<Player>) Bukkit.getOnlinePlayers().stream().filter(this::isGamePlayer).toList();
-  }
-
-  @SuppressWarnings("unchecked")
-  default Stream<Player> getPlayersStream() {
+  default Stream<Player> getPlayers() {
     return (Stream<Player>) Bukkit.getOnlinePlayers().stream().filter(this::isGamePlayer);
   }
 
   @SuppressWarnings("unchecked")
-  default List<Player> getNonGamePlayers() {
-    return (List<Player>) Bukkit.getOnlinePlayers().stream().filter(p -> !isGamePlayer(p)).toList();
-  }
-
-  @SuppressWarnings("unchecked")
-  default Stream<Player> getNonGamePlayersStream() {
+  default Stream<Player> getNonGamePlayers() {
     return (Stream<Player>) Bukkit.getOnlinePlayers().stream().filter(p -> !isGamePlayer(p));
   }
 
@@ -74,14 +69,6 @@ public interface InterfaceGame extends HasGameKey {
     return Bukkit.getOnlinePlayers().stream()
         .collect(Collectors.partitioningBy(this::isGamePlayer));
   }
-
-  default void teleportLobby(final Player player) {
-    player.teleport(getLobby());
-  }
-
-  void finishGame();
-
-  PrefixUtil getPrefix();
 
   default void setPlayerJoinGameIdentifier(final Player player) {
     ComMiniPlayer.getPlayer(player.getUniqueId()).setJoinGameIdentifier(getKey());

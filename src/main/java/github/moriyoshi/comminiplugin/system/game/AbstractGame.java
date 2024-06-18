@@ -2,9 +2,9 @@ package github.moriyoshi.comminiplugin.system.game;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import github.moriyoshi.comminiplugin.system.AbstractGameKey.GameKey;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
-import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import github.moriyoshi.comminiplugin.system.MainGameSystem;
 import lombok.Getter;
 import lombok.val;
@@ -99,7 +99,7 @@ public abstract class AbstractGame implements InterfaceGame {
 
   public final boolean addSpec(Player player) {
     if (predicateSpec(player)) {
-      getPlayersStream()
+      getPlayers()
           .forEach(
               shower -> {
                 player.showPlayer(ComMiniPlugin.getPlugin(), shower);
@@ -140,7 +140,7 @@ public abstract class AbstractGame implements InterfaceGame {
    * @param player target
    */
   public void hidePlayer(final Player player) {
-    getNonGamePlayersStream()
+    getNonGamePlayers()
         .forEach(
             hider -> {
               player.hidePlayer(ComMiniPlugin.getPlugin(), hider);
@@ -167,7 +167,7 @@ public abstract class AbstractGame implements InterfaceGame {
    * @param player target
    */
   public void showPlayer(final Player player) {
-    getNonGamePlayersStream()
+    getNonGamePlayers()
         .forEach(
             shower -> {
               player.showPlayer(ComMiniPlugin.getPlugin(), shower);

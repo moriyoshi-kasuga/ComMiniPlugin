@@ -167,7 +167,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
         if (alives.size() == 2) {
           game.speedUpBorder();
         }
-        game.teleportLobby(p);
+        p.teleport(game.getLobby());
         return;
       }
       game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()).getName());
@@ -185,7 +185,7 @@ public class SSListener implements AbstractGameListener<SSGame> {
         if (alives.size() == 2) {
           game.speedUpBorder();
         }
-        game.teleportLobby(p);
+        p.teleport(game.getLobby());
         return;
       }
       alives.forEach(

@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.game.battleroyale;
 
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.game.AbstractGameListener;
-import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import java.util.Map.Entry;
 import lombok.val;
 import org.bukkit.Bukkit;
@@ -113,7 +113,7 @@ public class BRListener implements AbstractGameListener<BRGame> {
     inv.clear();
     val alives = game.players.entrySet().stream().filter(Entry::getValue).toList();
     if (alives.size() != 1) {
-      game.teleportLobby(p);
+      p.teleport(game.getLobby());
       return;
     }
     game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()).getName());

@@ -1,17 +1,16 @@
 package github.moriyoshi.comminiplugin.system.minigame;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
+import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import github.moriyoshi.comminiplugin.system.AbstractGameKey.MiniGameKey;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
 import github.moriyoshi.comminiplugin.system.MainGameSystem;
-import github.moriyoshi.comminiplugin.lib.IdentifierKey;
-import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import java.util.UUID;
 import java.util.function.Function;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
 public abstract class AbstractMiniGame implements InterfaceGame {
@@ -51,6 +50,4 @@ public abstract class AbstractMiniGame implements InterfaceGame {
   protected abstract void innerStartGame();
 
   protected abstract void innerFinishGame();
-
-  public abstract void leavePlayer(Player player);
 }
