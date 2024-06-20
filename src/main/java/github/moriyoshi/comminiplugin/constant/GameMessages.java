@@ -7,7 +7,7 @@ import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 
-public enum Messages {
+public enum GameMessages {
   GAME_FINAL_OR_START("<red>ゲームが開始されたか閉幕しました!"),
   GAME_NOT_FOUND("<red>現在ゲームは開催されていません!"),
   GAME_NOT_START("<red>ゲームは開始されていません!"),
@@ -15,7 +15,7 @@ public enum Messages {
 
   public final Component message;
 
-  Messages(String message) {
+  GameMessages(String message) {
     this.message = BukkitUtil.mm(message);
   }
 

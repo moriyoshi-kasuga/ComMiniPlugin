@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
-import github.moriyoshi.comminiplugin.constant.Messages;
+import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRGame;
 import github.moriyoshi.comminiplugin.game.battleroyale.TreasureChest;
 import github.moriyoshi.comminiplugin.lib.item.CoolityItem;
@@ -39,7 +39,7 @@ public class ScannerCompassItem extends CustomItem implements CoolityItem {
     }
     val player = e.getPlayer();
     if (!GameSystem.isIn(BRGame.class)) {
-      Messages.GAME_NOT_FOUND.send(player);
+      GameMessages.GAME_NOT_FOUND.send(player);
       return;
     }
     Optional.ofNullable(GameSystem.getGame(BRGame.class).getField())
@@ -76,6 +76,6 @@ public class ScannerCompassItem extends CustomItem implements CoolityItem {
                                   }),
                   () -> GameSystem.getGame(BRGame.class).prefix.send(player, "<red>宝箱が見つかりません"));
             },
-            () -> Messages.GAME_NOT_START.send(player));
+            () -> GameMessages.GAME_NOT_START.send(player));
   }
 }

@@ -1,6 +1,6 @@
 package github.moriyoshi.comminiplugin.system.menu;
 
-import github.moriyoshi.comminiplugin.constant.Messages;
+import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
 import lombok.val;
 import net.kyori.adventure.text.Component;
@@ -36,7 +36,7 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
         com.google.common.collect.Lists.newArrayList(getInventory().getViewers())
             .forEach(
                 human -> {
-                  Messages.GAME_FINAL_OR_START.send(human);
+                  GameMessages.GAME_FINAL_OR_START.send(human);
                   human.closeInventory();
                 });
       }
@@ -66,7 +66,7 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
     com.google.common.collect.Lists.newArrayList(getInventory().getViewers())
         .forEach(
             human -> {
-              Messages.GAME_FINAL_OR_START.send(human);
+              GameMessages.GAME_FINAL_OR_START.send(human);
               human.closeInventory();
             });
     return true;

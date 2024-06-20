@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.system.buttons;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.Messages;
+import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
@@ -34,7 +34,7 @@ public class GameHelpMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       @NotNull MenuHolder<ComMiniPlugin> holder, @NotNull InventoryClickEvent event) {
     var player = event.getWhoClicked();
     if (!GameSystem.isIn()) {
-      Messages.GAME_NOT_FOUND.send(player);
+      GameMessages.GAME_NOT_FOUND.send(player);
       return;
     }
     GameSystem.getGame().createHelpMenu().openInv(player);

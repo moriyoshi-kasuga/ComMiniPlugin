@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.system.buttons;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.Messages;
+import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
@@ -21,11 +21,11 @@ public class GameStartButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   public static GameStartButton of() {
     if (!GameSystem.isIn()) {
       return new GameStartButton(
-          new ItemBuilder(Material.BEDROCK).name(Messages.GAME_NOT_FOUND.message).build());
+          new ItemBuilder(Material.BEDROCK).name(GameMessages.GAME_NOT_FOUND.message).build());
     }
     if (GameSystem.isStarted()) {
       return new GameStartButton(
-          new ItemBuilder(Material.BEDROCK).name(Messages.GAME_ALREADY_START.message).build());
+          new ItemBuilder(Material.BEDROCK).name(GameMessages.GAME_ALREADY_START.message).build());
     }
     return new GameStartButton(
         new ItemBuilder(GameSystem.getGame().material).name("<red>Start").build());
@@ -36,11 +36,11 @@ public class GameStartButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
       @NotNull MenuHolder<ComMiniPlugin> holder, @NotNull InventoryClickEvent event) {
     val player = event.getWhoClicked();
     if (!GameSystem.isIn()) {
-      Messages.GAME_NOT_FOUND.send(player);
+      GameMessages.GAME_NOT_FOUND.send(player);
       return;
     }
     if (GameSystem.isStarted()) {
-      Messages.GAME_ALREADY_START.send(player);
+      GameMessages.GAME_ALREADY_START.send(player);
       return;
     }
     GameSystem.startGame(((Player) event.getWhoClicked()));

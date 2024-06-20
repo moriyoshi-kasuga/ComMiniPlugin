@@ -1,6 +1,6 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
-import github.moriyoshi.comminiplugin.constant.Messages;
+import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRGame;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
@@ -33,7 +33,7 @@ public class HKPRItem extends CustomItem {
     }
     val player = e.getPlayer();
     if (!GameSystem.isStarted(BRGame.class)) {
-      Messages.GAME_NOT_START.send(player);
+      GameMessages.GAME_NOT_START.send(player);
       return;
     }
     useItemAmount();

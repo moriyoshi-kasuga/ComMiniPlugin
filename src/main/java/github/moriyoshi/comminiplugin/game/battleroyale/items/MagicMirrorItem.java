@@ -1,6 +1,6 @@
 package github.moriyoshi.comminiplugin.game.battleroyale.items;
 
-import github.moriyoshi.comminiplugin.constant.Messages;
+import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.game.battleroyale.BRGame;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.game.GameSystem;
@@ -34,7 +34,7 @@ public class MagicMirrorItem extends CustomItem {
     }
     val player = e.getPlayer();
     if (!GameSystem.isIn(BRGame.class)) {
-      Messages.GAME_NOT_FOUND.send(player);
+      GameMessages.GAME_NOT_FOUND.send(player);
       return;
     }
     Optional.ofNullable(GameSystem.getGame(BRGame.class).getField())
@@ -47,7 +47,7 @@ public class MagicMirrorItem extends CustomItem {
                 player.getInventory().addItem(field.getLevel5().random().getFirst());
               }
             },
-            () -> Messages.GAME_NOT_START.send(player)
+            () -> GameMessages.GAME_NOT_START.send(player)
         );
   }
 }
