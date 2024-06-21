@@ -26,6 +26,7 @@ public class RandomTeleport extends CommandAPICommand {
                   loc.getBlockX(),
                   loc.getBlockZ(),
                   (int) args.get("radius"))
+              .setRandom()
               .randomTeleport(p)
               .thenAccept(
                   bool -> {

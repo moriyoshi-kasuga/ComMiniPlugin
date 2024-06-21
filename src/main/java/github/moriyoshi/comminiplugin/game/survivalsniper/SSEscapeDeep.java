@@ -34,6 +34,7 @@ public class SSEscapeDeep extends CustomItem {
     }
     val p = e.getPlayer();
     new BukkitRandomUtil(p.getLocation(), 10)
+        .setRandom()
         .randomTeleport(p)
         .thenAccept(
             bool -> {

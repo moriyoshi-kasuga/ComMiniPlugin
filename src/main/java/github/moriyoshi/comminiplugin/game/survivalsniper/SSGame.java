@@ -161,7 +161,7 @@ public class SSGame extends AbstractGame implements WinnerTypeGame {
       return false;
     }
     lobby = world.getHighestBlockAt(player.getLocation()).getLocation().add(new Vector(0, 50, 0));
-    random = new BukkitRandomUtil(lobby, (MAX_RADIUS_RANGE / 2) - 10).setMaxTry(500);
+    random = new BukkitRandomUtil(lobby, (MAX_RADIUS_RANGE / 2) - 10).setRandom().setMaxTry(500);
     world.getWorldBorder().setCenter(lobby);
     world.getWorldBorder().setSize(MAX_RADIUS_RANGE);
     world.setGameRule(GameRule.DO_MOB_SPAWNING, true);

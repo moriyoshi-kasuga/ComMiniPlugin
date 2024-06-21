@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -51,13 +50,13 @@ public interface InterfaceGame extends HasGameKey {
   }
 
   @SuppressWarnings("unchecked")
-  default Stream<Player> getPlayers() {
-    return (Stream<Player>) Bukkit.getOnlinePlayers().stream().filter(this::isGamePlayer);
+  default List<Player> getPlayers() {
+    return (List<Player>) Bukkit.getOnlinePlayers().stream().filter(this::isGamePlayer).toList();
   }
 
   @SuppressWarnings("unchecked")
-  default Stream<Player> getNonGamePlayers() {
-    return (Stream<Player>) Bukkit.getOnlinePlayers().stream().filter(p -> !isGamePlayer(p));
+  default List<Player> getNonGamePlayers() {
+    return (List<Player>) Bukkit.getOnlinePlayers().stream().filter(p -> !isGamePlayer(p)).toList();
   }
 
   /**
