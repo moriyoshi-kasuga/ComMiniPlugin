@@ -15,6 +15,8 @@ public class CustomBlockData extends JsonAPI {
     super(plugin, "customBlockData");
   }
 
+  private JsonArray arr = new JsonArray();
+
   @Override
   protected void generateLoadData(JsonElement dataElement) {
     val data = dataElement.getAsJsonObject();
@@ -30,6 +32,7 @@ public class CustomBlockData extends JsonAPI {
                 plugin
                     .getSystemPrefix()
                     .logError(identifier + "はCustomBlockに登録されていませんのでロードされませんでした");
+                arr.add(object);
                 return;
               }
               Location loc = PluginLib.gson.fromJson(object.get("location"), Location.class);
@@ -41,7 +44,6 @@ public class CustomBlockData extends JsonAPI {
   @Override
   protected JsonElement generateSaveData() {
     JsonObject object = new JsonObject();
-    JsonArray data = new JsonArray();
     CustomBlock.getBlocks()
         .forEach(
             (location, customBlock) -> {
@@ -54,10 +56,10 @@ public class CustomBlockData extends JsonAPI {
               json.add("data", element);
               json.add("location", PluginLib.gson.toJsonTree(location));
               json.addProperty("identifier", customBlock.getIdentifier());
-              data.add(json);
+              arr.add(json);
               customBlock.clearData();
             });
-    object.add("blocks", data);
+    object.add("blocks", arr);
     return object;
   }
 }
