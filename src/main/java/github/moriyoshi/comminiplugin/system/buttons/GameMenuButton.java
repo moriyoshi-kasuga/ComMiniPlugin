@@ -4,7 +4,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.game.GameSystem;
+import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,11 +16,11 @@ import org.jetbrains.annotations.NotNull;
 public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
 
   private GameMenuButton() {
-    if (!GameSystem.isIn()) {
+    if (!BigGameSystem.isIn()) {
       setIcon(new ItemBuilder(Material.BEDROCK).name("<gray>ゲームは開催されていません").build());
       return;
     }
-    var game = GameSystem.getGame();
+    var game = BigGameSystem.getGame();
     setIcon(
         new ItemBuilder(game.material)
             .name(game.name)
@@ -41,7 +41,7 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   public static GameMenuButton back() {
     return new GameMenuButton(
         new ItemBuilder(Material.IRON_DOOR)
-            .name(GameSystem.getGame().name + "<white>のメニューに戻る")
+            .name(BigGameSystem.getGame().name + "<white>のメニューに戻る")
             .build());
   }
 
@@ -49,14 +49,14 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   public void onClick(
       @NotNull MenuHolder<ComMiniPlugin> holder, @NotNull InventoryClickEvent event) {
     var player = (Player) event.getWhoClicked();
-    if (!GameSystem.isIn()) {
+    if (!BigGameSystem.isIn()) {
       GameMessages.GAME_NOT_FOUND.send(player);
       return;
     }
-    if (GameSystem.isStarted()) {
+    if (BigGameSystem.isStarted()) {
       ComMiniPlugin.MAIN.send(player, "<red>GameMenuは開けません");
       return;
     }
-    GameSystem.getGame().createGameMenu(player).openInv(player);
+    BigGameSystem.getGame().createGameMenu(player).openInv(player);
   }
 }

@@ -19,3 +19,5 @@
 - Game -> BigGame
 - AbstractGame -> Game
 - MiniGame はそのまま
+- button に after start button interface とか作ってその instance かどうかでゲーム中ならsuperの前にリターンして、
+  開く時ならボタンを設置しないようにするとか

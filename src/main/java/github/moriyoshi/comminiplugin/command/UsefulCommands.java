@@ -2,7 +2,7 @@ package github.moriyoshi.comminiplugin.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.game.survivalsniper.SSCustomMenu;
+import github.moriyoshi.comminiplugin.biggame.survivalsniper.SSCustomMenu;
 import github.moriyoshi.comminiplugin.object.jumppad.JumpPadItem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import lombok.val;

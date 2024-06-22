@@ -2,8 +2,8 @@ package github.moriyoshi.comminiplugin.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
-import github.moriyoshi.comminiplugin.system.game.AdminGameMenu;
-import github.moriyoshi.comminiplugin.system.game.GameSystem;
+import github.moriyoshi.comminiplugin.system.biggame.AdminBigGameMenu;
+import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 
 public class AdminGameMenuCommand extends CommandAPICommand {
 
@@ -12,10 +12,10 @@ public class AdminGameMenuCommand extends CommandAPICommand {
     withPermission(CommandPermission.OP);
     executesPlayer(
         (player, args) -> {
-          if (GameSystem.isIn()) {
-            GameSystem.getGame().createAdminMenu().openInv(player);
+          if (BigGameSystem.isIn()) {
+            BigGameSystem.getGame().createAdminMenu().openInv(player);
           } else {
-            new AdminGameMenu().openInv(player);
+            new AdminBigGameMenu().openInv(player);
           }
         });
   }

@@ -4,7 +4,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.game.GameSystem;
+import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
@@ -19,30 +19,30 @@ public class GameStartButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   }
 
   public static GameStartButton of() {
-    if (!GameSystem.isIn()) {
+    if (!BigGameSystem.isIn()) {
       return new GameStartButton(
           new ItemBuilder(Material.BEDROCK).name(GameMessages.GAME_NOT_FOUND.message).build());
     }
-    if (GameSystem.isStarted()) {
+    if (BigGameSystem.isStarted()) {
       return new GameStartButton(
           new ItemBuilder(Material.BEDROCK).name(GameMessages.GAME_ALREADY_START.message).build());
     }
     return new GameStartButton(
-        new ItemBuilder(GameSystem.getGame().material).name("<red>Start").build());
+        new ItemBuilder(BigGameSystem.getGame().material).name("<red>Start").build());
   }
 
   @Override
   public void onClick(
       @NotNull MenuHolder<ComMiniPlugin> holder, @NotNull InventoryClickEvent event) {
     val player = event.getWhoClicked();
-    if (!GameSystem.isIn()) {
+    if (!BigGameSystem.isIn()) {
       GameMessages.GAME_NOT_FOUND.send(player);
       return;
     }
-    if (GameSystem.isStarted()) {
+    if (BigGameSystem.isStarted()) {
       GameMessages.GAME_ALREADY_START.send(player);
       return;
     }
-    GameSystem.startGame(((Player) event.getWhoClicked()));
+    BigGameSystem.startGame(((Player) event.getWhoClicked()));
   }
 }

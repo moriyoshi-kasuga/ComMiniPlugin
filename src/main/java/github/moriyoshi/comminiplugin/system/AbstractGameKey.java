@@ -13,8 +13,8 @@ public sealed class AbstractGameKey extends IdentifierKey {
     return this instanceof MiniGameKey;
   }
 
-  public boolean isGameKey() {
-    return this instanceof GameKey;
+  public boolean isBigGameKey() {
+    return this instanceof BigGameKey;
   }
 
   public static final class MiniGameKey extends AbstractGameKey {
@@ -23,8 +23,8 @@ public sealed class AbstractGameKey extends IdentifierKey {
     }
   }
 
-  public static final class GameKey extends AbstractGameKey {
-    public GameKey(String identifier) {
+  public static final class BigGameKey extends AbstractGameKey {
+    public BigGameKey(String identifier) {
       super("game-" + identifier, null);
     }
   }

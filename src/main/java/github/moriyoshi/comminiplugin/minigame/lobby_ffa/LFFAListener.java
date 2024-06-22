@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.minigame.lobby_ffa;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.system.MainGameSystem;
+import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.minigame.AbstractMiniGameListener;
 import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import lombok.Getter;
@@ -48,7 +48,7 @@ public class LFFAListener implements AbstractMiniGameListener<LFFAMiniGame> {
 
       @Override
       public void run() {
-        MainGameSystem.initializePlayer(e.getPlayer());
+        GameSystem.initializePlayer(e.getPlayer());
       }
     }.runTask(ComMiniPlugin.getPlugin());
   }

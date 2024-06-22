@@ -3,7 +3,7 @@ package github.moriyoshi.comminiplugin.object;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import github.moriyoshi.comminiplugin.system.MainGameSystem;
+import github.moriyoshi.comminiplugin.system.GameSystem;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +32,7 @@ public class LeaveMiniGameItem extends CustomItem {
     if (e.getAction().isLeftClick()) {
       return;
     }
-    MainGameSystem.initializePlayer(e.getPlayer());
+    GameSystem.initializePlayer(e.getPlayer());
   }
 
   @Override

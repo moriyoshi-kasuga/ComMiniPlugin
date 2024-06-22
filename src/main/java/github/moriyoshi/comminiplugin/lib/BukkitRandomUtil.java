@@ -19,7 +19,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.jetbrains.annotations.Nullable;
 
 public final class BukkitRandomUtil {
 
@@ -48,25 +47,27 @@ public final class BukkitRandomUtil {
   @Setter
   private Predicate<Block> predicate = (block) -> block.isSolid() && block.isCollidable();
 
-  @Accessors(chain = true)
-  @Setter
-  @Nullable
-  private Random random;
+  private final Random random;
 
   public BukkitRandomUtil(final Location center, final int radius) {
     this(center.getWorld(), center.getBlockX(), center.getBlockZ(), radius);
   }
 
   public BukkitRandomUtil(final World world, final int bx, final int bz, final int radius) {
+    this(new Random(), world, bx, bz, radius);
+  }
+
+  public BukkitRandomUtil(final Random random, final Location center, final int radius) {
+    this(random, center.getWorld(), center.getBlockX(), center.getBlockZ(), radius);
+  }
+
+  public BukkitRandomUtil(
+      final Random random, final World world, final int bx, final int bz, final int radius) {
+    this.random = random;
     this.world = world;
     this.bx = bx;
     this.bz = bz;
     this.radius = radius;
-  }
-
-  public BukkitRandomUtil setRandom() {
-    this.random = new Random();
-    return this;
   }
 
   public CompletableFuture<Boolean> randomTeleport(final Entity entity) {

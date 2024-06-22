@@ -8,7 +8,7 @@ import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameListener;
-import github.moriyoshi.comminiplugin.system.game.GameSystem;
+import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import lombok.Getter;
 import org.bukkit.World.Environment;
@@ -61,7 +61,7 @@ public final class ComMiniPlugin extends JavaPlugin implements InterfaceAPIPlugi
     PluginLib.loadCustomBlock();
 
     ComMiniPlayer.gameInitialize();
-    GameSystem.load();
+    BigGameSystem.load();
     MiniGameSystem.load();
 
     SYSTEM.cast("<red>プラグインをロードしました。");
@@ -70,7 +70,7 @@ public final class ComMiniPlugin extends JavaPlugin implements InterfaceAPIPlugi
   @Override
   public void onDisable() {
     ComMiniPlayer.save();
-    GameSystem.finalGame();
+    BigGameSystem.finalGame();
     MiniGameSystem.clear();
     LocationsCommands.getManager().saveFile();
 

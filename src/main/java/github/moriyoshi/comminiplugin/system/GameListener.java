@@ -3,7 +3,7 @@ package github.moriyoshi.comminiplugin.system;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
-import github.moriyoshi.comminiplugin.system.game.GameSystem;
+import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.minigame.AbstractMiniGame;
 import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
@@ -86,7 +86,7 @@ public class GameListener implements Listener {
   }
 
   public static boolean isGamePlayer(Player p) {
-    return GameSystem.isStarted() && GameSystem.getGame().isGamePlayer(p);
+    return BigGameSystem.isStarted() && BigGameSystem.getGame().isGamePlayer(p);
   }
 
   public static boolean isDebugPlayer(Player p) {
@@ -115,7 +115,7 @@ public class GameListener implements Listener {
   @EventHandler(priority = EventPriority.LOW)
   public void join(PlayerJoinEvent e) {
     val p = e.getPlayer();
-    MainGameSystem.initializePlayer(p);
+    GameSystem.initializePlayer(p);
     if (ComMiniPlayer.getPlayer(p.getUniqueId()).isShouldLoadResourcePack()) {
       ResourcePackUtil.updateComMiniResourcePack(p);
     }
@@ -138,8 +138,8 @@ public class GameListener implements Listener {
   @EventHandler(priority = EventPriority.LOW)
   public void quit(PlayerQuitEvent e) {
     val p = e.getPlayer();
-    if (GameSystem.isIn() && GameSystem.getGame().isGamePlayer(p)) {
-      GameSystem.getGame().listener.quit(e);
+    if (BigGameSystem.isIn() && BigGameSystem.getGame().isGamePlayer(p)) {
+      BigGameSystem.getGame().listener.quit(e);
       return;
     }
     getMiniGameOptional(p.getUniqueId()).ifPresent(minigame -> minigame.listener.quit(e));
@@ -150,7 +150,7 @@ public class GameListener implements Listener {
     e.setCancelled(true);
     val p = e.getPlayer();
     if (isGamePlayer(p)) {
-      GameSystem.getGame().listener.death(e);
+      BigGameSystem.getGame().listener.death(e);
       return;
     }
 
@@ -163,7 +163,7 @@ public class GameListener implements Listener {
 
       @Override
       public void run() {
-        MainGameSystem.initializePlayer(e.getPlayer());
+        GameSystem.initializePlayer(e.getPlayer());
       }
     }.runTask(ComMiniPlugin.getPlugin());
   }
@@ -174,8 +174,8 @@ public class GameListener implements Listener {
       if (e.getCause().equals(DamageCause.FALL)) {
         e.setCancelled(true);
       }
-      if (GameSystem.isStarted() && isGamePlayer(player)) {
-        GameSystem.getGame().listener.damage(e, player);
+      if (BigGameSystem.isStarted() && isGamePlayer(player)) {
+        BigGameSystem.getGame().listener.damage(e, player);
         return;
       }
       getMiniGameOptional(player.getUniqueId())
@@ -207,8 +207,8 @@ public class GameListener implements Listener {
     val victim = e.getEntity() instanceof Player p ? p : null;
 
     if (attacker != null && victim != null) {
-      val game = GameSystem.getGame();
-      if (GameSystem.isStarted() && game.isGamePlayer(attacker) && game.isGamePlayer(victim)) {
+      val game = BigGameSystem.getGame();
+      if (BigGameSystem.isStarted() && game.isGamePlayer(attacker) && game.isGamePlayer(victim)) {
         game.listener.damageByEntity(e, attacker, victim);
         return;
       }
@@ -230,7 +230,7 @@ public class GameListener implements Listener {
   public void blockBreak(BlockBreakEvent e) {
     val p = e.getPlayer();
     if (isGamePlayer(p)) {
-      GameSystem.getGame().listener.blockBreak(e);
+      BigGameSystem.getGame().listener.blockBreak(e);
       return;
     }
     val minigame = getMiniGame(p.getUniqueId());
@@ -247,7 +247,7 @@ public class GameListener implements Listener {
   public void blockPlace(BlockPlaceEvent e) {
     val p = e.getPlayer();
     if (isGamePlayer(e.getPlayer())) {
-      GameSystem.getGame().listener.blockPlace(e);
+      BigGameSystem.getGame().listener.blockPlace(e);
       return;
     }
     val minigame = getMiniGame(p.getUniqueId());

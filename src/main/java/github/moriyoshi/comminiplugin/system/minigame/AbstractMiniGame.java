@@ -5,7 +5,7 @@ import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import github.moriyoshi.comminiplugin.system.AbstractGameKey.MiniGameKey;
 import github.moriyoshi.comminiplugin.system.InterfaceGame;
-import github.moriyoshi.comminiplugin.system.MainGameSystem;
+import github.moriyoshi.comminiplugin.system.GameSystem;
 import java.util.UUID;
 import java.util.function.Function;
 import lombok.Getter;
@@ -42,7 +42,7 @@ public abstract class AbstractMiniGame implements InterfaceGame {
   @Override
   public final void finishGame() {
     HandlerList.unregisterAll(listener);
-    runPlayers(MainGameSystem::initializePlayer);
+    runPlayers(GameSystem::initializePlayer);
     innerFinishGame();
     MiniGameSystem.unregister(getKey());
   }

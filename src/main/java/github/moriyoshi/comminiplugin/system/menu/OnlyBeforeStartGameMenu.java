@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.system.menu;
 
 import github.moriyoshi.comminiplugin.constant.GameMessages;
-import github.moriyoshi.comminiplugin.system.game.GameSystem;
+import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.InventoryHolder;
@@ -14,7 +14,7 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
 
       @Override
       public void run() {
-        if (GameSystem.isIn()) {
+        if (BigGameSystem.isIn()) {
           val message = additional();
           if (message != null) {
             val flag = Component.IS_NOT_EMPTY.test(message);
@@ -29,7 +29,7 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
             return;
           }
 
-          if (!GameSystem.isStarted()) {
+          if (!BigGameSystem.isStarted()) {
             return;
           }
         }
@@ -44,7 +44,7 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
   }
 
   default boolean isClosed() {
-    if (GameSystem.isIn()) {
+    if (BigGameSystem.isIn()) {
       val message = additional();
       if (message != null) {
         val flag = Component.IS_NOT_EMPTY.test(message);
@@ -59,7 +59,7 @@ public interface OnlyBeforeStartGameMenu extends InventoryHolder {
         return true;
       }
 
-      if (!GameSystem.isStarted()) {
+      if (!BigGameSystem.isStarted()) {
         return false;
       }
     }

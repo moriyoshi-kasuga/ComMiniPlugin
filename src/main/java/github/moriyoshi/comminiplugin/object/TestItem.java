@@ -3,7 +3,7 @@ package github.moriyoshi.comminiplugin.object;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
-import github.moriyoshi.comminiplugin.game.battleroyale.TreasureChest;
+import github.moriyoshi.comminiplugin.biggame.battleroyale.TreasureChest;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.List;
