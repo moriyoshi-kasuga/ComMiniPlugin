@@ -8,6 +8,7 @@ import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameListener;
+import github.moriyoshi.comminiplugin.system.ResourcePackSystem;
 import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import lombok.Getter;
@@ -63,6 +64,7 @@ public final class ComMiniPlugin extends JavaPlugin implements InterfaceAPIPlugi
     ComMiniPlayer.gameInitialize();
     BigGameSystem.load();
     MiniGameSystem.load();
+    ResourcePackSystem.load();
 
     SYSTEM.cast("<red>プラグインをロードしました。");
   }

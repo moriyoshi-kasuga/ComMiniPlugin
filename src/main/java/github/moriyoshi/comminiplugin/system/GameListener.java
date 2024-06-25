@@ -6,7 +6,6 @@ import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.minigame.AbstractMiniGame;
 import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
-import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,20 +64,6 @@ public class GameListener implements Listener {
                 });
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 20, 20);
-
-    new BukkitRunnable() {
-
-      private String oldHash = ResourcePackUtil.getComMiniResourcePackHash();
-
-      @Override
-      public void run() {
-        val newHash = ResourcePackUtil.getComMiniResourcePackHash();
-        if (!oldHash.equalsIgnoreCase(newHash)) {
-          oldHash = newHash;
-          ComMiniPlugin.MAIN.cast("<red>リソースパックの更新があります!<gray>メニューから更新してください");
-        }
-      }
-    }.runTaskTimer(ComMiniPlugin.getPlugin(), 20 * 5, 20 * 5);
   }
 
   public static GameListener getInstance() {
@@ -117,7 +102,7 @@ public class GameListener implements Listener {
     val p = e.getPlayer();
     GameSystem.initializePlayer(p);
     if (ComMiniPlayer.getPlayer(p.getUniqueId()).isShouldLoadResourcePack()) {
-      ResourcePackUtil.updateComMiniResourcePack(p);
+      ResourcePackSystem.updateComMiniResourcePack(p);
     }
     Bukkit.getOnlinePlayers().stream()
         .filter(

@@ -4,13 +4,13 @@ import dev.jorel.commandapi.CommandAPICommand;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
+import github.moriyoshi.comminiplugin.system.ResourcePackSystem;
 import github.moriyoshi.comminiplugin.system.buttons.AddSpecButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameHelpMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.TeleportLobbyButton;
-import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import github.moriyoshi.comminiplugin.util.ResourcePackUtil;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -68,7 +68,7 @@ public class MenuCommand extends CommandAPICommand {
             public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
               val who = event.getWhoClicked();
               ComMiniPlayer.getPlayer(who.getUniqueId()).setShouldLoadResourcePack(true);
-              ResourcePackUtil.updateComMiniResourcePack(who);
+              ResourcePackSystem.updateComMiniResourcePack(who);
             }
           });
       setButton(
@@ -78,7 +78,7 @@ public class MenuCommand extends CommandAPICommand {
             public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
               val who = event.getWhoClicked();
               ComMiniPlayer.getPlayer(who.getUniqueId()).setShouldLoadResourcePack(false);
-              who.removeResourcePacks(ResourcePackUtil.buildComMiniResourcePack());
+              ResourcePackSystem.removeResourcePack(who);
             }
           });
     }
