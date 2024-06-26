@@ -29,7 +29,7 @@ public final class ResourcePackSystem {
         val newHash = ResourcePackSystem.getComMiniResourcePackHash();
         if (!oldHash.equalsIgnoreCase(newHash)) {
           oldHash = newHash;
-          ComMiniPlugin.MAIN.cast("<red>リソースパックの更新があります!<gray>メニューから更新してください");
+          ComMiniPlugin.MAIN.broadCast("<red>リソースパックの更新があります!<gray>メニューから更新してください");
         }
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 20 * 5, 20 * 5);

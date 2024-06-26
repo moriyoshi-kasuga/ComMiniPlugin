@@ -208,11 +208,11 @@ public final class BukkitUtil {
    *
    * @param str message
    */
-  public static void cast(final Object str) {
+  public static void broadCast(final Object str) {
     Bukkit.broadcast(BukkitUtil.mm(str));
   }
 
-  public static void cast(final Object... objects) {
+  public static void broadCast(final Object... objects) {
     Bukkit.broadcast(
         BukkitUtil.mm(
             String.join(",", java.util.Arrays.stream(objects).map(String::valueOf).toList())));

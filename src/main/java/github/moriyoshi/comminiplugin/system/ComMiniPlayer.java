@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.JsonAPI;
-import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import github.moriyoshi.comminiplugin.system.player.InterfaceGamePlayer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -15,10 +15,12 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.val;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -55,14 +57,21 @@ public final class ComMiniPlayer extends JsonAPI {
   @Getter
   @Setter
   @Nullable
-  private AbstractGameKey joinGameIdentifier;
+  private IdentifierKey joinGameKey;
 
   private JsonObject datas;
 
   private ComMiniPlayer(final UUID uuid) {
     super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
     this.uuid = uuid;
-    this.initialize();
+    val player = toPlayer();
+    player.setScoreboard(scoreboard);
+    this.initialize(player);
+  }
+
+  @NonNull
+  public Player toPlayer() {
+    return Bukkit.getPlayer(uuid);
   }
 
   public static void save() {
@@ -89,36 +98,23 @@ public final class ComMiniPlayer extends JsonAPI {
     return player;
   }
 
-  public void initialize() {
+  public void initialize(Player player) {
     this.isHunger = false;
     this.canFoodRegain = true;
-    if (joinGameIdentifier != null && joinGameIdentifier.isMiniGameKey()) {
-      MiniGameSystem.getMiniGame(joinGameIdentifier).leavePlayer(Bukkit.getPlayer(uuid));
+    if (joinGameKey != null) {
+      GameSystem.getGame(joinGameKey).leavePlayer(player);
     }
-    this.joinGameIdentifier = null;
-    val player = Bukkit.getPlayer(uuid);
-    if (player == null) {
-      return;
-    }
+    this.joinGameKey = null;
     hidenametag.removeEntry(player.getName());
     BukkitUtil.removeFalling(uuid);
   }
 
   public boolean isHideNameTag() {
-    val player = Bukkit.getPlayer(uuid);
-    if (player == null) {
-      return false;
-    }
-    return hidenametag.hasEntry(player.getName());
+    return hidenametag.hasEntry(toPlayer().getName());
   }
 
   public ComMiniPlayer setHideNameTag(final boolean isHideNameTag) {
-    val player = Bukkit.getPlayer(uuid);
-    if (player == null) {
-      return this;
-    }
-    player.setScoreboard(scoreboard);
-    val name = player.getName();
+    val name = toPlayer().getName();
     if (isHideNameTag) {
       hidenametag.addEntry(name);
     } else {

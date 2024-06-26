@@ -1,18 +1,24 @@
 package github.moriyoshi.comminiplugin.system;
 
+import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.lib.HasKey;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-public interface InterfaceGame extends HasGameKey {
+public interface IGame extends HasKey {
+
+  /** スタートしてるかどうか? ({@code #startGame()} を呼び出したあと) */
+  boolean isStarted();
 
   /** このゲームのワールド */
   @Nullable
@@ -29,6 +35,8 @@ public interface InterfaceGame extends HasGameKey {
    * @return true でゲームのプレイヤー
    */
   boolean isGamePlayer(Player player);
+
+  void startGame();
 
   void finishGame();
 
@@ -70,10 +78,64 @@ public interface InterfaceGame extends HasGameKey {
   }
 
   default void setPlayerJoinGameIdentifier(final Player player) {
-    ComMiniPlayer.getPlayer(player.getUniqueId()).setJoinGameIdentifier(getKey());
+    ComMiniPlayer.getPlayer(player.getUniqueId()).setJoinGameKey(getKey());
   }
 
   default void setPlayerJoinGameIdentifier(final UUID uuid) {
-    ComMiniPlayer.getPlayer(uuid).setJoinGameIdentifier(getKey());
+    ComMiniPlayer.getPlayer(uuid).setJoinGameKey(getKey());
+  }
+
+  default void hidePlayers() {
+    val hiders = getNonGamePlayers();
+    getPlayers()
+        .forEach(
+            player -> {
+              hiders.forEach(
+                  hider -> {
+                    player.hidePlayer(ComMiniPlugin.getPlugin(), hider);
+                    hider.hidePlayer(ComMiniPlugin.getPlugin(), player);
+                  });
+            });
+  }
+
+  /**
+   * 個別にゲームプレイヤーではない人を隠します
+   *
+   * @param player target
+   */
+  default void hidePlayer(final Player player) {
+    getNonGamePlayers()
+        .forEach(
+            hider -> {
+              player.hidePlayer(ComMiniPlugin.getPlugin(), hider);
+              hider.hidePlayer(ComMiniPlugin.getPlugin(), player);
+            });
+  }
+
+  default void showPlayers() {
+    val showers = getNonGamePlayers();
+    getPlayers()
+        .forEach(
+            player -> {
+              showers.forEach(
+                  shower -> {
+                    player.showPlayer(ComMiniPlugin.getPlugin(), shower);
+                    shower.showPlayer(ComMiniPlugin.getPlugin(), player);
+                  });
+            });
+  }
+
+  /**
+   * 個別にゲームプレイヤーではない人を表示します
+   *
+   * @param player target
+   */
+  default void showPlayer(final Player player) {
+    getNonGamePlayers()
+        .forEach(
+            shower -> {
+              player.showPlayer(ComMiniPlugin.getPlugin(), shower);
+              shower.showPlayer(ComMiniPlugin.getPlugin(), player);
+            });
   }
 }

@@ -10,7 +10,6 @@ import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.system.ResourcePackSystem;
 import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
-import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import lombok.Getter;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
@@ -58,27 +57,26 @@ public final class ComMiniPlugin extends JavaPlugin implements InterfaceAPIPlugi
     CustomItem.registers(reflections);
     PluginLib.onEnable();
     PluginLib.registerCommand(new Reflections("github.moriyoshi.comminiplugin.command"));
+    // TODO: これを onLoad()　時にやってPluginLib.onEnable で普通に load CustomBlock すればいいんじゃね?
     CustomBlock.registers(reflections);
     PluginLib.loadCustomBlock();
 
     ComMiniPlayer.gameInitialize();
     BigGameSystem.load();
-    MiniGameSystem.load();
     ResourcePackSystem.load();
 
-    SYSTEM.cast("<red>プラグインをロードしました。");
+    SYSTEM.broadCast("<red>プラグインをロードしました。");
   }
 
   @Override
   public void onDisable() {
     ComMiniPlayer.save();
     BigGameSystem.finalGame();
-    MiniGameSystem.clear();
     LocationsCommands.getManager().saveFile();
 
     PluginLib.unLoad();
 
-    SYSTEM.cast("<red>プラグインをアンロードしました。");
+    SYSTEM.broadCast("<red>プラグインをアンロードしました。");
   }
 
   @Override

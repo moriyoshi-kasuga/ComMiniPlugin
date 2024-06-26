@@ -49,7 +49,7 @@ public class BigGameSystem {
       return false;
     }
     game = temp;
-    game.prefix.cast("<green>開催します!");
+    game.prefix.broadCast("<green>開催します!");
     return true;
   }
 
@@ -67,7 +67,7 @@ public class BigGameSystem {
       return;
     }
     if (game.startGame(player)) {
-      game.prefix.cast("<green>開始します");
+      game.prefix.broadCast("<green>開始します");
     }
   }
 
@@ -81,7 +81,7 @@ public class BigGameSystem {
       return false;
     }
     game.finishGame();
-    game.prefix.cast("<green>閉幕です");
+    game.prefix.broadCast("<green>閉幕です");
     game = null;
     return true;
   }

@@ -36,7 +36,7 @@ public class LFFAMiniGame extends AbstractMiniGame {
     GameSystem.initializeGamePlayer(player);
     ComMiniPlayer.getPlayer(uuid)
         .setCanFoodRegain(false)
-        .setJoinGameIdentifier(getKey())
+        .setJoinGameKey(getKey())
         .setHideNameTag(true);
     val inv = player.getInventory();
     inv.setItem(0, new LFFAGun().getItem());

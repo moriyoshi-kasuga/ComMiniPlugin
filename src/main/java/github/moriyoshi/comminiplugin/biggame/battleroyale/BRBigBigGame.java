@@ -77,12 +77,12 @@ public class BRBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
     if (players.containsKey(uuid)) {
       if (players.get(uuid) == isPlayer) {
         players.remove(uuid);
-        prefix.cast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
+        prefix.broadCast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
         return;
       }
     }
     players.put(uuid, isPlayer);
-    prefix.cast(player.getName() + "が" + (isPlayer ? "<blue>参加" : "<gray>観戦") + "します");
+    prefix.broadCast(player.getName() + "が" + (isPlayer ? "<blue>参加" : "<gray>観戦") + "します");
   }
 
   @Override

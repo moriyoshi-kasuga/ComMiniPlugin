@@ -113,7 +113,7 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin>
         @NotNull MenuHolder<ComMiniPlugin> holder, @NotNull InventoryClickEvent event) {
       val game = BigGameSystem.getGame(BRBigBigGame.class);
       game.setField(fieldSupplier.get());
-      game.prefix.cast("<gray>今回の舞台は <u>" + name);
+      game.prefix.broadCast("<gray>今回の舞台は <u>" + name);
     }
   }
 }

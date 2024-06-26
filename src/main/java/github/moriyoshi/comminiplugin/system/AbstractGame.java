@@ -1,11 +1,9 @@
-package github.moriyoshi.comminiplugin.system.minigame;
+package github.moriyoshi.comminiplugin.system;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import github.moriyoshi.comminiplugin.system.AbstractGameKey.MiniGameKey;
-import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.system.IGame;
 import java.util.UUID;
 import java.util.function.Function;
 import lombok.Getter;
@@ -13,19 +11,19 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 
-public abstract class AbstractMiniGame implements IGame {
+public abstract class AbstractGame implements IGame {
 
   @Getter public final String id;
   @Getter public final PrefixUtil prefix;
-  private final AbstractMiniGameListener<?> listener;
+  private final IGameListener listener;
   @Getter protected World world;
   @Getter protected Location lobby;
   @Getter public final MiniGameKey key;
 
-  public AbstractMiniGame(
+  public AbstractGame(
       final String id,
       final PrefixUtil prefix,
-      final Function<IdentifierKey, AbstractMiniGameListener<?>> func) {
+      final Function<IdentifierKey, IGameListener> func) {
     this.id = id;
     this.prefix = prefix;
     this.key = new MiniGameKey(id, UUID.randomUUID());

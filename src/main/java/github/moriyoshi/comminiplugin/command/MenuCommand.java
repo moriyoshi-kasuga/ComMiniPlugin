@@ -31,7 +31,7 @@ public class MenuCommand extends CommandAPICommand {
   }
 
   public static boolean open(final Player p) {
-    if (ComMiniPlayer.getPlayer(p.getUniqueId()).getJoinGameIdentifier() != null) {
+    if (ComMiniPlayer.getPlayer(p.getUniqueId()).getJoinGameKey() != null) {
       ComMiniPlugin.MAIN.send(p, "<red>あなたはmenuを開けません");
       return false;
     }
@@ -86,7 +86,7 @@ public class MenuCommand extends CommandAPICommand {
     @Override
     public void onClick(InventoryClickEvent event) {
       val p = event.getWhoClicked();
-      if (ComMiniPlayer.getPlayer(p.getUniqueId()).getJoinGameIdentifier() != null) {
+      if (ComMiniPlayer.getPlayer(p.getUniqueId()).getJoinGameKey() != null) {
         ComMiniPlugin.MAIN.send(p, "<red>あなたはmenuを開けません");
         return;
       }

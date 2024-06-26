@@ -4,8 +4,6 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
-import github.moriyoshi.comminiplugin.system.minigame.AbstractMiniGame;
-import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,15 +86,6 @@ public class GameListener implements Listener {
     projectileDamageMap.put(id, l);
   }
 
-  public Optional<AbstractMiniGame> getMiniGameOptional(UUID uuid) {
-    return Optional.ofNullable(
-        MiniGameSystem.getMiniGame(ComMiniPlayer.getPlayer(uuid).getJoinGameIdentifier()));
-  }
-
-  public AbstractMiniGame getMiniGame(UUID uuid) {
-    return MiniGameSystem.getMiniGame(ComMiniPlayer.getPlayer(uuid).getJoinGameIdentifier());
-  }
-
   @EventHandler(priority = EventPriority.LOW)
   public void join(PlayerJoinEvent e) {
     val p = e.getPlayer();
@@ -110,7 +99,7 @@ public class GameListener implements Listener {
               if (player.equals(p)) {
                 return false;
               }
-              val id = ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameIdentifier();
+              val id = ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameKey();
               return id == null || id.isMiniGameKey();
             })
         .forEach(

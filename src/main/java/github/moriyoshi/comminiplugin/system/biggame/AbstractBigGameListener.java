@@ -1,6 +1,6 @@
 package github.moriyoshi.comminiplugin.system.biggame;
 
-import github.moriyoshi.comminiplugin.system.InterfaceGameListener;
+import github.moriyoshi.comminiplugin.system.IGameListener;
 
 public interface AbstractBigGameListener<T extends AbstractBigGame>
-    extends InterfaceGameListener, IGetBigGame<T> {}
+    extends IGameListener, IGetBigGame<T> {}

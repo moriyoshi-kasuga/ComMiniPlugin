@@ -76,8 +76,8 @@ public class SSBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
 
   public void setMode(Mode mode) {
     this.mode = mode;
-    prefix.cast("<red>Modeが<u>" + mode.name() + "</u>に変わりました");
-    prefix.cast("<gray>ゲームをしたい人はもう一度参加ボタンを押してください");
+    prefix.broadCast("<red>Modeが<u>" + mode.name() + "</u>に変わりました");
+    prefix.broadCast("<gray>ゲームをしたい人はもう一度参加ボタンを押してください");
     runPlayers(GameSystem::initializePlayer);
     players.clear();
   }
@@ -98,7 +98,7 @@ public class SSBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
     player.getInventory().removeItem(item);
     GameSystem.initializePlayer(player);
     val isPlayer = players.remove(uuid).getFirst() != -1;
-    prefix.cast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
+    prefix.broadCast(player.getName() + "が<white>" + (isPlayer ? "参加" : "観戦") + "を取りやめ");
     val temp = teleportBlocks.removeLast();
     if (temp != null && !temp.isDone()) {
       temp.cancel(true);
@@ -126,9 +126,9 @@ public class SSBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
     hidePlayer(player);
     if (isPlayer) {
       if (color == null) {
-        prefix.cast(player.getName() + "が<blue>参加します");
+        prefix.broadCast(player.getName() + "が<blue>参加します");
       } else {
-        prefix.cast(
+        prefix.broadCast(
             player.getName()
                 + "が<#"
                 + BukkitUtil.chatColorToHex(color)
@@ -137,7 +137,7 @@ public class SSBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
                 + "<gray>に<blue>参加します");
       }
     } else {
-      prefix.cast(player.getName() + "が<gray>観戦します");
+      prefix.broadCast(player.getName() + "が<gray>観戦します");
     }
   }
 

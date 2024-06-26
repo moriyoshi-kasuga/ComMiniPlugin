@@ -177,7 +177,7 @@ public class SSListener implements AbstractBigGameListener<SSBigBigGame> {
               .filter(entry -> entry.getValue().getSecond() != null)
               .collect(Collectors.groupingBy(entry -> entry.getValue().getSecond()));
       if (alives.isEmpty()) {
-        getGame().prefix.cast("<red>エラーです。残りのプレイヤーが0人です");
+        getGame().prefix.broadCast("<red>エラーです。残りのプレイヤーが0人です");
         BigGameSystem.finalGame();
         return;
       }

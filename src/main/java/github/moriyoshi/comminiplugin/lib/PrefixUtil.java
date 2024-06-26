@@ -68,7 +68,7 @@ public class PrefixUtil {
     sender.sendMessage(BukkitUtil.mm(getPrefix()).append(BukkitUtil.mm(str)));
   }
 
-  public final void cast(final Object str) {
+  public final void broadCast(final Object str) {
     Bukkit.broadcast(getPrefix().append(BukkitUtil.mm(str)));
   }
 

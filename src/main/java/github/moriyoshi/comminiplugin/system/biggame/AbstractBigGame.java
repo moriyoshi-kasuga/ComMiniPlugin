@@ -4,8 +4,8 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import github.moriyoshi.comminiplugin.system.AbstractGameKey.BigGameKey;
-import github.moriyoshi.comminiplugin.system.InterfaceGame;
 import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.IGame;
 import lombok.Getter;
 import lombok.val;
 import org.bukkit.Location;
@@ -14,7 +14,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
-public abstract class AbstractBigGame implements InterfaceGame {
+public abstract class AbstractBigGame implements IGame {
 
   public final String id;
   public final String name;
@@ -120,58 +120,4 @@ public abstract class AbstractBigGame implements InterfaceGame {
   public abstract boolean initializeGame(Player player);
 
   public abstract MenuHolder<ComMiniPlugin> createHelpMenu();
-
-  public void hidePlayers() {
-    val hiders = getNonGamePlayers();
-    getPlayers()
-        .forEach(
-            player -> {
-              hiders.forEach(
-                  hider -> {
-                    player.hidePlayer(ComMiniPlugin.getPlugin(), hider);
-                    hider.hidePlayer(ComMiniPlugin.getPlugin(), player);
-                  });
-            });
-  }
-
-  /**
-   * 個別にゲームプレイヤーではない人を隠します
-   *
-   * @param player target
-   */
-  public void hidePlayer(final Player player) {
-    getNonGamePlayers()
-        .forEach(
-            hider -> {
-              player.hidePlayer(ComMiniPlugin.getPlugin(), hider);
-              hider.hidePlayer(ComMiniPlugin.getPlugin(), player);
-            });
-  }
-
-  public void showPlayers() {
-    val showers = getNonGamePlayers();
-    getPlayers()
-        .forEach(
-            player -> {
-              showers.forEach(
-                  shower -> {
-                    player.showPlayer(ComMiniPlugin.getPlugin(), shower);
-                    shower.showPlayer(ComMiniPlugin.getPlugin(), player);
-                  });
-            });
-  }
-
-  /**
-   * 個別にゲームプレイヤーではない人を表示します
-   *
-   * @param player target
-   */
-  public void showPlayer(final Player player) {
-    getNonGamePlayers()
-        .forEach(
-            shower -> {
-              player.showPlayer(ComMiniPlugin.getPlugin(), shower);
-              shower.showPlayer(ComMiniPlugin.getPlugin(), player);
-            });
-  }
 }
