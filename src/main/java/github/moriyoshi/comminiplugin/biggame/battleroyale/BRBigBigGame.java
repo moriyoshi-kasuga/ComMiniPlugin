@@ -1,18 +1,20 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
-import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.biggame.battleroyale.BRField.SIGNAL;
 import github.moriyoshi.comminiplugin.biggame.battleroyale.items.WingItem;
+import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
+import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
+import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.lib.tuple.Sequence;
+import github.moriyoshi.comminiplugin.system.AbstractBigGame;
+import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
-import github.moriyoshi.comminiplugin.system.biggame.AbstractBigGame;
-import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.biggame.WinnerTypeBigGame;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +22,9 @@ import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.val;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -54,15 +58,29 @@ public class BRBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
 
   @Getter private BRField field;
 
-  public BRBigBigGame() {
-    super(
-        "battleroyale",
-        "<yellow>バトルロワイヤル",
-        "<yellow>殺せ!殺せ!勝ち上がれ!",
-        Material.GOLDEN_SWORD,
-        new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"),
-        new BRListener());
+  public BRBigBigGame() throws GameInitializeFailedException {
+    super(new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"), BRListener::new);
     this.world = ComMiniWorld.GAME_WORLD;
+  }
+
+  @Override
+  public String getId() {
+    return "battleroyale";
+  }
+
+  @Override
+  public String getName() {
+    return "<yellow>バトルロワイヤル";
+  }
+
+  @Override
+  public String getDescription() {
+    return "<yellow>殺せ!殺せ!勝ち上がれ!";
+  }
+
+  @Override
+  public Material getIcon() {
+    return Material.GOLDEN_SWORD;
   }
 
   public void setField(final BRField field) {
@@ -96,7 +114,7 @@ public class BRBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
   }
 
   @Override
-  protected boolean predicateSpec(Player player) {
+  public boolean predicateSpec(Player player) {
     return true;
   }
 
@@ -115,17 +133,12 @@ public class BRBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
   }
 
   @Override
-  public boolean initializeGame(final Player player) {
-    return true;
-  }
-
-  @Override
   public boolean isGamePlayer(final Player player) {
     return players.containsKey(player.getUniqueId());
   }
 
   @Override
-  protected boolean predicateGame(final Player player) {
+  public boolean predicateStartGame(final Audience player) {
     if (2 > players.values().stream().filter(v -> v).toList().size()) {
       prefix.send(player, "<red>二人以上でしかプレイできません");
       return false;
@@ -378,8 +391,27 @@ public class BRBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
   }
 
   @Override
-  public void leavePlayer(Player player) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'leavePlayer'");
+  public void leavePlayer(Player p) {
+    val loc = p.getLocation();
+    val world = p.getWorld();
+    val inv = p.getInventory();
+    inv.forEach(
+        i -> {
+          if (i == null || i.isEmpty()) {
+            return;
+          }
+          world.dropItemNaturally(loc, i);
+          val custom = CustomItem.getCustomItem(i);
+          if (custom != null && custom instanceof CooldownItem cooldown) {
+            cooldown.removeCooldown();
+          }
+        });
+    inv.clear();
+    val alives = players.entrySet().stream().filter(e -> e.getValue()).toList();
+    if (alives.size() != 1) {
+      p.teleport(getLobby());
+      return;
+    }
+    endGame(Bukkit.getPlayer(alives.getFirst().getKey()).getName());
   }
 }

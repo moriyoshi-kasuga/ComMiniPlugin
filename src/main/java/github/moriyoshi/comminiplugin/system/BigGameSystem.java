@@ -1,14 +1,13 @@
-package github.moriyoshi.comminiplugin.system.biggame;
+package github.moriyoshi.comminiplugin.system;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.IdentifierKey;
-import github.moriyoshi.comminiplugin.system.AbstractBigGame;
-import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.IGame.GameInitializeFailedSupplier;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import lombok.val;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 public class BigGameSystem {
 
@@ -17,6 +16,11 @@ public class BigGameSystem {
 
   public static <T extends AbstractBigGame> T getGame(Class<T> t) {
     return t.cast(gameRef.get());
+  }
+
+  @Nullable
+  public static AbstractBigGame getGame() {
+    return gameRef.get();
   }
 
   /**

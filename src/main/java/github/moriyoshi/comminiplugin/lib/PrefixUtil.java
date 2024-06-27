@@ -1,8 +1,8 @@
 package github.moriyoshi.comminiplugin.lib;
 
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 
 /** {@link #prefix} を先頭につけメッセージを送信するUtil */
 public class PrefixUtil {
@@ -64,7 +64,7 @@ public class PrefixUtil {
     log(loggerPrefix.append(getError()).append(BukkitUtil.mm(message)));
   }
 
-  public final void send(final CommandSender sender, final Object str) {
+  public final void send(final Audience sender, final Object str) {
     sender.sendMessage(BukkitUtil.mm(getPrefix()).append(BukkitUtil.mm(str)));
   }
 

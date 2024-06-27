@@ -3,10 +3,10 @@ package github.moriyoshi.comminiplugin.biggame.battleroyale;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.biggame.IGetBigGame;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.buttons.HotbarSlotButton;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
-import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -16,8 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-public class BRMenu extends MenuHolder<ComMiniPlugin>
-    implements IGetBigGame<BRBigBigGame>, OnlyBeforeStartGameMenu {
+public class BRMenu extends MenuHolder<ComMiniPlugin> implements OnlyBeforeStartGameMenu {
 
   private final BukkitRunnable task = createAutoCloseTask();
 
@@ -40,7 +39,8 @@ public class BRMenu extends MenuHolder<ComMiniPlugin>
           @Override
           public void onClick(
               @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-            getGame().joinPlayer(((Player) event.getWhoClicked()), true);
+            BigGameSystem.getGame(BRBigBigGame.class)
+                .joinPlayer(((Player) event.getWhoClicked()), true);
           }
         });
     setButton(
@@ -49,7 +49,8 @@ public class BRMenu extends MenuHolder<ComMiniPlugin>
           @Override
           public void onClick(
               @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-            getGame().joinPlayer(((Player) event.getWhoClicked()), false);
+            BigGameSystem.getGame(BRBigBigGame.class)
+                .joinPlayer(((Player) event.getWhoClicked()), false);
           }
         });
     setButton(4, new HotbarSlotButton(BRPlayer.class));

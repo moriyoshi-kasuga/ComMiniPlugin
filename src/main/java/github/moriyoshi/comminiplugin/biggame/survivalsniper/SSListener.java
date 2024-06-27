@@ -2,8 +2,9 @@ package github.moriyoshi.comminiplugin.biggame.survivalsniper;
 
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.lib.tuple.Pair;
+import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.biggame.AbstractBigGameListener;
-import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
+
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.val;

@@ -9,8 +9,8 @@ import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.lib.InfiniteIterator;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.lib.tuple.Pair;
+import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.buttons.GameStartButton;
-import github.moriyoshi.comminiplugin.system.biggame.IGetBigGame;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
 import java.util.Collections;
 import java.util.Random;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 public class SSAdminMenu extends MenuHolder<ComMiniPlugin>
-    implements IGetBigGame<SSBigBigGame>, OnlyBeforeStartGameMenu {
+    implements OnlyBeforeStartGameMenu {
 
   private final BukkitRunnable task = createAutoCloseTask();
 
@@ -44,7 +44,7 @@ public class SSAdminMenu extends MenuHolder<ComMiniPlugin>
                 .build()) {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-            getGame().setMode(Mode.FFA);
+            BigGameSystem.getGame(SSGame.class).setMode(Mode.FFA);
           }
         });
     setButton(

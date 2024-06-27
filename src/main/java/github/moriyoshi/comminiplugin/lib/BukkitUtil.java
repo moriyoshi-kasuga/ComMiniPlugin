@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.val;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -21,7 +22,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -72,7 +72,7 @@ public final class BukkitUtil {
    * @param sender sender
    * @param str send text
    */
-  public static void send(final CommandSender sender, final Object str) {
+  public static void send(final Audience sender, final Object str) {
     if (sender != null) {
       sender.sendMessage(BukkitUtil.mm(str));
     }
@@ -84,7 +84,7 @@ public final class BukkitUtil {
    * @param sender sender
    * @param str send text
    */
-  public static void send(final CommandSender sender, final Object... objects) {
+  public static void send(final Audience sender, final Object... objects) {
     if (sender != null) {
       sender.sendMessage(
           mm(String.join(",", Arrays.stream(objects).map(String::valueOf).toList())));

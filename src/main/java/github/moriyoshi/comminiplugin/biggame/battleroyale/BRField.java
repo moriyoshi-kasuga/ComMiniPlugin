@@ -24,7 +24,7 @@ import github.moriyoshi.comminiplugin.biggame.battleroyale.items.VampireSwordIte
 import github.moriyoshi.comminiplugin.biggame.battleroyale.items.WingItem;
 import github.moriyoshi.comminiplugin.lib.RandomCollection;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
+import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.loot.Entry;
 import github.moriyoshi.comminiplugin.system.loot.LootTable;
 import github.moriyoshi.comminiplugin.system.loot.Pool;

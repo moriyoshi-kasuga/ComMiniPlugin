@@ -6,8 +6,9 @@ import github.moriyoshi.comminiplugin.biggame.battleroyale.BRBigBigGame;
 import github.moriyoshi.comminiplugin.biggame.battleroyale.TreasureChest;
 import github.moriyoshi.comminiplugin.lib.item.CoolityItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
-import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.system.BigGameSystem;
+
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.val;

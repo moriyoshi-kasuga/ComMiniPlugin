@@ -63,7 +63,7 @@ public interface IGame extends HasKey {
 
   PrefixUtil getPrefix();
 
-  void leavePlayer(Player player);
+  default void leavePlayer(Player player) {}
 
   boolean addSpec(Player player);
 

@@ -4,16 +4,16 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
+import github.moriyoshi.comminiplugin.system.type.IUniqueGame;
 import java.util.function.Function;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public abstract class AbstractBigGame extends AbstractGame {
+public abstract class AbstractBigGame extends AbstractGame implements IUniqueGame {
 
-  public AbstractBigGame(
-      String id, PrefixUtil prefix, Function<IdentifierKey, IGameListener<?>> listener)
+  public AbstractBigGame(PrefixUtil prefix, Function<IdentifierKey, IGameListener<?>> listener)
       throws GameInitializeFailedException {
-    super(id, prefix, listener);
+    super(prefix, listener);
   }
 
   public abstract Material getIcon();

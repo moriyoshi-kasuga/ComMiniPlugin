@@ -7,7 +7,6 @@ import java.util.function.Function;
 import lombok.Getter;
 import lombok.val;
 import net.kyori.adventure.audience.Audience;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -15,7 +14,6 @@ import org.bukkit.event.HandlerList;
 
 public abstract class AbstractGame implements IGame {
 
-  @Getter public final String id;
   @Getter public final PrefixUtil prefix;
   final IGameListener<?> listener;
   @Getter protected World world;
@@ -28,11 +26,9 @@ public abstract class AbstractGame implements IGame {
    *
    * @throws GameInitializeFailedException
    */
-  public AbstractGame(
-      String id, PrefixUtil prefix, Function<IdentifierKey, IGameListener<?>> listener)
+  public AbstractGame(PrefixUtil prefix, Function<IdentifierKey, IGameListener<?>> listener)
       throws GameInitializeFailedException {
     predicateInitialize();
-    this.id = id;
     this.prefix = prefix;
     this.key = createKey();
     this.listener = listener.apply(key);

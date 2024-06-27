@@ -19,8 +19,13 @@ public class LFFAMiniGame extends AbstractGame implements INoSpectatorGame, IUni
   private final Map<UUID, Integer> players = new java.util.HashMap<>();
 
   public LFFAMiniGame() throws GameInitializeFailedException {
-    super("LFFA", new PrefixUtil("<gray>[<yellow>FFA<gray>]"), LFFAListener::new);
+    super(new PrefixUtil("<gray>[<yellow>FFA<gray>]"), LFFAListener::new);
     startGame(Bukkit.getConsoleSender());
+  }
+
+  @Override
+  public String getId() {
+    return "LFFA";
   }
 
   @Override

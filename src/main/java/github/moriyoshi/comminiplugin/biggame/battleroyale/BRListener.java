@@ -1,12 +1,10 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale;
 
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
-import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
-import github.moriyoshi.comminiplugin.lib.item.CustomItem;
-import github.moriyoshi.comminiplugin.system.biggame.AbstractBigGameListener;
-import java.util.Map.Entry;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
+import github.moriyoshi.comminiplugin.system.IGameListener;
+import lombok.Getter;
 import lombok.val;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
@@ -24,7 +22,13 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class BRListener implements AbstractBigGameListener<BRBigBigGame> {
+public class BRListener implements IGameListener<BRBigBigGame> {
+
+  @Getter private final IdentifierKey key;
+
+  public BRListener(final IdentifierKey key) {
+    this.key = key;
+  }
 
   @Override
   public void blockBreak(BlockBreakEvent e) {
@@ -44,7 +48,7 @@ public class BRListener implements AbstractBigGameListener<BRBigBigGame> {
       return;
     }
     if (getGame().isStarted()) {
-      reducePlayer(p);
+      getGame().leavePlayer(p);
     }
   }
 
@@ -75,7 +79,7 @@ public class BRListener implements AbstractBigGameListener<BRBigBigGame> {
     game.runPlayers(pl -> BukkitUtil.send(pl, e.deathMessage()));
     game.players.put(p.getUniqueId(), false);
     p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
-    reducePlayer(p);
+    game.leavePlayer(p);
   }
 
   @Override
@@ -92,31 +96,6 @@ public class BRListener implements AbstractBigGameListener<BRBigBigGame> {
       getGame().prefix.send(attacker, "<red>まだPvPはできません");
       e.setCancelled(true);
     }
-  }
-
-  private void reducePlayer(final Player p) {
-    val game = getGame();
-    val loc = p.getLocation();
-    val world = p.getWorld();
-    val inv = p.getInventory();
-    inv.forEach(
-        i -> {
-          if (i == null || i.isEmpty()) {
-            return;
-          }
-          world.dropItemNaturally(loc, i);
-          val custom = CustomItem.getCustomItem(i);
-          if (custom != null && custom instanceof CooldownItem cooldown) {
-            cooldown.removeCooldown();
-          }
-        });
-    inv.clear();
-    val alives = game.players.entrySet().stream().filter(Entry::getValue).toList();
-    if (alives.size() != 1) {
-      p.teleport(game.getLobby());
-      return;
-    }
-    game.endGame(Bukkit.getPlayer(alives.getFirst().getKey()).getName());
   }
 
   @EventHandler

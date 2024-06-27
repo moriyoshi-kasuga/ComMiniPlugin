@@ -5,9 +5,8 @@ import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.buttons.GameStartButton;
-import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
-import github.moriyoshi.comminiplugin.system.biggame.IGetBigGame;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -18,8 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class BRAdminMenu extends MenuHolder<ComMiniPlugin>
-    implements IGetBigGame<BRBigBigGame>, OnlyBeforeStartGameMenu {
+public class BRAdminMenu extends MenuHolder<ComMiniPlugin> implements OnlyBeforeStartGameMenu {
+
   public BRAdminMenu() {
     super(ComMiniPlugin.getPlugin(), 27, "<blue>OP:バトルロワイヤル");
     setButton(16, GameStartButton.of());
@@ -60,7 +59,7 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin>
         new ItemButton<>(new ItemBuilder(Material.GREEN_CONCRETE).name("<green>宝箱の設置開始").build()) {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-            Optional.ofNullable(getGame().getField())
+            Optional.ofNullable(BigGameSystem.getGame(BRBigBigGame.class).getField())
                 .ifPresentOrElse(
                     field -> {
                       field.getTreasure().addPlayer((Player) event.getWhoClicked());
@@ -77,7 +76,7 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin>
         new ItemButton<>(new ItemBuilder(Material.RED_CONCRETE).name("<red>宝箱の設置終了").build()) {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-            Optional.ofNullable(getGame().getField())
+            Optional.ofNullable(BigGameSystem.getGame(BRBigBigGame.class).getField())
                 .ifPresentOrElse(
                     field -> {
                       field.getTreasure().removePlayer((Player) event.getWhoClicked());

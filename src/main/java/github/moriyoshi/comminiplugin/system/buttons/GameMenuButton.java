@@ -4,8 +4,8 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -22,9 +22,9 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
     }
     var game = BigGameSystem.getGame();
     setIcon(
-        new ItemBuilder(game.material)
-            .name(game.name)
-            .lore(game.description)
+        new ItemBuilder(game.getIcon())
+            .name(game.getName())
+            .lore(game.getDescription())
             .flags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
             .addLore("", "<gray>クリックでゲームメニューを開く")
             .build());
@@ -41,7 +41,7 @@ public class GameMenuButton extends ItemButton<MenuHolder<ComMiniPlugin>> {
   public static GameMenuButton back() {
     return new GameMenuButton(
         new ItemBuilder(Material.IRON_DOOR)
-            .name(BigGameSystem.getGame().name + "<white>のメニューに戻る")
+            .name(BigGameSystem.getGame().getName() + "<white>のメニューに戻る")
             .build());
   }
 
