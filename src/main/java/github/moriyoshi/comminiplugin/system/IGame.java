@@ -2,20 +2,41 @@ package github.moriyoshi.comminiplugin.system;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.HasKey;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.val;
+import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus.OverrideOnly;
 import org.jetbrains.annotations.Nullable;
 
 public interface IGame extends HasKey {
+
+  public static class GameInitializeFailedException extends Exception {
+    public GameInitializeFailedException(String message) {
+      super(message);
+    }
+  }
+
+  @FunctionalInterface
+  public static interface GameInitializeFailedSupplier<T> {
+    T get() throws GameInitializeFailedException;
+  }
+
+  void predicateInitialize() throws GameInitializeFailedException;
+
+  String getId();
+
+  String getName();
+
+  String getDescription();
 
   /** スタートしてるかどうか? ({@code #startGame()} を呼び出したあと) */
   boolean isStarted();
@@ -36,7 +57,7 @@ public interface IGame extends HasKey {
    */
   boolean isGamePlayer(Player player);
 
-  void startGame();
+  boolean startGame(Audience audience);
 
   void finishGame();
 
@@ -44,13 +65,15 @@ public interface IGame extends HasKey {
 
   void leavePlayer(Player player);
 
+  boolean addSpec(Player player);
+
   /**
    * 全てのゲームプレイヤーに対して {@link Consumer} を適用します
    *
    * @param consumer consumer
    */
   default void runPlayers(final Consumer<Player> consumer) {
-    getPlayers().forEach(consumer::accept);
+    getPlayers().forEach(consumer);
   }
 
   default void sendPlayers(final Object message) {
@@ -75,14 +98,6 @@ public interface IGame extends HasKey {
   default Map<Boolean, List<Player>> getAllPlayers() {
     return Bukkit.getOnlinePlayers().stream()
         .collect(Collectors.partitioningBy(this::isGamePlayer));
-  }
-
-  default void setPlayerJoinGameIdentifier(final Player player) {
-    ComMiniPlayer.getPlayer(player.getUniqueId()).setJoinGameKey(getKey());
-  }
-
-  default void setPlayerJoinGameIdentifier(final UUID uuid) {
-    ComMiniPlayer.getPlayer(uuid).setJoinGameKey(getKey());
   }
 
   default void hidePlayers() {
@@ -138,4 +153,22 @@ public interface IGame extends HasKey {
               shower.showPlayer(ComMiniPlugin.getPlugin(), player);
             });
   }
+
+  @OverrideOnly
+  boolean predicateStartGame(Audience audience);
+
+  @OverrideOnly
+  boolean predicateSpec(Player player);
+
+  /**
+   * ゲームが始まってからの観戦
+   *
+   * @param player 観戦させたい人
+   * @return true で参加させ、false で観戦不可能
+   */
+  @OverrideOnly
+  void innerAddSpec(Player player);
+
+  @OverrideOnly
+  IdentifierKey createKey();
 }

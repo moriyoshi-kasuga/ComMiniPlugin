@@ -129,4 +129,6 @@ bukkitPluginYaml {
     load = BukkitPluginYaml.PluginLoadOrder.POSTWORLD
     authors.add("moriyoshi-kasuga")
     apiVersion = "1.20.6"
+    // TODO: add psql
+    libraries = listOf("org.postgresql:postgresql:42.7.3", "com.zaxxer:HikariCP:5.1.0")
 }

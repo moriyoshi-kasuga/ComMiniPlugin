@@ -8,6 +8,7 @@ import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameListener;
+import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.system.ResourcePackSystem;
 import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import lombok.Getter;
@@ -46,23 +47,13 @@ public final class ComMiniPlugin extends JavaPlugin implements InterfaceAPIPlugi
     loadWorlds();
 
     registerEvent(GameListener.getInstance());
-    Reflections reflections =
-        new Reflections(
-            new ConfigurationBuilder()
-                .forPackage("github.moriyoshi.comminiplugin")
-                .filterInputsBy(
-                    new FilterBuilder()
-                        .excludePackage("github.moriyoshi.comminiplugin.dependencies")
-                        .excludePackage("github.moriyoshi.comminiplugin.system")));
-    CustomItem.registers(reflections);
+
     PluginLib.onEnable();
-    PluginLib.registerCommand(new Reflections("github.moriyoshi.comminiplugin.command"));
-    // TODO: これを onLoad()　時にやってPluginLib.onEnable で普通に load CustomBlock すればいいんじゃね?
-    CustomBlock.registers(reflections);
     PluginLib.loadCustomBlock();
+    PluginLib.registerCommand(new Reflections("github.moriyoshi.comminiplugin.command"));
 
     ComMiniPlayer.gameInitialize();
-    BigGameSystem.load();
+    GameSystem.load();
     ResourcePackSystem.load();
 
     SYSTEM.broadCast("<red>プラグインをロードしました。");
@@ -82,6 +73,17 @@ public final class ComMiniPlugin extends JavaPlugin implements InterfaceAPIPlugi
   @Override
   public void onLoad() {
     PluginLib.onLoad(this);
+
+    Reflections reflections =
+        new Reflections(
+            new ConfigurationBuilder()
+                .forPackage("github.moriyoshi.comminiplugin")
+                .filterInputsBy(
+                    new FilterBuilder()
+                        .excludePackage("github.moriyoshi.comminiplugin.dependencies")
+                        .excludePackage("github.moriyoshi.comminiplugin.system")));
+    CustomItem.registers(reflections);
+    CustomBlock.registers(reflections);
   }
 
   @Override

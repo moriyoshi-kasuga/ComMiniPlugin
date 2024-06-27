@@ -5,6 +5,8 @@ import java.util.function.Predicate;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.enchantment.Enchantment;
+
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;

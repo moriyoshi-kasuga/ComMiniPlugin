@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.minigame.lobby_ffa;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.system.minigame.AbstractMiniGameListener;
 import github.moriyoshi.comminiplugin.lib.IdentifierKey;
+import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.IGameListener;
 import lombok.Getter;
 import lombok.val;
 import org.bukkit.entity.Player;
@@ -11,7 +11,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class LFFAListener implements AbstractMiniGameListener<LFFAMiniGame> {
+public class LFFAListener implements IGameListener<LFFAMiniGame> {
 
   @Getter private final IdentifierKey key;
 
@@ -31,18 +31,18 @@ public class LFFAListener implements AbstractMiniGameListener<LFFAMiniGame> {
     deathSound(e);
     val attacker = e.getDamageSource().getDirectEntity();
     if (attacker instanceof Player player) {
-      val kill = getMiniGame().incrementKill(player);
-      getMiniGame()
-          .sendPlayers(
-              "<aqua>"
-                  + e.getPlayer().getName()
-                  + " <gray>was killed by <aqua>"
-                  + player.getName()
-                  + "! <gold><b>"
-                  + kill
-                  + " KILL STREAK!");
+      val game = getGame();
+      val kill = game.incrementKill(player);
+      game.sendPlayers(
+          "<aqua>"
+              + e.getPlayer().getName()
+              + " <gray>was killed by <aqua>"
+              + player.getName()
+              + "! <gold><b>"
+              + kill
+              + " KILL STREAK!");
       player.heal(10);
-      getMiniGame().prefix.send(player, "<green>half healed by kill streak!");
+      game.prefix.send(player, "<green>half healed by kill streak!");
     }
     new BukkitRunnable() {
 

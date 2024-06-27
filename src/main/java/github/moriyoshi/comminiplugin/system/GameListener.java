@@ -3,7 +3,6 @@ package github.moriyoshi.comminiplugin.system;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
-import github.moriyoshi.comminiplugin.system.biggame.BigGameSystem;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,10 +67,6 @@ public class GameListener implements Listener {
     return INSTANCE;
   }
 
-  public static boolean isGamePlayer(Player p) {
-    return BigGameSystem.isStarted() && BigGameSystem.getGame().isGamePlayer(p);
-  }
-
   public static boolean isDebugPlayer(Player p) {
     return ComMiniPlayer.getPlayer(p.getUniqueId()).isDebug();
   }
@@ -84,6 +79,11 @@ public class GameListener implements Listener {
   public static void addProjectileDamageListener(
       UUID id, BiConsumer<Projectile, EntityDamageByEntityEvent> l) {
     projectileDamageMap.put(id, l);
+  }
+
+  @Nullable
+  public AbstractGame getGameFromPlayer(UUID uuid) {
+    return GameSystem.getGame(ComMiniPlayer.getPlayer(uuid).getJoinGameKey());
   }
 
   @EventHandler(priority = EventPriority.LOW)
@@ -99,8 +99,7 @@ public class GameListener implements Listener {
               if (player.equals(p)) {
                 return false;
               }
-              val id = ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameKey();
-              return id == null || id.isMiniGameKey();
+              return ComMiniPlayer.getPlayer(player.getUniqueId()).getJoinGameKey() == null;
             })
         .forEach(
             player -> {
@@ -111,33 +110,24 @@ public class GameListener implements Listener {
 
   @EventHandler(priority = EventPriority.LOW)
   public void quit(PlayerQuitEvent e) {
-    val p = e.getPlayer();
-    if (BigGameSystem.isIn() && BigGameSystem.getGame().isGamePlayer(p)) {
-      BigGameSystem.getGame().listener.quit(e);
-      return;
-    }
-    getMiniGameOptional(p.getUniqueId()).ifPresent(minigame -> minigame.listener.quit(e));
+    val game = getGameFromPlayer(e.getPlayer().getUniqueId());
+    if (game != null) game.listener.quit(e);
   }
 
   @EventHandler(priority = EventPriority.LOW)
   public void death(PlayerDeathEvent e) {
     e.setCancelled(true);
     val p = e.getPlayer();
-    if (isGamePlayer(p)) {
-      BigGameSystem.getGame().listener.death(e);
-      return;
-    }
-
-    val minigame = getMiniGame(p.getUniqueId());
-    if (minigame != null) {
-      minigame.listener.death(e);
+    val game = getGameFromPlayer(p.getUniqueId());
+    if (game != null) {
+      game.listener.death(e);
       return;
     }
     new BukkitRunnable() {
 
       @Override
       public void run() {
-        GameSystem.initializePlayer(e.getPlayer());
+        GameSystem.initializePlayer(p);
       }
     }.runTask(ComMiniPlugin.getPlugin());
   }
@@ -148,12 +138,8 @@ public class GameListener implements Listener {
       if (e.getCause().equals(DamageCause.FALL)) {
         e.setCancelled(true);
       }
-      if (BigGameSystem.isStarted() && isGamePlayer(player)) {
-        BigGameSystem.getGame().listener.damage(e, player);
-        return;
-      }
-      getMiniGameOptional(player.getUniqueId())
-          .ifPresent(minigame -> minigame.listener.damage(e, player));
+      val game = getGameFromPlayer(player.getUniqueId());
+      if (game != null) game.listener.damage(e, player);
     }
   }
 
@@ -181,18 +167,13 @@ public class GameListener implements Listener {
     val victim = e.getEntity() instanceof Player p ? p : null;
 
     if (attacker != null && victim != null) {
-      val game = BigGameSystem.getGame();
-      if (BigGameSystem.isStarted() && game.isGamePlayer(attacker) && game.isGamePlayer(victim)) {
-        game.listener.damageByEntity(e, attacker, victim);
-        return;
-      }
-      val minigame = getMiniGame(attacker.getUniqueId());
-      if (minigame != null
-          && minigame == getMiniGame(victim.getUniqueId())
-          && minigame.isGamePlayer(attacker)
-          && minigame.isGamePlayer(victim)) {
-        minigame.listener.damageByEntity(e, attacker, victim);
-        return;
+      val game = getGameFromPlayer(attacker.getUniqueId());
+      if (game != null) {
+        val game2 = getGameFromPlayer(victim.getUniqueId());
+        if (game == game2) {
+          game.listener.damageByEntity(e, attacker, victim);
+          return;
+        }
       }
     }
     if (attacker != null && isCancelLobbyPlayer(attacker)) {
@@ -203,13 +184,9 @@ public class GameListener implements Listener {
   @EventHandler(priority = EventPriority.LOW)
   public void blockBreak(BlockBreakEvent e) {
     val p = e.getPlayer();
-    if (isGamePlayer(p)) {
-      BigGameSystem.getGame().listener.blockBreak(e);
-      return;
-    }
-    val minigame = getMiniGame(p.getUniqueId());
-    if (minigame != null) {
-      minigame.listener.blockBreak(e);
+    val game = getGameFromPlayer(p.getUniqueId());
+    if (game != null) {
+      game.listener.blockBreak(e);
       return;
     }
     if (isCancelLobbyPlayer(p)) {
@@ -220,13 +197,10 @@ public class GameListener implements Listener {
   @EventHandler(priority = EventPriority.LOW)
   public void blockPlace(BlockPlaceEvent e) {
     val p = e.getPlayer();
-    if (isGamePlayer(e.getPlayer())) {
-      BigGameSystem.getGame().listener.blockPlace(e);
+    val game = getGameFromPlayer(p.getUniqueId());
+    if (game != null) {
+      game.listener.blockPlace(e);
       return;
-    }
-    val minigame = getMiniGame(p.getUniqueId());
-    if (minigame != null) {
-      minigame.listener.blockPlace(e);
     }
     if (isCancelLobbyPlayer(p)) {
       e.setCancelled(true);

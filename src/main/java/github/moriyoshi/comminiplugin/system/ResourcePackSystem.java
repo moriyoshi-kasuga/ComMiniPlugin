@@ -19,9 +19,10 @@ public final class ResourcePackSystem {
 
   private ResourcePackSystem() {}
 
-  private static String oldHash = ResourcePackSystem.getComMiniResourcePackHash();
+  private static String oldHash;
 
   public static void load() {
+    oldHash = ResourcePackSystem.getComMiniResourcePackHash();
     new BukkitRunnable() {
 
       @Override
@@ -32,7 +33,7 @@ public final class ResourcePackSystem {
           ComMiniPlugin.MAIN.broadCast("<red>リソースパックの更新があります!<gray>メニューから更新してください");
         }
       }
-    }.runTaskTimer(ComMiniPlugin.getPlugin(), 20 * 5, 20 * 5);
+    }.runTaskTimer(ComMiniPlugin.getPlugin(), 20 * 10, 20 * 10);
   }
 
   private static final UUID uuid = HashUUID.v5("ComMiniResourcePack");

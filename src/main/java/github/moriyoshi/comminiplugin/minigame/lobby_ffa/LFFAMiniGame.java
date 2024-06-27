@@ -1,22 +1,26 @@
 package github.moriyoshi.comminiplugin.minigame.lobby_ffa;
 
+import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import github.moriyoshi.comminiplugin.object.LeaveMiniGameItem;
+import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.system.minigame.AbstractMiniGame;
-import github.moriyoshi.comminiplugin.lib.PrefixUtil;
+import github.moriyoshi.comminiplugin.system.type.INoSpectatorGame;
+import github.moriyoshi.comminiplugin.system.type.IUniqueGame;
 import java.util.Map;
 import java.util.UUID;
 import lombok.val;
+import net.kyori.adventure.audience.Audience;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class LFFAMiniGame extends AbstractMiniGame {
+public class LFFAMiniGame extends AbstractGame implements INoSpectatorGame, IUniqueGame {
 
   private final Map<UUID, Integer> players = new java.util.HashMap<>();
 
-  public LFFAMiniGame() {
+  public LFFAMiniGame() throws GameInitializeFailedException {
     super("LFFA", new PrefixUtil("<gray>[<yellow>FFA<gray>]"), LFFAListener::new);
-    startGame();
+    startGame(Bukkit.getConsoleSender());
   }
 
   @Override
@@ -44,15 +48,33 @@ public class LFFAMiniGame extends AbstractMiniGame {
   }
 
   @Override
+  public void leavePlayer(Player player) {
+    players.remove(player.getUniqueId());
+  }
+
+  @Override
+  public void predicateInitialize() throws GameInitializeFailedException {}
+
+  @Override
+  public String getName() {
+    return "Lobby FFA";
+  }
+
+  @Override
+  public String getDescription() {
+    return "銃を左クリックで撃って、キルストリークを上げよう!";
+  }
+
+  @Override
+  public boolean predicateStartGame(Audience audience) {
+    return true;
+  }
+
+  @Override
   protected void innerStartGame() {}
 
   @Override
   protected void innerFinishGame() {
     players.clear();
-  }
-
-  @Override
-  public void leavePlayer(Player player) {
-    players.remove(player.getUniqueId());
   }
 }

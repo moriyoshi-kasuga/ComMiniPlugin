@@ -2,7 +2,7 @@ package github.moriyoshi.comminiplugin.minigame.lobby_ffa;
 
 import com.google.gson.JsonElement;
 import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
-import github.moriyoshi.comminiplugin.system.minigame.MiniGameSystem;
+import github.moriyoshi.comminiplugin.system.GameSystem;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import lombok.val;
 import org.bukkit.block.Block;
@@ -29,7 +29,7 @@ public class LFFAJoinBlock extends JumpPadBlock {
     if (BukkitUtil.isFalling(player.getUniqueId())) {
       return;
     }
-    MiniGameSystem.getUniqueMiniGame("LFFA", LFFAMiniGame.class).addPlayer(player);
+    GameSystem.getUniqueGame("LFFA", LFFAMiniGame.class).addPlayer(player);
     super.walk(e);
   }
 }
