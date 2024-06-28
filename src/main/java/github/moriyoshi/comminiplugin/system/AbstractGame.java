@@ -21,19 +21,24 @@ public abstract class AbstractGame implements IGame {
   @Getter public final IdentifierKey key;
   @Getter private boolean isStarted = false;
 
+  public AbstractGame(PrefixUtil prefix, Function<IdentifierKey, IGameListener<?>> listener)
+      throws GameInitializeFailedException {
+    this(null, prefix, listener);
+  }
+
   /**
    * please call {@code GameSystem#createGame(java.util.function.Supplier)}
    *
    * @throws GameInitializeFailedException
    */
-  public AbstractGame(PrefixUtil prefix, Function<IdentifierKey, IGameListener<?>> listener)
+  public AbstractGame(
+      Player player, PrefixUtil prefix, Function<IdentifierKey, IGameListener<?>> listener)
       throws GameInitializeFailedException {
-    predicateInitialize();
+    predicateInitialize(player);
     this.prefix = prefix;
     this.key = createKey();
     this.listener = listener.apply(key);
     GameSystem.register(getKey(), this);
-    this.fieldInitialize(true);
   }
 
   public final boolean addSpec(Player player) {
@@ -76,11 +81,8 @@ public abstract class AbstractGame implements IGame {
     showPlayers();
     runPlayers(GameSystem::initializePlayer);
     innerFinishGame();
-    fieldInitialize(false);
     GameSystem.unregister(getKey());
   }
-
-  protected void fieldInitialize(boolean isCreatingInstance) {}
 
   protected abstract void innerStartGame();
 

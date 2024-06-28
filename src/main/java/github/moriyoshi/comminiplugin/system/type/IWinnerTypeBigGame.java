@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system.biggame;
+package github.moriyoshi.comminiplugin.system.type;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
@@ -8,7 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public interface WinnerTypeBigGame extends IGame {
+public interface IWinnerTypeBigGame extends IGame {
 
   default void endGame(final String winner) {
     runPlayers(p -> getPrefix().send(p, "<red><u>" + winner + "</u>が勝ちました"));

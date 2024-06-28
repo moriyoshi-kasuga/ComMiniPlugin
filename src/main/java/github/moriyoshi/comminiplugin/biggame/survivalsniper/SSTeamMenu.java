@@ -3,11 +3,11 @@ package github.moriyoshi.comminiplugin.biggame.survivalsniper;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.biggame.survivalsniper.SSBigBigGame.Mode;
+import github.moriyoshi.comminiplugin.biggame.survivalsniper.SSBigGame.Mode;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.buttons.InventorySlotButton;
-import github.moriyoshi.comminiplugin.system.biggame.IGetBigGame;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
-    implements IGetBigGame<SSBigBigGame>, OnlyBeforeStartGameMenu {
+    implements  OnlyBeforeStartGameMenu {
 
   private final ItemStack SPEC = new ItemBuilder(Material.GRAY_CONCRETE).name("<gray>観戦する").build();
   private final ItemStack LEAVE = new ItemBuilder(Material.RED_CONCRETE).name("<red>抜ける").build();
@@ -41,7 +41,7 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
           @Override
           public void onClick(
               @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-            getGame().joinPlayer(((Player) event.getWhoClicked()), false, null);
+            BigGameSystem.getGame(SSBigGame.class).joinPlayer(((Player) event.getWhoClicked()), false, null);
           }
         });
     setButton(
@@ -50,7 +50,7 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
           @Override
           public void onClick(
               @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-            getGame().leavePlayer((Player) event.getWhoClicked());
+            BigGameSystem.getGame(SSBigGame.class).leavePlayer((Player) event.getWhoClicked());
           }
         });
     setButton(4, new InventorySlotButton(SSPlayer.class));
@@ -58,7 +58,7 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
 
   private ItemButton<?> createTeamButton(ChatColor color) {
     val list =
-        getGame().players.entrySet().stream()
+        BigGameSystem.getGame(SSBigGame.class).players.entrySet().stream()
             .filter(entry -> entry.getValue().getSecond() == color)
             .map(entry -> "<gray> " + Bukkit.getOfflinePlayer(entry.getKey()).getName())
             .collect(Collectors.toCollection(ArrayList::new));
@@ -73,7 +73,7 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
             .build()) {
       @Override
       public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-        getGame().joinPlayer((Player) event.getWhoClicked(), true, color);
+        BigGameSystem.getGame(SSBigGame.class).joinPlayer((Player) event.getWhoClicked(), true, color);
       }
     };
   }
@@ -98,7 +98,7 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
 
   @Override
   public Component additional() {
-    if (getGame().getMode() == Mode.TEAM) {
+    if (BigGameSystem.getGame(SSBigGame.class).getMode() == Mode.TEAM) {
       setButton(20, createTeamButton(ChatColor.RED));
       setButton(21, createTeamButton(ChatColor.GREEN));
       setButton(23, createTeamButton(ChatColor.YELLOW));

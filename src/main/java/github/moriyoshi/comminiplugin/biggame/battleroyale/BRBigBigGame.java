@@ -15,7 +15,7 @@ import github.moriyoshi.comminiplugin.lib.tuple.Sequence;
 import github.moriyoshi.comminiplugin.system.AbstractBigGame;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
-import github.moriyoshi.comminiplugin.system.biggame.WinnerTypeBigGame;
+import github.moriyoshi.comminiplugin.system.type.IWinnerTypeBigGame;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +40,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class BRBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
+public class BRBigBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
 
   public final HashMap<UUID, Boolean> players = new HashMap<>();
 
@@ -58,9 +58,11 @@ public class BRBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
 
   @Getter private BRField field;
 
-  public BRBigBigGame() throws GameInitializeFailedException {
-    super(new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"), BRListener::new);
+  public BRBigBigGame(Player player) throws GameInitializeFailedException {
+    super(player, new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"), BRListener::new);
     this.world = ComMiniWorld.GAME_WORLD;
+    this.field = null;
+    this.bossBar = null;
   }
 
   @Override
@@ -367,12 +369,6 @@ public class BRBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
     lobbyBlocks.clear();
     isCanPvP = false;
     players.clear();
-  }
-
-  @Override
-  protected void fieldInitialize(final boolean isCreatingInstance) {
-    this.field = null;
-    this.bossBar = null;
   }
 
   @Override

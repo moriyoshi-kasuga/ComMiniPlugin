@@ -1,14 +1,14 @@
 package github.moriyoshi.comminiplugin.biggame.survivalsniper;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.biggame.survivalsniper.SSBigGame.Mode;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.biggame.survivalsniper.SSBigBigGame.Mode;
-import github.moriyoshi.comminiplugin.system.buttons.InventorySlotButton;
-import github.moriyoshi.comminiplugin.system.biggame.IGetBigGame;
-import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
-import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.system.BigGameSystem;
+import github.moriyoshi.comminiplugin.system.buttons.InventorySlotButton;
+import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,8 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-public class SSFFAMenu extends MenuHolder<ComMiniPlugin>
-    implements IGetBigGame<SSBigBigGame>, OnlyBeforeStartGameMenu {
+public class SSFFAMenu extends MenuHolder<ComMiniPlugin> implements OnlyBeforeStartGameMenu {
 
   private final ItemStack JOIN = new ItemBuilder(Material.BLUE_CONCRETE).name("<blue>参加する").build();
   private final ItemStack SPEC = new ItemBuilder(Material.GRAY_CONCRETE).name("<gray>観戦する").build();
@@ -36,7 +35,8 @@ public class SSFFAMenu extends MenuHolder<ComMiniPlugin>
           @Override
           public void onClick(
               @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-            getGame().joinPlayer(((Player) event.getWhoClicked()), true, null);
+            BigGameSystem.getGame(SSBigGame.class)
+                .joinPlayer(((Player) event.getWhoClicked()), true, null);
           }
         });
     setButton(
@@ -45,7 +45,8 @@ public class SSFFAMenu extends MenuHolder<ComMiniPlugin>
           @Override
           public void onClick(
               @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-            getGame().joinPlayer(((Player) event.getWhoClicked()), false, null);
+            BigGameSystem.getGame(SSBigGame.class)
+                .joinPlayer(((Player) event.getWhoClicked()), false, null);
           }
         });
     setButton(
@@ -54,7 +55,7 @@ public class SSFFAMenu extends MenuHolder<ComMiniPlugin>
           @Override
           public void onClick(
               @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-            getGame().leavePlayer((Player) event.getWhoClicked());
+            BigGameSystem.getGame(SSBigGame.class).leavePlayer((Player) event.getWhoClicked());
           }
         });
     setButton(4, new InventorySlotButton(SSPlayer.class));
@@ -80,7 +81,7 @@ public class SSFFAMenu extends MenuHolder<ComMiniPlugin>
 
   @Override
   public Component additional() {
-    if (getGame().getMode() == Mode.FFA) {
+    if (BigGameSystem.getGame(SSBigGame.class).getMode() == Mode.FFA) {
       return null;
     }
     return BukkitUtil.mm("<red>モードが変わりました、もう一度メニューを開いてください");

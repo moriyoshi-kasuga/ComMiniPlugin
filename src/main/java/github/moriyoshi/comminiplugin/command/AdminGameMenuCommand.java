@@ -3,7 +3,7 @@ package github.moriyoshi.comminiplugin.command;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
-import github.moriyoshi.comminiplugin.system.biggame.AdminBigGameMenu;
+import github.moriyoshi.comminiplugin.system.AdminBigGameMenu;
 
 public class AdminGameMenuCommand extends CommandAPICommand {
 

@@ -1,12 +1,13 @@
 package github.moriyoshi.comminiplugin.biggame.survivalsniper;
 
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.tuple.Pair;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
-import github.moriyoshi.comminiplugin.system.biggame.AbstractBigGameListener;
-
+import github.moriyoshi.comminiplugin.system.IGameListener;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,7 +29,13 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 @SuppressWarnings("deprecation")
-public class SSListener implements AbstractBigGameListener<SSBigBigGame> {
+public class SSListener implements IGameListener<SSBigGame> {
+
+  @Getter IdentifierKey key;
+
+  public SSListener(IdentifierKey key) {
+    this.key = key;
+  }
 
   @Override
   public void damage(EntityDamageEvent e, Player player) {
@@ -67,7 +74,7 @@ public class SSListener implements AbstractBigGameListener<SSBigBigGame> {
   @Override
   public void death(final PlayerDeathEvent e) {
     deathSound(e);
-    final SSBigBigGame game = getGame();
+    final SSBigGame game = getGame();
     val p = e.getPlayer();
     val uuid = p.getUniqueId();
     if (game.players.get(uuid).getFirst() == 0) {
@@ -147,7 +154,7 @@ public class SSListener implements AbstractBigGameListener<SSBigBigGame> {
   }
 
   private void reducePlayer(final Player p) {
-    final SSBigBigGame game = getGame();
+    final SSBigGame game = getGame();
     val loc = p.getLocation();
     val world = p.getWorld();
     val inv = p.getInventory();
@@ -159,7 +166,7 @@ public class SSListener implements AbstractBigGameListener<SSBigBigGame> {
           world.dropItemNaturally(loc, i);
         });
     inv.clear();
-    if (getGame().getMode() == SSBigBigGame.Mode.FFA) {
+    if (getGame().getMode() == SSBigGame.Mode.FFA) {
       val alives =
           game.players.entrySet().stream()
               .filter(entry -> entry.getValue().getFirst() != -1)

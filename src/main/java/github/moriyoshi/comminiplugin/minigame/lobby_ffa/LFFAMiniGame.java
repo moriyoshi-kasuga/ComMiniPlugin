@@ -58,7 +58,7 @@ public class LFFAMiniGame extends AbstractGame implements INoSpectatorGame, IUni
   }
 
   @Override
-  public void predicateInitialize() throws GameInitializeFailedException {}
+  public void predicateInitialize(Player player) throws GameInitializeFailedException {}
 
   @Override
   public String getName() {

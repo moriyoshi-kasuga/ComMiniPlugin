@@ -12,7 +12,7 @@ import github.moriyoshi.comminiplugin.lib.tuple.Pair;
 import github.moriyoshi.comminiplugin.system.AbstractBigGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.system.biggame.WinnerTypeBigGame;
+import github.moriyoshi.comminiplugin.system.type.IWinnerTypeBigGame;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.UUID;
@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.val;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,9 +39,15 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
-public class SSBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
+public class SSBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
+
+  public enum Mode {
+    FFA,
+    TEAM
+  }
 
   public final HashMap<UUID, Pair<Integer, ChatColor>> players = new HashMap<>();
   private final int MAX_RADIUS_RANGE = 600;
@@ -55,6 +62,7 @@ public class SSBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
   @Getter private boolean canPvP;
   private BossBar bossBar;
   private BukkitRunnable run;
+
   private boolean isFinalArea;
 
   private BukkitRandomUtil random;
@@ -63,15 +71,62 @@ public class SSBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
 
   @Getter private Mode mode;
 
-  public SSBigBigGame() {
-    super(
-        "survivalsniper",
-        "<blue>サバイバルスナイパー",
-        "<blue>鉄塊を集めてスナイパーで相手を殺しあいます",
-        Material.SPYGLASS,
-        new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"),
-        new SSListener());
+  public SSBigGame(Player player) throws GameInitializeFailedException {
+    super(player, new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"), SSListener::new);
     world = Bukkit.getWorld("world");
+    lobby = world.getHighestBlockAt(player.getLocation()).getLocation().add(new Vector(0, 50, 0));
+    random = new BukkitRandomUtil(lobby, (MAX_RADIUS_RANGE / 2) - 10).setMaxTry(500);
+    world.getWorldBorder().setCenter(lobby);
+    world.getWorldBorder().setSize(MAX_RADIUS_RANGE);
+    world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
+    world.setClearWeatherDuration(0);
+    world.setTime(1000);
+    world
+        .getNearbyEntities(
+            world.getWorldBorder().getCenter(),
+            MAX_RADIUS_RANGE + 50,
+            320,
+            MAX_RADIUS_RANGE + 50,
+            entity -> entity instanceof Monster || entity instanceof Item)
+        .forEach(Entity::remove);
+    setBarrier();
+
+    canPvP = false;
+    lobby = null;
+    bossBar = null;
+    run = null;
+    isFinalArea = false;
+    previousBorderSize = MAX_RADIUS_RANGE;
+    previousTime = MAX_SECOND;
+    mode = Mode.FFA;
+  }
+
+  @Override
+  public void predicateInnerInitialize(@NotNull Player player)
+      throws GameInitializeFailedException {
+    if (!player.getWorld().equals(world)) {
+      throw new GameInitializeFailedException("<red>オーバーワールド内でしかこのゲームはプレイできません");
+    }
+  }
+
+  @Override
+  public Material getIcon() {
+    return Material.SPYGLASS;
+  }
+
+  @Override
+  public String getDescription() {
+    return "<blue>鉄塊を集めてスナイパーで相手を殺しあいます";
+  }
+
+  @Override
+  public String getName() {
+    return "<blue>サバイバルスナイパー";
+  }
+
+  @Override
+  public String getId() {
+    return "survivalsniper";
   }
 
   public void setMode(Mode mode) {
@@ -155,51 +210,7 @@ public class SSBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
   }
 
   @Override
-  public boolean initializeGame(final Player player) {
-    if (!player.getWorld().equals(world)) {
-      prefix.send(player, "<red>オーバーワールドに入ってから実行してください");
-      return false;
-    }
-    lobby = world.getHighestBlockAt(player.getLocation()).getLocation().add(new Vector(0, 50, 0));
-    random = new BukkitRandomUtil(lobby, (MAX_RADIUS_RANGE / 2) - 10).setMaxTry(500);
-    world.getWorldBorder().setCenter(lobby);
-    world.getWorldBorder().setSize(MAX_RADIUS_RANGE);
-    world.setGameRule(GameRule.DO_MOB_SPAWNING, true);
-    world.setClearWeatherDuration(0);
-    world.setTime(1000);
-    world
-        .getNearbyEntities(
-            world.getWorldBorder().getCenter(),
-            MAX_RADIUS_RANGE + 50,
-            320,
-            MAX_RADIUS_RANGE + 50,
-            entity -> entity instanceof Monster || entity instanceof Item)
-        .forEach(Entity::remove);
-
-    setBarrier();
-
-    return true;
-  }
-
-  private final void setBarrier() {
-
-    val vec = lobby.toVector();
-    val min = vec.clone().add(VOID_BLOCK_RADIUS);
-    val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
-    BukkitUtil.consoleCommand(
-        String.format(
-            "execute in %s run fill %s %s %s %s %s %s minecraft:barrier outline",
-            "overworld",
-            min.getBlockX(),
-            min.getBlockY(),
-            min.getBlockZ(),
-            max.getBlockX(),
-            max.getBlockY(),
-            max.getBlockZ()));
-  }
-
-  @Override
-  public boolean predicateGame(final Player player) {
+  public boolean predicateStartGame(final Audience player) {
     if (mode == Mode.FFA) {
       if (2 > players.values().stream().filter(pair -> pair.getFirst() != -1).toList().size()) {
         prefix.send(player, "<red>二人以上でしかプレイできません");
@@ -251,6 +262,111 @@ public class SSBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
         runPlayers(p -> BukkitUtil.title(p, "<red><u>" + rest + "</u>秒後に始まります", null));
       }
     }.runTaskTimer(ComMiniPlugin.getPlugin(), 0, 20);
+  }
+
+  @Override
+  public void innerFinishGame() {
+    teleportBlocks.clear();
+    removeBarrier();
+    world.getWorldBorder().reset();
+    if (bossBar != null) {
+      runPlayers(p -> p.hideBossBar(bossBar));
+    }
+    if (run != null) {
+      run.cancel();
+    }
+    if (mode == Mode.TEAM) {
+      val keys = players.keySet().stream().map(Bukkit::getPlayer).toList();
+      for (val current : keys) {
+        for (val another : keys) {
+          if (!current.equals(another)) {
+            try {
+              PluginLib.getGlowingEntities().unsetGlowing(another, current);
+            } catch (ReflectiveOperationException ignored) {
+            }
+          }
+        }
+      }
+    }
+    players.clear();
+  }
+
+  @Override
+  public boolean isGamePlayer(final Player player) {
+    return players.containsKey(player.getUniqueId());
+  }
+
+  @Override
+  public void innerAddSpec(final Player player) {
+    player.teleport(getLobby());
+    setSpec(player);
+  }
+
+  public void setSpec(final Player player) {
+    players.put(player.getUniqueId(), Pair.of(-1, null));
+    player.setGameMode(GameMode.SPECTATOR);
+    player.getInventory().clear();
+    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
+    players.forEach(
+        (uuid, pair) -> {
+          val target = Bukkit.getPlayer(uuid);
+          val color = pair.getSecond();
+          try {
+            if (color == null) {
+              if (pair.getFirst() == -1) {
+                PluginLib.getGlowingEntities().unsetGlowing(target, player);
+              } else {
+                PluginLib.getGlowingEntities().setGlowing(target, player, ChatColor.WHITE);
+              }
+            } else {
+              PluginLib.getGlowingEntities().setGlowing(target, player, color);
+            }
+          } catch (ReflectiveOperationException e) {
+          }
+        });
+  }
+
+  public void speedUpBorder() {
+    if (!isCanPvP()) {
+      return;
+    }
+    if (isFinalArea) {
+      return;
+    }
+    val size = world.getWorldBorder().getSize();
+    val speed = previousBorderSize / previousTime;
+    val afterTime = (previousTime - ((previousBorderSize - size) / speed)) * (1.0 / speedRate);
+    previousTime = (int) afterTime;
+    previousBorderSize = size;
+    world.getWorldBorder().setSize(MIN_BORDER_RANGE, (long) afterTime);
+    runPlayers(p -> prefix.send(p, "<red>DANGER! ボーダーの速度が上がりました"));
+  }
+
+  @Override
+  public MenuHolder<ComMiniPlugin> createHelpMenu() {
+    return new SSHelpMenu();
+  }
+
+  @Override
+  public boolean predicateSpec(Player player) {
+    return true;
+  }
+
+  private final void setBarrier() {
+
+    val vec = lobby.toVector();
+    val min = vec.clone().add(VOID_BLOCK_RADIUS);
+    val max = vec.clone().subtract(VOID_BLOCK_RADIUS);
+    BukkitUtil.consoleCommand(
+        String.format(
+            "execute in %s run fill %s %s %s %s %s %s minecraft:barrier outline",
+            "overworld",
+            min.getBlockX(),
+            min.getBlockY(),
+            min.getBlockZ(),
+            max.getBlockX(),
+            max.getBlockY(),
+            max.getBlockZ()));
   }
 
   private void start() {
@@ -409,112 +525,5 @@ public class SSBigBigGame extends AbstractBigGame implements WinnerTypeBigGame {
             max.getBlockX(),
             max.getBlockY(),
             max.getBlockZ()));
-  }
-
-  @Override
-  public void innerFinishGame() {
-    removeBarrier();
-    world.getWorldBorder().reset();
-    if (bossBar != null) {
-      runPlayers(p -> p.hideBossBar(bossBar));
-    }
-    if (run != null) {
-      run.cancel();
-    }
-    if (mode == Mode.TEAM) {
-      val keys = players.keySet().stream().map(Bukkit::getPlayer).toList();
-      for (val current : keys) {
-        for (val another : keys) {
-          if (!current.equals(another)) {
-            try {
-              PluginLib.getGlowingEntities().unsetGlowing(another, current);
-            } catch (ReflectiveOperationException ignored) {
-            }
-          }
-        }
-      }
-    }
-    players.clear();
-  }
-
-  @Override
-  public boolean isGamePlayer(final Player player) {
-    return players.containsKey(player.getUniqueId());
-  }
-
-  @Override
-  protected boolean predicateSpec(Player player) {
-    return true;
-  }
-
-  @Override
-  public void innerAddSpec(final Player player) {
-    player.teleport(getLobby());
-    setSpec(player);
-  }
-
-  public void setSpec(final Player player) {
-    players.put(player.getUniqueId(), Pair.of(-1, null));
-    player.setGameMode(GameMode.SPECTATOR);
-    player.getInventory().clear();
-    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, true, false));
-    players.forEach(
-        (uuid, pair) -> {
-          val target = Bukkit.getPlayer(uuid);
-          val color = pair.getSecond();
-          try {
-            if (color == null) {
-              if (pair.getFirst() == -1) {
-                PluginLib.getGlowingEntities().unsetGlowing(target, player);
-              } else {
-                PluginLib.getGlowingEntities().setGlowing(target, player, ChatColor.WHITE);
-              }
-            } else {
-              PluginLib.getGlowingEntities().setGlowing(target, player, color);
-            }
-          } catch (ReflectiveOperationException e) {
-          }
-        });
-  }
-
-  public void speedUpBorder() {
-    if (!isCanPvP()) {
-      return;
-    }
-    if (isFinalArea) {
-      return;
-    }
-    val size = world.getWorldBorder().getSize();
-    val speed = previousBorderSize / previousTime;
-    val afterTime = (previousTime - ((previousBorderSize - size) / speed)) * (1.0 / speedRate);
-    previousTime = (int) afterTime;
-    previousBorderSize = size;
-    world.getWorldBorder().setSize(MIN_BORDER_RANGE, (long) afterTime);
-    runPlayers(p -> prefix.send(p, "<red>DANGER! ボーダーの速度が上がりました"));
-  }
-
-  @Override
-  protected void fieldInitialize(final boolean isCreatingInstance) {
-    canPvP = false;
-    lobby = null;
-    bossBar = null;
-    run = null;
-    isFinalArea = false;
-    previousBorderSize = MAX_RADIUS_RANGE;
-    previousTime = MAX_SECOND;
-    mode = Mode.FFA;
-    if (!isCreatingInstance) {
-      teleportBlocks.clear();
-    }
-  }
-
-  @Override
-  public MenuHolder<ComMiniPlugin> createHelpMenu() {
-    return new SSHelpMenu();
-  }
-
-  public enum Mode {
-    FFA,
-    TEAM
   }
 }

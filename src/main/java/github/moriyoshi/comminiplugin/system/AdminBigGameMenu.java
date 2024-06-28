@@ -1,12 +1,10 @@
-package github.moriyoshi.comminiplugin.system.biggame;
+package github.moriyoshi.comminiplugin.system;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.RedirectButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import github.moriyoshi.comminiplugin.system.BigGameSystem;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;

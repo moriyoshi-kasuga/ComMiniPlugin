@@ -1,10 +1,10 @@
 package github.moriyoshi.comminiplugin.biggame.survivalsniper;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.biggame.survivalsniper.SSBigGame.Mode;
 import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.biggame.survivalsniper.SSBigBigGame.Mode;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.lib.InfiniteIterator;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
@@ -28,8 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
-public class SSAdminMenu extends MenuHolder<ComMiniPlugin>
-    implements OnlyBeforeStartGameMenu {
+public class SSAdminMenu extends MenuHolder<ComMiniPlugin> implements OnlyBeforeStartGameMenu {
 
   private final BukkitRunnable task = createAutoCloseTask();
 
@@ -44,7 +43,7 @@ public class SSAdminMenu extends MenuHolder<ComMiniPlugin>
                 .build()) {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-            BigGameSystem.getGame(SSGame.class).setMode(Mode.FFA);
+            BigGameSystem.getGame(SSBigGame.class).setMode(Mode.FFA);
           }
         });
     setButton(
@@ -56,7 +55,7 @@ public class SSAdminMenu extends MenuHolder<ComMiniPlugin>
                 .build()) {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-            val game = getGame();
+            val game = BigGameSystem.getGame(SSBigGame.class);
             if (game.getMode() != Mode.TEAM) {
               game.setMode(Mode.TEAM);
               return;

@@ -1,4 +1,4 @@
-package github.moriyoshi.comminiplugin.system.biggame;
+package github.moriyoshi.comminiplugin.system.type;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 @RequiredArgsConstructor
-public class StageTypeBigGame {
+public class StageTypeGame {
 
   private final World world;
   private final Location center;
@@ -20,7 +20,7 @@ public class StageTypeBigGame {
 
   private double previousBorderSize;
 
-  public StageTypeBigGame setSpeedRate(final double speedRate) {
+  public StageTypeGame setSpeedRate(final double speedRate) {
     this.speedRate = speedRate;
     return this;
   }

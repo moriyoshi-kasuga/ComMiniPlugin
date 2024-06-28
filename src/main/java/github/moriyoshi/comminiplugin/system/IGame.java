@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public interface IGame extends HasKey {
 
   public static class GameInitializeFailedException extends Exception {
-    public GameInitializeFailedException(String message) {
+    public GameInitializeFailedException(final String message) {
       super(message);
     }
   }
@@ -30,7 +30,7 @@ public interface IGame extends HasKey {
     T get() throws GameInitializeFailedException;
   }
 
-  void predicateInitialize() throws GameInitializeFailedException;
+  void predicateInitialize(@Nullable Player player) throws GameInitializeFailedException;
 
   String getId();
 
@@ -63,7 +63,7 @@ public interface IGame extends HasKey {
 
   PrefixUtil getPrefix();
 
-  default void leavePlayer(Player player) {}
+  default void leavePlayer(final Player player) {}
 
   boolean addSpec(Player player);
 
