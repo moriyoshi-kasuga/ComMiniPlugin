@@ -14,12 +14,14 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractBigGame extends AbstractGame implements IUniqueGame {
 
+  @Getter private final String id;
   @Getter private final Material icon;
   @Getter private final String name;
   @Getter private final String description;
 
   public AbstractBigGame(
       Material icon,
+      String id,
       String name,
       String description,
       Player player,
@@ -27,6 +29,7 @@ public abstract class AbstractBigGame extends AbstractGame implements IUniqueGam
       Function<IdentifierKey, IGameListener<?>> listener)
       throws GameInitializeFailedException {
     super(player, prefix, listener);
+    this.id = id;
     this.icon = icon;
     this.name = name;
     this.description = description;

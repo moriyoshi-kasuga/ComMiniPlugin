@@ -7,6 +7,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scheduler.BukkitRunnable;
 
+// TODO: ここ BigGameSystem で off になったときとかそこらへんで forEach で instance of して closeInventory すればいいんじゃね?
 public interface OnlyBeforeStartGameMenu extends InventoryHolder {
 
   default BukkitRunnable createAutoCloseTask() {

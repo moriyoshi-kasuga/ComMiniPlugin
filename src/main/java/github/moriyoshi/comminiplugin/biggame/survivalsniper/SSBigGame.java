@@ -71,16 +71,17 @@ public class SSBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
 
   @Getter private Mode mode;
 
-  public SSBigGame(Material icon, String name, String description, Player player)
+  public SSBigGame(Material icon, String id, String name, String description, Player player)
       throws GameInitializeFailedException {
     super(
         icon,
+        id,
         name,
         description,
         player,
         new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"),
         SSListener::new);
-    world = Bukkit.getWorld("world");
+    world = player.getWorld();
     lobby = world.getHighestBlockAt(player.getLocation()).getLocation().add(new Vector(0, 50, 0));
     random = new BukkitRandomUtil(lobby, (MAX_RADIUS_RANGE / 2) - 10).setMaxTry(500);
     world.getWorldBorder().setCenter(lobby);
@@ -111,29 +112,9 @@ public class SSBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
   @Override
   public void predicateInnerInitialize(@NotNull Player player)
       throws GameInitializeFailedException {
-    if (!player.getWorld().equals(world)) {
+    if (!player.getWorld().equals(Bukkit.getWorld("world"))) {
       throw new GameInitializeFailedException("<red>オーバーワールド内でしかこのゲームはプレイできません");
     }
-  }
-
-  @Override
-  public Material getIcon() {
-    return Material.SPYGLASS;
-  }
-
-  @Override
-  public String getDescription() {
-    return "<blue>鉄塊を集めてスナイパーで相手を殺しあいます";
-  }
-
-  @Override
-  public String getName() {
-    return "<blue>サバイバルスナイパー";
-  }
-
-  @Override
-  public String getId() {
-    return "survivalsniper";
   }
 
   public void setMode(Mode mode) {

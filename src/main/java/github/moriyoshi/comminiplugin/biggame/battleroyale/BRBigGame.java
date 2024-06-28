@@ -58,10 +58,11 @@ public class BRBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
 
   @Getter private BRField field;
 
-  public BRBigGame(Material icon, String name, String description, Player player)
+  public BRBigGame(Material icon, String id, String name, String description, Player player)
       throws GameInitializeFailedException {
     super(
         icon,
+        id,
         name,
         description,
         player,

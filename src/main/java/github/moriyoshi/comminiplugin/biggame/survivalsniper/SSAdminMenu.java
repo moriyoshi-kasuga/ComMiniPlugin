@@ -12,8 +12,10 @@ import github.moriyoshi.comminiplugin.lib.tuple.Pair;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.buttons.GameStartButton;
 import github.moriyoshi.comminiplugin.system.menu.OnlyBeforeStartGameMenu;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.val;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -72,14 +74,14 @@ public class SSAdminMenu extends MenuHolder<ComMiniPlugin> implements OnlyBefore
                           Stream.of(
                                   ChatColor.RED, ChatColor.GREEN, ChatColor.YELLOW, ChatColor.BLUE)
                               .limit(t)
-                              .toList();
+                              .collect(Collectors.toCollection(ArrayList::new));
                       Collections.shuffle(list_colors, random);
                       val colors = new InfiniteIterator<>(list_colors);
                       val list =
                           game.players.entrySet().stream()
                               .filter(entry -> entry.getValue().getSecond() != null)
                               .map(entry -> entry.getKey())
-                              .toList();
+                              .collect(Collectors.toCollection(ArrayList::new));
                       Collections.shuffle(list, random);
                       list.forEach(
                           uuid -> {
