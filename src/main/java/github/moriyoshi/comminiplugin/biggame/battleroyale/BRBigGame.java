@@ -40,7 +40,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class BRBigBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
+public class BRBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
 
   public final HashMap<UUID, Boolean> players = new HashMap<>();
 
@@ -58,8 +58,15 @@ public class BRBigBigGame extends AbstractBigGame implements IWinnerTypeBigGame 
 
   @Getter private BRField field;
 
-  public BRBigBigGame(Player player) throws GameInitializeFailedException {
-    super(player, new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"), BRListener::new);
+  public BRBigGame(Material icon, String name, String description, Player player)
+      throws GameInitializeFailedException {
+    super(
+        icon,
+        name,
+        description,
+        player,
+        new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"),
+        BRListener::new);
     this.world = ComMiniWorld.GAME_WORLD;
     this.field = null;
     this.bossBar = null;

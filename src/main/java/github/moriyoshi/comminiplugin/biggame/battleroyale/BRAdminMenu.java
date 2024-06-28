@@ -59,7 +59,7 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin> implements OnlyBefore
         new ItemButton<>(new ItemBuilder(Material.GREEN_CONCRETE).name("<green>宝箱の設置開始").build()) {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-            Optional.ofNullable(BigGameSystem.getGame(BRBigBigGame.class).getField())
+            Optional.ofNullable(BigGameSystem.getGame(BRBigGame.class).getField())
                 .ifPresentOrElse(
                     field -> {
                       field.getTreasure().addPlayer((Player) event.getWhoClicked());
@@ -76,7 +76,7 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin> implements OnlyBefore
         new ItemButton<>(new ItemBuilder(Material.RED_CONCRETE).name("<red>宝箱の設置終了").build()) {
           @Override
           public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-            Optional.ofNullable(BigGameSystem.getGame(BRBigBigGame.class).getField())
+            Optional.ofNullable(BigGameSystem.getGame(BRBigGame.class).getField())
                 .ifPresentOrElse(
                     field -> {
                       field.getTreasure().removePlayer((Player) event.getWhoClicked());
@@ -110,7 +110,7 @@ public class BRAdminMenu extends MenuHolder<ComMiniPlugin> implements OnlyBefore
     @Override
     public void onClick(
         @NotNull MenuHolder<ComMiniPlugin> holder, @NotNull InventoryClickEvent event) {
-      val game = BigGameSystem.getGame(BRBigBigGame.class);
+      val game = BigGameSystem.getGame(BRBigGame.class);
       game.setField(fieldSupplier.get());
       game.prefix.broadCast("<gray>今回の舞台は <u>" + name);
     }

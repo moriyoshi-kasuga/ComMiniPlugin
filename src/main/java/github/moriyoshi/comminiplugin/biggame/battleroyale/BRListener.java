@@ -22,7 +22,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class BRListener implements IGameListener<BRBigBigGame> {
+public class BRListener implements IGameListener<BRBigGame> {
 
   @Getter private final IdentifierKey key;
 

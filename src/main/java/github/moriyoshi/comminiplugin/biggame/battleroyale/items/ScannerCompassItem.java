@@ -2,7 +2,7 @@ package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.constant.GameMessages;
-import github.moriyoshi.comminiplugin.biggame.battleroyale.BRBigBigGame;
+import github.moriyoshi.comminiplugin.biggame.battleroyale.BRBigGame;
 import github.moriyoshi.comminiplugin.biggame.battleroyale.TreasureChest;
 import github.moriyoshi.comminiplugin.lib.item.CoolityItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
@@ -39,11 +39,11 @@ public class ScannerCompassItem extends CustomItem implements CoolityItem {
       return;
     }
     val player = e.getPlayer();
-    if (!BigGameSystem.isIn(BRBigBigGame.class)) {
+    if (!BigGameSystem.isIn(BRBigGame.class)) {
       GameMessages.GAME_NOT_FOUND.send(player);
       return;
     }
-    Optional.ofNullable(BigGameSystem.getGame(BRBigBigGame.class).getField())
+    Optional.ofNullable(BigGameSystem.getGame(BRBigGame.class).getField())
         .ifPresentOrElse(
             field -> {
               if (!hasDurability()) {
@@ -75,7 +75,7 @@ public class ScannerCompassItem extends CustomItem implements CoolityItem {
                                     meta.setLodestone(loc);
                                     meta.setLodestoneTracked(false);
                                   }),
-                  () -> BigGameSystem.getGame(BRBigBigGame.class).prefix.send(player, "<red>宝箱が見つかりません"));
+                  () -> BigGameSystem.getGame(BRBigGame.class).prefix.send(player, "<red>宝箱が見つかりません"));
             },
             () -> GameMessages.GAME_NOT_START.send(player));
   }

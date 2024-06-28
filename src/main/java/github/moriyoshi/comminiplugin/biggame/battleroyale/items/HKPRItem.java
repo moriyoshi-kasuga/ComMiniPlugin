@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.constant.GameMessages;
-import github.moriyoshi.comminiplugin.biggame.battleroyale.BRBigBigGame;
+import github.moriyoshi.comminiplugin.biggame.battleroyale.BRBigGame;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
@@ -32,12 +32,12 @@ public class HKPRItem extends CustomItem {
       return;
     }
     val player = e.getPlayer();
-    if (!BigGameSystem.isStarted(BRBigBigGame.class)) {
+    if (!BigGameSystem.isStarted(BRBigGame.class)) {
       GameMessages.GAME_NOT_START.send(player);
       return;
     }
     useItemAmount();
-    val game = BigGameSystem.getGame(BRBigBigGame.class);
+    val game = BigGameSystem.getGame(BRBigGame.class);
     val loc = player.getLocation();
     Bukkit.getOnlinePlayers().stream()
         .filter(p -> !player.equals(p) && game.isPlayingPlayer(p))

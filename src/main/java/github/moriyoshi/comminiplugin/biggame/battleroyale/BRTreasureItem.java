@@ -40,7 +40,7 @@ public class BRTreasureItem extends CustomItem {
   public void interactMainHand(PlayerInteractEvent e) {
     e.setCancelled(true);
     val player = e.getPlayer();
-    if (!BigGameSystem.isIn(BRBigBigGame.class)) {
+    if (!BigGameSystem.isIn(BRBigGame.class)) {
       ComMiniPlugin.SYSTEM.send(player, "<red>please start in battleroyale game");
       return;
     }
@@ -48,7 +48,7 @@ public class BRTreasureItem extends CustomItem {
       ComMiniPlugin.SYSTEM.send(player, "<red>if use settings menu, please before br game");
       return;
     }
-    val game = BigGameSystem.getGame(BRBigBigGame.class);
+    val game = BigGameSystem.getGame(BRBigGame.class);
     if (game.getField() == null) {
       ComMiniPlugin.SYSTEM.send(player, "<red>宝箱を配置するフィールドを設定してから実行してください");
       return;

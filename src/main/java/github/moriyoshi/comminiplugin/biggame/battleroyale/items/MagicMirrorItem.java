@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.constant.GameMessages;
-import github.moriyoshi.comminiplugin.biggame.battleroyale.BRBigBigGame;
+import github.moriyoshi.comminiplugin.biggame.battleroyale.BRBigGame;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
@@ -34,11 +34,11 @@ public class MagicMirrorItem extends CustomItem {
       return;
     }
     val player = e.getPlayer();
-    if (!BigGameSystem.isIn(BRBigBigGame.class)) {
+    if (!BigGameSystem.isIn(BRBigGame.class)) {
       GameMessages.GAME_NOT_FOUND.send(player);
       return;
     }
-    Optional.ofNullable(BigGameSystem.getGame(BRBigBigGame.class).getField())
+    Optional.ofNullable(BigGameSystem.getGame(BRBigGame.class).getField())
         .ifPresentOrElse(
             field -> {
               useItemAmount();

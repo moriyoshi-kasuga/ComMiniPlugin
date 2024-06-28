@@ -71,8 +71,15 @@ public class SSBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
 
   @Getter private Mode mode;
 
-  public SSBigGame(Player player) throws GameInitializeFailedException {
-    super(player, new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"), SSListener::new);
+  public SSBigGame(Material icon, String name, String description, Player player)
+      throws GameInitializeFailedException {
+    super(
+        icon,
+        name,
+        description,
+        player,
+        new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"),
+        SSListener::new);
     world = Bukkit.getWorld("world");
     lobby = world.getHighestBlockAt(player.getLocation()).getLocation().add(new Vector(0, 50, 0));
     random = new BukkitRandomUtil(lobby, (MAX_RADIUS_RANGE / 2) - 10).setMaxTry(500);

@@ -63,10 +63,10 @@ public class TreasureChest extends CustomModelBlock {
 
   private void spawn() {
     updateDisplayItem();
-    if (!BigGameSystem.isIn(BRBigBigGame.class)) {
+    if (!BigGameSystem.isIn(BRBigGame.class)) {
       return;
     }
-    Optional.ofNullable(BigGameSystem.getGame(BRBigBigGame.class).getField())
+    Optional.ofNullable(BigGameSystem.getGame(BRBigGame.class).getField())
         .ifPresent(
             field -> {
               val loottable =

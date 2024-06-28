@@ -39,7 +39,7 @@ public class BRMenu extends MenuHolder<ComMiniPlugin> implements OnlyBeforeStart
           @Override
           public void onClick(
               @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-            BigGameSystem.getGame(BRBigBigGame.class)
+            BigGameSystem.getGame(BRBigGame.class)
                 .joinPlayer(((Player) event.getWhoClicked()), true);
           }
         });
@@ -49,7 +49,7 @@ public class BRMenu extends MenuHolder<ComMiniPlugin> implements OnlyBeforeStart
           @Override
           public void onClick(
               @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-            BigGameSystem.getGame(BRBigBigGame.class)
+            BigGameSystem.getGame(BRBigGame.class)
                 .joinPlayer(((Player) event.getWhoClicked()), false);
           }
         });

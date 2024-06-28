@@ -1,10 +1,8 @@
 package github.moriyoshi.comminiplugin.system;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.system.IGame.GameInitializeFailedSupplier;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import lombok.val;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 public class BigGameSystem {
 
   static WeakReference<AbstractBigGame> gameRef = new WeakReference<>(null);
-  static final HashMap<IdentifierKey, Class<AbstractBigGame>> games = new HashMap<>();
 
   public static <T extends AbstractBigGame> T getGame(Class<T> t) {
     return t.cast(gameRef.get());
