@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-public class SmallBowItem extends CustomItem {
+public class SmallBowItem extends CustomItem implements CustomItem.ProjectileLaunch {
 
   public SmallBowItem() {
     this(

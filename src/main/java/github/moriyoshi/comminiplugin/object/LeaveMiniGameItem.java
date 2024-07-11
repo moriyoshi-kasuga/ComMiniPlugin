@@ -5,11 +5,12 @@ import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.GameSystem;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class LeaveMiniGameItem extends CustomItem {
+public class LeaveMiniGameItem extends CustomItem implements CustomItem.InteractMainHand {
 
   public LeaveMiniGameItem() {
     this(
@@ -27,12 +28,12 @@ public class LeaveMiniGameItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(final PlayerInteractEvent e) {
+  public void interactMainHand(final PlayerInteractEvent e, final Player player) {
     e.setCancelled(true);
     if (e.getAction().isLeftClick()) {
       return;
     }
-    GameSystem.initializePlayer(e.getPlayer());
+    GameSystem.initializePlayer(player);
   }
 
   @Override

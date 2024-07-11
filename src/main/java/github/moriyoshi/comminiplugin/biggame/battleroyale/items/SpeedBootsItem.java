@@ -25,7 +25,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SpeedBootsItem extends CustomItem implements CooldownItem {
+public class SpeedBootsItem extends CustomItem
+    implements CooldownItem, CustomItem.RunTick, CustomItem.Shift {
   public SpeedBootsItem() {
     super(
         new ItemBuilder(Material.LEATHER_BOOTS)
@@ -49,7 +50,8 @@ public class SpeedBootsItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void shiftItem(PlayerToggleSneakEvent e, @Nullable EquipmentSlot equipmentSlot) {
+  public void shift(
+      PlayerToggleSneakEvent e, Player player, @Nullable EquipmentSlot equipmentSlot) {
     if (!e.isSneaking()) {
       return;
     }

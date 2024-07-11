@@ -1,11 +1,11 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.JumpState;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import github.moriyoshi.comminiplugin.lib.JumpState;
-import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-public class WingItem extends CustomItem {
+public class WingItem extends CustomItem implements CustomItem.InteractMainHand {
   public WingItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -57,12 +57,11 @@ public class WingItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }
     useItemAmount();
-    val player = e.getPlayer();
     BukkitUtil.setVelocity(player, player.getVelocity().setY(2), JumpState.FREE);
     setWing(player);
   }

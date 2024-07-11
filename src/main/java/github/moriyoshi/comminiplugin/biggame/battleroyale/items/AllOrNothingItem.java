@@ -11,13 +11,14 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-public class AllOrNothingItem extends CustomItem {
+public class AllOrNothingItem extends CustomItem implements CustomItem.InteractMainHand {
 
   public AllOrNothingItem() {
     super(
@@ -33,12 +34,11 @@ public class AllOrNothingItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }
     useItemAmount();
-    val player = e.getPlayer();
     val random = new Random();
     List<PotionEffectType> types = new ArrayList<>();
     Color color;

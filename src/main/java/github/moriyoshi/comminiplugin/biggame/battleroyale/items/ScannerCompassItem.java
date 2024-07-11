@@ -1,24 +1,25 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
-import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
-import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.biggame.battleroyale.BRBigGame;
 import github.moriyoshi.comminiplugin.biggame.battleroyale.TreasureChest;
+import github.moriyoshi.comminiplugin.constant.GameMessages;
+import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.lib.item.CoolityItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
-
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.val;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CompassMeta;
 import org.jetbrains.annotations.NotNull;
 
-public class ScannerCompassItem extends CustomItem implements CoolityItem {
+public class ScannerCompassItem extends CustomItem
+    implements CoolityItem, CustomItem.InteractMainHand {
   public ScannerCompassItem() {
     super(
         new ItemBuilder(Material.COMPASS)
@@ -34,11 +35,10 @@ public class ScannerCompassItem extends CustomItem implements CoolityItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }
-    val player = e.getPlayer();
     if (!BigGameSystem.isIn(BRBigGame.class)) {
       GameMessages.GAME_NOT_FOUND.send(player);
       return;
@@ -75,7 +75,10 @@ public class ScannerCompassItem extends CustomItem implements CoolityItem {
                                     meta.setLodestone(loc);
                                     meta.setLodestoneTracked(false);
                                   }),
-                  () -> BigGameSystem.getGame(BRBigGame.class).prefix.send(player, "<red>宝箱が見つかりません"));
+                  () ->
+                      BigGameSystem.getGame(BRBigGame.class)
+                          .prefix
+                          .send(player, "<red>宝箱が見つかりません"));
             },
             () -> GameMessages.GAME_NOT_START.send(player));
   }

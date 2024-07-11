@@ -5,7 +5,6 @@ import github.moriyoshi.comminiplugin.object.LeaveMiniGameItem;
 import github.moriyoshi.comminiplugin.system.AbstractGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.system.type.INoSpectatorGame;
 import github.moriyoshi.comminiplugin.system.type.IUniqueGame;
 import java.util.Map;
 import java.util.UUID;
@@ -14,7 +13,7 @@ import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class LFFAMiniGame extends AbstractGame implements INoSpectatorGame, IUniqueGame {
+public class LFFAMiniGame extends AbstractGame implements IUniqueGame {
 
   private final Map<UUID, Integer> players = new java.util.HashMap<>();
 

@@ -17,7 +17,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class VampireSwordItem extends CustomItem implements CooldownItem {
+public class VampireSwordItem extends CustomItem
+    implements CooldownItem, CustomItem.DamageToEntity {
   public VampireSwordItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -39,7 +40,7 @@ public class VampireSwordItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void damageEntity(EntityDamageByEntityEvent e, Player player) {
+  public void damageToEntity(EntityDamageByEntityEvent e, Player player) {
     if (inCooldown()) {
       return;
     }

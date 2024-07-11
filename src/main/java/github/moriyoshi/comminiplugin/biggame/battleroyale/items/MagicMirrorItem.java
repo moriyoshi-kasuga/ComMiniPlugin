@@ -1,20 +1,19 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
-import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.biggame.battleroyale.BRBigGame;
+import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
-
 import java.util.Optional;
 import java.util.Random;
-import lombok.val;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class MagicMirrorItem extends CustomItem {
+public class MagicMirrorItem extends CustomItem implements CustomItem.InteractMainHand {
   public MagicMirrorItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -29,11 +28,10 @@ public class MagicMirrorItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }
-    val player = e.getPlayer();
     if (!BigGameSystem.isIn(BRBigGame.class)) {
       GameMessages.GAME_NOT_FOUND.send(player);
       return;
@@ -48,7 +46,6 @@ public class MagicMirrorItem extends CustomItem {
                 player.getInventory().addItem(field.getLevel5().random().getFirst());
               }
             },
-            () -> GameMessages.GAME_NOT_START.send(player)
-        );
+            () -> GameMessages.GAME_NOT_START.send(player));
   }
 }

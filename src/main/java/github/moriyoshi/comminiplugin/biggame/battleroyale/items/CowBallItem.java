@@ -1,8 +1,8 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
-import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.system.GameListener;
 import lombok.val;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -10,12 +10,13 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class CowBallItem extends CustomItem {
+public class CowBallItem extends CustomItem implements CustomItem.InteractMainHand {
 
   public CowBallItem() {
     this(
@@ -31,12 +32,11 @@ public class CowBallItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }
     useItemAmount();
-    val player = e.getPlayer();
     val projectile =
         player.launchProjectile(
             Snowball.class,

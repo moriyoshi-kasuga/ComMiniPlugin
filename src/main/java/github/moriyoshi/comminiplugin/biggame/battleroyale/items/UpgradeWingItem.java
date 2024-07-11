@@ -7,11 +7,12 @@ import github.moriyoshi.comminiplugin.lib.JumpState;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import lombok.val;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class UpgradeWingItem extends CustomItem implements CooldownItem {
+public class UpgradeWingItem extends CustomItem implements CooldownItem ,CustomItem.InteractMainHand{
   public UpgradeWingItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -26,7 +27,7 @@ public class UpgradeWingItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e,final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }
@@ -34,7 +35,6 @@ public class UpgradeWingItem extends CustomItem implements CooldownItem {
       return;
     }
     setCooldown(60 * 20);
-    val player = e.getPlayer();
     val loc = player.getLocation();
     loc.setPitch(-30);
     BukkitUtil.setVelocity(player, loc.getDirection().multiply(2).setY(2), JumpState.FREE);

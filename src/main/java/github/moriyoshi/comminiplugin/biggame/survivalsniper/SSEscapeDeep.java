@@ -8,10 +8,11 @@ import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class SSEscapeDeep extends CustomItem {
+public class SSEscapeDeep extends CustomItem implements CustomItem.InteractMainHand{
 
   public SSEscapeDeep() {
     this(
@@ -27,7 +28,7 @@ public class SSEscapeDeep extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(final PlayerInteractEvent e) {
+  public void interactMainHand(final PlayerInteractEvent e,final Player player) {
     if (e.getAction().isLeftClick()) {
       e.setCancelled(false);
       return;

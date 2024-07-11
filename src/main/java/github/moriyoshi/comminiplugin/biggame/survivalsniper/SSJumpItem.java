@@ -1,23 +1,24 @@
 package github.moriyoshi.comminiplugin.biggame.survivalsniper;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.JumpState;
 import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import github.moriyoshi.comminiplugin.lib.JumpState;
-import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-public class SSJumpItem extends CustomItem implements CooldownItem {
+public class SSJumpItem extends CustomItem implements CooldownItem, CustomItem.InteractMainHand {
 
   private static final Component DEFAULT_NAME = BukkitUtil.mm("<yellow>ジャンプ");
   private static final Component DESCRIPTION = BukkitUtil.mm("<red>注意! 着地した後一定時間操作不能");
@@ -40,7 +41,7 @@ public class SSJumpItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void interactMainHand(final PlayerInteractEvent e) {
+  public void interactMainHand(final PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }

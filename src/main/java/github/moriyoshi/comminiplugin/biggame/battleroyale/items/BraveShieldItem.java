@@ -11,7 +11,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class BraveShieldItem extends CustomItem implements CooldownItem {
+public class BraveShieldItem extends CustomItem
+    implements CooldownItem,
+        CustomItem.DamageByEntityWithMainHand,
+        CustomItem.DamageByEntityWithOffHand {
   public BraveShieldItem() {
     super(
         new ItemBuilder(Material.SHIELD)

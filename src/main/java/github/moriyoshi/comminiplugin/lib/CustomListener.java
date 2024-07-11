@@ -5,8 +5,8 @@ import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
-import github.moriyoshi.comminiplugin.lib.item.PlayerCooldownItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.PlayerCooldownItem;
 import java.util.Arrays;
 import java.util.Objects;
 import lombok.val;
@@ -42,11 +42,12 @@ public final class CustomListener implements Listener {
             .forEach(
                 p -> {
                   val inv = p.getInventory();
-                  val main = CustomItem.getCustomItem(inv.getItemInMainHand());
+                  val main =
+                      CustomItem.getCustomItem(inv.getItemInMainHand(), CustomItem.Held.class);
                   if (main != null) main.heldItem(p);
                   inv.forEach(
                       i -> {
-                        val item = CustomItem.getCustomItem(i);
+                        val item = CustomItem.getCustomItem(i, CustomItem.RunTick.class);
                         if (item != null) {
                           item.runTick(p);
                           if (item instanceof CooldownItem cooldownItem
@@ -72,8 +73,8 @@ public final class CustomListener implements Listener {
       e.setCancelled(true);
       return;
     }
-    val customItem = CustomItem.getCustomItem(item);
-    if (customItem != null) customItem.dropItem(e);
+    val customItem = CustomItem.getCustomItem(item, CustomItem.Drop.class);
+    if (customItem != null) customItem.drop(e);
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
@@ -81,24 +82,25 @@ public final class CustomListener implements Listener {
     val player = e.getPlayer();
     val inv = player.getInventory();
     val heldSlot = inv.getHeldItemSlot();
-    CustomItem.getCustomItemOptional(inv.getItemInMainHand())
-        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.HAND));
-    CustomItem.getCustomItemOptional(inv.getItemInOffHand())
-        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.OFF_HAND));
-    CustomItem.getCustomItemOptional(inv.getHelmet())
-        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.HEAD));
-    CustomItem.getCustomItemOptional(inv.getChestplate())
-        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.CHEST));
-    CustomItem.getCustomItemOptional(inv.getLeggings())
-        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.LEGS));
-    CustomItem.getCustomItemOptional(inv.getBoots())
-        .ifPresent(custom -> custom.shiftItem(e, EquipmentSlot.FEET));
+    CustomItem.getCustomItemOptional(inv.getItemInMainHand(), CustomItem.Shift.class)
+        .ifPresent(custom -> custom.shift(e, player, EquipmentSlot.HAND));
+    CustomItem.getCustomItemOptional(inv.getItemInOffHand(), CustomItem.Shift.class)
+        .ifPresent(custom -> custom.shift(e, player, EquipmentSlot.OFF_HAND));
+    CustomItem.getCustomItemOptional(inv.getHelmet(), CustomItem.Shift.class)
+        .ifPresent(custom -> custom.shift(e, player, EquipmentSlot.HEAD));
+    CustomItem.getCustomItemOptional(inv.getChestplate(), CustomItem.Shift.class)
+        .ifPresent(custom -> custom.shift(e, player, EquipmentSlot.CHEST));
+    CustomItem.getCustomItemOptional(inv.getLeggings(), CustomItem.Shift.class)
+        .ifPresent(custom -> custom.shift(e, player, EquipmentSlot.LEGS));
+    CustomItem.getCustomItemOptional(inv.getBoots(), CustomItem.Shift.class)
+        .ifPresent(custom -> custom.shift(e, player, EquipmentSlot.FEET));
     for (int i = 0; i < 36; i++) {
       if (heldSlot == i) {
         continue;
       }
       val item = inv.getItem(i);
-      CustomItem.getCustomItemOptional(item).ifPresent(custom -> custom.shiftItem(e, null));
+      CustomItem.getCustomItemOptional(item, CustomItem.Shift.class)
+          .ifPresent(custom -> custom.shift(e, player, null));
     }
   }
 
@@ -115,9 +117,13 @@ public final class CustomListener implements Listener {
       return;
     }
     if (e.getHand() == EquipmentSlot.OFF_HAND) {
-      custom.interactOffHand(e);
+      if (custom instanceof CustomItem.InteractOffHand off) {
+        off.interactOffHand(e, e.getPlayer());
+      }
     } else {
-      custom.interactMainHand(e);
+      if (custom instanceof CustomItem.InteractMainHand main) {
+        main.interactMainHand(e, e.getPlayer());
+      }
     }
     if (e.useInteractedBlock() != Result.DENY) {
       customBlockInteract(e);
@@ -127,7 +133,7 @@ public final class CustomListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void blockBreak(final BlockBreakEvent e) {
     val item = e.getPlayer().getInventory().getItemInMainHand();
-    val custom = CustomItem.getCustomItem(item);
+    val custom = CustomItem.getCustomItem(item, CustomItem.BlockBreak.class);
     if (custom != null) {
       custom.blockBreak(e);
       if (e.isCancelled()) {
@@ -166,33 +172,34 @@ public final class CustomListener implements Listener {
     val inventory = player.getInventory();
     val previousItem = inventory.getItem(e.getPreviousSlot());
     val newItem = inventory.getItem(e.getNewSlot());
-    val previousCustom = CustomItem.getCustomItem(previousItem);
+    val previousCustom = CustomItem.getCustomItem(previousItem, CustomItem.HeldOfOther.class);
     if (previousCustom != null) {
-      previousCustom.heldOfOther(e);
+      previousCustom.heldOfOther(e, player);
       if (e.isCancelled()) {
         return;
       }
     }
-    val newCustom = CustomItem.getCustomItem(newItem);
+    val newCustom = CustomItem.getCustomItem(newItem, CustomItem.HeldOfThis.class);
     if (newCustom != null) {
-      newCustom.heldOfThis(e);
+      newCustom.heldOfThis(e, player);
     }
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void offhandItem(final PlayerSwapHandItemsEvent e) {
+    val player = e.getPlayer();
     val main = e.getMainHandItem();
     val off = e.getOffHandItem();
-    val offCustom = CustomItem.getCustomItem(off);
+    val offCustom = CustomItem.getCustomItem(off, CustomItem.SwapToOffHand.class);
     if (offCustom != null) {
-      offCustom.swapToOffHand(e);
+      offCustom.swapToOffHand(e, player);
       if (e.isCancelled()) {
         return;
       }
     }
-    val mainCustom = CustomItem.getCustomItem(main);
+    val mainCustom = CustomItem.getCustomItem(main, CustomItem.SwapToMainHand.class);
     if (mainCustom != null) {
-      mainCustom.swapToMainHand(e);
+      mainCustom.swapToMainHand(e, player);
     }
   }
 
@@ -217,8 +224,11 @@ public final class CustomListener implements Listener {
       }
     }
     for (val customItem :
-        items.stream().map(CustomItem::getCustomItem).filter(Objects::nonNull).toList()) {
-      customItem.clickItem(e);
+        items.stream()
+            .map(i -> CustomItem.getCustomItem(i, CustomItem.Click.class))
+            .filter(Objects::nonNull)
+            .toList()) {
+      customItem.click(e);
       if (e.isCancelled()) {
         return;
       }
@@ -232,7 +242,7 @@ public final class CustomListener implements Listener {
       e.setCancelled(true);
       return;
     }
-    val custom = CustomItem.getCustomItem(item);
+    val custom = CustomItem.getCustomItem(item, CustomItem.Spawn.class);
     if (custom != null) {
       custom.itemSpawn(e);
     }
@@ -243,7 +253,7 @@ public final class CustomListener implements Listener {
     val shooter = e.getEntity().getShooter();
     if (shooter instanceof Player player) {
       val item = player.getInventory().getItemInMainHand();
-      val custom = CustomItem.getCustomItem(item);
+      val custom = CustomItem.getCustomItem(item, CustomItem.ProjectileLaunch.class);
       if (custom != null) {
         custom.projectileLaunch(e, player);
       }
@@ -264,9 +274,9 @@ public final class CustomListener implements Listener {
         e.setCancelled(true);
         return;
       }
-      val custom = CustomItem.getCustomItem(item);
+      val custom = CustomItem.getCustomItem(item, CustomItem.DamageToEntity.class);
       if (custom != null) {
-        custom.damageEntity(e, player);
+        custom.damageToEntity(e, player);
         if (e.isCancelled()) {
           return;
         }
@@ -274,7 +284,7 @@ public final class CustomListener implements Listener {
     }
     if (e.getEntity() instanceof Player player) {
       val item = player.getInventory().getItemInMainHand();
-      val custom = CustomItem.getCustomItem(item);
+      val custom = CustomItem.getCustomItem(item, CustomItem.DamageByEntityWithMainHand.class);
       if (custom != null) {
         custom.damageByEntityMainHand(e, player);
         if (e.isCancelled()) {
@@ -282,7 +292,7 @@ public final class CustomListener implements Listener {
         }
       }
       val off = player.getInventory().getItemInMainHand();
-      val offCustom = CustomItem.getCustomItem(off);
+      val offCustom = CustomItem.getCustomItem(off, CustomItem.DamageByEntityWithOffHand.class);
       if (offCustom != null) {
         offCustom.damageByEntityOffHand(e, player);
       }

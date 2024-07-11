@@ -25,7 +25,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-public class RecallClockItem extends CustomItem implements CooldownItem {
+public class RecallClockItem extends CustomItem
+    implements CooldownItem, CustomItem.RunTick, CustomItem.Drop, CustomItem.InteractMainHand {
 
   private static final Map<UUID, Triple<Location, Double, List<PotionEffect>>> datas =
       new HashMap<>();
@@ -75,12 +76,12 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void dropItem(PlayerDropItemEvent e) {
+  public void drop(PlayerDropItemEvent e) {
     datas.remove(getUniqueId());
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       e.setCancelled(true);
       return;
@@ -88,7 +89,6 @@ public class RecallClockItem extends CustomItem implements CooldownItem {
     if (inCooldown()) {
       return;
     }
-    val player = e.getPlayer();
     val pair = datas.get(getUniqueId());
     if (pair == null) {
       ComMiniPlugin.MAIN.send(player, "<red>15秒前の記憶はありません");

@@ -2,14 +2,14 @@ package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class CurryBreadItem extends CustomItem {
+public class CurryBreadItem extends CustomItem implements CustomItem.InteractMainHand {
   public CurryBreadItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -24,12 +24,11 @@ public class CurryBreadItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }
     useItemAmount();
-    val player = e.getPlayer();
     player.heal(6);
     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);
   }

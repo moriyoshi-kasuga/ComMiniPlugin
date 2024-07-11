@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.system;
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
+import github.moriyoshi.comminiplugin.system.type.ISpectatorGame;
 import java.util.function.Function;
 import lombok.Getter;
 import lombok.val;
@@ -42,7 +43,10 @@ public abstract class AbstractGame implements IGame {
   }
 
   public final boolean addSpec(Player player) {
-    if (predicateSpec(player)) {
+    if (!(this instanceof ISpectatorGame spectatorGame)) {
+      return false;
+    }
+    if (spectatorGame.predicateSpec(player)) {
       getPlayers()
           .forEach(
               shower -> {
@@ -50,7 +54,7 @@ public abstract class AbstractGame implements IGame {
                 shower.showPlayer(ComMiniPlugin.getPlugin(), player);
               });
       ComMiniPlayer.getPlayer(player.getUniqueId()).setJoinGameKey(getKey());
-      innerAddSpec(player);
+      spectatorGame.innerAddSpec(player);
       return true;
     }
     return false;

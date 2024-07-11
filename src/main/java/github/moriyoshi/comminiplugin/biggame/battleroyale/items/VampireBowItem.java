@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class VampireBowItem extends CustomItem implements CooldownItem {
+public class VampireBowItem extends CustomItem implements CooldownItem,CustomItem.ProjectileLaunch,CustomItem.HeldOfOther{
 
   private int level;
 
@@ -60,7 +60,7 @@ public class VampireBowItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void heldOfOther(PlayerItemHeldEvent e) {
+  public void heldOfOther(PlayerItemHeldEvent e,final Player player) {
     NBT.modify(
         getItem(),
         nbt -> {

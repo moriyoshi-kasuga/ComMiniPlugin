@@ -1,11 +1,11 @@
 package github.moriyoshi.comminiplugin.biggame.survivalsniper;
 
 import de.tr7zw.changeme.nbtapi.NBT;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import java.util.HashSet;
 import java.util.UUID;
 import lombok.val;
@@ -25,7 +25,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 
-public class SSSniper extends CustomItem implements CooldownItem {
+public class SSSniper extends CustomItem
+    implements CooldownItem, CustomItem.SwapToOffHand, CustomItem.HeldOfThis {
 
   private static final Component DEFAULT_NAME = BukkitUtil.mm("<blue>スナイパー");
   private static final double BULLET_SIZE = 0.1;
@@ -48,9 +49,8 @@ public class SSSniper extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void swapToOffHand(final PlayerSwapHandItemsEvent e) {
+  public void swapToOffHand(final PlayerSwapHandItemsEvent e, final Player player) {
     e.setCancelled(true);
-    val player = e.getPlayer();
     val eyeLoc = player.getEyeLocation();
     if (inCooldown()) {
       player.playSound(eyeLoc, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
@@ -133,8 +133,7 @@ public class SSSniper extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void heldOfThis(final PlayerItemHeldEvent e) {
-    final Player player = e.getPlayer();
+  public void heldOfThis(final PlayerItemHeldEvent e, final Player player) {
     player.getWorld().playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_DIAMOND, 2, 1);
   }
 

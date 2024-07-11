@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
-import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
-import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.lib.JumpState;
+import github.moriyoshi.comminiplugin.lib.item.CustomItem;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -13,7 +13,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class ShockWaveItem extends CustomItem {
+public class ShockWaveItem extends CustomItem
+    implements CustomItem.DamageToEntity, CustomItem.InteractMainHand {
   public ShockWaveItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -31,7 +32,7 @@ public class ShockWaveItem extends CustomItem {
   }
 
   @Override
-  public void damageEntity(EntityDamageByEntityEvent e, Player player) {
+  public void damageToEntity(EntityDamageByEntityEvent e, Player player) {
     spawn(player, true);
   }
 
@@ -57,8 +58,8 @@ public class ShockWaveItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
-    spawn(e.getPlayer(), e.getAction().isLeftClick());
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
+    spawn(player, e.getAction().isLeftClick());
   }
 
   @Override
@@ -66,4 +67,3 @@ public class ShockWaveItem extends CustomItem {
     return true;
   }
 }
-

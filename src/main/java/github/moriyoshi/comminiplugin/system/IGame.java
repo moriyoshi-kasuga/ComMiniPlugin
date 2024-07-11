@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.ApiStatus.OverrideOnly;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,18 +28,22 @@ public interface IGame extends HasKey {
 
   @FunctionalInterface
   public static interface GameInitializeFailedSupplier<T> {
-    T get() throws GameInitializeFailedException;
+    T get() throws Exception;
   }
 
   void predicateInitialize(@Nullable Player player) throws GameInitializeFailedException;
 
+  @NonExtendable
   String getId();
 
+  @NonExtendable
   String getName();
 
+  @NonExtendable
   String getDescription();
 
   /** スタートしてるかどうか? ({@code #startGame()} を呼び出したあと) */
+  @NonExtendable
   boolean isStarted();
 
   /** このゲームのワールド */
@@ -57,14 +62,18 @@ public interface IGame extends HasKey {
    */
   boolean isGamePlayer(Player player);
 
+  @NonExtendable
   boolean startGame(Audience audience);
 
+  @NonExtendable
   void finishGame();
 
+  @NonExtendable
   PrefixUtil getPrefix();
 
-  default void leavePlayer(final Player player) {}
+  void leavePlayer(final Player player);
 
+  @NonExtendable
   boolean addSpec(Player player);
 
   /**
@@ -156,18 +165,6 @@ public interface IGame extends HasKey {
 
   @OverrideOnly
   boolean predicateStartGame(Audience audience);
-
-  @OverrideOnly
-  boolean predicateSpec(Player player);
-
-  /**
-   * ゲームが始まってからの観戦
-   *
-   * @param player 観戦させたい人
-   * @return true で参加させ、false で観戦不可能
-   */
-  @OverrideOnly
-  void innerAddSpec(Player player);
 
   @OverrideOnly
   IdentifierKey createKey();

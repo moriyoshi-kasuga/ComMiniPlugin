@@ -5,11 +5,12 @@ import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class MenuItem extends CustomItem {
+public class MenuItem extends CustomItem implements CustomItem.InteractMainHand {
 
   public MenuItem() {
     this(
@@ -27,11 +28,11 @@ public class MenuItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(final PlayerInteractEvent e) {
+  public void interactMainHand(final PlayerInteractEvent e, final Player player) {
     e.setCancelled(true);
     if (e.getAction().isLeftClick()) {
       return;
     }
-    MenuCommand.open(e.getPlayer());
+    MenuCommand.open(player);
   }
 }

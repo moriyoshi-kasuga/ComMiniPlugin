@@ -1,14 +1,14 @@
 package github.moriyoshi.comminiplugin.lib.item;
 
-import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public interface CooldownItem extends InterfaceItem {
+public interface CooldownItem extends InterfaceItem, CustomItem.Held {
 
   Map<IdentifierKey, Integer> COOLDOWN = new HashMap<>();
 
@@ -54,7 +54,8 @@ public interface CooldownItem extends InterfaceItem {
   @Override
   default void heldItem(Player player) {
     player.sendActionBar(
-        BukkitUtil.mm(inCooldown() ? getHasCooldownMessage(getCooldown()) : getCooldownReadyMessage()));
+        BukkitUtil.mm(
+            inCooldown() ? getHasCooldownMessage(getCooldown()) : getCooldownReadyMessage()));
   }
 
   /**

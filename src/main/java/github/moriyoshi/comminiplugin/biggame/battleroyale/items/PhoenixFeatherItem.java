@@ -1,16 +1,18 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
-import github.moriyoshi.comminiplugin.lib.item.PlayerCooldownItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.lib.item.PlayerCooldownItem;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class PhoenixFeatherItem extends CustomItem implements PlayerCooldownItem {
+public class PhoenixFeatherItem extends CustomItem
+    implements PlayerCooldownItem, CustomItem.InteractMainHand {
 
   public PhoenixFeatherItem() {
     this(
@@ -26,8 +28,7 @@ public class PhoenixFeatherItem extends CustomItem implements PlayerCooldownItem
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
-    val player = e.getPlayer();
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }

@@ -1,14 +1,14 @@
 package github.moriyoshi.comminiplugin.lib.item;
 
-import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public interface DurabilityItem extends InterfaceItem {
+public interface DurabilityItem extends InterfaceItem, CustomItem.Held {
 
   Map<IdentifierKey, Integer> DURABILITY = new HashMap<>();
 

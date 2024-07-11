@@ -6,6 +6,7 @@ import github.moriyoshi.comminiplugin.biggame.battleroyale.items.WingItem;
 import github.moriyoshi.comminiplugin.constant.ComMiniWorld;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
@@ -15,11 +16,14 @@ import github.moriyoshi.comminiplugin.lib.tuple.Sequence;
 import github.moriyoshi.comminiplugin.system.AbstractBigGame;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
+import github.moriyoshi.comminiplugin.system.IGameListener;
+import github.moriyoshi.comminiplugin.system.type.ISpectatorGame;
 import github.moriyoshi.comminiplugin.system.type.IWinnerTypeBigGame;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.val;
 import net.kyori.adventure.audience.Audience;
@@ -40,7 +44,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class BRBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
+public class BRBigGame extends AbstractBigGame implements IWinnerTypeBigGame, ISpectatorGame {
 
   public final HashMap<UUID, Boolean> players = new HashMap<>();
 
@@ -58,16 +62,16 @@ public class BRBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
 
   @Getter private BRField field;
 
-  public BRBigGame(Material icon, String id, String name, String description, Player player)
+  public BRBigGame(
+      Material icon,
+      String id,
+      String name,
+      String description,
+      Player player,
+      PrefixUtil prefixUtil,
+      Function<IdentifierKey, IGameListener<?>> listener)
       throws GameInitializeFailedException {
-    super(
-        icon,
-        id,
-        name,
-        description,
-        player,
-        new PrefixUtil("<gray>[<yellow>BattleRoyale<gray>]"),
-        BRListener::new);
+    super(icon, id, name, description, player, prefixUtil, listener);
     this.world = ComMiniWorld.GAME_WORLD;
     this.field = null;
     this.bossBar = null;

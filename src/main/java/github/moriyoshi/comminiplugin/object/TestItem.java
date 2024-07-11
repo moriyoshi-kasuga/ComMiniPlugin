@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.object;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
-import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
-import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
 import github.moriyoshi.comminiplugin.biggame.battleroyale.TreasureChest;
+import github.moriyoshi.comminiplugin.dependencies.anvilgui.AnvilInputs;
+import github.moriyoshi.comminiplugin.lib.block.CustomBlock;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.List;
@@ -11,11 +11,12 @@ import java.util.Optional;
 import lombok.val;
 import net.wesjd.anvilgui.AnvilGUI.ResponseAction;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class TestItem extends CustomItem {
+public class TestItem extends CustomItem implements CustomItem.InteractMainHand {
 
   public TestItem() {
     this(new ItemBuilder(Material.BARRIER).name("<red>test").build());
@@ -26,9 +27,8 @@ public class TestItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     e.setCancelled(true);
-    val p = e.getPlayer();
     // treasure(e);
   }
 

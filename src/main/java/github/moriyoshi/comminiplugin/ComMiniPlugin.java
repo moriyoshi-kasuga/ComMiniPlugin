@@ -81,6 +81,7 @@ public final class ComMiniPlugin extends JavaPlugin implements InterfaceAPIPlugi
                 .filterInputsBy(
                     new FilterBuilder()
                         .excludePackage("github.moriyoshi.comminiplugin.dependencies")
+                        .excludePackage("github.moriyoshi.comminiplugin.lib")
                         .excludePackage("github.moriyoshi.comminiplugin.system")));
     CustomItem.registers(reflections);
     CustomBlock.registers(reflections);

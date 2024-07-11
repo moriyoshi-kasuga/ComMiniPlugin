@@ -5,11 +5,12 @@ import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class BackpackItem extends CustomItem {
+public class BackpackItem extends CustomItem implements CustomItem.InteractMainHand{
   public BackpackItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -24,7 +25,7 @@ public class BackpackItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e,final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }

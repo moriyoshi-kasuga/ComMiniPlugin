@@ -1,18 +1,19 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
-import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.biggame.battleroyale.BRBigGame;
+import github.moriyoshi.comminiplugin.constant.GameMessages;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class HKPRItem extends CustomItem {
+public class HKPRItem extends CustomItem implements CustomItem.InteractMainHand {
   public HKPRItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -27,11 +28,10 @@ public class HKPRItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }
-    val player = e.getPlayer();
     if (!BigGameSystem.isStarted(BRBigGame.class)) {
       GameMessages.GAME_NOT_START.send(player);
       return;

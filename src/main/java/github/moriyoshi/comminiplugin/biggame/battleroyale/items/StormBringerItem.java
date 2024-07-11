@@ -6,11 +6,12 @@ import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class StormBringerItem extends CustomItem implements CooldownItem {
+public class StormBringerItem extends CustomItem implements CooldownItem,CustomItem.InteractMainHand{
   public StormBringerItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -28,14 +29,13 @@ public class StormBringerItem extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e,final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }
     if (inCooldown()) {
       return;
     }
-    val player = e.getPlayer();
     val target = player.getTargetBlockExact(50);
     if (target == null || target.isEmpty()) {
       ComMiniPlugin.MAIN.send(player, "<red>対象のブロックを見つけられません。");

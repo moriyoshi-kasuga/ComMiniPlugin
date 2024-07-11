@@ -6,11 +6,12 @@ import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import lombok.val;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class JumpPadItem extends CustomItem {
+public class JumpPadItem extends CustomItem implements CustomItem.InteractMainHand {
 
   public JumpPadItem() {
     this(
@@ -29,9 +30,8 @@ public class JumpPadItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     e.setCancelled(true);
-    val player = e.getPlayer();
     val block = e.getClickedBlock();
     if (block == null || block.isEmpty()) {
       ComMiniPlugin.SYSTEM.send(player, "<red>please look at a target block");

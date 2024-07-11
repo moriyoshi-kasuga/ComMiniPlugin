@@ -1,7 +1,7 @@
 package github.moriyoshi.comminiplugin.lib.item;
 
-import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.tuple.Triple;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,12 +12,13 @@ import lombok.val;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public interface PlayerCooldownItem extends InterfaceItem {
+public interface PlayerCooldownItem extends InterfaceItem, CustomItem.Held {
 
   Map<IdentifierKey, Triple<Integer, Boolean, Optional<Consumer<UUID>>>> COOLDOWN = new HashMap<>();
 
   static void allCountDown() {
-    for (Map.Entry<IdentifierKey, Triple<Integer, Boolean, Optional<Consumer<UUID>>>> entry : COOLDOWN.entrySet()) {
+    for (Map.Entry<IdentifierKey, Triple<Integer, Boolean, Optional<Consumer<UUID>>>> entry :
+        COOLDOWN.entrySet()) {
       val triple = entry.getValue();
       if (!triple.getSecond()) {
         continue;
@@ -54,7 +55,8 @@ public interface PlayerCooldownItem extends InterfaceItem {
   default void heldItem(Player player) {
     val uuid = player.getUniqueId();
     player.sendActionBar(
-        BukkitUtil.mm(inCooldown(uuid) ? getHasCooldownMessage(getCooldown(uuid)) : getReadyMessage()));
+        BukkitUtil.mm(
+            inCooldown(uuid) ? getHasCooldownMessage(getCooldown(uuid)) : getReadyMessage()));
   }
 
   @NotNull

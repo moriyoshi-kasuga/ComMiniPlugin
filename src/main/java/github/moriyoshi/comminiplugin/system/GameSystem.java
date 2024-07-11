@@ -7,7 +7,6 @@ import github.moriyoshi.comminiplugin.lib.Result.Err;
 import github.moriyoshi.comminiplugin.lib.Result.Ok;
 import github.moriyoshi.comminiplugin.minigame.lobby_ffa.LFFAMiniGame;
 import github.moriyoshi.comminiplugin.object.MenuItem;
-import github.moriyoshi.comminiplugin.system.IGame.GameInitializeFailedException;
 import github.moriyoshi.comminiplugin.system.IGame.GameInitializeFailedSupplier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,11 +39,11 @@ public class GameSystem {
    * @return look {@link Result}
    */
   @NotNull
-  public static <T extends AbstractGame> Result<T, GameInitializeFailedException> createGame(
+  public static <T extends AbstractGame> Result<T, Exception> createGame(
       GameInitializeFailedSupplier<T> supplier) {
     try {
       return Ok.of(supplier.get());
-    } catch (GameInitializeFailedException e) {
+    } catch (Exception e) {
       return Err.of(e);
     }
   }

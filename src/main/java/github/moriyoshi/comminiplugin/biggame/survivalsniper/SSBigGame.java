@@ -4,6 +4,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.lib.BukkitRandomUtil;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.IdentifierKey;
 import github.moriyoshi.comminiplugin.lib.PluginLib;
 import github.moriyoshi.comminiplugin.lib.PrefixUtil;
 import github.moriyoshi.comminiplugin.lib.item.CustomItemFlag;
@@ -12,11 +13,14 @@ import github.moriyoshi.comminiplugin.lib.tuple.Pair;
 import github.moriyoshi.comminiplugin.system.AbstractBigGame;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameSystem;
+import github.moriyoshi.comminiplugin.system.IGameListener;
+import github.moriyoshi.comminiplugin.system.type.ISpectatorGame;
 import github.moriyoshi.comminiplugin.system.type.IWinnerTypeBigGame;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.val;
@@ -42,7 +46,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
-public class SSBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
+public class SSBigGame extends AbstractBigGame implements IWinnerTypeBigGame, ISpectatorGame {
 
   public enum Mode {
     FFA,
@@ -71,16 +75,16 @@ public class SSBigGame extends AbstractBigGame implements IWinnerTypeBigGame {
 
   @Getter private Mode mode;
 
-  public SSBigGame(Material icon, String id, String name, String description, Player player)
+  public SSBigGame(
+      Material icon,
+      String id,
+      String name,
+      String description,
+      Player player,
+      PrefixUtil prefixUtil,
+      Function<IdentifierKey, IGameListener<?>> listener)
       throws GameInitializeFailedException {
-    super(
-        icon,
-        id,
-        name,
-        description,
-        player,
-        new PrefixUtil("<gray>[<blue>SurvivalSniper<gray>]"),
-        SSListener::new);
+    super(icon, id, name, description, player, prefixUtil, listener);
     world = player.getWorld();
     lobby = world.getHighestBlockAt(player.getLocation()).getLocation().add(new Vector(0, 50, 0));
     random = new BukkitRandomUtil(lobby, (MAX_RADIUS_RANGE / 2) - 10).setMaxTry(500);

@@ -21,7 +21,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 
-public class LFFAGun extends CustomItem implements CooldownItem {
+public class LFFAGun extends CustomItem
+    implements CooldownItem, CustomItem.DamageToEntity, CustomItem.InteractMainHand {
   private final int MAX_LENGTH = 40;
   private final double BULLET_SIZE = 0.1;
 
@@ -41,7 +42,7 @@ public class LFFAGun extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void damageEntity(EntityDamageByEntityEvent e, Player player) {
+  public void damageToEntity(EntityDamageByEntityEvent e, Player player) {
     spawn(player);
   }
 
@@ -121,12 +122,12 @@ public class LFFAGun extends CustomItem implements CooldownItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e,final Player player) {
     if (e.getAction().isRightClick()) {
       return;
     }
     e.setCancelled(true);
-    spawn(e.getPlayer());
+    spawn(player);
   }
 
   @Override

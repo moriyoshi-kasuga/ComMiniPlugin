@@ -4,15 +4,15 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
-
 import java.util.stream.Collectors;
 import lombok.val;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class BRTreasureItem extends CustomItem {
+public class BRTreasureItem extends CustomItem implements CustomItem.InteractMainHand {
   public BRTreasureItem() {
     this(
         new ItemBuilder(Material.ENDER_CHEST)
@@ -37,9 +37,8 @@ public class BRTreasureItem extends CustomItem {
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     e.setCancelled(true);
-    val player = e.getPlayer();
     if (!BigGameSystem.isIn(BRBigGame.class)) {
       ComMiniPlugin.SYSTEM.send(player, "<red>please start in battleroyale game");
       return;
