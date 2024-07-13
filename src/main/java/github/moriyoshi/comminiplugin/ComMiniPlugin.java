@@ -63,6 +63,7 @@ public final class ComMiniPlugin extends JavaPlugin implements InterfaceAPIPlugi
   public void onDisable() {
     ComMiniPlayer.save();
     BigGameSystem.finalGame();
+    GameSystem.clear();
     LocationsCommands.getManager().saveFile();
 
     PluginLib.unLoad();

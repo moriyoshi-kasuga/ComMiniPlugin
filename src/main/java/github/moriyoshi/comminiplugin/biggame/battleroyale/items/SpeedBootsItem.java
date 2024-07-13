@@ -25,8 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SpeedBootsItem extends CustomItem
-    implements CooldownItem, CustomItem.RunTick, CustomItem.Shift {
+public class SpeedBootsItem extends CustomItem implements CooldownItem, CustomItem.Shift {
   public SpeedBootsItem() {
     super(
         new ItemBuilder(Material.LEATHER_BOOTS)
@@ -99,19 +98,17 @@ public class SpeedBootsItem extends CustomItem
   }
 
   @Override
-  public void runTick(Player player) {
-    if (inCooldown()) {
-      if (countDown()) {
-        new ItemBuilder(getItem())
-            .name("<aqua>スピードブーツ: cooldown <u>" + getCooldown() / 20 + "</u>秒");
-      } else {
-        new ItemBuilder(getItem()).name("<aqua>スピードブーツ");
-      }
-    }
+  public void inCountDown() {
+    new ItemBuilder(getItem()).name("<aqua>スピードブーツ: cooldown <u>" + getCooldown() / 20 + "</u>秒");
+  }
+
+  @Override
+  public void endCountDown() {
+    new ItemBuilder(getItem()).name("<aqua>スピードブーツ");
   }
 
   @Override
   public boolean shouldAutoReduceCountDown() {
-    return false;
+    return true;
   }
 }

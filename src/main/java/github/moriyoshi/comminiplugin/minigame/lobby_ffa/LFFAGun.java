@@ -122,7 +122,7 @@ public class LFFAGun extends CustomItem
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e,final Player player) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isRightClick()) {
       return;
     }

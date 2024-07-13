@@ -5,7 +5,6 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.block.CustomModelBlock;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
-
 import java.util.Optional;
 import lombok.Getter;
 import lombok.val;

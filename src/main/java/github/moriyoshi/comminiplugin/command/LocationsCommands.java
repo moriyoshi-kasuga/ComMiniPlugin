@@ -35,8 +35,7 @@ public class LocationsCommands extends JsonAPI {
   @Override
   protected void generateLoadData(JsonElement dataElement) {
     locations =
-        PluginLib.gson.fromJson(
-            dataElement, new TypeToken<Map<String, Location>>() {}.getType());
+        PluginLib.gson.fromJson(dataElement, new TypeToken<Map<String, Location>>() {}.getType());
   }
 
   private static class PutLocCommand extends CommandAPICommand {

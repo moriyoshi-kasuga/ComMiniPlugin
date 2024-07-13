@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.val;
+import org.apache.commons.lang3.ClassUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -57,11 +57,12 @@ public abstract class CustomItem implements InterfaceItem {
           compound.setString("identifier", getIdentifier());
           this.uuid = canStack() ? HashUUID.v5(getIdentifier()) : UUID.randomUUID();
           compound.setUUID("uuid", uuid);
+
           compound
               .getStringList("impl")
               .addAll(
-                  Stream.of(getClass().getInterfaces())
-                      .filter(clazz -> clazz.isAssignableFrom(AddHandler.class))
+                  ClassUtils.getAllInterfaces(getClass()).stream()
+                      .filter(AddHandler.class::isAssignableFrom)
                       .map(Class::getSimpleName)
                       .toList());
         });
@@ -136,7 +137,7 @@ public abstract class CustomItem implements InterfaceItem {
 
   @Nullable
   public static CustomItem getCustomItem(final ItemStack item) {
-    final var ci = getIdentifier(item);
+    val ci = getIdentifier(item);
     if (ci.isPresent()) {
       try {
         return newConstructors.get(ci.get()).newInstance(item);
@@ -162,12 +163,11 @@ public abstract class CustomItem implements InterfaceItem {
       return null;
     }
     val compound = nbt.getCompound(nbtKey);
-    val identifier = compound.getString("identifier");
     if (!compound.getStringList("impl").contains(clazz.getSimpleName())) {
       return null;
     }
     try {
-      return clazz.cast(newConstructors.get(identifier).newInstance(item));
+      return clazz.cast(newConstructors.get(compound.getString("identifier")).newInstance(item));
     } catch (InstantiationException
         | IllegalAccessException
         | IllegalArgumentException

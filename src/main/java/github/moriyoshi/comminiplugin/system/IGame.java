@@ -28,7 +28,7 @@ public interface IGame extends HasKey {
 
   @FunctionalInterface
   public static interface GameInitializeFailedSupplier<T> {
-    T get() throws Exception;
+    T get() throws GameInitializeFailedException;
   }
 
   void predicateInitialize(@Nullable Player player) throws GameInitializeFailedException;

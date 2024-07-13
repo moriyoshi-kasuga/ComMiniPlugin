@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class BackpackItem extends CustomItem implements CustomItem.InteractMainHand{
+public class BackpackItem extends CustomItem implements CustomItem.InteractMainHand {
   public BackpackItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -25,7 +25,7 @@ public class BackpackItem extends CustomItem implements CustomItem.InteractMainH
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e,final Player player) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }

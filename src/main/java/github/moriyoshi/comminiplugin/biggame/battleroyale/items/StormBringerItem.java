@@ -11,7 +11,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class StormBringerItem extends CustomItem implements CooldownItem,CustomItem.InteractMainHand{
+public class StormBringerItem extends CustomItem
+    implements CooldownItem, CustomItem.InteractMainHand {
   public StormBringerItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -29,7 +30,7 @@ public class StormBringerItem extends CustomItem implements CooldownItem,CustomI
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e,final Player player) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }

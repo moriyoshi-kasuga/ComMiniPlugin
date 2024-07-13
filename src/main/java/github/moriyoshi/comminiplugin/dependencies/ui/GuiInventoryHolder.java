@@ -2,8 +2,8 @@ package github.moriyoshi.comminiplugin.dependencies.ui;
 
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;

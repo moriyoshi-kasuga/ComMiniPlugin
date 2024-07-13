@@ -42,19 +42,17 @@ public final class CustomListener implements Listener {
             .forEach(
                 p -> {
                   val inv = p.getInventory();
-                  val main =
-                      CustomItem.getCustomItem(inv.getItemInMainHand(), CustomItem.Held.class);
-                  if (main != null) main.heldItem(p);
+                  CustomItem.getCustomItemOptional(inv.getItemInMainHand(), CustomItem.Held.class)
+                      .ifPresent(main -> main.heldItem(p));
                   inv.forEach(
                       i -> {
-                        val item = CustomItem.getCustomItem(i, CustomItem.RunTick.class);
-                        if (item != null) {
-                          item.runTick(p);
-                          if (item instanceof CooldownItem cooldownItem
-                              && cooldownItem.shouldAutoReduceCountDown()
-                              && cooldownItem.inCooldown()) {
-                            cooldownItem.countDown();
-                          }
+                        CustomItem.getCustomItemOptional(i, CustomItem.RunTick.class)
+                            .ifPresent(item -> item.runTick(p));
+                        val cooldownItem = CustomItem.getCustomItem(i, CooldownItem.class);
+                        if (cooldownItem != null
+                            && cooldownItem.shouldAutoReduceCountDown()
+                            && cooldownItem.inCooldown()) {
+                          cooldownItem.countDown();
                         }
                       });
                 });

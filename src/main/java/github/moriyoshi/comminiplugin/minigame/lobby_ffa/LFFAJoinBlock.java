@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.minigame.lobby_ffa;
 
 import com.google.gson.JsonElement;
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.object.jumppad.JumpPadBlock;
 import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import lombok.val;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class SSEscapeDeep extends CustomItem implements CustomItem.InteractMainHand{
+public class SSEscapeDeep extends CustomItem implements CustomItem.InteractMainHand {
 
   public SSEscapeDeep() {
     this(
@@ -28,7 +28,7 @@ public class SSEscapeDeep extends CustomItem implements CustomItem.InteractMainH
   }
 
   @Override
-  public void interactMainHand(final PlayerInteractEvent e,final Player player) {
+  public void interactMainHand(final PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       e.setCancelled(false);
       return;

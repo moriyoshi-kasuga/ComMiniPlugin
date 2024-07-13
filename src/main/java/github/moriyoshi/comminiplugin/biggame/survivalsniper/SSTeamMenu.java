@@ -1,9 +1,9 @@
 package github.moriyoshi.comminiplugin.biggame.survivalsniper;
 
 import github.moriyoshi.comminiplugin.ComMiniPlugin;
+import github.moriyoshi.comminiplugin.biggame.survivalsniper.SSBigGame.Mode;
 import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
-import github.moriyoshi.comminiplugin.biggame.survivalsniper.SSBigGame.Mode;
 import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.BigGameSystem;
@@ -25,8 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
-public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
-    implements  OnlyBeforeStartGameMenu {
+public class SSTeamMenu extends MenuHolder<ComMiniPlugin> implements OnlyBeforeStartGameMenu {
 
   private final ItemStack SPEC = new ItemBuilder(Material.GRAY_CONCRETE).name("<gray>観戦する").build();
   private final ItemStack LEAVE = new ItemBuilder(Material.RED_CONCRETE).name("<red>抜ける").build();
@@ -41,7 +40,8 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
           @Override
           public void onClick(
               @NotNull final MenuHolder<?> holder, @NotNull final InventoryClickEvent event) {
-            BigGameSystem.getGame(SSBigGame.class).joinPlayer(((Player) event.getWhoClicked()), false, null);
+            BigGameSystem.getGame(SSBigGame.class)
+                .joinPlayer(((Player) event.getWhoClicked()), false, null);
           }
         });
     setButton(
@@ -73,7 +73,8 @@ public class SSTeamMenu extends MenuHolder<ComMiniPlugin>
             .build()) {
       @Override
       public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
-        BigGameSystem.getGame(SSBigGame.class).joinPlayer((Player) event.getWhoClicked(), true, color);
+        BigGameSystem.getGame(SSBigGame.class)
+            .joinPlayer((Player) event.getWhoClicked(), true, color);
       }
     };
   }

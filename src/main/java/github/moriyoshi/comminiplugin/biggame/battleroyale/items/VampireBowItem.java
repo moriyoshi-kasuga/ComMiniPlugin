@@ -3,8 +3,8 @@ package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 import de.tr7zw.changeme.nbtapi.NBT;
 import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
-import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.system.GameListener;
 import java.util.List;
 import lombok.val;
 import org.bukkit.Material;
@@ -16,7 +16,8 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class VampireBowItem extends CustomItem implements CooldownItem,CustomItem.ProjectileLaunch,CustomItem.HeldOfOther{
+public class VampireBowItem extends CustomItem
+    implements CooldownItem, CustomItem.ProjectileLaunch, CustomItem.HeldOfOther {
 
   private int level;
 
@@ -60,7 +61,7 @@ public class VampireBowItem extends CustomItem implements CooldownItem,CustomIte
   }
 
   @Override
-  public void heldOfOther(PlayerItemHeldEvent e,final Player player) {
+  public void heldOfOther(PlayerItemHeldEvent e, final Player player) {
     NBT.modify(
         getItem(),
         nbt -> {

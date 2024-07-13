@@ -2,12 +2,12 @@ package github.moriyoshi.comminiplugin.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
-import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.AdminBigGameMenu;
+import github.moriyoshi.comminiplugin.system.BigGameSystem;
 
-public class AdminGameMenuCommand extends CommandAPICommand {
+public class AdminMenuCommand extends CommandAPICommand {
 
-  public AdminGameMenuCommand() {
+  public AdminMenuCommand() {
     super("adminmenu");
     withPermission(CommandPermission.OP);
     executesPlayer(

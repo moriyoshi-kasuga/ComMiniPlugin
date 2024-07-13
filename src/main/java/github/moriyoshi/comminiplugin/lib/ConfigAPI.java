@@ -15,5 +15,4 @@ public abstract class ConfigAPI extends YmlAPI {
   public void createFile() {
     plugin.saveResource(paths, false);
   }
-
 }

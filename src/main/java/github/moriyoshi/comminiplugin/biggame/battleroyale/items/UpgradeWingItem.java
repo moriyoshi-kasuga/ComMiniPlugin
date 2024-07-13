@@ -1,10 +1,10 @@
 package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 
+import github.moriyoshi.comminiplugin.lib.BukkitUtil;
+import github.moriyoshi.comminiplugin.lib.JumpState;
 import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import github.moriyoshi.comminiplugin.lib.JumpState;
-import github.moriyoshi.comminiplugin.lib.BukkitUtil;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,7 +12,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class UpgradeWingItem extends CustomItem implements CooldownItem ,CustomItem.InteractMainHand{
+public class UpgradeWingItem extends CustomItem
+    implements CooldownItem, CustomItem.InteractMainHand {
   public UpgradeWingItem() {
     super(
         new ItemBuilder(Material.PHANTOM_MEMBRANE)
@@ -27,7 +28,7 @@ public class UpgradeWingItem extends CustomItem implements CooldownItem ,CustomI
   }
 
   @Override
-  public void interactMainHand(PlayerInteractEvent e,final Player player) {
+  public void interactMainHand(PlayerInteractEvent e, final Player player) {
     if (e.getAction().isLeftClick()) {
       return;
     }

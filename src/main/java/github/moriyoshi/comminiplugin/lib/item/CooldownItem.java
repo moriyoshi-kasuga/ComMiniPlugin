@@ -42,12 +42,15 @@ public interface CooldownItem extends InterfaceItem, CustomItem.Held {
     int cooldown = getCooldown();
     if (--cooldown > 0) {
       COOLDOWN.put(getItemKey(), cooldown);
+      inCountDown();
       return true;
     }
     COOLDOWN.remove(getItemKey());
     endCountDown();
     return false;
   }
+
+  default void inCountDown() {}
 
   default void endCountDown() {}
 
