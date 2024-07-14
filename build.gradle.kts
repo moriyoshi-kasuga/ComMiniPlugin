@@ -127,6 +127,8 @@ tasks.register("runPlugin") {
 bukkitPluginYaml {
     main = "github.moriyoshi.comminiplugin.ComMiniPlugin"
     load = BukkitPluginYaml.PluginLoadOrder.POSTWORLD
+    name = "ComMiniPlugin"
+    description = "ComMiniPlugin"
     authors.add("moriyoshi-kasuga")
     apiVersion = "1.20.6"
     // TODO: add psql

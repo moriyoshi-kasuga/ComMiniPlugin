@@ -11,8 +11,12 @@ import github.moriyoshi.comminiplugin.system.buttons.AddSpecButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameHelpMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.TeleportLobbyButton;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import lombok.val;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -27,6 +31,13 @@ public class MenuCommand extends CommandAPICommand {
     executesPlayer(
         (p, args) -> {
           open(p);
+          // p.damage(
+          //     10,
+          //     DamageSource.builder(
+          //             RegistryAccess.registryAccess()
+          //                 .getRegistry(RegistryKey.DAMAGE_TYPE)
+          //                 .get(new NamespacedKey(ComMiniPlugin.getPlugin(), "menu")))
+          //         .build());
         });
   }
 

@@ -2,6 +2,7 @@
 
 docker compose exec mc rcon-cli plugman unload ComMiniPlugin
 ./backup.sh
+./datapack.sh
 find ./server/plugins/ -name 'ComMiniPlugin*.jar' -exec rm -f {} \;
 cp -f ./build/libs/ComMiniPlugin-"$1".jar ./server/plugins/ComMiniPlugin.jar
 docker compose exec mc rcon-cli plugman load ComMiniPlugin
