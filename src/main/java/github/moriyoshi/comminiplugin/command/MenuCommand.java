@@ -6,17 +6,13 @@ import github.moriyoshi.comminiplugin.dependencies.ui.button.ItemButton;
 import github.moriyoshi.comminiplugin.dependencies.ui.menu.MenuHolder;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
-import github.moriyoshi.comminiplugin.system.ResourcePackSystem;
+import github.moriyoshi.comminiplugin.system.ResourcePackUtil;
 import github.moriyoshi.comminiplugin.system.buttons.AddSpecButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameHelpMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.GameMenuButton;
 import github.moriyoshi.comminiplugin.system.buttons.TeleportLobbyButton;
-import io.papermc.paper.registry.RegistryAccess;
-import io.papermc.paper.registry.RegistryKey;
 import lombok.val;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -79,7 +75,7 @@ public class MenuCommand extends CommandAPICommand {
             public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
               val who = event.getWhoClicked();
               ComMiniPlayer.getPlayer(who.getUniqueId()).setShouldLoadResourcePack(true);
-              ResourcePackSystem.updateComMiniResourcePack(who);
+              ResourcePackUtil.send((Player) who);
             }
           });
       setButton(
@@ -89,7 +85,7 @@ public class MenuCommand extends CommandAPICommand {
             public void onClick(@NotNull MenuHolder<?> holder, @NotNull InventoryClickEvent event) {
               val who = event.getWhoClicked();
               ComMiniPlayer.getPlayer(who.getUniqueId()).setShouldLoadResourcePack(false);
-              ResourcePackSystem.removeResourcePack(who);
+              ResourcePackUtil.remove((Player) who);
             }
           });
     }

@@ -10,7 +10,6 @@ import github.moriyoshi.comminiplugin.system.BigGameSystem;
 import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.GameListener;
 import github.moriyoshi.comminiplugin.system.GameSystem;
-import github.moriyoshi.comminiplugin.system.ResourcePackSystem;
 import lombok.Getter;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
@@ -48,13 +47,14 @@ public final class ComMiniPlugin extends JavaPlugin implements InterfaceAPIPlugi
 
     registerEvent(GameListener.getInstance());
 
+    getServer().getMessenger().registerOutgoingPluginChannel(this, "velocityresourcesync:main");
+
     PluginLib.onEnable();
     PluginLib.loadCustomBlock();
     PluginLib.registerCommand(new Reflections("github.moriyoshi.comminiplugin.command"));
 
     ComMiniPlayer.gameInitialize();
     GameSystem.load();
-    ResourcePackSystem.load();
 
     SYSTEM.broadCast("<red>プラグインをロードしました。");
   }
