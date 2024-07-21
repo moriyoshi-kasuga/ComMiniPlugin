@@ -3,7 +3,6 @@ package github.moriyoshi.comminiplugin.lib.item;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import github.moriyoshi.comminiplugin.lib.HashUUID;
 import github.moriyoshi.comminiplugin.lib.PluginLib;
 import java.lang.reflect.Constructor;
@@ -89,7 +88,7 @@ public abstract class CustomItem implements InterfaceItem {
                   | IllegalAccessException
                   | InvocationTargetException
                   | NoSuchMethodException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("error in registering " + item, e);
               }
               if (CustomItem.registers.containsKey(id)) {
                 throw new IllegalArgumentException(
@@ -158,16 +157,24 @@ public abstract class CustomItem implements InterfaceItem {
     if (item == null || item.getType().isAir()) {
       return null;
     }
-    val nbt = new NBTItem(item);
-    if (!nbt.hasTag(nbtKey)) {
-      return null;
-    }
-    val compound = nbt.getCompound(nbtKey);
-    if (!compound.getStringList("impl").contains(clazz.getSimpleName())) {
+    val id =
+        NBT.get(
+            item,
+            nbt -> {
+              if (!nbt.hasTag(nbtKey)) {
+                return null;
+              }
+              val compound = nbt.getCompound(nbtKey);
+              if (!compound.getStringList("impl").contains(clazz.getSimpleName())) {
+                return null;
+              }
+              return compound.getString("identifier");
+            });
+    if (id == null) {
       return null;
     }
     try {
-      return clazz.cast(newConstructors.get(compound.getString("identifier")).newInstance(item));
+      return clazz.cast(newConstructors.get(id).newInstance(item));
     } catch (InstantiationException
         | IllegalAccessException
         | IllegalArgumentException

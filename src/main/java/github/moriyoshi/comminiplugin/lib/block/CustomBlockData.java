@@ -11,14 +11,15 @@ import org.bukkit.Location;
 
 public class CustomBlockData extends JsonAPI {
 
-  public CustomBlockData(InterfaceAPIPlugin plugin) {
+  private JsonArray arr;
+
+  public CustomBlockData(final InterfaceAPIPlugin plugin) {
     super(plugin, "customBlockData");
   }
 
-  private JsonArray arr = new JsonArray();
-
   @Override
-  protected void generateLoadData(JsonElement dataElement) {
+  protected void generateLoadData(final JsonElement dataElement) {
+    arr = new JsonArray();
     val data = dataElement.getAsJsonObject();
     if (!data.has("blocks")) {
       data.add("blocks", new JsonArray());
@@ -26,8 +27,8 @@ public class CustomBlockData extends JsonAPI {
     data.getAsJsonArray("blocks")
         .forEach(
             jsonElement -> {
-              JsonObject object = jsonElement.getAsJsonObject();
-              String identifier = object.get("identifier").getAsString();
+              final JsonObject object = jsonElement.getAsJsonObject();
+              final String identifier = object.get("identifier").getAsString();
               if (!CustomBlock.isRegister(identifier)) {
                 plugin
                     .getSystemPrefix()
@@ -35,19 +36,19 @@ public class CustomBlockData extends JsonAPI {
                 arr.add(object);
                 return;
               }
-              Location loc = PluginLib.gson.fromJson(object.get("location"), Location.class);
-              JsonElement blockData = object.get("data");
+              final Location loc = PluginLib.gson.fromJson(object.get("location"), Location.class);
+              final JsonElement blockData = object.get("data");
               CustomBlock.loadCustomBlock(identifier, loc, blockData);
             });
   }
 
   @Override
   protected JsonElement generateSaveData() {
-    JsonObject object = new JsonObject();
+    final JsonObject object = new JsonObject();
     CustomBlock.getBlocks()
         .forEach(
             (location, customBlock) -> {
-              JsonObject json = new JsonObject();
+              final JsonObject json = new JsonObject();
               val element = customBlock.getBlockData();
               if (element == null || element.isJsonNull()) {
                 customBlock.clearData();

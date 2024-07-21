@@ -91,7 +91,12 @@ public class GameListener implements Listener {
     val p = e.getPlayer();
     GameSystem.initializePlayer(p);
     if (ComMiniPlayer.getPlayer(p.getUniqueId()).isShouldLoadResourcePack()) {
-      ResourcePackUtil.send(p);
+      new BukkitRunnable() {
+        @Override
+        public void run() {
+          ResourcePackUtil.send(p);
+        }
+      }.runTaskLater(ComMiniPlugin.getPlugin(), 10L);
     }
     Bukkit.getOnlinePlayers().stream()
         .filter(

@@ -3,6 +3,7 @@ package github.moriyoshi.comminiplugin.biggame.battleroyale.items;
 import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
+import github.moriyoshi.comminiplugin.util.KeyUtil;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -26,10 +27,10 @@ public class VampireSwordItem extends CustomItem
             .lore("<gray>攻撃時に最大ハート3個分HPを吸収する")
             .addAttribute(
                 Attribute.GENERIC_ATTACK_DAMAGE,
-                new AttributeModifier("damage", 6, Operation.ADD_NUMBER))
+                new AttributeModifier(KeyUtil.createUUIDKey(), 6, Operation.ADD_NUMBER))
             .addAttribute(
                 Attribute.GENERIC_ATTACK_SPEED,
-                new AttributeModifier("speed", -3.0, Operation.ADD_NUMBER))
+                new AttributeModifier(KeyUtil.createUUIDKey(), -3.0, Operation.ADD_NUMBER))
             .flags(ItemFlag.HIDE_ATTRIBUTES)
             .customModelData(23)
             .build());

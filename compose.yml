@@ -11,14 +11,14 @@ services:
     environment:
       EULA: "TRUE"
       TYPE: PAPER
-      MEMORY: 4G
+      MEMORY: 6G
       TZ: Asia/Tokyo
       ALLOW_FLIGHT: true
       DIFFICULTY: normal
       SPAWN_PROTECTION: 0
       JVM_OPTS: "-XX:MaxRAMPercentage=75"
       ENABLE_COMMAND_BLOCK: true
-      VERSION: 1.20.6
+      VERSION: 1.21
       ONLINE_MODE: FALSE
     volumes:
       - ./server:/data

@@ -21,13 +21,11 @@ import lombok.experimental.Accessors;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 public final class ComMiniPlayer extends JsonAPI {
 
   private static final HashMap<UUID, ComMiniPlayer> players = new HashMap<>();
-  private static Scoreboard scoreboard;
   private static Team hidenametag;
   private final UUID uuid;
   private final Map<Class<? extends InterfaceGamePlayer>, InterfaceGamePlayer> gamePlayerDatas =
@@ -65,7 +63,6 @@ public final class ComMiniPlayer extends JsonAPI {
     super(ComMiniPlugin.getPlugin(), "gameplayers", uuid.toString());
     this.uuid = uuid;
     val player = toPlayer();
-    player.setScoreboard(scoreboard);
     this.initialize(player);
   }
 
@@ -82,10 +79,13 @@ public final class ComMiniPlayer extends JsonAPI {
   }
 
   public static void gameInitialize() {
-    scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-    hidenametag = scoreboard.registerNewTeam("commini_hidenametag");
-    hidenametag.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-    hidenametag.setCanSeeFriendlyInvisibles(false);
+    val score = Bukkit.getScoreboardManager().getMainScoreboard();
+    hidenametag = score.getTeam("commini_hidenametag");
+    if (hidenametag == null) {
+      hidenametag = score.registerNewTeam("commini_hidenametag");
+      hidenametag.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+      hidenametag.setCanSeeFriendlyInvisibles(false);
+    }
   }
 
   public static ComMiniPlayer getPlayer(final UUID uuid) {

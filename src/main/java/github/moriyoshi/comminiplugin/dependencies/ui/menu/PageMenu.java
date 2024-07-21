@@ -28,6 +28,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * ページを実装したメニューです。このメニューはデフォルトでは、トップインベントリの下段にある、2つのボタンしかありません。 そのため、ページ自体の大きさは45スロットを超えることはできません。
@@ -951,7 +952,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P>
     }
   }
 
-  private class ProxyView extends InventoryView {
+  private class ProxyView implements InventoryView {
 
     private final InventoryView original;
 
@@ -977,6 +978,57 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P>
     @Override
     public @NotNull InventoryType getType() {
       return InventoryType.CHEST;
+    }
+
+    @Override
+    public void setItem(int i, @Nullable ItemStack itemStack) {
+      original.setItem(i, itemStack);
+    }
+
+    @Override
+    public @Nullable ItemStack getItem(int i) {
+      return original.getItem(i);
+    }
+
+    @Override
+    public void setCursor(@Nullable ItemStack itemStack) {
+      original.setCursor(itemStack);
+    }
+
+    @Override
+    public @NotNull ItemStack getCursor() {
+      return original.getCursor();
+    }
+
+    @Override
+    public @Nullable Inventory getInventory(int i) {
+      return original.getInventory(i);
+    }
+
+    @Override
+    public int convertSlot(int i) {
+      return original.convertSlot(i);
+    }
+
+    @NotNull
+    @Override
+    public InventoryType.SlotType getSlotType(int i) {
+      return original.getSlotType(i);
+    }
+
+    @Override
+    public void close() {
+      original.close();
+    }
+
+    @Override
+    public int countSlots() {
+      return original.countSlots();
+    }
+
+    @Override
+    public boolean setProperty(@NotNull InventoryView.Property property, int i) {
+      return original.setProperty(property, i);
     }
 
     @SuppressWarnings("deprecation")

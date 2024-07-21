@@ -19,6 +19,7 @@ import github.moriyoshi.comminiplugin.system.ComMiniPlayer;
 import github.moriyoshi.comminiplugin.system.IGameListener;
 import github.moriyoshi.comminiplugin.system.type.ISpectatorGame;
 import github.moriyoshi.comminiplugin.system.type.IWinnerTypeBigGame;
+import github.moriyoshi.comminiplugin.util.KeyUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +55,7 @@ public class BRBigGame extends AbstractBigGame implements IWinnerTypeBigGame, IS
       new ArrayList<>();
 
   private final AttributeModifier resistance =
-      new AttributeModifier("br", 20, Operation.ADD_NUMBER);
+      new AttributeModifier(KeyUtil.createUUIDKey(), 20, Operation.ADD_NUMBER);
 
   private BossBar bossBar;
 

@@ -24,7 +24,7 @@ import org.bukkit.util.RayTraceResult;
 public class LFFAGun extends CustomItem
     implements CooldownItem, CustomItem.DamageToEntity, CustomItem.InteractMainHand {
   private final int MAX_LENGTH = 40;
-  private final double BULLET_SIZE = 0.1;
+  private final double BULLET_SIZE = 0.2;
 
   public LFFAGun() {
     this(

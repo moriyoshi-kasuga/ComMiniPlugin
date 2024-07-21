@@ -49,16 +49,13 @@ public final class PluginLib {
     glowingEntities = new GlowingEntities(plugin);
     glowingBlocks = new GlowingBlocks(plugin);
     CommandAPI.onEnable();
+    PluginLib.customBlockData = new CustomBlockData(plugin);
   }
 
   public static <T extends JavaPlugin & InterfaceAPIPlugin> void onLoad(T plugin) {
     PluginLib.plugin = plugin;
     CommandAPI.onLoad(
         new CommandAPIBukkitConfig(plugin).initializeNBTAPI(NBTContainer.class, NBTContainer::new));
-  }
-
-  public static void loadCustomBlock() {
-    PluginLib.customBlockData = new CustomBlockData(plugin);
   }
 
   public static void unLoad() {

@@ -50,7 +50,6 @@ public final class ComMiniPlugin extends JavaPlugin implements InterfaceAPIPlugi
     getServer().getMessenger().registerOutgoingPluginChannel(this, "velocityresourcesync:main");
 
     PluginLib.onEnable();
-    PluginLib.loadCustomBlock();
     PluginLib.registerCommand(new Reflections("github.moriyoshi.comminiplugin.command"));
 
     ComMiniPlayer.gameInitialize();

@@ -20,26 +20,28 @@ repositories {
     maven(url = "https://maven.maxhenkel.de/repository/public")
 }
 
-val anvilGUI = "net.wesjd:anvilgui:1.9.4-SNAPSHOT"
-val commandAPI = "dev.jorel:commandapi-bukkit-shade:9.4.2"
-val nbtAPI = "de.tr7zw:item-nbt-api:2.12.4"
+val anvilGUI = "net.wesjd:anvilgui:1.10.0-SNAPSHOT"
+val commandAPI = "dev.jorel:commandapi-bukkit-shade:9.5.1"
+val nbtAPI = "de.tr7zw:item-nbt-api:2.13.1"
 val reflections = "org.reflections:reflections:0.10.2"
-val fastBoard = "fr.mrmicky:fastboard:2.1.2"
+val fastBoard = "fr.mrmicky:fastboard:2.1.3"
+val glowingEntities = "fr.skytasul:glowingentities:1.3.5"
 
 val relocates = mapOf(
     "dev.jorel.commandapi" to "github.moriyoshi.comminiplugin.dependencies.commandapi",
     "net.wesjd.anvilgui" to "github.moriyoshi.comminiplugin.dependencies.anvilgui",
     "de.tr7zw.changeme.nbtapi" to "github.moriyoshi.comminiplugin.dependencies.nbtapi",
     "org.reflections" to "github.moriyoshi.comminiplugin.dependencies.reflections",
-    "fr.mrmicky.fastboard" to "github.moriyoshi.comminiplugin.dependencies.reflections"
+    "fr.mrmicky.fastboard" to "github.moriyoshi.comminiplugin.dependencies.fastboard",
+    "fr.skytasul" to "github.moriyoshi.comminiplugin.dependencies.glowingentities"
 )
 
-val lombok = "org.projectlombok:lombok:1.18.32"
+val lombok = "org.projectlombok:lombok:1.18.34"
 
 // paperweight.reobfArtifactConfiguration = ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 dependencies {
-    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
 
     compileOnly(lombok)
     annotationProcessor(lombok)
@@ -47,11 +49,12 @@ dependencies {
     testCompileOnly(lombok)
     testAnnotationProcessor(lombok)
 
-    shadow(reflections)
     shadow(anvilGUI)
     shadow(commandAPI)
     shadow(nbtAPI)
+    shadow(reflections)
     shadow(fastBoard)
+    shadow(glowingEntities)
 }
 
 val targetJavaVersion = 21

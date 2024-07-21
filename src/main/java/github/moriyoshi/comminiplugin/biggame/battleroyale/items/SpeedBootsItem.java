@@ -4,7 +4,7 @@ import github.moriyoshi.comminiplugin.ComMiniPlugin;
 import github.moriyoshi.comminiplugin.lib.item.CooldownItem;
 import github.moriyoshi.comminiplugin.lib.item.CustomItem;
 import github.moriyoshi.comminiplugin.lib.item.ItemBuilder;
-import java.util.UUID;
+import github.moriyoshi.comminiplugin.util.KeyUtil;
 import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -34,11 +34,7 @@ public class SpeedBootsItem extends CustomItem implements CooldownItem, CustomIt
             .addAttribute(
                 Attribute.GENERIC_MOVEMENT_SPEED,
                 new AttributeModifier(
-                    UUID.randomUUID(),
-                    "speed boots",
-                    0.01,
-                    Operation.ADD_NUMBER,
-                    EquipmentSlotGroup.ARMOR))
+                    KeyUtil.createUUIDKey(), 0.01, Operation.ADD_NUMBER, EquipmentSlotGroup.ARMOR))
             .flags(ItemFlag.HIDE_ATTRIBUTES)
             .customModelData(10)
             .build());
